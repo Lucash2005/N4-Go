@@ -82,7 +82,7 @@ export default function Flashcards() {
               onFilterChange(setStatusFilter, statusFilter === 'learned' ? 'all' : 'learned')
             }
           >
-            已學會
+            只看已學會
           </FilterChip>
           <FilterChip
             active={statusFilter === 'review'}
@@ -90,7 +90,7 @@ export default function Flashcards() {
               onFilterChange(setStatusFilter, statusFilter === 'review' ? 'all' : 'review')
             }
           >
-            需複習
+            只看需複習
           </FilterChip>
         </div>
 
@@ -105,7 +105,7 @@ export default function Flashcards() {
       ) : (
         <>
           <article
-            className="animate-flip-in soft-shadow relative min-h-[320px] cursor-pointer rounded-3xl perspective-distant"
+            className="animate-flip-in soft-shadow relative min-h-[320px] cursor-pointer rounded-3xl [perspective:1200px]"
             onClick={() => setFlipped((f) => !f)}
             onKeyDown={(e) => {
               if (e.key === 'Enter' || e.key === ' ') {
