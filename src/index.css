@@ -1,0 +1,134 @@
+@import "tailwindcss";
+
+@theme {
+  --font-display: "Shippori Mincho", "Noto Serif TC", serif;
+  --font-sans: "Zen Maru Gothic", "Noto Sans TC", sans-serif;
+  --color-ink: #243833;
+  --color-ink-soft: #4a635c;
+  --color-mist: #f2f7f6;
+  --color-foam: #e6f1ee;
+  --color-sea: #3a8a7a;
+  --color-sea-deep: #2b6b5e;
+  --color-sea-soft: #d4ebe5;
+  --color-sand: #fff8f1;
+  --color-coral: #d9785c;
+  --color-line: #c9ddd7;
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    margin: 0;
+    min-height: 100dvh;
+    font-family: var(--font-sans);
+    color: var(--color-ink);
+    background:
+      radial-gradient(ellipse 120% 80% at 10% -10%, #dff0eb 0%, transparent 55%),
+      radial-gradient(ellipse 90% 70% at 100% 0%, #ffe8dc 0%, transparent 45%),
+      linear-gradient(180deg, #f7fbfa 0%, #eef5f3 48%, #f8f4ef 100%);
+    background-attachment: fixed;
+  }
+
+  #root {
+    min-height: 100dvh;
+  }
+
+  button,
+  input,
+  select {
+    font: inherit;
+  }
+}
+
+@layer utilities {
+  .font-display {
+    font-family: var(--font-display);
+  }
+
+  .surface {
+    background: color-mix(in srgb, white 82%, transparent);
+    border: 1px solid color-mix(in srgb, var(--color-line) 80%, white);
+    backdrop-filter: blur(10px);
+  }
+
+  .soft-shadow {
+    box-shadow: 0 10px 30px -18px rgb(36 56 51 / 0.35);
+  }
+
+  .touch-target {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  .wave-mask {
+    background-image:
+      linear-gradient(90deg, transparent 0 8%, rgb(58 138 122 / 0.08) 8% 12%, transparent 12% 100%),
+      repeating-linear-gradient(
+        -8deg,
+        transparent,
+        transparent 18px,
+        rgb(58 138 122 / 0.04) 18px,
+        rgb(58 138 122 / 0.04) 19px
+      );
+  }
+}
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes flip-in {
+  from {
+    opacity: 0;
+    transform: rotateY(-12deg) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: rotateY(0) scale(1);
+  }
+}
+
+@keyframes pulse-soft {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.02);
+  }
+}
+
+.animate-fade-up {
+  animation: fade-up 0.55s ease-out both;
+}
+
+.animate-flip-in {
+  animation: flip-in 0.45s ease-out both;
+}
+
+.animate-pulse-soft {
+  animation: pulse-soft 2.8s ease-in-out infinite;
+}
+
+.stagger-1 {
+  animation-delay: 0.06s;
+}
+.stagger-2 {
+  animation-delay: 0.12s;
+}
+.stagger-3 {
+  animation-delay: 0.18s;
+}
+.stagger-4 {
+  animation-delay: 0.24s;
+}
