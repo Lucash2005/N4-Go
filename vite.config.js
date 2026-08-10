@@ -4,6 +4,8 @@ import tailwindcss from '@tailwindcss/vite'
 import { VitePWA } from 'vite-plugin-pwa'
 
 export default defineConfig({
+  // Relative base so the build works on GitHub Pages / CDN / any subpath
+  base: './',
   plugins: [
     react(),
     tailwindcss(),

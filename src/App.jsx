@@ -1,4 +1,4 @@
-import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
+import { HashRouter, Navigate, Route, Routes } from 'react-router-dom'
 import Layout from './components/Layout'
 import { ProgressProvider } from './hooks/useProgress'
 import Dashboard from './pages/Dashboard'
@@ -9,7 +9,7 @@ import Schedule from './pages/Schedule'
 export default function App() {
   return (
     <ProgressProvider>
-      <BrowserRouter>
+      <HashRouter>
         <Routes>
           <Route element={<Layout />}>
             <Route index element={<Dashboard />} />
@@ -19,7 +19,7 @@ export default function App() {
             <Route path="*" element={<Navigate to="/" replace />} />
           </Route>
         </Routes>
-      </BrowserRouter>
+      </HashRouter>
     </ProgressProvider>
   )
 }
