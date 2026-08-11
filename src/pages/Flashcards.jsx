@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import { grammar } from '../data/grammar'
 import { vocabulary } from '../data/vocabulary'
+import FuriganaText from '../components/FuriganaText'
 import { useProgress } from '../hooks/useProgress'
 import { useSettings } from '../hooks/useSettings'
 import { speakJapanese, speechTextForCard, audioClipForCard } from '../utils/tts'
@@ -30,7 +31,7 @@ export default function Flashcards() {
     markListened,
     isStudied,
   } = useProgress()
-  const { showFurigana, setShowFurigana, ttsEngine, setTtsEngine, ttsRate, setTtsRate } =
+  const { showFurigana, setShowFurigana, showExampleMeaning, setShowExampleMeaning, ttsEngine, setTtsEngine, ttsRate, setTtsRate } =
     useSettings()
   const [searchParams, setSearchParams] = useSearchParams()
   const mode = searchParams.get('mode') || 'all'
@@ -158,6 +159,12 @@ export default function Flashcards() {
             {showFurigana ? '音標：顯示中' : '音標：已隱藏'}
           </FilterChip>
           <FilterChip
+            active={showExampleMeaning}
+            onClick={() => setShowExampleMeaning(!showExampleMeaning)}
+          >
+            {showExampleMeaning ? '中文解釋：顯示中' : '中文解釋：已隱藏'}
+          </FilterChip>
+          <FilterChip
             active={ttsEngine === 'auto'}
             onClick={() => setTtsEngine(ttsEngine === 'auto' ? 'system' : 'auto')}
           >
@@ -178,7 +185,7 @@ export default function Flashcards() {
           <span className="w-10 tabular-nums">{ttsRate.toFixed(2)}</span>
         </label>
         <p className="text-xs text-ink-soft">
-          Neural 自然聲使用預錄的日語人聲（Nanami），與系統聲會明顯不同。音標開關同時控制單字與例句讀音。
+          音標只標在漢字上；中文解釋可單獨開關。Neural 為預錄人聲。
           {voiceEngine ? ` · 剛剛播放：${voiceEngine === 'neural' ? 'Neural 自然聲' : '系統聲'}` : ''}
         </p>
       </section>
@@ -294,13 +301,18 @@ export default function Flashcards() {
                   <p className="mt-2 text-sm text-sea-deep">句型：{card.pattern}</p>
                 ) : null}
                 <div className="mt-5 rounded-2xl bg-foam/80 p-4 text-left">
-                  <p className="text-base leading-relaxed text-ink">{card.example}</p>
-                  {showFurigana && card.exampleReading ? (
-                    <p className="mt-1.5 text-sm leading-relaxed text-sea-deep">
-                      {card.exampleReading}
-                    </p>
-                  ) : null}
-                  <p className="mt-2 text-sm text-ink-soft">{card.exampleMeaning}</p>
+                  <p className="text-base leading-relaxed text-ink">
+                    <FuriganaText
+                      text={card.example}
+                      annotated={card.exampleFurigana}
+                      showFurigana={showFurigana}
+                    />
+                  </p>
+                  {showExampleMeaning ? (
+                    <p className="mt-2 text-sm text-ink-soft">{card.exampleMeaning}</p>
+                  ) : (
+                    <p className="mt-2 text-xs text-ink-soft">中文解釋已隱藏</p>
+                  )}
                 </div>
               </CardFace>
             </div>

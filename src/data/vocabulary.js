@@ -1,4 +1,4 @@
-/** @typedef {{ id: string, type: 'vocab', word: string, reading: string, meaning: string, example: string, exampleReading?: string, exampleMeaning: string, category: string }} VocabCard */
+/** @typedef {{ id: string, type: 'vocab', word: string, reading: string, meaning: string, example: string, exampleFurigana?: string, exampleMeaning: string, category: string }} VocabCard */
 
 /** @type {VocabCard[]} */
 export const vocabulary = [
@@ -10,7 +10,7 @@ export const vocabulary = [
     meaning: '旅行',
     example: '来月、日本へ旅行します。',
     exampleMeaning: '下個月要去日本旅行。',
-    exampleReading: 'らいげつ、にほんへりょこうします。',
+    exampleFurigana: '来月[らいげつ]、日本[にほん]へ旅行[りょこう]します。',
     category: '生活',
   },
   {
@@ -21,7 +21,7 @@ export const vocabulary = [
     meaning: '方便；情況',
     example: '都合がいい日を教えてください。',
     exampleMeaning: '請告訴我方便的日子。',
-    exampleReading: 'つごうがいいひをおしえてください。',
+    exampleFurigana: '都合[つごう]がいい日[ひ]を教[おし]えてください。',
     category: '生活',
   },
   {
@@ -32,7 +32,7 @@ export const vocabulary = [
     meaning: '經驗',
     example: '海外で働く経験があります。',
     exampleMeaning: '有在海外工作的經驗。',
-    exampleReading: 'かいがいではたらくけいけんがあります。',
+    exampleFurigana: '海外[かいがい]で働[はたら]く経験[けいけん]があります。',
     category: '抽象',
   },
   {
@@ -43,7 +43,7 @@ export const vocabulary = [
     meaning: '約定；承諾',
     example: '友達と約束をしました。',
     exampleMeaning: '和朋友約好了。',
-    exampleReading: 'ともだちとやくそくをしました。',
+    exampleFurigana: '友達[ともだち]と約束[やくそく]をしました。',
     category: '生活',
   },
   {
@@ -54,7 +54,7 @@ export const vocabulary = [
     meaning: '準備',
     example: '試験の準備をしています。',
     exampleMeaning: '正在準備考試。',
-    exampleReading: 'しけんのじゅんびをしています。',
+    exampleFurigana: '試験[しけん]の準備[じゅんび]をしています。',
     category: '學習',
   },
   {
@@ -65,7 +65,7 @@ export const vocabulary = [
     meaning: '練習',
     example: '毎日ピアノを練習します。',
     exampleMeaning: '每天練習鋼琴。',
-    exampleReading: 'まいにちぴあのをれんしゅうします。',
+    exampleFurigana: '毎日[まいにち]ピアノを練習[れんしゅう]します。',
     category: '學習',
   },
   {
@@ -76,7 +76,7 @@ export const vocabulary = [
     meaning: '比賽',
     example: '明日サッカーの試合があります。',
     exampleMeaning: '明天有足球比賽。',
-    exampleReading: 'あしたさっかーのしあいがあります。',
+    exampleFurigana: '明日[あした]サッカーの試合[しあい]があります。',
     category: '運動',
   },
   {
@@ -87,7 +87,7 @@ export const vocabulary = [
     meaning: '意見',
     example: 'あなたの意見を聞きたいです。',
     exampleMeaning: '想聽你的意見。',
-    exampleReading: 'あなたのいけんをききたいです。',
+    exampleFurigana: 'あなたの意見[いけん]を聞[き]きたいです。',
     category: '抽象',
   },
   {
@@ -98,7 +98,7 @@ export const vocabulary = [
     meaning: '計畫',
     example: '夏休みの計画を立てました。',
     exampleMeaning: '訂好了暑假計畫。',
-    exampleReading: 'なつやすみのけいかくをたてました。',
+    exampleFurigana: '夏休み[なつやすみ]の計画[けいかく]を立[た]てました。',
     category: '抽象',
   },
   {
@@ -109,7 +109,7 @@ export const vocabulary = [
     meaning: '聯絡',
     example: '後で連絡します。',
     exampleMeaning: '稍後會聯絡。',
-    exampleReading: 'あとでれんらくします。',
+    exampleFurigana: '後[あと]で連絡[れんらく]します。',
     category: '生活',
   },
   {
@@ -120,7 +120,7 @@ export const vocabulary = [
     meaning: '回覆；回答',
     example: 'すぐに返事をください。',
     exampleMeaning: '請立刻回覆。',
-    exampleReading: 'すぐにへんじをください。',
+    exampleFurigana: 'すぐに返事[へんじ]をください。',
     category: '生活',
   },
   {
@@ -131,7 +131,7 @@ export const vocabulary = [
     meaning: '說明',
     example: '先生が文法を説明しました。',
     exampleMeaning: '老師說明了文法。',
-    exampleReading: 'せんせいがぶんぽうをせつめいしました。',
+    exampleFurigana: '先生[せんせい]が文法[ぶんぽう]を説明[せつめい]しました。',
     category: '學習',
   },
   {
@@ -142,7 +142,7 @@ export const vocabulary = [
     meaning: '注意',
     example: '足元に注意してください。',
     exampleMeaning: '請注意腳下。',
-    exampleReading: 'あしもとにちゅういしてください。',
+    exampleFurigana: '足元[あしもと]に注意[ちゅうい]してください。',
     category: '生活',
   },
   {
@@ -153,7 +153,7 @@ export const vocabulary = [
     meaning: '安心',
     example: '合格の知らせを聞いて安心しました。',
     exampleMeaning: '聽到合格消息後安心了。',
-    exampleReading: 'ごうかくのしらせをきいてあんしんしました。',
+    exampleFurigana: '合格[ごうかく]の知[し]らせを聞[き]いて安心[あんしん]しました。',
     category: '情感',
   },
   {
@@ -164,7 +164,7 @@ export const vocabulary = [
     meaning: '擔心',
     example: '母は私の将来を心配しています。',
     exampleMeaning: '媽媽擔心我的未來。',
-    exampleReading: 'はははわたしのしょうらいをしんぱいしています。',
+    exampleFurigana: '母[はは]は私[わたし]の将来[しょうらい]を心配[しんぱい]しています。',
     category: '情感',
   },
   {
@@ -175,7 +175,7 @@ export const vocabulary = [
     meaning: '失敗',
     example: '失敗しても諦めないでください。',
     exampleMeaning: '失敗了也請不要放棄。',
-    exampleReading: 'しっぱいしてもあきらめないでください。',
+    exampleFurigana: '失敗[しっぱい]しても諦[あきら]めないでください。',
     category: '抽象',
   },
   {
@@ -186,7 +186,7 @@ export const vocabulary = [
     meaning: '成功',
     example: '努力すれば成功します。',
     exampleMeaning: '努力就會成功。',
-    exampleReading: 'どりょくすればせいこうします。',
+    exampleFurigana: '努力[どりょく]すれば成功[せいこう]します。',
     category: '抽象',
   },
   {
@@ -197,7 +197,7 @@ export const vocabulary = [
     meaning: '勉強；無理',
     example: '無理をしないでください。',
     exampleMeaning: '請不要太勉強。',
-    exampleReading: 'むりをしないでください。',
+    exampleFurigana: '無理[むり]をしないでください。',
     category: '生活',
   },
   {
@@ -208,7 +208,7 @@ export const vocabulary = [
     meaning: '足夠',
     example: '時間が十分あります。',
     exampleMeaning: '時間很充足。',
-    exampleReading: 'じかんがじゅうぶんあります。',
+    exampleFurigana: '時間[じかん]が十分[じゅうぶん]あります。',
     category: '抽象',
   },
   {
@@ -219,7 +219,7 @@ export const vocabulary = [
     meaning: '特別；尤其',
     example: '特に甘いものが好きです。',
     exampleMeaning: '特別喜歡甜食。',
-    exampleReading: 'とくにあまいものがすきです。',
+    exampleFurigana: '特[とく]に甘[あま]いものが好[す]きです。',
     category: '副詞',
   },
   {
@@ -230,7 +230,7 @@ export const vocabulary = [
     meaning: '一定',
     example: '必ず宿題を出してください。',
     exampleMeaning: '請一定要交作業。',
-    exampleReading: 'かならずしゅくだいをだしてください。',
+    exampleFurigana: '必ず[かならず]宿題[しゅくだい]を出[だ]してください。',
     category: '副詞',
   },
   {
@@ -241,7 +241,7 @@ export const vocabulary = [
     meaning: '差不多該…了',
     example: 'そろそろ出かけましょう。',
     exampleMeaning: '差不多該出門了。',
-    exampleReading: 'そろそろでかけましょう。',
+    exampleFurigana: 'そろそろ出[で]かけましょう。',
     category: '副詞',
   },
   {
@@ -252,7 +252,7 @@ export const vocabulary = [
     meaning: '突然',
     example: '急に雨が降りました。',
     exampleMeaning: '突然下起雨來。',
-    exampleReading: 'きゅうにあめがふりました。',
+    exampleFurigana: '急[きゅう]に雨[あめ]が降[ふ]りました。',
     category: '副詞',
   },
   {
@@ -263,7 +263,7 @@ export const vocabulary = [
     meaning: '比較',
     example: '二つの写真を比べてください。',
     exampleMeaning: '請比較這兩張照片。',
-    exampleReading: 'ふたつのしゃしんをくらべてください。',
+    exampleFurigana: '二つ[ふたつ]の写真[しゃしん]を比[くら]べてください。',
     category: '動詞',
   },
   {
@@ -274,7 +274,7 @@ export const vocabulary = [
     meaning: '繼續',
     example: '日本語の勉強を続けます。',
     exampleMeaning: '會繼續學日文。',
-    exampleReading: 'にほんごのべんきょうをつづけます。',
+    exampleFurigana: '日本語[にほんご]の勉強[べんきょう]を続[つづ]けます。',
     category: '動詞',
   },
   {
@@ -285,7 +285,7 @@ export const vocabulary = [
     meaning: '決定',
     example: '旅行の日程を決めました。',
     exampleMeaning: '決定了旅行行程。',
-    exampleReading: 'りょこうのにっていをきめました。',
+    exampleFurigana: '旅行[りょこう]の日程[にってい]を決[き]めました。',
     category: '動詞',
   },
   {
@@ -296,7 +296,7 @@ export const vocabulary = [
     meaning: '被找到；發現',
     example: '鍵が見つかりました。',
     exampleMeaning: '鑰匙找到了。',
-    exampleReading: 'かぎがみつかりました。',
+    exampleFurigana: '鍵[かぎ]が見[み]つかりました。',
     category: '動詞',
   },
   {
@@ -307,7 +307,7 @@ export const vocabulary = [
     meaning: '送達；送到',
     example: '荷物を家まで届けてください。',
     exampleMeaning: '請把行李送到家。',
-    exampleReading: 'にもつをいえまでとどけてください。',
+    exampleFurigana: '荷物[にもつ]を家[いえ]まで届[とど]けてください。',
     category: '動詞',
   },
   {
@@ -318,7 +318,7 @@ export const vocabulary = [
     meaning: '說（謙讓語）',
     example: 'お礼を申し上げます。',
     exampleMeaning: '向您致謝。',
-    exampleReading: 'おれいをもうしあげます。',
+    exampleFurigana: 'お礼[れい]を申[もう]し上[あ]げます。',
     category: '敬語',
   },
   {
@@ -329,7 +329,7 @@ export const vocabulary = [
     meaning: '看（謙讓語）',
     example: '資料を拝見しました。',
     exampleMeaning: '看過資料了。',
-    exampleReading: 'しりょうをはいけんしました。',
+    exampleFurigana: '資料[しりょう]を拝見[はいけん]しました。',
     category: '敬語',
   },
   {
@@ -340,7 +340,7 @@ export const vocabulary = [
     meaning: '美術館',
     example: '週末に美術館へ行きました。',
     exampleMeaning: '週末去了美術館。',
-    exampleReading: 'しゅうまつにびじゅつかんへいきました。',
+    exampleFurigana: '週末[しゅうまつ]に美術館[びじゅつかん]へ行[い]きました。',
     category: '場所',
   },
   {
@@ -351,7 +351,7 @@ export const vocabulary = [
     meaning: '停車場',
     example: '駅の近くに駐車場があります。',
     exampleMeaning: '車站附近有停車場。',
-    exampleReading: 'えきのちかくにちゅうしゃじょうがあります。',
+    exampleFurigana: '駅[えき]の近[ちか]くに駐車場[ちゅうしゃじょう]があります。',
     category: '場所',
   },
   {
@@ -362,7 +362,7 @@ export const vocabulary = [
     meaning: '交叉路口',
     example: '次の交差点を右に曲がってください。',
     exampleMeaning: '請在下一個交叉路口右轉。',
-    exampleReading: 'つぎのこうさてんをみぎにまがってください。',
+    exampleFurigana: '次[つぎ]の交差点[こうさてん]を右[みぎ]に曲[ま]がってください。',
     category: '場所',
   },
   {
@@ -373,7 +373,7 @@ export const vocabulary = [
     meaning: '風景',
     example: '山からの景色はきれいです。',
     exampleMeaning: '從山上看到的風景很美。',
-    exampleReading: 'やまからのけしきはきれいです。',
+    exampleFurigana: '山[やま]からの景色[けしき]はきれいです。',
     category: '自然',
   },
   {
@@ -384,7 +384,7 @@ export const vocabulary = [
     meaning: '季節',
     example: '春が一番好きな季節です。',
     exampleMeaning: '春天是我最喜歡的季節。',
-    exampleReading: 'はるがいちばんすきなきせつです。',
+    exampleFurigana: '春[はる]が一番[いちばん]好[す]きな季節[きせつ]です。',
     category: '自然',
   },
   {
@@ -395,7 +395,7 @@ export const vocabulary = [
     meaning: '氣溫',
     example: '今日の気温は高いです。',
     exampleMeaning: '今天氣溫很高。',
-    exampleReading: 'きょうのきおんはたかいです。',
+    exampleFurigana: '今日[きょう]の気温[きおん]は高[たか]いです。',
     category: '自然',
   },
   {
@@ -406,7 +406,7 @@ export const vocabulary = [
     meaning: '親切',
     example: '彼はとても親切な人です。',
     exampleMeaning: '他是個非常親切的人。',
-    exampleReading: 'かれはとてもしんせつなひとです。',
+    exampleFurigana: '彼[かれ]はとても親切[しんせつ]な人[ひと]です。',
     category: '性格',
   },
   {
@@ -417,7 +417,7 @@ export const vocabulary = [
     meaning: '認真',
     example: '妹は真面目に勉強しています。',
     exampleMeaning: '妹妹很認真地在念書。',
-    exampleReading: 'いもうとはまじめにべんきょうしています。',
+    exampleFurigana: '妹[いもうと]は真面目[まじめ]に勉強[べんきょう]しています。',
     category: '性格',
   },
   {
@@ -428,7 +428,7 @@ export const vocabulary = [
     meaning: '不方便',
     example: 'ここは電車がなくて不便です。',
     exampleMeaning: '這裡沒有電車，很不方便。',
-    exampleReading: 'ここはでんしゃがなくてふべんです。',
+    exampleFurigana: 'ここは電車[でんしゃ]がなくて不便[ふべん]です。',
     category: '形容',
   },
   {
@@ -439,7 +439,7 @@ export const vocabulary = [
     meaning: '複雜',
     example: 'この問題は少し複雑です。',
     exampleMeaning: '這個問題有點複雜。',
-    exampleReading: 'このもんだいはすこしふくざつです。',
+    exampleFurigana: 'この問題[もんだい]は少[すこ]し複雑[ふくざつ]です。',
     category: '形容',
   },
 ]

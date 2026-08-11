@@ -135,8 +135,10 @@
 
 ruby.ruby-word {
   ruby-align: center;
+  ruby-position: over;
 }
 
 ruby.ruby-word rt {
   font-family: var(--font-sans);
+  opacity: 0.95;
 }
