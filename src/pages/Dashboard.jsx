@@ -74,7 +74,7 @@ export default function Dashboard() {
             cta="開始複習"
             items={todayReview}
             isStudied={isStudied}
-            emptyText="尚無複習項，先把不熟的卡片標成「需要複習」"
+            emptyText="點卡片「需要複習」後，這裡會立刻出現"
           />
           <div className="rounded-2xl bg-white/75 p-4 ring-1 ring-line/50">
             <div className="flex flex-wrap items-center justify-between gap-2">

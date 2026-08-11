@@ -73,22 +73,9 @@ export function buildDailyPlan(date, cardProgress = {}, seedExtra = '') {
   const grammarIds = pickByPriority(grammar, DAILY_QUOTA.grammar, `${seed}:grammar`, cardProgress)
 
   const reviewPool = [...vocabulary, ...grammar].filter((c) => cardProgress[c.id] === 'review')
-  let reviewIds = seededShuffle(reviewPool, `${seed}:review-queue`)
+  const reviewIds = seededShuffle(reviewPool, `${seed}:review-queue`)
     .map((c) => c.id)
     .slice(0, DAILY_QUOTA.review)
-
-  // If not enough marked reviews, fill with older learned vocab not already in today's new set
-  if (reviewIds.length < DAILY_QUOTA.review) {
-    const used = new Set([...vocabIds, ...grammarIds, ...reviewIds])
-    const fillers = seededShuffle(
-      vocabulary.filter((c) => cardProgress[c.id] === 'learned' && !used.has(c.id)),
-      `${seed}:review-fill`,
-    )
-    for (const card of fillers) {
-      reviewIds.push(card.id)
-      if (reviewIds.length >= DAILY_QUOTA.review) break
-    }
-  }
 
   return {
     date,
@@ -103,6 +90,14 @@ export function buildDailyPlan(date, cardProgress = {}, seedExtra = '') {
 export function resolveCards(ids) {
   const map = new Map([...vocabulary, ...grammar].map((c) => [c.id, c]))
   return ids.map((id) => map.get(id)).filter(Boolean)
+}
+
+/** Live review queue from current marks (not frozen at plan creation). */
+export function getLiveReviewIds(cardProgress = {}, limit = DAILY_QUOTA.review) {
+  return [...vocabulary, ...grammar]
+    .filter((c) => cardProgress[c.id] === 'review')
+    .map((c) => c.id)
+    .slice(0, limit > 0 ? limit : undefined)
 }
 
 export function emptyDailyPlan(date = '') {

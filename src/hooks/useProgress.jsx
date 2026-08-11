@@ -2,7 +2,12 @@ import { createContext, useContext, useEffect, useMemo } from 'react'
 import { DEFAULT_TASKS, TARGETS } from '../data/config'
 import { grammar } from '../data/grammar'
 import { vocabulary } from '../data/vocabulary'
-import { buildDailyPlan, emptyDailyPlan, resolveCards } from '../utils/dailyPlan'
+import {
+  buildDailyPlan,
+  emptyDailyPlan,
+  getLiveReviewIds,
+  resolveCards,
+} from '../utils/dailyPlan'
 import { todayKey } from '../utils/storage'
 import { useLocalStorage } from './useLocalStorage'
 
@@ -16,6 +21,12 @@ function ensurePlan(plan, cardProgress) {
 
 function withTaskDone(tasks, id, done) {
   return tasks.map((t) => (t.id === id ? { ...t, done } : t))
+}
+
+function sameIds(a = [], b = []) {
+  if (a.length !== b.length) return false
+  const setB = new Set(b)
+  return a.every((id) => setB.has(id))
 }
 
 export function ProgressProvider({ children }) {
@@ -45,6 +56,28 @@ export function ProgressProvider({ children }) {
     }
   }, [dailyTasks.date, dailyPlan.date, cardProgress, setDailyTasks, setDailyPlan])
 
+  // Keep review queue in sync whenever marks change
+  useEffect(() => {
+    if (dailyPlan.date !== todayKey()) return
+    const liveReviewIds = getLiveReviewIds(cardProgress, 0) // all marked reviews
+    setDailyPlan((prev) => {
+      if (prev.date !== todayKey()) return prev
+      if (sameIds(prev.reviewIds, liveReviewIds)) return prev
+      // Drop studied flags for ids no longer in review queue
+      const reviewSet = new Set(liveReviewIds)
+      return {
+        ...prev,
+        reviewIds: liveReviewIds,
+        studiedIds: (prev.studiedIds || []).filter(
+          (id) =>
+            prev.vocabIds.includes(id) ||
+            prev.grammarIds.includes(id) ||
+            reviewSet.has(id),
+        ),
+      }
+    })
+  }, [cardProgress, dailyPlan.date, setDailyPlan])
+
   // Auto-complete checklist from plan progress
   useEffect(() => {
     const plan = ensurePlan(dailyPlan, cardProgress)
@@ -52,14 +85,14 @@ export function ProgressProvider({ children }) {
 
     const studied = new Set(plan.studiedIds || [])
     const listened = new Set(plan.listenedIds || [])
+    const liveReviewIds = getLiveReviewIds(cardProgress, 0)
 
     const vocabDone =
       plan.vocabIds.length > 0 && plan.vocabIds.every((id) => studied.has(id))
     const grammarDone =
       plan.grammarIds.length > 0 && plan.grammarIds.every((id) => studied.has(id))
-    const reviewTarget = plan.reviewIds
     const reviewDone =
-      reviewTarget.length > 0 && reviewTarget.every((id) => studied.has(id))
+      liveReviewIds.length > 0 && liveReviewIds.every((id) => studied.has(id))
     const listeningDone =
       plan.vocabIds.length > 0 &&
       plan.vocabIds.filter((id) => listened.has(id)).length >=
@@ -77,7 +110,6 @@ export function ProgressProvider({ children }) {
       let changed = false
       tasks = tasks.map((t) => {
         if (next[t.id] == null) return t
-        // Auto-check when done; don't uncheck manual listening if already done
         if (t.id === 'listening-15') {
           if (next[t.id] && !t.done) {
             changed = true
@@ -99,10 +131,11 @@ export function ProgressProvider({ children }) {
     const plan = ensurePlan(dailyPlan, cardProgress)
     const studied = new Set(plan.studiedIds || [])
     const listened = new Set(plan.listenedIds || [])
+    const liveReviewIds = getLiveReviewIds(cardProgress, 0)
 
     const learnedVocab = vocabulary.filter((v) => cardProgress[v.id] === 'learned').length
     const learnedGrammar = grammar.filter((g) => cardProgress[g.id] === 'learned').length
-    const reviewCount = Object.values(cardProgress).filter((s) => s === 'review').length
+    const reviewCount = liveReviewIds.length
 
     function setCardStatus(id, status) {
       setCardProgress((prev) => {
@@ -171,11 +204,11 @@ export function ProgressProvider({ children }) {
 
     const vocabCards = resolveCards(plan.vocabIds)
     const grammarCards = resolveCards(plan.grammarIds)
-    const reviewCards = resolveCards(plan.reviewIds)
+    const reviewCards = resolveCards(liveReviewIds)
 
     const vocabStudied = plan.vocabIds.filter((id) => studied.has(id)).length
     const grammarStudied = plan.grammarIds.filter((id) => studied.has(id)).length
-    const reviewStudied = plan.reviewIds.filter((id) => studied.has(id)).length
+    const reviewStudied = liveReviewIds.filter((id) => studied.has(id)).length
     const listenCount = plan.vocabIds.filter((id) => listened.has(id)).length
 
     return {
@@ -192,7 +225,7 @@ export function ProgressProvider({ children }) {
       targets: TARGETS,
       totalVocabInApp: vocabulary.length,
       totalGrammarInApp: grammar.length,
-      dailyPlan: plan,
+      dailyPlan: { ...plan, reviewIds: liveReviewIds },
       todayVocab: vocabCards,
       todayGrammar: grammarCards,
       todayReview: reviewCards,
