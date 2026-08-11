@@ -1,4 +1,5 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
+import { Link, useSearchParams } from 'react-router-dom'
 import { grammar } from '../data/grammar'
 import { vocabulary } from '../data/vocabulary'
 import { useProgress } from '../hooks/useProgress'
@@ -6,15 +7,41 @@ import { speakJapanese } from '../utils/tts'
 
 const ALL_CARDS = [...vocabulary, ...grammar]
 
+const MODE_META = {
+  'today-vocab': { title: '今日單字', hint: '翻完卡片會自動計入今日進度' },
+  'today-grammar': { title: '今日文法', hint: '翻完卡片會自動計入今日進度' },
+  'today-review': { title: '今日複習', hint: '複習標記與補強項目' },
+  'today-listening': { title: '今日聽力', hint: '點播放聽發音，累積聽力進度' },
+}
+
 export default function Flashcards() {
-  const { cardProgress, setCardStatus } = useProgress()
+  const {
+    cardProgress,
+    setCardStatus,
+    todayVocab,
+    todayGrammar,
+    todayReview,
+    markStudied,
+    markListened,
+    isStudied,
+  } = useProgress()
+  const [searchParams, setSearchParams] = useSearchParams()
+  const mode = searchParams.get('mode') || 'all'
+
   const [query, setQuery] = useState('')
   const [typeFilter, setTypeFilter] = useState('all')
   const [statusFilter, setStatusFilter] = useState('all')
   const [index, setIndex] = useState(0)
   const [flipped, setFlipped] = useState(false)
 
+  const todayMode = mode in MODE_META
+
   const filtered = useMemo(() => {
+    if (mode === 'today-vocab') return todayVocab
+    if (mode === 'today-grammar') return todayGrammar
+    if (mode === 'today-review') return todayReview
+    if (mode === 'today-listening') return todayVocab
+
     const q = query.trim().toLowerCase()
     return ALL_CARDS.filter((card) => {
       if (typeFilter !== 'all' && card.type !== typeFilter) return false
@@ -27,90 +54,163 @@ export default function Flashcards() {
         .toLowerCase()
       return hay.includes(q)
     })
-  }, [query, typeFilter, statusFilter, cardProgress])
+  }, [
+    mode,
+    todayVocab,
+    todayGrammar,
+    todayReview,
+    query,
+    typeFilter,
+    statusFilter,
+    cardProgress,
+  ])
+
+  useEffect(() => {
+    setIndex(0)
+    setFlipped(false)
+  }, [mode, query, typeFilter, statusFilter])
 
   const safeIndex = filtered.length ? Math.min(index, filtered.length - 1) : 0
   const card = filtered[safeIndex]
 
   function go(delta) {
     if (!filtered.length) return
+    if (card && todayMode) markStudied(card.id)
     setFlipped(false)
     setIndex((prev) => (prev + delta + filtered.length) % filtered.length)
   }
 
+  function flipCard() {
+    setFlipped((f) => {
+      const next = !f
+      if (next && card && todayMode) markStudied(card.id)
+      return next
+    })
+  }
+
   function onFilterChange(setter, value) {
     setter(value)
-    setIndex(0)
-    setFlipped(false)
   }
+
+  function clearMode() {
+    setSearchParams({})
+  }
+
+  function playAudio() {
+    if (!card) return
+    speakJapanese(flipped ? card.example : `${card.word}。${card.reading}`)
+    if (todayMode) {
+      markListened(card.id)
+      markStudied(card.id)
+    }
+  }
+
+  const meta = MODE_META[mode]
 
   return (
     <div className="space-y-5">
       <section className="animate-fade-up">
-        <h2 className="font-display text-2xl font-bold text-ink">單字與文法卡片</h2>
-        <p className="mt-1 text-sm text-ink-soft">點擊卡片翻面 · 支援搜尋與分類 · TTS 發音</p>
-      </section>
-
-      <section className="surface soft-shadow animate-fade-up stagger-1 space-y-3 rounded-3xl p-4 sm:p-5">
-        <input
-          type="search"
-          value={query}
-          onChange={(e) => onFilterChange(setQuery, e.target.value)}
-          placeholder="搜尋單字、文法、讀音、中文…"
-          className="w-full rounded-2xl border border-line bg-white/80 px-4 py-3 outline-none ring-sea/30 focus:ring-2"
-        />
-
-        <div className="flex flex-wrap gap-2">
-          <FilterChip active={typeFilter === 'all'} onClick={() => onFilterChange(setTypeFilter, 'all')}>
-            全部
-          </FilterChip>
-          <FilterChip
-            active={typeFilter === 'vocab'}
-            onClick={() => onFilterChange(setTypeFilter, 'vocab')}
-          >
-            單字
-          </FilterChip>
-          <FilterChip
-            active={typeFilter === 'grammar'}
-            onClick={() => onFilterChange(setTypeFilter, 'grammar')}
-          >
-            文法
-          </FilterChip>
-          <FilterChip
-            active={statusFilter === 'learned'}
-            onClick={() =>
-              onFilterChange(setStatusFilter, statusFilter === 'learned' ? 'all' : 'learned')
-            }
-          >
-            只看已學會
-          </FilterChip>
-          <FilterChip
-            active={statusFilter === 'review'}
-            onClick={() =>
-              onFilterChange(setStatusFilter, statusFilter === 'review' ? 'all' : 'review')
-            }
-          >
-            只看需複習
-          </FilterChip>
-        </div>
-
-        <p className="text-xs text-ink-soft">
-          共 {filtered.length} 張
-          {card ? ` · 目前第 ${safeIndex + 1} 張` : ''}
+        <h2 className="font-display text-2xl font-bold text-ink">
+          {meta ? meta.title : '單字與文法卡片'}
+        </h2>
+        <p className="mt-1 text-sm text-ink-soft">
+          {meta ? meta.hint : '點擊卡片翻面 · 支援搜尋與分類 · TTS 發音'}
         </p>
+        {todayMode ? (
+          <button
+            type="button"
+            onClick={clearMode}
+            className="mt-2 text-sm text-sea-deep underline-offset-2 hover:underline"
+          >
+            返回全部卡片
+          </button>
+        ) : (
+          <Link
+            to="/flashcards?mode=today-vocab"
+            className="mt-2 inline-block text-sm text-sea-deep underline-offset-2 hover:underline"
+          >
+            練習今日排程 →
+          </Link>
+        )}
       </section>
+
+      {!todayMode ? (
+        <section className="surface soft-shadow animate-fade-up stagger-1 space-y-3 rounded-3xl p-4 sm:p-5">
+          <input
+            type="search"
+            value={query}
+            onChange={(e) => onFilterChange(setQuery, e.target.value)}
+            placeholder="搜尋單字、文法、讀音、中文…"
+            className="w-full rounded-2xl border border-line bg-white/80 px-4 py-3 outline-none ring-sea/30 focus:ring-2"
+          />
+
+          <div className="flex flex-wrap gap-2">
+            <FilterChip
+              active={typeFilter === 'all'}
+              onClick={() => onFilterChange(setTypeFilter, 'all')}
+            >
+              全部
+            </FilterChip>
+            <FilterChip
+              active={typeFilter === 'vocab'}
+              onClick={() => onFilterChange(setTypeFilter, 'vocab')}
+            >
+              單字
+            </FilterChip>
+            <FilterChip
+              active={typeFilter === 'grammar'}
+              onClick={() => onFilterChange(setTypeFilter, 'grammar')}
+            >
+              文法
+            </FilterChip>
+            <FilterChip
+              active={statusFilter === 'learned'}
+              onClick={() =>
+                onFilterChange(setStatusFilter, statusFilter === 'learned' ? 'all' : 'learned')
+              }
+            >
+              只看已學會
+            </FilterChip>
+            <FilterChip
+              active={statusFilter === 'review'}
+              onClick={() =>
+                onFilterChange(setStatusFilter, statusFilter === 'review' ? 'all' : 'review')
+              }
+            >
+              只看需複習
+            </FilterChip>
+          </div>
+        </section>
+      ) : null}
+
+      <p className="text-xs text-ink-soft">
+        共 {filtered.length} 張
+        {card ? ` · 目前第 ${safeIndex + 1} 張` : ''}
+        {card && todayMode && isStudied(card.id) ? ' · 已計入今日' : ''}
+      </p>
 
       {!card ? (
-        <div className="surface rounded-3xl p-8 text-center text-ink-soft">沒有符合條件的卡片</div>
+        <div className="surface rounded-3xl p-8 text-center text-ink-soft">
+          {todayMode ? (
+            <div className="space-y-3">
+              <p>今日這個項目沒有卡片可練</p>
+              <Link to="/" className="inline-block text-sea-deep underline">
+                回首頁看排程
+              </Link>
+            </div>
+          ) : (
+            '沒有符合條件的卡片'
+          )}
+        </div>
       ) : (
         <>
           <article
             className="animate-flip-in soft-shadow relative min-h-[320px] cursor-pointer rounded-3xl [perspective:1200px]"
-            onClick={() => setFlipped((f) => !f)}
+            onClick={flipCard}
             onKeyDown={(e) => {
               if (e.key === 'Enter' || e.key === ' ') {
                 e.preventDefault()
-                setFlipped((f) => !f)
+                flipCard()
               }
             }}
             role="button"
@@ -150,7 +250,7 @@ export default function Flashcards() {
             <ActionButton
               onClick={(e) => {
                 e.stopPropagation()
-                speakJapanese(flipped ? card.example : `${card.word}。${card.reading}`)
+                playAudio()
               }}
             >
               🔊 播放
@@ -184,6 +284,15 @@ export default function Flashcards() {
               清除標記
             </StatusButton>
           </div>
+
+          {todayMode && safeIndex === filtered.length - 1 && isStudied(card.id) ? (
+            <Link
+              to="/"
+              className="block rounded-2xl bg-sea px-4 py-3 text-center text-white hover:bg-sea-deep"
+            >
+              本組完成 · 回首頁看進度
+            </Link>
+          ) : null}
         </>
       )}
     </div>
