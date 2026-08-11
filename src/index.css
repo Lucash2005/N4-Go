@@ -132,3 +132,11 @@
 .stagger-4 {
   animation-delay: 0.24s;
 }
+
+ruby.ruby-word {
+  ruby-align: center;
+}
+
+ruby.ruby-word rt {
+  font-family: var(--font-sans);
+}

@@ -3,7 +3,8 @@ import { Link, useSearchParams } from 'react-router-dom'
 import { grammar } from '../data/grammar'
 import { vocabulary } from '../data/vocabulary'
 import { useProgress } from '../hooks/useProgress'
-import { speakJapanese } from '../utils/tts'
+import { useSettings } from '../hooks/useSettings'
+import { speakJapanese, speechTextForCard } from '../utils/tts'
 
 const ALL_CARDS = [...vocabulary, ...grammar]
 
@@ -12,6 +13,10 @@ const MODE_META = {
   'today-grammar': { title: '今日文法', hint: '翻完卡片會自動計入今日進度' },
   'today-review': { title: '今日複習', hint: '複習標記與補強項目' },
   'today-listening': { title: '今日聽力', hint: '點播放聽發音，累積聽力進度' },
+}
+
+function hasKanji(text = '') {
+  return /[\u4e00-\u9fff]/.test(text)
 }
 
 export default function Flashcards() {
@@ -25,6 +30,8 @@ export default function Flashcards() {
     markListened,
     isStudied,
   } = useProgress()
+  const { showFurigana, setShowFurigana, ttsEngine, setTtsEngine, ttsRate, setTtsRate } =
+    useSettings()
   const [searchParams, setSearchParams] = useSearchParams()
   const mode = searchParams.get('mode') || 'all'
 
@@ -98,7 +105,8 @@ export default function Flashcards() {
 
   function playAudio() {
     if (!card) return
-    speakJapanese(flipped ? card.example : `${card.word}。${card.reading}`)
+    const text = speechTextForCard(card, { flipped })
+    speakJapanese(text, { engine: ttsEngine, rate: ttsRate })
     if (todayMode) {
       markListened(card.id)
       markStudied(card.id)
@@ -134,8 +142,38 @@ export default function Flashcards() {
         )}
       </section>
 
+      <section className="surface soft-shadow animate-fade-up stagger-1 space-y-3 rounded-3xl p-4 sm:p-5">
+        <div className="flex flex-wrap gap-2">
+          <FilterChip active={showFurigana} onClick={() => setShowFurigana(!showFurigana)}>
+            {showFurigana ? '音標：顯示中' : '音標：已隱藏'}
+          </FilterChip>
+          <FilterChip
+            active={ttsEngine === 'auto'}
+            onClick={() => setTtsEngine(ttsEngine === 'auto' ? 'system' : 'auto')}
+          >
+            {ttsEngine === 'auto' ? '發音：自然聲' : '發音：系統聲'}
+          </FilterChip>
+        </div>
+        <label className="flex items-center gap-3 text-sm text-ink-soft">
+          <span className="shrink-0">語速</span>
+          <input
+            type="range"
+            min="0.7"
+            max="1.1"
+            step="0.02"
+            value={ttsRate}
+            onChange={(e) => setTtsRate(Number(e.target.value))}
+            className="w-full accent-sea"
+          />
+          <span className="w-10 tabular-nums">{ttsRate.toFixed(2)}</span>
+        </label>
+        <p className="text-xs text-ink-soft">
+          「自然聲」優先使用較接近人聲的線上發音；失敗時改用系統日語語音。單字會以假名朗讀。
+        </p>
+      </section>
+
       {!todayMode ? (
-        <section className="surface soft-shadow animate-fade-up stagger-1 space-y-3 rounded-3xl p-4 sm:p-5">
+        <section className="surface soft-shadow animate-fade-up stagger-2 space-y-3 rounded-3xl p-4 sm:p-5">
           <input
             type="search"
             value={query}
@@ -227,13 +265,20 @@ export default function Flashcards() {
                 <p className="mt-6 font-display text-4xl font-bold text-ink sm:text-5xl">
                   {card.word}
                 </p>
-                <p className="mt-3 text-lg text-sea-deep">{card.reading}</p>
+                {showFurigana ? (
+                  <p className="mt-3 text-lg text-sea-deep">{card.reading}</p>
+                ) : hasKanji(card.word) ? (
+                  <p className="mt-3 text-sm text-ink-soft">音標已隱藏</p>
+                ) : null}
                 <p className="mt-8 text-sm text-ink-soft">點擊查看釋義與例句</p>
               </CardFace>
 
               <CardFace className="absolute inset-0 [backface-visibility:hidden] [transform:rotateY(180deg)]">
                 <Badge>{card.category}</Badge>
                 <p className="mt-4 text-2xl font-bold text-ink">{card.meaning}</p>
+                {showFurigana && card.reading ? (
+                  <p className="mt-1 text-sm text-sea-deep">{card.reading}</p>
+                ) : null}
                 {card.pattern ? (
                   <p className="mt-2 text-sm text-sea-deep">句型：{card.pattern}</p>
                 ) : null}
