@@ -1,5 +1,6 @@
 let preferredVoice = null
 let audioEl = null
+let objectUrl = null
 
 const VOICE_PREFERENCE = [
   /kyoko/i,
@@ -15,7 +16,6 @@ function scoreVoice(voice) {
   if (!/^ja/i.test(voice.lang) && !/japan/i.test(label)) return -1
   const pref = VOICE_PREFERENCE.findIndex((re) => re.test(label))
   let score = pref === -1 ? 10 : pref
-  // Prefer local / premium sounding voices when available
   if (voice.localService) score -= 0.5
   return score
 }
@@ -52,8 +52,13 @@ if (typeof window !== 'undefined' && window.speechSynthesis) {
 function stopAudio() {
   if (audioEl) {
     audioEl.pause()
-    audioEl.src = ''
+    audioEl.removeAttribute('src')
+    audioEl.load?.()
     audioEl = null
+  }
+  if (objectUrl) {
+    URL.revokeObjectURL(objectUrl)
+    objectUrl = null
   }
   window.speechSynthesis?.cancel?.()
 }
@@ -61,18 +66,17 @@ function stopAudio() {
 /** Prefer speaking kana/reading for clearer Japanese TTS */
 export function speechTextForCard(card, { flipped = false } = {}) {
   if (!card) return ''
-  if (flipped) {
-    // Prefer example; if it looks hard, still OK — sentence context helps TTS
-    return card.example || card.reading || card.word
-  }
-  // Front: use hiragana/katakana reading when available (much clearer than kanji)
+  if (flipped) return card.example || card.reading || card.word
   if (card.reading && card.reading !== card.word) return card.reading
   return card.word
 }
 
-function googleTtsUrl(text) {
-  const q = encodeURIComponent(text.slice(0, 180))
-  return `https://translate.google.com/translate_tts?ie=UTF-8&client=tw-ob&tl=ja&q=${q}`
+export function audioClipForCard(card, { flipped = false } = {}) {
+  if (!card?.id) return null
+  const kind = flipped ? 'example' : 'word'
+  // Vite base is './' — resolve relative to site root
+  const base = import.meta.env.BASE_URL || './'
+  return `${base}audio/${card.id}-${kind}.mp3`
 }
 
 function speakWithWebSpeech(text, options = {}) {
@@ -80,7 +84,6 @@ function speakWithWebSpeech(text, options = {}) {
   window.speechSynthesis.cancel()
   const utterance = new SpeechSynthesisUtterance(text)
   utterance.lang = 'ja-JP'
-  // Slightly slower + natural pitch reads more human on mobile voices
   utterance.rate = options.rate ?? 0.88
   utterance.pitch = options.pitch ?? 1.05
   utterance.volume = 1
@@ -90,37 +93,89 @@ function speakWithWebSpeech(text, options = {}) {
   return true
 }
 
+function playUrl(url, onFail) {
+  stopAudio()
+  audioEl = new Audio(url)
+  audioEl.preload = 'auto'
+  const fail = () => {
+    audioEl?.removeEventListener?.('error', fail)
+    onFail?.()
+  }
+  audioEl.addEventListener('error', fail)
+  const playPromise = audioEl.play()
+  if (playPromise?.catch) {
+    playPromise.catch(() => fail())
+  }
+}
+
 /**
- * Speak Japanese with a more natural pipeline:
- * 1) Google Translate TTS audio (often closer to human)
- * 2) Fall back to best available system Japanese voice
+ * Speak Japanese:
+ * - natural: Neural MP3 clips (Nanami) when available — clearly different from system voice
+ * - system: device speechSynthesis only
  */
 export function speakJapanese(text, options = {}) {
-  if (!text || typeof window === 'undefined') return
-  const cleaned = String(text).trim()
-  if (!cleaned) return
+  if (typeof window === 'undefined') return Promise.resolve({ engine: 'none' })
+
+  const cleaned = String(text || '').trim()
+  const clipUrl = options.clipUrl
+  const onEngine = options.onEngine
 
   stopAudio()
 
-  // Web Speech only mode (user preference / offline)
   if (options.engine === 'system') {
-    speakWithWebSpeech(cleaned, options)
-    return
+    if (cleaned) speakWithWebSpeech(cleaned, options)
+    onEngine?.('system')
+    return Promise.resolve({ engine: 'system' })
   }
 
-  try {
-    audioEl = new Audio(googleTtsUrl(cleaned))
-    audioEl.preload = 'auto'
-    const playPromise = audioEl.play()
-    if (playPromise && typeof playPromise.then === 'function') {
-      playPromise.catch(() => {
-        speakWithWebSpeech(cleaned, options)
+  // Prefer prebuilt Neural clip
+  if (clipUrl) {
+    return new Promise((resolve) => {
+      let settled = false
+      const done = (engine) => {
+        if (settled) return
+        settled = true
+        onEngine?.(engine)
+        resolve({ engine })
+      }
+
+      stopAudio()
+      audioEl = new Audio(clipUrl)
+      audioEl.preload = 'auto'
+      if (typeof options.rate === 'number') {
+        // Map UI rate (around 0.7–1.1) onto audio playbackRate
+        audioEl.playbackRate = Math.min(1.25, Math.max(0.7, options.rate / 0.88))
+      }
+      audioEl.addEventListener(
+        'playing',
+        () => {
+          done('neural')
+        },
+        { once: true },
+      )
+      audioEl.addEventListener(
+        'error',
+        () => {
+          if (cleaned) speakWithWebSpeech(cleaned, options)
+          done('system')
+        },
+        { once: true },
+      )
+      audioEl.play().catch(() => {
+        if (cleaned) speakWithWebSpeech(cleaned, options)
+        done('system')
       })
-    }
-    audioEl.onerror = () => speakWithWebSpeech(cleaned, options)
-  } catch {
-    speakWithWebSpeech(cleaned, options)
+    })
   }
+
+  if (cleaned) {
+    speakWithWebSpeech(cleaned, options)
+    onEngine?.('system')
+    return Promise.resolve({ engine: 'system' })
+  }
+
+  onEngine?.('none')
+  return Promise.resolve({ engine: 'none' })
 }
 
 export function stopSpeaking() {

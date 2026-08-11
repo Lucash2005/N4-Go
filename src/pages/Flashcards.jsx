@@ -4,7 +4,7 @@ import { grammar } from '../data/grammar'
 import { vocabulary } from '../data/vocabulary'
 import { useProgress } from '../hooks/useProgress'
 import { useSettings } from '../hooks/useSettings'
-import { speakJapanese, speechTextForCard } from '../utils/tts'
+import { speakJapanese, speechTextForCard, audioClipForCard } from '../utils/tts'
 
 const ALL_CARDS = [...vocabulary, ...grammar]
 
@@ -40,6 +40,7 @@ export default function Flashcards() {
   const [statusFilter, setStatusFilter] = useState('all')
   const [index, setIndex] = useState(0)
   const [flipped, setFlipped] = useState(false)
+  const [voiceEngine, setVoiceEngine] = useState(null)
 
   const todayMode = mode in MODE_META
 
@@ -106,7 +107,16 @@ export default function Flashcards() {
   function playAudio() {
     if (!card) return
     const text = speechTextForCard(card, { flipped })
-    speakJapanese(text, { engine: ttsEngine, rate: ttsRate })
+    const clipUrl = audioClipForCard(card, { flipped })
+    setVoiceEngine('…')
+    speakJapanese(text, {
+      engine: ttsEngine,
+      rate: ttsRate,
+      clipUrl: ttsEngine === 'system' ? null : clipUrl,
+      onEngine: (engine) => {
+        setVoiceEngine(engine === 'neural' ? 'neural' : 'system')
+      },
+    })
     if (todayMode) {
       markListened(card.id)
       markStudied(card.id)
@@ -151,7 +161,7 @@ export default function Flashcards() {
             active={ttsEngine === 'auto'}
             onClick={() => setTtsEngine(ttsEngine === 'auto' ? 'system' : 'auto')}
           >
-            {ttsEngine === 'auto' ? '發音：自然聲' : '發音：系統聲'}
+            {ttsEngine === 'auto' ? '發音：Neural 自然聲' : '發音：系統聲'}
           </FilterChip>
         </div>
         <label className="flex items-center gap-3 text-sm text-ink-soft">
@@ -168,7 +178,8 @@ export default function Flashcards() {
           <span className="w-10 tabular-nums">{ttsRate.toFixed(2)}</span>
         </label>
         <p className="text-xs text-ink-soft">
-          「自然聲」優先使用較接近人聲的線上發音；失敗時改用系統日語語音。單字會以假名朗讀。
+          Neural 自然聲使用預錄的日語人聲（Nanami），與系統聲會明顯不同。音標開關同時控制單字與例句讀音。
+          {voiceEngine ? ` · 剛剛播放：${voiceEngine === 'neural' ? 'Neural 自然聲' : '系統聲'}` : ''}
         </p>
       </section>
 
@@ -284,6 +295,11 @@ export default function Flashcards() {
                 ) : null}
                 <div className="mt-5 rounded-2xl bg-foam/80 p-4 text-left">
                   <p className="text-base leading-relaxed text-ink">{card.example}</p>
+                  {showFurigana && card.exampleReading ? (
+                    <p className="mt-1.5 text-sm leading-relaxed text-sea-deep">
+                      {card.exampleReading}
+                    </p>
+                  ) : null}
                   <p className="mt-2 text-sm text-ink-soft">{card.exampleMeaning}</p>
                 </div>
               </CardFace>

@@ -11,6 +11,7 @@ export const grammar = [
     pattern: 'Vて + あげる',
     example: '友達に本を貸してあげました。',
     exampleMeaning: '把書借給朋友了。',
+    exampleReading: 'ともだちにほんをかしてあげました。',
     category: '授受',
   },
   {
@@ -22,6 +23,7 @@ export const grammar = [
     pattern: 'Vて + もらう',
     example: '先生に作文を直してもらいました。',
     exampleMeaning: '請老師幫我改作文了。',
+    exampleReading: 'せんせいにさくぶんをなおしてもらいました。',
     category: '授受',
   },
   {
@@ -33,6 +35,7 @@ export const grammar = [
     pattern: 'Vて + くれる',
     example: '母が料理を作ってくれました。',
     exampleMeaning: '媽媽幫我做了料理。',
+    exampleReading: 'ははがりょうりをつくってくれました。',
     category: '授受',
   },
   {
@@ -44,6 +47,7 @@ export const grammar = [
     pattern: 'Vない形 + なければならない',
     example: '早く起きなければなりません。',
     exampleMeaning: '必須早起。',
+    exampleReading: 'はやくおきなければなりません。',
     category: '義務',
   },
   {
@@ -55,6 +59,7 @@ export const grammar = [
     pattern: 'Vない形 + なくてもいい',
     example: '今日は会社へ行かなくてもいいです。',
     exampleMeaning: '今天不用去公司也可以。',
+    exampleReading: 'きょうはかいしゃへいかなくてもいいです。',
     category: '義務',
   },
   {
@@ -66,6 +71,7 @@ export const grammar = [
     pattern: 'Vた形 / Vない形 + ほうがいい',
     example: 'もっと野菜を食べたほうがいいです。',
     exampleMeaning: '最好多吃一點蔬菜。',
+    exampleReading: 'もっとやさいをたべたほうがいいです。',
     category: '建議',
   },
   {
@@ -77,6 +83,7 @@ export const grammar = [
     pattern: 'V辞書形 / Vない形 + つもりだ',
     example: '来年日本へ留学するつもりです。',
     exampleMeaning: '打算明年去日本留學。',
+    exampleReading: 'らいねんにほんへりゅうがくするつもりです。',
     category: '意志',
   },
   {
@@ -88,6 +95,7 @@ export const grammar = [
     pattern: 'V辞書形 / 名詞の + 予定だ',
     example: '来週会議をする予定です。',
     exampleMeaning: '預定下週開會。',
+    exampleReading: 'らいしゅうかいぎをするよていです。',
     category: '意志',
   },
   {
@@ -99,6 +107,7 @@ export const grammar = [
     pattern: 'い形容詞語幹 / な形容詞 / Vます形 + そうだ',
     example: 'このケーキはおいしそうです。',
     exampleMeaning: '這個蛋糕看起來很好吃。',
+    exampleReading: 'このけーきはおいしそうです。',
     category: '樣態',
   },
   {
@@ -110,6 +119,7 @@ export const grammar = [
     pattern: '普通形 + そうだ',
     example: '明日雨が降るそうです。',
     exampleMeaning: '聽說明天下雨。',
+    exampleReading: 'あしたあめがふるそうです。',
     category: '傳聞',
   },
   {
@@ -121,6 +131,7 @@ export const grammar = [
     pattern: '普通形 + らしい',
     example: '彼は忙しいらしいです。',
     exampleMeaning: '聽說他好像很忙。',
+    exampleReading: 'かれはいそがしいらしいです。',
     category: '傳聞',
   },
   {
@@ -132,6 +143,7 @@ export const grammar = [
     pattern: '普通形 + ようだ',
     example: '熱があるようです。',
     exampleMeaning: '似乎發燒了。',
+    exampleReading: 'ねつがあるようです。',
     category: '推測',
   },
   {
@@ -143,6 +155,7 @@ export const grammar = [
     pattern: '普通形 + かもしれない',
     example: '彼は来ないかもしれません。',
     exampleMeaning: '他也許不會來。',
+    exampleReading: 'かれはこないかもしれません。',
     category: '推測',
   },
   {
@@ -154,6 +167,7 @@ export const grammar = [
     pattern: 'ば形',
     example: '安ければ買います。',
     exampleMeaning: '如果便宜我就買。',
+    exampleReading: 'やすければかいます。',
     category: '條件',
   },
   {
@@ -165,6 +179,7 @@ export const grammar = [
     pattern: 'た形 + ら',
     example: '雨が降ったら、家にいます。',
     exampleMeaning: '如果下雨就待在家。',
+    exampleReading: 'あめがふったら、いえにいます。',
     category: '條件',
   },
   {
@@ -176,6 +191,7 @@ export const grammar = [
     pattern: 'て形 + も',
     example: '雨が降っても行きます。',
     exampleMeaning: '即使下雨也會去。',
+    exampleReading: 'あめがふってもいきます。',
     category: '條件',
   },
   {
@@ -187,6 +203,7 @@ export const grammar = [
     pattern: '普通形 + のに',
     example: '勉強したのに、試験に落ちました。',
     exampleMeaning: '明明念書了卻落榜了。',
+    exampleReading: 'べんきょうしたのに、しけんにおちました。',
     category: '逆接',
   },
   {
@@ -198,6 +215,7 @@ export const grammar = [
     pattern: 'V辞書形 / Vている / Vた + ところだ',
     example: '今から出かけるところです。',
     exampleMeaning: '正要出門。',
+    exampleReading: 'いまからでかけるところです。',
     category: '時態',
   },
   {
@@ -209,6 +227,7 @@ export const grammar = [
     pattern: 'Vた形 + ばかり',
     example: '日本に来たばかりです。',
     exampleMeaning: '剛來到日本。',
+    exampleReading: 'にほんにきたばかりです。',
     category: '時態',
   },
   {
@@ -220,6 +239,7 @@ export const grammar = [
     pattern: 'V辞書形 / Vない形 + ようにする',
     example: '毎日運動するようにしています。',
     exampleMeaning: '盡量每天運動。',
+    exampleReading: 'まいにちうんどうするようにしています。',
     category: '努力',
   },
   {
@@ -231,6 +251,7 @@ export const grammar = [
     pattern: 'V辞書形 / Vない形 + ようになる',
     example: '日本語が話せるようになりました。',
     exampleMeaning: '變得會說日文了。',
+    exampleReading: 'にほんごがはなせるようになりました。',
     category: '變化',
   },
   {
@@ -242,6 +263,7 @@ export const grammar = [
     pattern: 'Vます形 / い形容詞語幹 / な形容詞 + すぎる',
     example: '食べすぎました。',
     exampleMeaning: '吃太多了。',
+    exampleReading: 'たべすぎました。',
     category: '程度',
   },
   {
@@ -253,6 +275,7 @@ export const grammar = [
     pattern: 'Vます形 + やすい／にくい',
     example: 'この本は読みやすいです。',
     exampleMeaning: '這本書容易讀。',
+    exampleReading: 'このほんはよみやすいです。',
     category: '程度',
   },
   {
@@ -264,6 +287,7 @@ export const grammar = [
     pattern: 'Nの / Vている + 間に',
     example: '留守の間に荷物が届きました。',
     exampleMeaning: '不在家的期間內包裹送到了。',
+    exampleReading: 'るすのあいだににもつがとどきました。',
     category: '時間',
   },
 ]
