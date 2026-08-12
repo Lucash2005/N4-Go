@@ -1,7 +1,7 @@
 /**
- * Continuous playlist player for Neural MP3 clips.
+ * Continuous playlist player for Neural MP3 clips + optional speech tracks.
  * Uses a single HTMLAudioElement + Media Session so iOS can keep
- * playing after the screen locks (Web Speech cannot do this).
+ * playing after the screen locks (speech tracks may pause when locked).
  * Do not import tts.js here (tts imports stopPlaylist from this file).
  */
 
@@ -14,6 +14,7 @@ let rate = 1
 let listeners = new Set()
 let gapTimer = null
 let failStreak = 0
+let activeUtterance = null
 
 function ensureAudio() {
   if (audio) return audio
@@ -32,10 +33,18 @@ function ensureAudio() {
       emit()
       return
     }
-    // Skip broken clip and continue (important for lock-screen sessions)
     advance()
   })
   return audio
+}
+
+function cancelSpeech() {
+  activeUtterance = null
+  try {
+    window.speechSynthesis?.cancel?.()
+  } catch {
+    /* ignore */
+  }
 }
 
 function emit() {
@@ -104,23 +113,79 @@ function clearGap() {
   }
 }
 
-function playCurrent() {
-  clearGap()
-  const track = playlist[cursor]
-  if (!track?.url) {
+function pickVoice(lang) {
+  const voices = window.speechSynthesis?.getVoices?.() ?? []
+  if (!voices.length) return null
+  const langBase = String(lang || '').split('-')[0].toLowerCase()
+  const exact = voices.find((v) => v.lang?.toLowerCase() === String(lang || '').toLowerCase())
+  if (exact) return exact
+  return voices.find((v) => v.lang?.toLowerCase().startsWith(langBase)) || null
+}
+
+function playSpeechTrack(track) {
+  cancelSpeech()
+  if (!window.speechSynthesis || !track.text) {
     advance()
     return
   }
+  const utterance = new SpeechSynthesisUtterance(track.text)
+  utterance.lang = track.lang || 'zh-TW'
+  utterance.rate = Math.min(1.1, Math.max(0.75, rate * 0.95))
+  const voice = pickVoice(utterance.lang)
+  if (voice) utterance.voice = voice
+  activeUtterance = utterance
+  playing = true
+  emit()
+
+  utterance.onend = () => {
+    if (activeUtterance !== utterance) return
+    activeUtterance = null
+    failStreak = 0
+    advance()
+  }
+  utterance.onerror = () => {
+    if (activeUtterance !== utterance) return
+    activeUtterance = null
+    failStreak += 1
+    if (failStreak > Math.max(3, playlist.length)) {
+      playing = false
+      emit()
+      return
+    }
+    advance()
+  }
+  window.speechSynthesis.speak(utterance)
+}
+
+function playCurrent() {
+  clearGap()
+  cancelSpeech()
+  const track = playlist[cursor]
+  if (!track) {
+    playing = false
+    emit()
+    return
+  }
+
+  // Speech track (中文解釋等)
+  if (track.text && !track.url) {
+    playSpeechTrack(track)
+    return
+  }
+
+  if (!track.url) {
+    advance()
+    return
+  }
+
   const el = ensureAudio()
   el.playbackRate = rate
-  // Always set src — iOS is happier reloading the element between tracks
   el.src = track.url
   playing = true
   emit()
   const p = el.play()
   if (p?.catch) {
     p.catch(() => {
-      // Try next track instead of dying the whole session
       advance()
     })
   }
@@ -144,17 +209,16 @@ function advance() {
   } else {
     cursor = nextIndex
   }
-  // Tiny gap via ended→play; avoid setTimeout (unreliable when screen locked)
   playCurrent()
 }
 
 /**
- * @param {Array<{ id?: string, url: string, title: string, subtitle?: string, cardId?: string, kind?: string }>} tracks
+ * @param {Array<{ id?: string, url?: string, text?: string, lang?: string, title: string, subtitle?: string, cardId?: string, kind?: string }>} tracks
  * @param {{ loop?: boolean, rate?: number, startIndex?: number }} [options]
  */
 export function startPlaylist(tracks, options = {}) {
   stop()
-  playlist = (tracks || []).filter((t) => t?.url)
+  playlist = (tracks || []).filter((t) => t?.url || t?.text)
   if (!playlist.length) return false
   loop = options.loop !== false
   rate = typeof options.rate === 'number' ? Math.min(1.25, Math.max(0.7, options.rate)) : 1
@@ -167,6 +231,7 @@ export function startPlaylist(tracks, options = {}) {
 
 export function pause() {
   clearGap()
+  cancelSpeech()
   const el = ensureAudio()
   el.pause()
   playing = false
@@ -175,6 +240,11 @@ export function pause() {
 
 export function resume() {
   if (!playlist.length) return
+  const track = playlist[cursor]
+  if (track?.text && !track.url) {
+    playSpeechTrack(track)
+    return
+  }
   const el = ensureAudio()
   playing = true
   emit()
@@ -186,6 +256,7 @@ export function resume() {
 
 export function stop() {
   clearGap()
+  cancelSpeech()
   playing = false
   if (audio) {
     audio.pause()
@@ -204,12 +275,16 @@ export function stopPlaylist() {
 
 export function next() {
   if (!playlist.length) return
+  cancelSpeech()
+  if (audio) audio.pause()
   cursor = (cursor + 1) % playlist.length
   playCurrent()
 }
 
 export function previous() {
   if (!playlist.length) return
+  cancelSpeech()
+  if (audio) audio.pause()
   cursor = (cursor - 1 + playlist.length) % playlist.length
   playCurrent()
 }
@@ -234,21 +309,53 @@ export function subscribePlaylist(fn) {
   return () => listeners.delete(fn)
 }
 
-/** Build word→example tracks for a card list (Neural MP3 only). */
-export function buildCardTracks(cards, { includeExample = true } = {}) {
+/**
+ * Build playlist tracks for cards.
+ * @param {object[]} cards
+ * @param {{
+ *   playWord?: boolean,
+ *   playExample?: boolean,
+ *   playMeaning?: boolean,
+ *   playExampleMeaning?: boolean,
+ * }} [options]
+ */
+export function buildCardTracks(cards, options = {}) {
+  const {
+    playWord = true,
+    playExample = true,
+    playMeaning = false,
+    playExampleMeaning = false,
+  } = options
   const base = import.meta.env.BASE_URL || './'
   const tracks = []
+
   for (const card of cards || []) {
     if (!card?.id) continue
-    tracks.push({
-      id: `${card.id}-word`,
-      cardId: card.id,
-      kind: 'word',
-      url: `${base}audio/${card.id}-word.mp3`,
-      title: card.word,
-      subtitle: card.reading ? `${card.reading} · 單字` : '單字',
-    })
-    if (includeExample && card.example) {
+
+    if (playWord) {
+      tracks.push({
+        id: `${card.id}-word`,
+        cardId: card.id,
+        kind: 'word',
+        url: `${base}audio/${card.id}-word.mp3`,
+        title: card.word,
+        subtitle: card.reading ? `${card.reading} · 單字` : '單字',
+      })
+    }
+
+    if (playMeaning && card.meaning) {
+      tracks.push({
+        id: `${card.id}-meaning`,
+        cardId: card.id,
+        kind: 'meaning',
+        text: card.meaning,
+        lang: 'zh-TW',
+        title: card.word,
+        subtitle: '詞義解釋',
+      })
+    }
+
+    if (playExample && card.example) {
       tracks.push({
         id: `${card.id}-example`,
         cardId: card.id,
@@ -258,6 +365,19 @@ export function buildCardTracks(cards, { includeExample = true } = {}) {
         subtitle: '例句',
       })
     }
+
+    if (playExampleMeaning && card.exampleMeaning) {
+      tracks.push({
+        id: `${card.id}-example-meaning`,
+        cardId: card.id,
+        kind: 'exampleMeaning',
+        text: card.exampleMeaning,
+        lang: 'zh-TW',
+        title: card.word,
+        subtitle: '例句解釋',
+      })
+    }
   }
+
   return tracks
 }

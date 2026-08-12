@@ -69,6 +69,14 @@ export default function Flashcards() {
     setTtsEngine,
     ttsRate,
     setTtsRate,
+    loopPlayWord,
+    loopPlayExample,
+    loopPlayMeaning,
+    loopPlayExampleMeaning,
+    setLoopPlayWord,
+    setLoopPlayExample,
+    setLoopPlayMeaning,
+    setLoopPlayExampleMeaning,
   } = useSettings()
   const [searchParams, setSearchParams] = useSearchParams()
   const mode = searchParams.get('mode') || 'all'
@@ -233,19 +241,39 @@ export default function Flashcards() {
     }
   }
 
+  const loopOptions = {
+    playWord: loopPlayWord,
+    playExample: loopPlayExample,
+    playMeaning: loopPlayMeaning,
+    playExampleMeaning: loopPlayExampleMeaning,
+  }
+
+  const loopSelectionValid =
+    loopPlayWord || loopPlayExample || loopPlayMeaning || loopPlayExampleMeaning
+
   function startLoopPlay() {
-    if (!deck.length) return
+    if (!deck.length || !loopSelectionValid) return
     stopSpeaking()
     const startCardIndex = Math.max(0, safeIndex)
+    const currentId = deck[startCardIndex]?.id
     // Build tracks from current deck, starting at current card
     const rotated = [...deck.slice(startCardIndex), ...deck.slice(0, startCardIndex)]
-    const tracks = buildCardTracks(rotated, { includeExample: true })
+    const tracks = buildCardTracks(rotated, loopOptions)
+    if (!tracks.length) return
+    // If rebuilding mid-session, try to stay on the same card
+    let startIndex = 0
+    if (currentId) {
+      const idx = tracks.findIndex((t) => t.cardId === currentId)
+      if (idx >= 0) startIndex = idx
+    }
     const ok = startPlaylist(tracks, {
       loop: true,
       rate: Math.min(1.25, Math.max(0.7, ttsRate / 0.88)),
-      startIndex: 0,
+      startIndex,
     })
-    if (ok) setVoiceEngine('neural')
+    if (ok) {
+      setVoiceEngine(loopPlayMeaning || loopPlayExampleMeaning ? 'mixed' : 'neural')
+    }
   }
 
   function toggleLoopPlay() {
@@ -258,6 +286,41 @@ export default function Flashcards() {
       return
     }
     startLoopPlay()
+  }
+
+  function toggleLoopOption(key, value, setter) {
+    // Keep at least one track type enabled
+    const next = {
+      word: loopPlayWord,
+      example: loopPlayExample,
+      meaning: loopPlayMeaning,
+      exampleMeaning: loopPlayExampleMeaning,
+      [key]: value,
+    }
+    if (!next.word && !next.example && !next.meaning && !next.exampleMeaning) return
+    setter(value)
+    // If already in a loop session, rebuild with new options
+    if (playlist.total > 0) {
+      // defer until state commits
+      queueMicrotask(() => {
+        // use the intended next flags directly
+        stopSpeaking()
+        const startCardIndex = Math.max(0, safeIndex)
+        const rotated = [...deck.slice(startCardIndex), ...deck.slice(0, startCardIndex)]
+        const tracks = buildCardTracks(rotated, {
+          playWord: next.word,
+          playExample: next.example,
+          playMeaning: next.meaning,
+          playExampleMeaning: next.exampleMeaning,
+        })
+        if (!tracks.length) return
+        startPlaylist(tracks, {
+          loop: true,
+          rate: Math.min(1.25, Math.max(0.7, ttsRate / 0.88)),
+          startIndex: 0,
+        })
+      })
+    }
   }
 
   const meta = MODE_META[mode]
@@ -324,7 +387,15 @@ export default function Flashcards() {
         </label>
         <p className="text-xs text-ink-soft">
           練習模式正面不顯示讀音，逼自己先回想。翻面後用「忘記／困難／記得／簡單」評分。
-          {voiceEngine ? ` · 剛剛播放：${voiceEngine === 'neural' ? 'Neural 自然聲' : '系統聲'}` : ''}
+          {voiceEngine
+            ? ` · 剛剛播放：${
+                voiceEngine === 'neural'
+                  ? 'Neural 自然聲'
+                  : voiceEngine === 'mixed'
+                    ? 'Neural＋中文解釋'
+                    : '系統聲'
+              }`
+            : ''}
         </p>
       </section>
 
@@ -332,19 +403,54 @@ export default function Flashcards() {
         <section className="surface soft-shadow animate-fade-up stagger-1 rounded-3xl p-4 sm:p-5">
           <div className="flex flex-wrap items-start justify-between gap-3">
             <div>
-              <p className="font-medium text-ink">循環播放（單字 → 例句）</p>
+              <p className="font-medium text-ink">循環播放</p>
               <p className="mt-1 text-xs text-ink-soft">
-                使用 Neural 音檔連續播放，鎖屏後也可繼續。控制中心可暫停／下一首。
+                可開關要播的內容。日文用 Neural；中文解釋用系統語音（鎖屏時中文可能暫停）。
               </p>
             </div>
             <button
               type="button"
               onClick={toggleLoopPlay}
-              className="rounded-2xl bg-sea px-4 py-2.5 text-sm font-medium text-white hover:bg-sea-deep"
+              disabled={!loopSelectionValid}
+              className="rounded-2xl bg-sea px-4 py-2.5 text-sm font-medium text-white hover:bg-sea-deep disabled:opacity-40"
             >
               {playlist.playing ? '暫停' : loopActive ? '繼續播放' : '開始循環'}
             </button>
           </div>
+
+          <div className="mt-3 flex flex-wrap gap-2">
+            <FilterChip
+              active={loopPlayWord}
+              onClick={() => toggleLoopOption('word', !loopPlayWord, setLoopPlayWord)}
+            >
+              單字
+            </FilterChip>
+            <FilterChip
+              active={loopPlayMeaning}
+              onClick={() => toggleLoopOption('meaning', !loopPlayMeaning, setLoopPlayMeaning)}
+            >
+              詞義解釋
+            </FilterChip>
+            <FilterChip
+              active={loopPlayExample}
+              onClick={() => toggleLoopOption('example', !loopPlayExample, setLoopPlayExample)}
+            >
+              例句
+            </FilterChip>
+            <FilterChip
+              active={loopPlayExampleMeaning}
+              onClick={() =>
+                toggleLoopOption(
+                  'exampleMeaning',
+                  !loopPlayExampleMeaning,
+                  setLoopPlayExampleMeaning,
+                )
+              }
+            >
+              例句解釋
+            </FilterChip>
+          </div>
+
           {loopActive ? (
             <div className="mt-3 space-y-2">
               <p className="text-sm text-ink">
