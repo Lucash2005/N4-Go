@@ -194,8 +194,21 @@ export function shuffle(array) {
   return copy
 }
 
+/** Shuffle option order and remap the correct answer index. */
+export function withShuffledOptions(question) {
+  const indexed = question.options.map((text, index) => ({ text, index }))
+  const shuffled = shuffle(indexed)
+  return {
+    ...question,
+    options: shuffled.map((item) => item.text),
+    answer: shuffled.findIndex((item) => item.index === question.answer),
+  }
+}
+
 export function pickQuiz(count = 10, type = 'all') {
   const pool =
     type === 'all' ? quizQuestions : quizQuestions.filter((q) => q.type === type)
-  return shuffle(pool).slice(0, Math.min(count, pool.length))
+  return shuffle(pool)
+    .slice(0, Math.min(count, pool.length))
+    .map(withShuffledOptions)
 }
