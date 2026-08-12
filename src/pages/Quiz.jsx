@@ -13,6 +13,7 @@ export default function Quiz() {
   const [correctCount, setCorrectCount] = useState(0)
   const [finished, setFinished] = useState(false)
   const correctRef = useRef(0)
+  const missedRef = useRef([])
 
   const question = questions[current]
   const progressLabel = useMemo(() => {
@@ -28,6 +29,7 @@ export default function Quiz() {
     setRevealed(false)
     setCorrectCount(0)
     correctRef.current = 0
+    missedRef.current = []
     setFinished(false)
     setStarted(true)
   }
@@ -39,12 +41,15 @@ export default function Quiz() {
     if (idx === question.answer) {
       correctRef.current += 1
       setCorrectCount(correctRef.current)
+    } else {
+      const correctText = question.options[question.answer]
+      if (correctText) missedRef.current.push(correctText)
     }
   }
 
   function next() {
     if (current + 1 >= questions.length) {
-      recordQuiz(correctRef.current, questions.length)
+      recordQuiz(correctRef.current, questions.length, missedRef.current)
       setFinished(true)
       return
     }
@@ -59,7 +64,7 @@ export default function Quiz() {
         <section className="animate-fade-up">
           <h2 className="font-display text-2xl font-bold text-ink">N4 模擬測驗</h2>
           <p className="mt-1 text-sm text-ink-soft">
-            隨機抽題：單字填空、文法接續、閱讀理解。答題後立即顯示解析。
+            隨機抽題；答錯的相關單字／文法會自動排入今日 SRS 複習。
           </p>
         </section>
 

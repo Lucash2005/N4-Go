@@ -4,14 +4,22 @@ import { grammar } from '../data/grammar'
 import { vocabulary } from '../data/vocabulary'
 import {
   buildDailyPlan,
+  DAILY_QUOTA,
   emptyDailyPlan,
   getLiveReviewIds,
   resolveCards,
 } from '../utils/dailyPlan'
+import {
+  applyGrade,
+  entryFromManualStatus,
+  isLearned,
+  normalizeEntry,
+} from '../utils/srs'
 import { todayKey } from '../utils/storage'
 import { useLocalStorage } from './useLocalStorage'
 
 const ProgressContext = createContext(null)
+const ALL_CARDS = [...vocabulary, ...grammar]
 
 function ensurePlan(plan, cardProgress) {
   const today = todayKey()
@@ -27,6 +35,18 @@ function sameIds(a = [], b = []) {
   if (a.length !== b.length) return false
   const setB = new Set(b)
   return a.every((id) => setB.has(id))
+}
+
+function findCardsForAnswer(answerText = '') {
+  const text = answerText.trim()
+  if (!text) return []
+  return ALL_CARDS.filter(
+    (c) =>
+      c.word === text ||
+      c.reading === text ||
+      c.word.includes(text) ||
+      (text.length >= 2 && c.meaning.includes(text)),
+  ).slice(0, 2)
 }
 
 export function ProgressProvider({ children }) {
@@ -56,14 +76,13 @@ export function ProgressProvider({ children }) {
     }
   }, [dailyTasks.date, dailyPlan.date, cardProgress, setDailyTasks, setDailyPlan])
 
-  // Keep review queue in sync whenever marks change
+  // Keep review queue in sync with due SRS cards
   useEffect(() => {
     if (dailyPlan.date !== todayKey()) return
-    const liveReviewIds = getLiveReviewIds(cardProgress, 0) // all marked reviews
+    const liveReviewIds = getLiveReviewIds(cardProgress, DAILY_QUOTA.review)
     setDailyPlan((prev) => {
       if (prev.date !== todayKey()) return prev
       if (sameIds(prev.reviewIds, liveReviewIds)) return prev
-      // Drop studied flags for ids no longer in review queue
       const reviewSet = new Set(liveReviewIds)
       return {
         ...prev,
@@ -85,14 +104,14 @@ export function ProgressProvider({ children }) {
 
     const studied = new Set(plan.studiedIds || [])
     const listened = new Set(plan.listenedIds || [])
-    const liveReviewIds = getLiveReviewIds(cardProgress, 0)
+    const liveReviewIds = getLiveReviewIds(cardProgress, DAILY_QUOTA.review)
 
     const vocabDone =
       plan.vocabIds.length > 0 && plan.vocabIds.every((id) => studied.has(id))
     const grammarDone =
       plan.grammarIds.length > 0 && plan.grammarIds.every((id) => studied.has(id))
     const reviewDone =
-      liveReviewIds.length > 0 && liveReviewIds.every((id) => studied.has(id))
+      liveReviewIds.length === 0 || liveReviewIds.every((id) => studied.has(id))
     const listeningDone =
       plan.vocabIds.length > 0 &&
       plan.vocabIds.filter((id) => listened.has(id)).length >=
@@ -104,7 +123,7 @@ export function ProgressProvider({ children }) {
       const next = {
         'vocab-15': vocabDone,
         'grammar-2': grammarDone,
-        'review-10': reviewDone,
+        'review-10': reviewDone && liveReviewIds.length > 0,
         'listening-15': listeningDone || tasks.find((t) => t.id === 'listening-15')?.done,
       }
       let changed = false
@@ -116,6 +135,10 @@ export function ProgressProvider({ children }) {
             return { ...t, done: true }
           }
           return t
+        }
+        if (t.id === 'review-10') {
+          // Empty due queue: don't force incomplete forever; leave manual
+          if (liveReviewIds.length === 0) return t
         }
         if (t.done !== next[t.id]) {
           changed = true
@@ -131,20 +154,46 @@ export function ProgressProvider({ children }) {
     const plan = ensurePlan(dailyPlan, cardProgress)
     const studied = new Set(plan.studiedIds || [])
     const listened = new Set(plan.listenedIds || [])
-    const liveReviewIds = getLiveReviewIds(cardProgress, 0)
+    const liveReviewIds = getLiveReviewIds(cardProgress, DAILY_QUOTA.review)
+    const today = todayKey()
 
-    const learnedVocab = vocabulary.filter((v) => cardProgress[v.id] === 'learned').length
-    const learnedGrammar = grammar.filter((g) => cardProgress[g.id] === 'learned').length
+    const learnedVocab = vocabulary.filter((v) => isLearned(cardProgress[v.id], today)).length
+    const learnedGrammar = grammar.filter((g) => isLearned(cardProgress[g.id], today)).length
     const reviewCount = liveReviewIds.length
+    const dueCount = getLiveReviewIds(cardProgress, 0).length
+
+    function markStudied(id) {
+      setDailyPlan((prev) => {
+        const current = ensurePlan(prev, cardProgress)
+        if ((current.studiedIds || []).includes(id)) return current
+        return {
+          ...current,
+          studiedIds: [...(current.studiedIds || []), id],
+        }
+      })
+    }
 
     function setCardStatus(id, status) {
       setCardProgress((prev) => {
         const next = { ...prev }
-        if (!status) delete next[id]
-        else next[id] = status
+        const entry = entryFromManualStatus(status, today)
+        if (!entry) delete next[id]
+        else next[id] = entry
         return next
       })
       markStudied(id)
+    }
+
+    function gradeCard(id, grade) {
+      setCardProgress((prev) => ({
+        ...prev,
+        [id]: applyGrade(prev[id], grade, today),
+      }))
+      markStudied(id)
+    }
+
+    function scheduleAgain(id) {
+      gradeCard(id, 'again')
     }
 
     function toggleTask(id) {
@@ -163,23 +212,24 @@ export function ProgressProvider({ children }) {
       }))
     }
 
-    function recordQuiz(correct, total) {
+    function recordQuiz(correct, total, missedAnswers = []) {
       setQuizStats((prev) => ({
         attempted: prev.attempted + total,
         correct: prev.correct + correct,
         lastScore: { correct, total, at: new Date().toISOString() },
       }))
-    }
 
-    function markStudied(id) {
-      setDailyPlan((prev) => {
-        const current = ensurePlan(prev, cardProgress)
-        if ((current.studiedIds || []).includes(id)) return current
-        return {
-          ...current,
-          studiedIds: [...(current.studiedIds || []), id],
-        }
-      })
+      if (missedAnswers.length) {
+        setCardProgress((prev) => {
+          const next = { ...prev }
+          for (const answer of missedAnswers) {
+            for (const card of findCardsForAnswer(answer)) {
+              next[card.id] = applyGrade(next[card.id], 'again', today)
+            }
+          }
+          return next
+        })
+      }
     }
 
     function markListened(id) {
@@ -194,12 +244,16 @@ export function ProgressProvider({ children }) {
     }
 
     function reshuffleTodayPlan() {
-      const today = todayKey()
-      setDailyPlan(buildDailyPlan(today, cardProgress, `reshuffle:${Date.now()}`))
+      const day = todayKey()
+      setDailyPlan(buildDailyPlan(day, cardProgress, `reshuffle:${Date.now()}`))
       setDailyTasks({
-        date: today,
+        date: day,
         tasks: DEFAULT_TASKS.map((t) => ({ ...t, done: false })),
       })
+    }
+
+    function getEntry(id) {
+      return normalizeEntry(cardProgress[id], today)
     }
 
     const vocabCards = resolveCards(plan.vocabIds)
@@ -214,6 +268,9 @@ export function ProgressProvider({ children }) {
     return {
       cardProgress,
       setCardStatus,
+      gradeCard,
+      scheduleAgain,
+      getEntry,
       dailyTasks: dailyTasks.tasks,
       toggleTask,
       setTaskDone,
@@ -222,6 +279,7 @@ export function ProgressProvider({ children }) {
       learnedVocab,
       learnedGrammar,
       reviewCount,
+      dueCount,
       targets: TARGETS,
       totalVocabInApp: vocabulary.length,
       totalGrammarInApp: grammar.length,

@@ -5,16 +5,31 @@ import { vocabulary } from '../data/vocabulary'
 import FuriganaText from '../components/FuriganaText'
 import { useProgress } from '../hooks/useProgress'
 import { useSettings } from '../hooks/useSettings'
+import { getFilterStatus, GRADE_LABELS, normalizeEntry } from '../utils/srs'
 import { speakJapanese, speechTextForCard, audioClipForCard } from '../utils/tts'
 
 const ALL_CARDS = [...vocabulary, ...grammar]
 
 const MODE_META = {
-  'today-vocab': { title: '今日單字', hint: '翻完卡片會自動計入今日進度' },
-  'today-grammar': { title: '今日文法', hint: '翻完卡片會自動計入今日進度' },
-  'today-review': { title: '今日複習', hint: '複習標記與補強項目' },
-  'today-listening': { title: '今日聽力', hint: '點播放聽發音，累積聽力進度' },
+  'today-vocab': {
+    title: '今日單字',
+    hint: '先回想意思，翻面後用下方四鍵評分（間隔重複）',
+  },
+  'today-grammar': {
+    title: '今日文法',
+    hint: '先回想用法，翻面後評分，系統會安排下次出現時間',
+  },
+  'today-review': {
+    title: '到期複習',
+    hint: '只出現今天該複習的卡片 · 評分越準，記住越久',
+  },
+  'today-listening': {
+    title: '今日聽力',
+    hint: '點播放聽發音，累積聽力進度',
+  },
 }
+
+const GRADES = ['again', 'hard', 'good', 'easy']
 
 function hasKanji(text = '') {
   return /[\u4e00-\u9fff]/.test(text)
@@ -24,6 +39,8 @@ export default function Flashcards() {
   const {
     cardProgress,
     setCardStatus,
+    gradeCard,
+    getEntry,
     todayVocab,
     todayGrammar,
     todayReview,
@@ -31,8 +48,16 @@ export default function Flashcards() {
     markListened,
     isStudied,
   } = useProgress()
-  const { showFurigana, setShowFurigana, showExampleMeaning, setShowExampleMeaning, ttsEngine, setTtsEngine, ttsRate, setTtsRate } =
-    useSettings()
+  const {
+    showFurigana,
+    setShowFurigana,
+    showExampleMeaning,
+    setShowExampleMeaning,
+    ttsEngine,
+    setTtsEngine,
+    ttsRate,
+    setTtsRate,
+  } = useSettings()
   const [searchParams, setSearchParams] = useSearchParams()
   const mode = searchParams.get('mode') || 'all'
 
@@ -42,8 +67,11 @@ export default function Flashcards() {
   const [index, setIndex] = useState(0)
   const [flipped, setFlipped] = useState(false)
   const [voiceEngine, setVoiceEngine] = useState(null)
+  const [sessionLeft, setSessionLeft] = useState(null)
 
   const todayMode = mode in MODE_META
+  const srsMode = mode === 'today-vocab' || mode === 'today-grammar' || mode === 'today-review'
+  const hideReadingOnFront = srsMode
 
   const filtered = useMemo(() => {
     if (mode === 'today-vocab') return todayVocab
@@ -54,7 +82,7 @@ export default function Flashcards() {
     const q = query.trim().toLowerCase()
     return ALL_CARDS.filter((card) => {
       if (typeFilter !== 'all' && card.type !== typeFilter) return false
-      const status = cardProgress[card.id] || 'new'
+      const status = getFilterStatus(cardProgress, card.id)
       if (statusFilter !== 'all' && status !== statusFilter) return false
       if (!q) return true
       const hay = [card.word, card.reading, card.meaning, card.example, card.category]
@@ -74,27 +102,67 @@ export default function Flashcards() {
     cardProgress,
   ])
 
+  const deck = sessionLeft ?? filtered
+
   useEffect(() => {
     setIndex(0)
     setFlipped(false)
-  }, [mode, query, typeFilter, statusFilter])
+    if (!srsMode) setSessionLeft(null)
+  }, [mode, query, typeFilter, statusFilter, srsMode])
 
-  const safeIndex = filtered.length ? Math.min(index, filtered.length - 1) : 0
-  const card = filtered[safeIndex]
+  // Snapshot the deck once when entering an SRS mode (don't reset mid-session on progress updates)
+  useEffect(() => {
+    if (!srsMode) return
+    setSessionLeft(filtered)
+    setIndex(0)
+    setFlipped(false)
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- snapshot only on mode enter
+  }, [mode])
+
+  const safeIndex = deck.length ? Math.min(index, deck.length - 1) : 0
+  const card = deck[safeIndex]
+  const entry = card ? getEntry?.(card.id) || normalizeEntry(cardProgress[card.id]) : null
 
   function go(delta) {
-    if (!filtered.length) return
-    if (card && todayMode) markStudied(card.id)
+    if (!deck.length) return
+    if (card && todayMode && !srsMode) markStudied(card.id)
     setFlipped(false)
-    setIndex((prev) => (prev + delta + filtered.length) % filtered.length)
+    setIndex((prev) => (prev + delta + deck.length) % deck.length)
   }
 
   function flipCard() {
     setFlipped((f) => {
       const next = !f
-      if (next && card && todayMode) markStudied(card.id)
+      if (next && card && todayMode && !srsMode) markStudied(card.id)
       return next
     })
+  }
+
+  function onGrade(grade) {
+    if (!card) return
+    gradeCard(card.id, grade)
+    setFlipped(false)
+
+    if (srsMode && sessionLeft) {
+      const nextDeck = sessionLeft.filter((c) => c.id !== card.id)
+      // "Again" cards stay in session for another pass
+      if (grade === 'again') {
+        const rest = sessionLeft.filter((c) => c.id !== card.id)
+        const requeue = [...rest, card]
+        setSessionLeft(requeue)
+        setIndex(safeIndex >= rest.length ? 0 : safeIndex)
+        return
+      }
+      setSessionLeft(nextDeck)
+      if (!nextDeck.length) {
+        setIndex(0)
+        return
+      }
+      setIndex(Math.min(safeIndex, nextDeck.length - 1))
+      return
+    }
+
+    go(1)
   }
 
   function onFilterChange(setter, value) {
@@ -120,11 +188,12 @@ export default function Flashcards() {
     })
     if (todayMode) {
       markListened(card.id)
-      markStudied(card.id)
+      if (!srsMode) markStudied(card.id)
     }
   }
 
   const meta = MODE_META[mode]
+  const doneSession = srsMode && sessionLeft && sessionLeft.length === 0
 
   return (
     <div className="space-y-5">
@@ -145,10 +214,10 @@ export default function Flashcards() {
           </button>
         ) : (
           <Link
-            to="/flashcards?mode=today-vocab"
+            to="/flashcards?mode=today-review"
             className="mt-2 inline-block text-sm text-sea-deep underline-offset-2 hover:underline"
           >
-            練習今日排程 →
+            開始 SRS 複習 →
           </Link>
         )}
       </section>
@@ -185,7 +254,7 @@ export default function Flashcards() {
           <span className="w-10 tabular-nums">{ttsRate.toFixed(2)}</span>
         </label>
         <p className="text-xs text-ink-soft">
-          音標只標在漢字上；中文解釋可單獨開關。Neural 為預錄人聲。
+          練習模式正面不顯示讀音，逼自己先回想。翻面後用「忘記／困難／記得／簡單」評分。
           {voiceEngine ? ` · 剛剛播放：${voiceEngine === 'neural' ? 'Neural 自然聲' : '系統聲'}` : ''}
         </p>
       </section>
@@ -240,16 +309,34 @@ export default function Flashcards() {
       ) : null}
 
       <p className="text-xs text-ink-soft">
-        共 {filtered.length} 張
-        {card ? ` · 目前第 ${safeIndex + 1} 張` : ''}
-        {card && todayMode && isStudied(card.id) ? ' · 已計入今日' : ''}
+        {srsMode
+          ? `本輪剩餘 ${deck.length} 張`
+          : `共 ${deck.length} 張`}
+        {card && !doneSession ? ` · 目前第 ${safeIndex + 1} 張` : ''}
+        {entry?.due ? ` · 下次 ${entry.due}` : ''}
+        {card && todayMode && !srsMode && isStudied(card.id) ? ' · 已計入今日' : ''}
       </p>
 
-      {!card ? (
+      {doneSession ? (
+        <div className="surface soft-shadow animate-fade-up rounded-3xl p-8 text-center">
+          <p className="font-display text-2xl font-bold text-ink">本輪複習完成</p>
+          <p className="mt-2 text-sm text-ink-soft">忘記的卡片已排到今天稍後／明天再出現</p>
+          <Link
+            to="/"
+            className="mt-5 inline-block rounded-2xl bg-sea px-5 py-3 text-white hover:bg-sea-deep"
+          >
+            回首頁看進度
+          </Link>
+        </div>
+      ) : !card ? (
         <div className="surface rounded-3xl p-8 text-center text-ink-soft">
           {todayMode ? (
             <div className="space-y-3">
-              <p>今日這個項目沒有卡片可練</p>
+              <p>
+                {mode === 'today-review'
+                  ? '目前沒有到期卡片，去練今日單字或測驗吧'
+                  : '今日這個項目沒有卡片可練'}
+              </p>
               <Link to="/" className="inline-block text-sea-deep underline">
                 回首頁看排程
               </Link>
@@ -283,7 +370,9 @@ export default function Flashcards() {
                 <p className="mt-6 font-display text-4xl font-bold text-ink sm:text-5xl">
                   {card.word}
                 </p>
-                {showFurigana ? (
+                {hideReadingOnFront ? (
+                  <p className="mt-3 text-sm text-ink-soft">先想讀音與意思，再翻面</p>
+                ) : showFurigana ? (
                   <p className="mt-3 text-lg text-sea-deep">{card.reading}</p>
                 ) : hasKanji(card.word) ? (
                   <p className="mt-3 text-sm text-ink-soft">音標已隱藏</p>
@@ -294,7 +383,7 @@ export default function Flashcards() {
               <CardFace className="absolute inset-0 [backface-visibility:hidden] [transform:rotateY(180deg)]">
                 <Badge>{card.category}</Badge>
                 <p className="mt-4 text-2xl font-bold text-ink">{card.meaning}</p>
-                {showFurigana && card.reading ? (
+                {(showFurigana || hideReadingOnFront) && card.reading ? (
                   <p className="mt-1 text-sm text-sea-deep">{card.reading}</p>
                 ) : null}
                 {card.pattern ? (
@@ -319,7 +408,7 @@ export default function Flashcards() {
           </article>
 
           <div className="flex flex-wrap items-center justify-center gap-2">
-            <ActionButton onClick={() => go(-1)}>上一張</ActionButton>
+            {!srsMode ? <ActionButton onClick={() => go(-1)}>上一張</ActionButton> : null}
             <ActionButton
               onClick={(e) => {
                 e.stopPropagation()
@@ -328,48 +417,77 @@ export default function Flashcards() {
             >
               🔊 播放
             </ActionButton>
-            <ActionButton onClick={() => go(1)}>下一張</ActionButton>
+            {!srsMode ? <ActionButton onClick={() => go(1)}>下一張</ActionButton> : null}
           </div>
 
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
-            <StatusButton
-              active={cardProgress[card.id] === 'learned'}
-              onClick={() =>
-                setCardStatus(card.id, cardProgress[card.id] === 'learned' ? null : 'learned')
-              }
-              tone="sea"
-            >
-              已學會
-            </StatusButton>
-            <StatusButton
-              active={cardProgress[card.id] === 'review'}
-              onClick={() =>
-                setCardStatus(card.id, cardProgress[card.id] === 'review' ? null : 'review')
-              }
-              tone="coral"
-            >
-              需要複習
-            </StatusButton>
-            <StatusButton
-              className="col-span-2 sm:col-span-1"
-              onClick={() => setCardStatus(card.id, null)}
-            >
-              清除標記
-            </StatusButton>
-          </div>
-
-          {todayMode && safeIndex === filtered.length - 1 && isStudied(card.id) ? (
-            <Link
-              to="/"
-              className="block rounded-2xl bg-sea px-4 py-3 text-center text-white hover:bg-sea-deep"
-            >
-              本組完成 · 回首頁看進度
-            </Link>
-          ) : null}
+          {srsMode ? (
+            flipped ? (
+              <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+                {GRADES.map((grade) => {
+                  const metaG = GRADE_LABELS[grade]
+                  return (
+                    <button
+                      key={grade}
+                      type="button"
+                      onClick={() => onGrade(grade)}
+                      className={`touch-target rounded-2xl px-3 py-3 text-sm font-medium transition ${gradeButtonClass(grade)}`}
+                    >
+                      <span className="block">{metaG.label}</span>
+                      <span className="mt-0.5 block text-[11px] font-normal opacity-80">
+                        {metaG.hint}
+                      </span>
+                    </button>
+                  )
+                })}
+              </div>
+            ) : (
+              <p className="text-center text-sm text-ink-soft">翻面後評分，才會進入下一張</p>
+            )
+          ) : (
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+              <StatusButton
+                active={getFilterStatus(cardProgress, card.id) === 'learned'}
+                onClick={() =>
+                  setCardStatus(
+                    card.id,
+                    getFilterStatus(cardProgress, card.id) === 'learned' ? null : 'learned',
+                  )
+                }
+                tone="sea"
+              >
+                已學會
+              </StatusButton>
+              <StatusButton
+                active={getFilterStatus(cardProgress, card.id) === 'review'}
+                onClick={() =>
+                  setCardStatus(
+                    card.id,
+                    getFilterStatus(cardProgress, card.id) === 'review' ? null : 'review',
+                  )
+                }
+                tone="coral"
+              >
+                需要複習
+              </StatusButton>
+              <StatusButton
+                className="col-span-2 sm:col-span-1"
+                onClick={() => setCardStatus(card.id, null)}
+              >
+                清除標記
+              </StatusButton>
+            </div>
+          )}
         </>
       )}
     </div>
   )
+}
+
+function gradeButtonClass(grade) {
+  if (grade === 'again') return 'bg-coral text-white hover:opacity-90'
+  if (grade === 'hard') return 'bg-sand text-ink ring-1 ring-line hover:bg-sand/80'
+  if (grade === 'good') return 'bg-sea text-white hover:bg-sea-deep'
+  return 'bg-ink text-white hover:opacity-90'
 }
 
 function FilterChip({ active, onClick, children }) {

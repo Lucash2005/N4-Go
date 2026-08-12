@@ -11,6 +11,7 @@ export default function Dashboard() {
     learnedVocab,
     learnedGrammar,
     reviewCount,
+    dueCount,
     targets,
     totalVocabInApp,
     totalGrammarInApp,
@@ -38,7 +39,7 @@ export default function Dashboard() {
           <div>
             <h2 className="font-display text-xl font-bold text-ink">今日自動排程</h2>
             <p className="mt-1 text-sm text-ink-soft">
-              系統已依進度抽出今日內容，點下方即可開始練習
+              間隔重複（SRS）：翻卡後評分，系統會安排下次出現時間
             </p>
           </div>
           <button
@@ -68,13 +69,13 @@ export default function Dashboard() {
             isStudied={isStudied}
           />
           <PlanBlock
-            title="複習佇列"
+            title="到期複習（SRS）"
             progress={`${reviewStudied}/${todayReview.length || 0}`}
             to="/flashcards?mode=today-review"
             cta="開始複習"
             items={todayReview}
             isStudied={isStudied}
-            emptyText="點卡片「需要複習」後，這裡會立刻出現"
+            emptyText="尚無到期卡片。練新單字並評分後，之後會自動排程回來"
           />
           <div className="rounded-2xl bg-white/75 p-4 ring-1 ring-line/50">
             <div className="flex flex-wrap items-center justify-between gap-2">
@@ -111,7 +112,7 @@ export default function Dashboard() {
             <p className="mt-1 text-sm text-ink-soft">目標對齊 N4：單字 1500／文法 80</p>
           </div>
           <span className="rounded-full bg-foam px-3 py-1 text-xs text-sea-deep">
-            複習佇列 {reviewCount}
+            今日到期 {dueCount ?? reviewCount}
           </span>
         </div>
 

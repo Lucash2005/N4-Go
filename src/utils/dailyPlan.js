@@ -1,10 +1,12 @@
 import { grammar } from '../data/grammar'
 import { vocabulary } from '../data/vocabulary'
+import { getDueIds, normalizeEntry } from './srs'
+import { todayKey } from './storage'
 
 export const DAILY_QUOTA = {
   vocab: 15,
   grammar: 2,
-  review: 10,
+  review: 15,
 }
 
 /** Deterministic PRNG from a string seed (xmur3 + mulberry32) */
@@ -37,16 +39,27 @@ export function seededShuffle(items, seedStr) {
   return copy
 }
 
-function pickByPriority(cards, count, seedStr, cardProgress) {
+function pickByPriority(cards, count, seedStr, cardProgress, date = todayKey()) {
   if (count <= 0 || !cards.length) return []
 
-  const newOnes = cards.filter((c) => !cardProgress[c.id])
-  const reviewOnes = cards.filter((c) => cardProgress[c.id] === 'review')
-  const learnedOnes = cards.filter((c) => cardProgress[c.id] === 'learned')
+  const newOnes = cards.filter((c) => !normalizeEntry(cardProgress[c.id], date))
+  const dueOnes = cards.filter((c) => {
+    const e = normalizeEntry(cardProgress[c.id], date)
+    return e && e.due <= date
+  })
+  const learningOnes = cards.filter((c) => {
+    const e = normalizeEntry(cardProgress[c.id], date)
+    return e && e.due > date && e.status !== 'learned'
+  })
+  const learnedOnes = cards.filter((c) => {
+    const e = normalizeEntry(cardProgress[c.id], date)
+    return e && e.status === 'learned' && e.due > date
+  })
 
   const ordered = [
     ...seededShuffle(newOnes, `${seedStr}:new`),
-    ...seededShuffle(reviewOnes, `${seedStr}:review`),
+    ...seededShuffle(dueOnes, `${seedStr}:due`),
+    ...seededShuffle(learningOnes, `${seedStr}:learning`),
     ...seededShuffle(learnedOnes, `${seedStr}:learned`),
   ]
 
@@ -63,19 +76,29 @@ function pickByPriority(cards, count, seedStr, cardProgress) {
 
 /**
  * Build a stable daily plan for `date` (YYYY-MM-DD).
- * Prefers new → review-marked → learned to keep progress moving.
+ * Prefers new → due → learning → learned.
  * Optional `seedExtra` reshuffles while keeping the same calendar date.
  */
 export function buildDailyPlan(date, cardProgress = {}, seedExtra = '') {
   const seed = `n4-go:${date}${seedExtra ? `:${seedExtra}` : ''}`
 
-  const vocabIds = pickByPriority(vocabulary, DAILY_QUOTA.vocab, `${seed}:vocab`, cardProgress)
-  const grammarIds = pickByPriority(grammar, DAILY_QUOTA.grammar, `${seed}:grammar`, cardProgress)
+  const vocabIds = pickByPriority(
+    vocabulary,
+    DAILY_QUOTA.vocab,
+    `${seed}:vocab`,
+    cardProgress,
+    date,
+  )
+  const grammarIds = pickByPriority(
+    grammar,
+    DAILY_QUOTA.grammar,
+    `${seed}:grammar`,
+    cardProgress,
+    date,
+  )
 
-  const reviewPool = [...vocabulary, ...grammar].filter((c) => cardProgress[c.id] === 'review')
-  const reviewIds = seededShuffle(reviewPool, `${seed}:review-queue`)
-    .map((c) => c.id)
-    .slice(0, DAILY_QUOTA.review)
+  const allIds = [...vocabulary, ...grammar].map((c) => c.id)
+  const reviewIds = getDueIds(cardProgress, allIds, DAILY_QUOTA.review, date)
 
   return {
     date,
@@ -92,12 +115,10 @@ export function resolveCards(ids) {
   return ids.map((id) => map.get(id)).filter(Boolean)
 }
 
-/** Live review queue from current marks (not frozen at plan creation). */
-export function getLiveReviewIds(cardProgress = {}, limit = DAILY_QUOTA.review) {
-  return [...vocabulary, ...grammar]
-    .filter((c) => cardProgress[c.id] === 'review')
-    .map((c) => c.id)
-    .slice(0, limit > 0 ? limit : undefined)
+/** Live due review queue from SRS schedule. */
+export function getLiveReviewIds(cardProgress = {}, limit = DAILY_QUOTA.review, date = todayKey()) {
+  const allIds = [...vocabulary, ...grammar].map((c) => c.id)
+  return getDueIds(cardProgress, allIds, limit > 0 ? limit : 0, date)
 }
 
 export function emptyDailyPlan(date = '') {
