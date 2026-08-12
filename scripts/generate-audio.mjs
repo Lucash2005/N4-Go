@@ -1,7 +1,12 @@
 #!/usr/bin/env node
 /**
- * Generate Neural TTS MP3s for flashcards (ja-JP-NanamiNeural).
+ * Generate Neural TTS MP3s for flashcards.
+ * Japanese: ja-JP-NanamiNeural (word / example)
+ * Chinese:  zh-TW-HsiaoChenNeural (meaning / exampleMeaning)
+ *
  * Run: node scripts/generate-audio.mjs
+ * Force regenerate: FORCE=1 node scripts/generate-audio.mjs
+ * Only Chinese: ONLY=zh node scripts/generate-audio.mjs
  */
 import { mkdirSync, writeFileSync, existsSync } from 'fs'
 import { join, dirname } from 'path'
@@ -14,20 +19,22 @@ const __dirname = dirname(fileURLToPath(import.meta.url))
 const outDir = join(__dirname, '../public/audio')
 mkdirSync(outDir, { recursive: true })
 
-const VOICE = 'ja-JP-NanamiNeural'
+const JA_VOICE = 'ja-JP-NanamiNeural'
+const ZH_VOICE = 'zh-TW-HsiaoChenNeural'
 const cards = [...vocabulary, ...grammar]
+const only = process.env.ONLY || 'all' // all | ja | zh
 
 function sleep(ms) {
   return new Promise((r) => setTimeout(r, ms))
 }
 
-async function synthesizeToFile(text, filePath) {
+async function synthesizeToFile(text, filePath, voice) {
   if (!text?.trim()) return false
   if (existsSync(filePath) && process.env.FORCE !== '1') {
     console.log('skip', filePath)
     return true
   }
-  const tts = new EdgeTTS(text.trim(), VOICE, { rate: '-5%', pitch: '+0Hz' })
+  const tts = new EdgeTTS(text.trim(), voice, { rate: '-5%', pitch: '+0Hz' })
   const result = await tts.synthesize()
   const raw = result.audio
   const buf = Buffer.from(raw instanceof Blob ? await raw.arrayBuffer() : raw)
@@ -36,13 +43,35 @@ async function synthesizeToFile(text, filePath) {
   return true
 }
 
+let count = 0
 for (const card of cards) {
-  const wordText = card.reading || card.word
-  const exampleText = card.example
-  await synthesizeToFile(wordText, join(outDir, `${card.id}-word.mp3`))
-  await sleep(250)
-  await synthesizeToFile(exampleText, join(outDir, `${card.id}-example.mp3`))
-  await sleep(250)
+  if (only === 'all' || only === 'ja') {
+    const wordText = card.reading || card.word
+    const exampleText = card.example
+    await synthesizeToFile(wordText, join(outDir, `${card.id}-word.mp3`), JA_VOICE)
+    await sleep(200)
+    count += 1
+    await synthesizeToFile(exampleText, join(outDir, `${card.id}-example.mp3`), JA_VOICE)
+    await sleep(200)
+    count += 1
+  }
+
+  if (only === 'all' || only === 'zh') {
+    if (card.meaning) {
+      await synthesizeToFile(card.meaning, join(outDir, `${card.id}-meaning.mp3`), ZH_VOICE)
+      await sleep(200)
+      count += 1
+    }
+    if (card.exampleMeaning) {
+      await synthesizeToFile(
+        card.exampleMeaning,
+        join(outDir, `${card.id}-example-meaning.mp3`),
+        ZH_VOICE,
+      )
+      await sleep(200)
+      count += 1
+    }
+  }
 }
 
-console.log('done', cards.length * 2, 'clips')
+console.log('done processed slots ~', count, 'for', cards.length, 'cards')

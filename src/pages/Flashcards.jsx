@@ -271,9 +271,7 @@ export default function Flashcards() {
       rate: Math.min(1.25, Math.max(0.7, ttsRate / 0.88)),
       startIndex,
     })
-    if (ok) {
-      setVoiceEngine(loopPlayMeaning || loopPlayExampleMeaning ? 'mixed' : 'neural')
-    }
+    if (ok) setVoiceEngine('neural')
   }
 
   function toggleLoopPlay() {
@@ -405,7 +403,7 @@ export default function Flashcards() {
             <div>
               <p className="font-medium text-ink">循環播放</p>
               <p className="mt-1 text-xs text-ink-soft">
-                可開關要播的內容。日文用 Neural；中文解釋用系統語音（鎖屏時中文可能暫停）。
+                可開關要播的內容。日文／中文皆為 Neural 音檔，鎖屏後也可繼續。
               </p>
             </div>
             <button

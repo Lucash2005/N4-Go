@@ -311,6 +311,7 @@ export function subscribePlaylist(fn) {
 
 /**
  * Build playlist tracks for cards.
+ * Japanese + Chinese use prebuilt Neural MP3s (lock-screen friendly).
  * @param {object[]} cards
  * @param {{
  *   playWord?: boolean,
@@ -348,8 +349,7 @@ export function buildCardTracks(cards, options = {}) {
         id: `${card.id}-meaning`,
         cardId: card.id,
         kind: 'meaning',
-        text: card.meaning,
-        lang: 'zh-TW',
+        url: `${base}audio/${card.id}-meaning.mp3`,
         title: card.word,
         subtitle: '詞義解釋',
       })
@@ -371,8 +371,7 @@ export function buildCardTracks(cards, options = {}) {
         id: `${card.id}-example-meaning`,
         cardId: card.id,
         kind: 'exampleMeaning',
-        text: card.exampleMeaning,
-        lang: 'zh-TW',
+        url: `${base}audio/${card.id}-example-meaning.mp3`,
         title: card.word,
         subtitle: '例句解釋',
       })
