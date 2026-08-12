@@ -5,8 +5,20 @@ import { vocabulary } from '../data/vocabulary'
 import FuriganaText from '../components/FuriganaText'
 import { useProgress } from '../hooks/useProgress'
 import { useSettings } from '../hooks/useSettings'
+import { seededShuffle } from '../utils/dailyPlan'
+import {
+  buildCardTracks,
+  getPlaylistState,
+  next as playlistNext,
+  pause as playlistPause,
+  previous as playlistPrevious,
+  resume as playlistResume,
+  startPlaylist,
+  stop as playlistStop,
+  subscribePlaylist,
+} from '../utils/playlistPlayer'
 import { getFilterStatus, GRADE_LABELS, normalizeEntry } from '../utils/srs'
-import { speakJapanese, speechTextForCard, audioClipForCard } from '../utils/tts'
+import { speakJapanese, speechTextForCard, audioClipForCard, stopSpeaking } from '../utils/tts'
 
 const ALL_CARDS = [...vocabulary, ...grammar]
 
@@ -25,7 +37,7 @@ const MODE_META = {
   },
   'today-listening': {
     title: '今日聽力',
-    hint: '點播放聽發音，累積聽力進度',
+    hint: '可循環播放單字＋例句；鎖屏後也會繼續（需用 Neural 音檔）',
   },
 }
 
@@ -68,6 +80,8 @@ export default function Flashcards() {
   const [flipped, setFlipped] = useState(false)
   const [voiceEngine, setVoiceEngine] = useState(null)
   const [sessionLeft, setSessionLeft] = useState(null)
+  const [browseSeed] = useState(() => `${Date.now()}-${Math.random()}`)
+  const [playlist, setPlaylist] = useState(() => getPlaylistState())
 
   const todayMode = mode in MODE_META
   const srsMode = mode === 'today-vocab' || mode === 'today-grammar' || mode === 'today-review'
@@ -80,7 +94,7 @@ export default function Flashcards() {
     if (mode === 'today-listening') return todayVocab
 
     const q = query.trim().toLowerCase()
-    return ALL_CARDS.filter((card) => {
+    const list = ALL_CARDS.filter((card) => {
       if (typeFilter !== 'all' && card.type !== typeFilter) return false
       const status = getFilterStatus(cardProgress, card.id)
       if (statusFilter !== 'all' && status !== statusFilter) return false
@@ -91,6 +105,7 @@ export default function Flashcards() {
         .toLowerCase()
       return hay.includes(q)
     })
+    return seededShuffle(list, `browse:${browseSeed}:${typeFilter}:${statusFilter}:${q}`)
   }, [
     mode,
     todayVocab,
@@ -100,9 +115,18 @@ export default function Flashcards() {
     typeFilter,
     statusFilter,
     cardProgress,
+    browseSeed,
   ])
 
   const deck = sessionLeft ?? filtered
+
+  useEffect(() => subscribePlaylist(setPlaylist), [])
+
+  useEffect(() => {
+    return () => {
+      // Keep playing if user only flips within flashcards; stop when leaving page
+    }
+  }, [])
 
   useEffect(() => {
     setIndex(0)
@@ -113,11 +137,27 @@ export default function Flashcards() {
   // Snapshot the deck once when entering an SRS mode (don't reset mid-session on progress updates)
   useEffect(() => {
     if (!srsMode) return
-    setSessionLeft(filtered)
+    setSessionLeft(seededShuffle(filtered, `srs-enter:${Date.now()}:${Math.random()}`))
     setIndex(0)
     setFlipped(false)
     // eslint-disable-next-line react-hooks/exhaustive-deps -- snapshot only on mode enter
   }, [mode])
+
+  // Follow the currently playing card during loop playback
+  useEffect(() => {
+    const cardId = playlist.track?.cardId
+    if (!cardId || !deck.length) return
+    const idx = deck.findIndex((c) => c.id === cardId)
+    if (idx >= 0 && idx !== index) {
+      setIndex(idx)
+      setFlipped(playlist.track?.kind === 'example')
+    }
+    if (cardId && playlist.playing) {
+      markListened(cardId)
+      if (todayMode && !srsMode) markStudied(cardId)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- sync from playlist only
+  }, [playlist.track?.id, playlist.playing])
 
   const safeIndex = deck.length ? Math.min(index, deck.length - 1) : 0
   const card = deck[safeIndex]
@@ -175,6 +215,7 @@ export default function Flashcards() {
 
   function playAudio() {
     if (!card) return
+    playlistStop()
     const text = speechTextForCard(card, { flipped })
     const clipUrl = audioClipForCard(card, { flipped })
     setVoiceEngine('…')
@@ -192,8 +233,36 @@ export default function Flashcards() {
     }
   }
 
+  function startLoopPlay() {
+    if (!deck.length) return
+    stopSpeaking()
+    const startCardIndex = Math.max(0, safeIndex)
+    // Build tracks from current deck, starting at current card
+    const rotated = [...deck.slice(startCardIndex), ...deck.slice(0, startCardIndex)]
+    const tracks = buildCardTracks(rotated, { includeExample: true })
+    const ok = startPlaylist(tracks, {
+      loop: true,
+      rate: Math.min(1.25, Math.max(0.7, ttsRate / 0.88)),
+      startIndex: 0,
+    })
+    if (ok) setVoiceEngine('neural')
+  }
+
+  function toggleLoopPlay() {
+    if (playlist.playing) {
+      playlistPause()
+      return
+    }
+    if (playlist.total > 0 && playlist.track) {
+      playlistResume()
+      return
+    }
+    startLoopPlay()
+  }
+
   const meta = MODE_META[mode]
   const doneSession = srsMode && sessionLeft && sessionLeft.length === 0
+  const loopActive = playlist.total > 0
 
   return (
     <div className="space-y-5">
@@ -258,6 +327,48 @@ export default function Flashcards() {
           {voiceEngine ? ` · 剛剛播放：${voiceEngine === 'neural' ? 'Neural 自然聲' : '系統聲'}` : ''}
         </p>
       </section>
+
+      {deck.length > 0 && !doneSession ? (
+        <section className="surface soft-shadow animate-fade-up stagger-1 rounded-3xl p-4 sm:p-5">
+          <div className="flex flex-wrap items-start justify-between gap-3">
+            <div>
+              <p className="font-medium text-ink">循環播放（單字 → 例句）</p>
+              <p className="mt-1 text-xs text-ink-soft">
+                使用 Neural 音檔連續播放，鎖屏後也可繼續。控制中心可暫停／下一首。
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={toggleLoopPlay}
+              className="rounded-2xl bg-sea px-4 py-2.5 text-sm font-medium text-white hover:bg-sea-deep"
+            >
+              {playlist.playing ? '暫停' : loopActive ? '繼續播放' : '開始循環'}
+            </button>
+          </div>
+          {loopActive ? (
+            <div className="mt-3 space-y-2">
+              <p className="text-sm text-ink">
+                {playlist.track?.title || '…'}
+                <span className="text-ink-soft">
+                  {' '}
+                  · {playlist.track?.subtitle || ''} · {playlist.index + 1}/{playlist.total}
+                </span>
+              </p>
+              <div className="flex flex-wrap gap-2">
+                <ActionButton onClick={() => playlistPrevious()}>上一則</ActionButton>
+                <ActionButton onClick={() => playlistNext()}>下一則</ActionButton>
+                <ActionButton
+                  onClick={() => {
+                    playlistStop()
+                  }}
+                >
+                  停止
+                </ActionButton>
+              </div>
+            </div>
+          ) : null}
+        </section>
+      ) : null}
 
       {!todayMode ? (
         <section className="surface soft-shadow animate-fade-up stagger-2 space-y-3 rounded-3xl p-4 sm:p-5">

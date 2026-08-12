@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useMemo } from 'react'
+import { createContext, useContext, useEffect, useMemo, useState } from 'react'
 import { DEFAULT_TASKS, TARGETS } from '../data/config'
 import { grammar } from '../data/grammar'
 import { vocabulary } from '../data/vocabulary'
@@ -8,6 +8,7 @@ import {
   emptyDailyPlan,
   getLiveReviewIds,
   resolveCards,
+  seededShuffle,
 } from '../utils/dailyPlan'
 import {
   applyGrade,
@@ -50,6 +51,7 @@ function findCardsForAnswer(answerText = '') {
 }
 
 export function ProgressProvider({ children }) {
+  const [sessionSeed] = useState(() => `${Date.now()}-${Math.random().toString(36).slice(2)}`)
   const [cardProgress, setCardProgress] = useLocalStorage('card-progress', {})
   const [dailyTasks, setDailyTasks] = useLocalStorage('daily-tasks', {
     date: todayKey(),
@@ -256,9 +258,18 @@ export function ProgressProvider({ children }) {
       return normalizeEntry(cardProgress[id], today)
     }
 
-    const vocabCards = resolveCards(plan.vocabIds)
-    const grammarCards = resolveCards(plan.grammarIds)
-    const reviewCards = resolveCards(liveReviewIds)
+    const vocabCards = seededShuffle(
+      resolveCards(plan.vocabIds),
+      `session:${sessionSeed}:vocab`,
+    )
+    const grammarCards = seededShuffle(
+      resolveCards(plan.grammarIds),
+      `session:${sessionSeed}:grammar`,
+    )
+    const reviewCards = seededShuffle(
+      resolveCards(liveReviewIds),
+      `session:${sessionSeed}:review`,
+    )
 
     const vocabStudied = plan.vocabIds.filter((id) => studied.has(id)).length
     const grammarStudied = plan.grammarIds.filter((id) => studied.has(id)).length
@@ -302,6 +313,7 @@ export function ProgressProvider({ children }) {
     dailyTasks,
     dailyPlan,
     quizStats,
+    sessionSeed,
     setCardProgress,
     setDailyTasks,
     setDailyPlan,

@@ -208,7 +208,14 @@ export function withShuffledOptions(question) {
 export function pickQuiz(count = 10, type = 'all') {
   const pool =
     type === 'all' ? quizQuestions : quizQuestions.filter((q) => q.type === type)
-  return shuffle(pool)
+  // Fresh entropy every call so reload / retake never repeats the same order
+  const entropy = `${Date.now()}-${Math.random()}`
+  const ordered = shuffle(pool).map((q, i) => ({
+    q,
+    key: `${entropy}:${i}:${Math.random()}`,
+  }))
+  ordered.sort((a, b) => (a.key < b.key ? -1 : 1))
+  return ordered
     .slice(0, Math.min(count, pool.length))
-    .map(withShuffledOptions)
+    .map((item) => withShuffledOptions(item.q))
 }

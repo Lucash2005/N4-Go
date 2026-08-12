@@ -82,7 +82,7 @@ export default function Dashboard() {
               <div>
                 <p className="font-medium text-ink">聽力練習</p>
                 <p className="mt-0.5 text-xs text-ink-soft">
-                  播放今日單字發音 {listenCount}/{listenTarget}
+                  循環播放單字＋例句 {listenCount}/{listenTarget}（可鎖屏）
                 </p>
               </div>
               <div className="flex gap-2">

@@ -1,3 +1,5 @@
+import { stopPlaylist } from './playlistPlayer'
+
 let preferredVoice = null
 let audioEl = null
 let objectUrl = null
@@ -116,6 +118,13 @@ function playUrl(url, onFail) {
 export function speakJapanese(text, options = {}) {
   if (typeof window === 'undefined') return Promise.resolve({ engine: 'none' })
 
+  // Single-clip speak should not fight the loop player
+  try {
+    stopPlaylist()
+  } catch {
+    /* playlist module optional during init */
+  }
+
   const cleaned = String(text || '').trim()
   const clipUrl = options.clipUrl
   const onEngine = options.onEngine
@@ -180,4 +189,9 @@ export function speakJapanese(text, options = {}) {
 
 export function stopSpeaking() {
   stopAudio()
+  try {
+    stopPlaylist()
+  } catch {
+    /* ignore */
+  }
 }
