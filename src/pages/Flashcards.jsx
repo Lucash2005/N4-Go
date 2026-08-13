@@ -1,8 +1,10 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
-import { grammar } from '../data/grammar'
-import { vocabulary } from '../data/vocabulary'
 import FuriganaText from '../components/FuriganaText'
+import PronounceCoach from '../components/PronounceCoach'
+import { grammar } from '../data/grammar'
+import { withMemory } from '../data/memory'
+import { vocabulary } from '../data/vocabulary'
 import { useProgress } from '../hooks/useProgress'
 import { useSettings } from '../hooks/useSettings'
 import { seededShuffle } from '../utils/dailyPlan'
@@ -168,7 +170,7 @@ export default function Flashcards() {
   }, [playlist.track?.id, playlist.playing])
 
   const safeIndex = deck.length ? Math.min(index, deck.length - 1) : 0
-  const card = deck[safeIndex]
+  const card = withMemory(deck[safeIndex])
   const entry = card ? getEntry?.(card.id) || normalizeEntry(cardProgress[card.id]) : null
 
   function go(delta) {
@@ -597,14 +599,22 @@ export default function Flashcards() {
 
               <CardFace className="absolute inset-0 [backface-visibility:hidden] [transform:rotateY(180deg)]">
                 <Badge>{card.category}</Badge>
-                <p className="mt-4 text-2xl font-bold text-ink">{card.meaning}</p>
+                {card.pos ? (
+                  <p className="mt-3 text-xs font-medium text-sea-deep">{card.pos}</p>
+                ) : null}
+                <p className="mt-2 text-2xl font-bold text-ink">{card.meaning}</p>
                 {(showFurigana || hideReadingOnFront) && card.reading ? (
                   <p className="mt-1 text-sm text-sea-deep">{card.reading}</p>
                 ) : null}
                 {card.pattern ? (
                   <p className="mt-2 text-sm text-sea-deep">句型：{card.pattern}</p>
                 ) : null}
-                <div className="mt-5 rounded-2xl bg-foam/80 p-4 text-left">
+                {card.memory ? (
+                  <p className="mt-3 rounded-xl bg-sand/70 px-3 py-2 text-left text-xs leading-relaxed text-ink">
+                    記憶：{card.memory}
+                  </p>
+                ) : null}
+                <div className="mt-4 rounded-2xl bg-foam/80 p-4 text-left">
                   <p className="text-base leading-relaxed text-ink">
                     <FuriganaText
                       text={card.example}
@@ -634,6 +644,8 @@ export default function Flashcards() {
             </ActionButton>
             {!srsMode ? <ActionButton onClick={() => go(1)}>下一張</ActionButton> : null}
           </div>
+
+          {card.type === 'vocab' && flipped ? <PronounceCoach card={card} /> : null}
 
           {srsMode ? (
             flipped ? (
