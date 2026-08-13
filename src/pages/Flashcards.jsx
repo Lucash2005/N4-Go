@@ -1,7 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import FuriganaText from '../components/FuriganaText'
-import PronounceCoach from '../components/PronounceCoach'
 import { grammar } from '../data/grammar'
 import { withMemory } from '../data/memory'
 import { vocabulary } from '../data/vocabulary'
@@ -644,8 +643,6 @@ export default function Flashcards() {
             </ActionButton>
             {!srsMode ? <ActionButton onClick={() => go(1)}>下一張</ActionButton> : null}
           </div>
-
-          {card.type === 'vocab' && flipped ? <PronounceCoach card={card} /> : null}
 
           {srsMode ? (
             flipped ? (
