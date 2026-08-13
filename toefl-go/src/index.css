@@ -1,0 +1,89 @@
+@import "tailwindcss";
+
+@theme {
+  --font-display: "Fraunces", "Noto Serif TC", serif;
+  --font-sans: "Karla", "Noto Sans TC", sans-serif;
+  --color-ink: #16323c;
+  --color-ink-soft: #4a6670;
+  --color-tide: #1f4e5f;
+  --color-tide-deep: #163a47;
+  --color-amber: #c47a2c;
+  --color-amber-soft: #f0d9b8;
+  --color-mist: #e7eef0;
+  --color-paper: #f7f4ee;
+  --color-line: #d5e0e4;
+  --color-coral: #c45c4a;
+}
+
+@layer base {
+  html {
+    font-family: var(--font-sans);
+    color: var(--color-ink);
+    background:
+      radial-gradient(1200px 600px at 10% -10%, #d9ebe8 0%, transparent 55%),
+      radial-gradient(900px 500px at 100% 0%, #f3e4cf 0%, transparent 50%),
+      linear-gradient(180deg, #f3f6f4 0%, #eef2f1 40%, #f7f4ee 100%);
+    min-height: 100%;
+  }
+
+  body {
+    margin: 0;
+    min-height: 100dvh;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  #root {
+    min-height: 100dvh;
+  }
+
+  button,
+  input,
+  textarea {
+    font: inherit;
+  }
+}
+
+@layer utilities {
+  .font-display {
+    font-family: var(--font-display);
+  }
+
+  .surface {
+    background: color-mix(in oklab, white 82%, var(--color-mist));
+    border: 1px solid color-mix(in oklab, var(--color-line) 80%, white);
+    backdrop-filter: blur(8px);
+  }
+
+  .soft-shadow {
+    box-shadow: 0 10px 30px rgba(22, 50, 60, 0.06);
+  }
+
+  .touch-target {
+    min-height: 44px;
+  }
+
+  .animate-fade-up {
+    animation: fade-up 0.45s ease both;
+  }
+
+  .stagger-1 {
+    animation-delay: 0.05s;
+  }
+  .stagger-2 {
+    animation-delay: 0.1s;
+  }
+  .stagger-3 {
+    animation-delay: 0.15s;
+  }
+}
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
