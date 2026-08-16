@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom'
 import Countdown from '../components/Countdown'
 import ProgressBar from '../components/ProgressBar'
 import { useProgress } from '../hooks/useProgress'
+import { getPlanProgress } from '../utils/planProgress'
 
 export default function Dashboard() {
   const {
@@ -29,10 +30,59 @@ export default function Dashboard() {
   } = useProgress()
 
   const doneCount = dailyTasks.filter((t) => t.done).length
+  const quizRate =
+    quizStats.attempted > 0
+      ? Math.round((quizStats.correct / quizStats.attempted) * 100)
+      : null
+  const plan = getPlanProgress({
+    learnedVocab,
+    learnedGrammar,
+    quizRate,
+    appVocab: totalVocabInApp,
+    appGrammar: totalGrammarInApp,
+  })
+  const planStatus =
+    plan.severity === 'ok' ? '進度正常' : plan.severity === 'mid' ? '略為落後' : '明顯落後'
+  const planTone =
+    plan.severity === 'ok'
+      ? 'bg-sea/15 text-sea-deep'
+      : plan.severity === 'mid'
+        ? 'bg-sand text-ink'
+        : 'bg-coral/15 text-coral'
 
   return (
     <div className="space-y-5">
       <Countdown />
+
+      <section className="surface soft-shadow animate-fade-up stagger-1 rounded-3xl p-5 sm:p-6">
+        <div className="flex flex-wrap items-start justify-between gap-3">
+          <div>
+            <h2 className="font-display text-xl font-bold text-ink">計畫進度</h2>
+            <p className="mt-1 text-sm text-ink-soft">
+              對照「學習計畫總覽」目標 · 本月 {plan.currentMilestone?.label}
+            </p>
+          </div>
+          <span className={`rounded-full px-3 py-1 text-xs font-medium ${planTone}`}>
+            {planStatus}
+          </span>
+        </div>
+        <div className="mt-4 grid gap-2 text-sm text-ink-soft sm:grid-cols-2">
+          <p>
+            單字 {learnedVocab}／此時應約 {plan.expected.vocab}
+            {plan.behind.vocab ? ` · 落後約 ${Math.max(0, Math.round(plan.gap.vocab))}` : ''}
+          </p>
+          <p>
+            文法 {learnedGrammar}／此時應約 {plan.expected.grammar}
+            {plan.behind.grammar ? ` · 落後約 ${Math.max(0, Math.round(plan.gap.grammar))}` : ''}
+          </p>
+        </div>
+        <Link
+          to="/schedule"
+          className="mt-4 inline-flex rounded-xl bg-sea px-4 py-2.5 text-sm text-white hover:bg-sea-deep"
+        >
+          看差距與補救措施 →
+        </Link>
+      </section>
 
       <section className="surface soft-shadow animate-fade-up stagger-1 rounded-3xl p-5 sm:p-6">
         <div className="mb-4 flex flex-wrap items-end justify-between gap-3">
