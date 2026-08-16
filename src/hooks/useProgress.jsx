@@ -41,6 +41,8 @@ function sameIds(a = [], b = []) {
 function findCardsForAnswer(answerText = '') {
   const text = answerText.trim()
   if (!text) return []
+  const byId = ALL_CARDS.find((c) => c.id === text)
+  if (byId) return [byId]
   return ALL_CARDS.filter(
     (c) =>
       c.word === text ||

@@ -30,7 +30,7 @@ const MODE_META = {
   },
   'today-grammar': {
     title: '今日文法',
-    hint: '先回想用法，翻面後評分，系統會安排下次出現時間',
+    hint: '先想「什麼時候用」，翻面看接續步驟與易混對照，例句跟讀 2 次再評分',
   },
   'today-review': {
     title: '到期複習',
@@ -587,7 +587,11 @@ export default function Flashcards() {
                   {card.word}
                 </p>
                 {hideReadingOnFront ? (
-                  <p className="mt-3 text-sm text-ink-soft">先想讀音與意思，再翻面</p>
+                  <p className="mt-3 text-sm text-ink-soft">
+                    {card.type === 'grammar'
+                      ? '先想：什麼時候用？怎麼接？'
+                      : '先想讀音與意思，再翻面'}
+                  </p>
                 ) : showFurigana ? (
                   <p className="mt-3 text-lg text-sea-deep">{card.reading}</p>
                 ) : hasKanji(card.word) ? (
@@ -608,11 +612,40 @@ export default function Flashcards() {
                 {card.pattern ? (
                   <p className="mt-2 text-sm text-sea-deep">句型：{card.pattern}</p>
                 ) : null}
-                {card.memory ? (
+
+                {card.type === 'grammar' ? (
+                  <div className="mt-3 space-y-2 text-left text-xs leading-relaxed text-ink">
+                    {card.useWhen ? (
+                      <p className="rounded-xl bg-foam/90 px-3 py-2">
+                        <span className="font-medium text-sea-deep">場面：</span>
+                        {card.useWhen}
+                      </p>
+                    ) : null}
+                    {card.form ? (
+                      <p className="whitespace-pre-line rounded-xl bg-sand/80 px-3 py-2">
+                        <span className="font-medium text-sea-deep">接續：</span>
+                        {card.form}
+                      </p>
+                    ) : null}
+                    {card.compare ? (
+                      <p className="rounded-xl bg-white/80 px-3 py-2 ring-1 ring-line/60">
+                        <span className="font-medium text-sea-deep">對照：</span>
+                        {card.compare}
+                      </p>
+                    ) : null}
+                    {card.tip ? (
+                      <p className="rounded-xl bg-sea/10 px-3 py-2">
+                        <span className="font-medium text-sea-deep">口訣：</span>
+                        {card.tip}
+                      </p>
+                    ) : null}
+                  </div>
+                ) : card.memory ? (
                   <p className="mt-3 rounded-xl bg-sand/70 px-3 py-2 text-left text-xs leading-relaxed text-ink">
                     記憶：{card.memory}
                   </p>
                 ) : null}
+
                 <div className="mt-4 rounded-2xl bg-foam/80 p-4 text-left">
                   <p className="text-base leading-relaxed text-ink">
                     <FuriganaText

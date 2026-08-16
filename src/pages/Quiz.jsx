@@ -42,6 +42,8 @@ export default function Quiz() {
       correctRef.current += 1
       setCorrectCount(correctRef.current)
     } else {
+      if (question.grammarId) missedRef.current.push(question.grammarId)
+      if (question.vocabId) missedRef.current.push(question.vocabId)
       const correctText = question.options[question.answer]
       if (correctText) missedRef.current.push(correctText)
     }
@@ -196,6 +198,34 @@ export default function Quiz() {
               {selected === question.answer ? '答對了！' : '再接再厲'}
             </p>
             <p className="mt-2 text-sm leading-relaxed text-ink">{question.explanation}</p>
+            {question.memoryTip || question.memoryForm || question.memoryCompare ? (
+              <div className="mt-3 space-y-1.5 rounded-xl bg-white/80 px-3 py-2 text-xs leading-relaxed text-ink ring-1 ring-line/50">
+                {question.memoryUseWhen ? (
+                  <p>
+                    <span className="font-medium text-sea-deep">場面：</span>
+                    {question.memoryUseWhen}
+                  </p>
+                ) : null}
+                {question.memoryForm ? (
+                  <p className="whitespace-pre-line">
+                    <span className="font-medium text-sea-deep">接續：</span>
+                    {question.memoryForm}
+                  </p>
+                ) : null}
+                {question.memoryCompare ? (
+                  <p>
+                    <span className="font-medium text-sea-deep">對照：</span>
+                    {question.memoryCompare}
+                  </p>
+                ) : null}
+                {question.memoryTip ? (
+                  <p>
+                    <span className="font-medium text-sea-deep">口訣：</span>
+                    {question.memoryTip}
+                  </p>
+                ) : null}
+              </div>
+            ) : null}
             <button
               type="button"
               onClick={next}

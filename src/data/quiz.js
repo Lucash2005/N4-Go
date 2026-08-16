@@ -1,4 +1,6 @@
-/** @typedef {{ id: string, type: 'vocab'|'grammar'|'reading', prompt: string, passage?: string, options: string[], answer: number, explanation: string }} QuizQuestion */
+import { GRAMMAR_MEMORY } from './memory'
+
+/** @typedef {{ id: string, type: 'vocab'|'grammar'|'reading', prompt: string, passage?: string, options: string[], answer: number, explanation: string, grammarId?: string, vocabId?: string }} QuizQuestion */
 
 /** @type {QuizQuestion[]} */
 export const quizQuestions = [
@@ -45,6 +47,7 @@ export const quizQuestions = [
   {
     id: 'q006',
     type: 'grammar',
+    grammarId: 'g001',
     prompt: '空欄に入る最も適当なものを選んでください。\n友達に本を貸して（　）。',
     options: ['あげました', 'もらいました', 'くれました', 'しまいました'],
     answer: 0,
@@ -53,6 +56,7 @@ export const quizQuestions = [
   {
     id: 'q007',
     type: 'grammar',
+    grammarId: 'g002',
     prompt: '空欄に入る最も適当なものを選んでください。\n先生に作文を直して（　）。',
     options: ['もらいました', 'あげました', 'やりました', 'しました'],
     answer: 0,
@@ -61,6 +65,7 @@ export const quizQuestions = [
   {
     id: 'q008',
     type: 'grammar',
+    grammarId: 'g005',
     prompt: '空欄に入る最も適当なものを選んでください。\n明日は会社へ行かなくても（　）。',
     options: ['いいです', 'なりません', 'だめです', 'ほしいです'],
     answer: 0,
@@ -69,6 +74,7 @@ export const quizQuestions = [
   {
     id: 'q009',
     type: 'grammar',
+    grammarId: 'g006',
     prompt: '空欄に入る最も適当なものを選んでください。\nもっと野菜を食べた（　）いいです。',
     options: ['ほうが', 'つもりが', '予定が', 'ところ'],
     answer: 0,
@@ -77,6 +83,7 @@ export const quizQuestions = [
   {
     id: 'q010',
     type: 'grammar',
+    grammarId: 'g007',
     prompt: '空欄に入る最も適当なものを選んでください。\n来年日本へ留学する（　）です。',
     options: ['つもり', 'すぎ', 'ばかり', 'らしい'],
     answer: 0,
@@ -85,6 +92,7 @@ export const quizQuestions = [
   {
     id: 'q011',
     type: 'grammar',
+    grammarId: 'g009',
     prompt: '空欄に入る最も適当なものを選んでください。\nこのケーキはおいし（　）。',
     options: ['そうです', 'らしいです', 'かもしれません', 'ばかりです'],
     answer: 0,
@@ -93,6 +101,7 @@ export const quizQuestions = [
   {
     id: 'q012',
     type: 'grammar',
+    grammarId: 'g015',
     prompt: '空欄に入る最も適当なものを選んでください。\n雨が降っ（　）、家にいます。',
     options: ['たら', 'ても', 'のに', 'ば'],
     answer: 0,
@@ -101,6 +110,7 @@ export const quizQuestions = [
   {
     id: 'q013',
     type: 'grammar',
+    grammarId: 'g017',
     prompt: '空欄に入る最も適当なものを選んでください。\n勉強した（　）、試験に落ちました。',
     options: ['のに', 'たら', 'ても', 'ば'],
     answer: 0,
@@ -109,6 +119,7 @@ export const quizQuestions = [
   {
     id: 'q014',
     type: 'grammar',
+    grammarId: 'g019',
     prompt: '空欄に入る最も適当なものを選んでください。\n日本に来た（　）です。',
     options: ['ばかり', 'すぎ', 'つもり', 'そう'],
     answer: 0,
@@ -170,6 +181,7 @@ export const quizQuestions = [
   {
     id: 'q019',
     type: 'grammar',
+    grammarId: 'g021',
     prompt: '空欄に入る最も適当なものを選んでください。\n日本語が話せる（　）なりました。',
     options: ['ように', 'ために', 'ことに', 'までに'],
     answer: 0,
@@ -178,10 +190,45 @@ export const quizQuestions = [
   {
     id: 'q020',
     type: 'grammar',
+    grammarId: 'g022',
     prompt: '空欄に入る最も適当なものを選んでください。\n食べ（　）ました。お腹が痛いです。',
     options: ['すぎ', 'やす', 'にく', 'そう'],
     answer: 0,
     explanation: '「食べすぎる」表示「吃太多」。',
+  },
+  {
+    id: 'q021',
+    type: 'grammar',
+    grammarId: 'g004',
+    prompt: '空欄に入る最も適当なものを選んでください。\n明日は早く起き（　）。',
+    options: ['なければなりません', 'なくてもいいです', 'たほうがいいです', 'つもりです'],
+    answer: 0,
+    explanation:
+      '「〜なければならない」＝義務／必須。對照：なくてもいい＝不必；ほうがいい＝建議。',
+  },
+  {
+    id: 'q022',
+    type: 'grammar',
+    grammarId: 'g004',
+    prompt: '「行く」を「〜なければならない」の形にすると正しいのはどれですか。',
+    options: [
+      '行かなければならない',
+      '行きなければならない',
+      '行くなければならない',
+      '行ったなければならない',
+    ],
+    answer: 0,
+    explanation:
+      '步驟：行く→行かない（ない形）→去掉い→行かなけれ＋ばならない＝行かなければならない。',
+  },
+  {
+    id: 'q023',
+    type: 'grammar',
+    grammarId: 'g004',
+    prompt: '次の文の意味に合うものを選んでください。\nパスポートを持っていかなければなりません。',
+    options: ['必須帶護照去', '不必帶護照去', '最好帶護照去', '打算帶護照去'],
+    answer: 0,
+    explanation: 'なければならない＝「不…就不行」＝必須。口語常說「持っていかなきゃ」。',
   },
 ]
 
@@ -205,6 +252,20 @@ export function withShuffledOptions(question) {
   }
 }
 
+function enrichQuestion(question) {
+  if (question.grammarId && GRAMMAR_MEMORY[question.grammarId]) {
+    const m = GRAMMAR_MEMORY[question.grammarId]
+    return {
+      ...question,
+      memoryUseWhen: m.useWhen,
+      memoryForm: m.form,
+      memoryCompare: m.compare,
+      memoryTip: m.tip,
+    }
+  }
+  return question
+}
+
 export function pickQuiz(count = 10, type = 'all') {
   const pool =
     type === 'all' ? quizQuestions : quizQuestions.filter((q) => q.type === type)
@@ -217,5 +278,5 @@ export function pickQuiz(count = 10, type = 'all') {
   ordered.sort((a, b) => (a.key < b.key ? -1 : 1))
   return ordered
     .slice(0, Math.min(count, pool.length))
-    .map((item) => withShuffledOptions(item.q))
+    .map((item) => withShuffledOptions(enrichQuestion(item.q)))
 }

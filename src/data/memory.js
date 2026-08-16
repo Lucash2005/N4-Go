@@ -1,4 +1,4 @@
-/** Extra memory fields keyed by vocab id */
+/** Vocab memory hints keyed by card id */
 export const VOCAB_MEMORY = {
   v001: { pos: '名詞／サ變', memory: 'りょ＋こう：踏上旅行的路。也可說「旅行する」。' },
   v002: { pos: '名詞', memory: 'つごう＝當時方不方便的「情況」。都合がいい／悪い。' },
@@ -42,8 +42,171 @@ export const VOCAB_MEMORY = {
   v040: { pos: 'ナ形容詞', memory: 'ふくざつ：複雜。對義：簡単。' },
 }
 
+/**
+ * Grammar memory: useWhen / form / compare / tip
+ * Keep short — shown on card back.
+ */
+export const GRAMMAR_MEMORY = {
+  g001: {
+    useWhen: '我幫別人做事',
+    form: '動詞て形 ＋ あげる',
+    compare: 'あげる＝我幫你；もらう＝我請你幫；くれる＝你幫我',
+    tip: '我把好意「給」出去 → てあげる',
+  },
+  g002: {
+    useWhen: '我請別人幫我',
+    form: '動詞て形 ＋ もらう',
+    compare: '主語是「我」；動作是別人做的',
+    tip: '我「領」到別人的幫忙 → てもらう',
+  },
+  g003: {
+    useWhen: '別人主動幫我／我們',
+    form: '動詞て形 ＋ くれる',
+    compare: '方向朝向說話者；常帶感謝感',
+    tip: '好意朝我來 → てくれる',
+  },
+  g004: {
+    useWhen: '義務／規則：不做不行（考試、上班、規則）',
+    form: '①改成ない形 ②去掉い ③加ければならない\n例：起きる→起きない→起きなければ→起きなければならない\n行く→行かない→行かなければ→行かなければならない',
+    compare: '必須：なければならない｜不必：なくてもいい｜建議：ほうがいい',
+    tip: '拆開記：なければ（如果不）＋ならない（不行）＝「不…就不行」＝必須。口語：なきゃ／なくちゃ。',
+  },
+  g005: {
+    useWhen: '允許不做、沒有義務',
+    form: 'ない形去掉い ＋ なくてもいい',
+    compare: '對義：なければならない（必須）',
+    tip: 'なくてもいい＝不做也 OK',
+  },
+  g006: {
+    useWhen: '給建議（最好…）',
+    form: 'た形／ない形 ＋ ほうがいい',
+    compare: '比なければならない語氣軟，是建議不是命令',
+    tip: 'ほうがいい＝這條路比較好',
+  },
+  g007: {
+    useWhen: '個人打算／意志',
+    form: '辞書形／ない形 ＋ つもりだ',
+    compare: 'つもり＝我打算；予定＝行程上已排定',
+    tip: 'つもりの「心裡計畫」',
+  },
+  g008: {
+    useWhen: '已排進行程的預定',
+    form: '辞書形／名詞の ＋ 予定だ',
+    compare: '予定偏正式行程；つもり偏個人想法',
+    tip: '予定＝行程表上的安排',
+  },
+  g009: {
+    useWhen: '用眼睛／感覺判斷「看起來」',
+    form: 'い形去い／な形／ます形 ＋ そうだ',
+    compare: '樣態：おいしそう｜傳聞：おいしいそう（接普通形）',
+    tip: '樣態＝眼前看起來；不要加「だ／です」在普通形後再接',
+  },
+  g010: {
+    useWhen: '轉述聽說的事',
+    form: '普通形 ＋ そうだ',
+    compare: '傳聞そうだ＝聽說；樣態そうだ＝看起來',
+    tip: '先有完整句，再加そうだ＝聽說',
+  },
+  g011: {
+    useWhen: '依傳聞／特徵推測「好像是」',
+    form: '普通形 ＋ らしい',
+    compare: 'らしい偏傳聞印象；ようだ偏自己觀察',
+    tip: 'らしい＝聽來／看來像那回事',
+  },
+  g012: {
+    useWhen: '依自己觀察的推測／比喻',
+    form: '普通形 ＋ ようだ',
+    compare: 'ようだ＝我覺得像；らしい＝聽說像',
+    tip: 'よう＝樣子，依眼前跡象判斷',
+  },
+  g013: {
+    useWhen: '不確定、只是可能',
+    form: '普通形 ＋ かもしれない',
+    compare: '比ようだ／らしい更不確定',
+    tip: 'かもしれない＝也許吧（五五波）',
+  },
+  g014: {
+    useWhen: '一般條件「如果…就」',
+    form: 'ば形（仮定形）',
+    compare: 'ば偏一般法則；たら最常用、也可用於具體情況',
+    tip: '安ければ＝如果便宜的話',
+  },
+  g015: {
+    useWhen: '如果…／…之後（最常用條件）',
+    form: 'た形 ＋ ら',
+    compare: 'たら萬能；ても＝即使也；のに＝卻',
+    tip: '〜たら先記這一個條件就夠應付多數情況',
+  },
+  g016: {
+    useWhen: '即使…也仍然',
+    form: 'て形 ＋ も',
+    compare: 'ても＝逆條件；のに＝意外／不滿',
+    tip: 'ても＝就算…也',
+  },
+  g017: {
+    useWhen: '明明…卻（意外或不滿）',
+    form: '普通形 ＋ のに',
+    compare: 'のに有情緒；ても較中性',
+    tip: 'のに＝結果跟預期相反',
+  },
+  g018: {
+    useWhen: '正要／正在／剛做完的時間點',
+    form: '辞書形／ている／た ＋ ところだ',
+    compare: 'ところ＝時間點；たばかり＝剛做不久（偏主觀）',
+    tip: '辞書形ところ＝正要；たところ＝剛做完',
+  },
+  g019: {
+    useWhen: '強調「剛剛才…」',
+    form: 'た形 ＋ ばかり',
+    compare: 'たばかり偏主觀不久前；たところ偏剛完成的瞬間',
+    tip: 'ばかり＝才剛而已',
+  },
+  g020: {
+    useWhen: '提醒自己努力養成習慣',
+    form: '辞書形／ない形 ＋ ようにする',
+    compare: 'ようにする＝我努力做；ようになる＝變得會',
+    tip: 'する＝我去做這件事',
+  },
+  g021: {
+    useWhen: '能力／習慣改變的結果',
+    form: '辞書形／ない形 ＋ ようになる',
+    compare: 'なる＝自然變成；する＝人為努力',
+    tip: 'ようになる＝變得能夠／開始會',
+  },
+  g022: {
+    useWhen: '程度過頭',
+    form: 'ます形／い形語幹／な形 ＋ すぎる',
+    compare: 'すぎる＝太多／太…',
+    tip: '食べすぎ＝吃過頭',
+  },
+  g023: {
+    useWhen: '難易評價',
+    form: 'ます形 ＋ やすい／にくい',
+    compare: 'やすい＝容易；にくい＝難／不易',
+    tip: '読みやすい＝好讀',
+  },
+  g024: {
+    useWhen: '在某段時間內發生另一件事',
+    form: 'Nの／Vている ＋ 間に',
+    compare: '間に強調期間內完成／發生',
+    tip: '〜の間に＝趁這段時間',
+  },
+}
+
 export function withMemory(card) {
   if (!card) return card
+  if (card.type === 'grammar') {
+    const extra = GRAMMAR_MEMORY[card.id]
+    if (!extra) return card
+    return {
+      ...card,
+      useWhen: extra.useWhen,
+      form: extra.form,
+      compare: extra.compare,
+      tip: extra.tip,
+      memory: extra.tip,
+    }
+  }
   const extra = VOCAB_MEMORY[card.id]
   if (!extra) return card
   return { ...card, pos: extra.pos, memory: extra.memory }
