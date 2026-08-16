@@ -199,7 +199,7 @@ export default function Quiz() {
             </p>
             <p className="mt-2 text-sm leading-relaxed text-ink">{question.explanation}</p>
             {question.memoryTip || question.memoryForm || question.memoryCompare ? (
-              <div className="mt-3 space-y-1.5 rounded-xl bg-white/80 px-3 py-2 text-xs leading-relaxed text-ink ring-1 ring-line/50">
+              <div className="mt-3 space-y-2 rounded-xl bg-white/80 px-3.5 py-3 text-sm leading-relaxed text-ink ring-1 ring-line/50">
                 {question.memoryUseWhen ? (
                   <p>
                     <span className="font-medium text-sea-deep">場面：</span>

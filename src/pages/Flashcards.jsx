@@ -564,7 +564,7 @@ export default function Flashcards() {
       ) : (
         <>
           <article
-            className="animate-flip-in soft-shadow relative min-h-[320px] cursor-pointer rounded-3xl [perspective:1200px]"
+            className="animate-flip-in soft-shadow relative cursor-pointer rounded-3xl [perspective:1200px]"
             onClick={flipCard}
             onKeyDown={(e) => {
               if (e.key === 'Enter' || e.key === ' ') {
@@ -576,78 +576,82 @@ export default function Flashcards() {
             tabIndex={0}
             aria-label="翻轉卡片"
           >
+            {/* Grid stack: height follows the taller face so content never covers play buttons */}
             <div
-              className={`relative h-full min-h-[320px] transition-transform duration-500 [transform-style:preserve-3d] ${
+              className={`grid min-h-[280px] transition-transform duration-500 [grid-template-areas:'stack'] [transform-style:preserve-3d] ${
                 flipped ? '[transform:rotateY(180deg)]' : ''
               }`}
             >
-              <CardFace className="absolute inset-0 [backface-visibility:hidden]">
+              <CardFace className="[grid-area:stack] [backface-visibility:hidden]">
                 <Badge>{card.type === 'vocab' ? '單字' : '文法'}</Badge>
                 <p className="mt-6 font-display text-4xl font-bold text-ink sm:text-5xl">
                   {card.word}
                 </p>
                 {hideReadingOnFront ? (
-                  <p className="mt-3 text-sm text-ink-soft">
+                  <p className="mt-3 text-base text-ink-soft">
                     {card.type === 'grammar'
                       ? '先想：什麼時候用？怎麼接？'
                       : '先想讀音與意思，再翻面'}
                   </p>
                 ) : showFurigana ? (
-                  <p className="mt-3 text-lg text-sea-deep">{card.reading}</p>
+                  <p className="mt-3 text-xl text-sea-deep">{card.reading}</p>
                 ) : hasKanji(card.word) ? (
-                  <p className="mt-3 text-sm text-ink-soft">音標已隱藏</p>
+                  <p className="mt-3 text-base text-ink-soft">音標已隱藏</p>
                 ) : null}
-                <p className="mt-8 text-sm text-ink-soft">點擊查看釋義與例句</p>
+                <p className="mt-8 text-base text-ink-soft">點擊查看釋義與例句</p>
               </CardFace>
 
-              <CardFace className="absolute inset-0 [backface-visibility:hidden] [transform:rotateY(180deg)]">
+              <CardFace
+                align="start"
+                className="[grid-area:stack] [backface-visibility:hidden] [transform:rotateY(180deg)]"
+              >
                 <Badge>{card.category}</Badge>
                 {card.pos ? (
-                  <p className="mt-3 text-xs font-medium text-sea-deep">{card.pos}</p>
+                  <p className="mt-3 text-sm font-medium text-sea-deep">{card.pos}</p>
                 ) : null}
-                <p className="mt-2 text-2xl font-bold text-ink">{card.meaning}</p>
+                <p className="mt-2 text-3xl font-bold text-ink">{card.meaning}</p>
                 {(showFurigana || hideReadingOnFront) && card.reading ? (
-                  <p className="mt-1 text-sm text-sea-deep">{card.reading}</p>
+                  <p className="mt-1 text-base text-sea-deep">{card.reading}</p>
                 ) : null}
                 {card.pattern ? (
-                  <p className="mt-2 text-sm text-sea-deep">句型：{card.pattern}</p>
+                  <p className="mt-2 text-base text-sea-deep">句型：{card.pattern}</p>
                 ) : null}
 
                 {card.type === 'grammar' ? (
-                  <div className="mt-3 space-y-2 text-left text-xs leading-relaxed text-ink">
+                  <div className="mt-4 w-full space-y-2.5 text-left text-sm leading-relaxed text-ink sm:text-base">
                     {card.useWhen ? (
-                      <p className="rounded-xl bg-foam/90 px-3 py-2">
+                      <p className="rounded-xl bg-foam/90 px-3.5 py-2.5">
                         <span className="font-medium text-sea-deep">場面：</span>
                         {card.useWhen}
                       </p>
                     ) : null}
                     {card.form ? (
-                      <p className="whitespace-pre-line rounded-xl bg-sand/80 px-3 py-2">
+                      <p className="whitespace-pre-line rounded-xl bg-sand/80 px-3.5 py-2.5">
                         <span className="font-medium text-sea-deep">接續：</span>
                         {card.form}
                       </p>
                     ) : null}
                     {card.compare ? (
-                      <p className="rounded-xl bg-white/80 px-3 py-2 ring-1 ring-line/60">
+                      <p className="rounded-xl bg-white/80 px-3.5 py-2.5 ring-1 ring-line/60">
                         <span className="font-medium text-sea-deep">對照：</span>
                         {card.compare}
                       </p>
                     ) : null}
                     {card.tip ? (
-                      <p className="rounded-xl bg-sea/10 px-3 py-2">
+                      <p className="rounded-xl bg-sea/10 px-3.5 py-2.5">
                         <span className="font-medium text-sea-deep">口訣：</span>
                         {card.tip}
                       </p>
                     ) : null}
                   </div>
                 ) : card.memory ? (
-                  <p className="mt-3 rounded-xl bg-sand/70 px-3 py-2 text-left text-xs leading-relaxed text-ink">
+                  <p className="mt-4 w-full rounded-xl bg-sand/70 px-3.5 py-2.5 text-left text-sm leading-relaxed text-ink sm:text-base">
                     記憶：{card.memory}
                   </p>
                 ) : null}
 
-                <div className="mt-4 rounded-2xl bg-foam/80 p-4 text-left">
-                  <p className="text-base leading-relaxed text-ink">
+                <div className="mt-4 w-full rounded-2xl bg-foam/80 p-4 text-left">
+                  <p className="text-lg leading-relaxed text-ink">
                     <FuriganaText
                       text={card.example}
                       annotated={card.exampleFurigana}
@@ -655,16 +659,16 @@ export default function Flashcards() {
                     />
                   </p>
                   {showExampleMeaning ? (
-                    <p className="mt-2 text-sm text-ink-soft">{card.exampleMeaning}</p>
+                    <p className="mt-2 text-base text-ink-soft">{card.exampleMeaning}</p>
                   ) : (
-                    <p className="mt-2 text-xs text-ink-soft">中文解釋已隱藏</p>
+                    <p className="mt-2 text-sm text-ink-soft">中文解釋已隱藏</p>
                   )}
                 </div>
               </CardFace>
             </div>
           </article>
 
-          <div className="flex flex-wrap items-center justify-center gap-2">
+          <div className="relative z-10 flex flex-wrap items-center justify-center gap-3 pt-1">
             {!srsMode ? <ActionButton onClick={() => go(-1)}>上一張</ActionButton> : null}
             <ActionButton
               onClick={(e) => {
@@ -761,10 +765,12 @@ function FilterChip({ active, onClick, children }) {
   )
 }
 
-function CardFace({ className = '', children }) {
+function CardFace({ className = '', align = 'center', children }) {
   return (
     <div
-      className={`surface flex flex-col items-center justify-center rounded-3xl p-6 text-center ${className}`}
+      className={`surface flex h-full min-h-[280px] w-full flex-col items-center rounded-3xl p-5 text-center sm:p-6 ${
+        align === 'start' ? 'justify-start' : 'justify-center'
+      } ${className}`}
     >
       {children}
     </div>
@@ -784,7 +790,7 @@ function ActionButton({ onClick, children }) {
     <button
       type="button"
       onClick={onClick}
-      className="touch-target rounded-2xl bg-white px-4 py-2.5 text-sm font-medium text-ink ring-1 ring-line transition hover:bg-foam"
+      className="touch-target rounded-2xl bg-white px-5 py-3 text-base font-medium text-ink ring-1 ring-line transition hover:bg-foam"
     >
       {children}
     </button>
