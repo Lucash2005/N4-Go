@@ -1,9 +1,11 @@
 import { useMemo, useRef, useState } from 'react'
-import { pickQuiz } from '../data/quiz'
 import { useProgress } from '../hooks/useProgress'
+import { todayKey } from '../utils/storage'
+import { describeQuizSource, pickAdaptiveQuiz } from '../utils/quizFromProgress'
 
 export default function Quiz() {
-  const { recordQuiz } = useProgress()
+  const { recordQuiz, cardProgress, dailyPlan, todayVocab, todayGrammar, todayReview } =
+    useProgress()
   const [mode, setMode] = useState('all')
   const [started, setStarted] = useState(false)
   const [questions, setQuestions] = useState([])
@@ -12,6 +14,7 @@ export default function Quiz() {
   const [revealed, setRevealed] = useState(false)
   const [correctCount, setCorrectCount] = useState(0)
   const [finished, setFinished] = useState(false)
+  const [sourceInfo, setSourceInfo] = useState(null)
   const correctRef = useRef(0)
   const missedRef = useRef([])
 
@@ -21,9 +24,24 @@ export default function Quiz() {
     return `${current + 1} / ${questions.length}`
   }, [current, questions.length])
 
+  const focusHint = useMemo(() => {
+    const n =
+      (todayVocab?.length || 0) + (todayGrammar?.length || 0) + (todayReview?.length || 0)
+    return n > 0
+      ? `優先考今日 ${todayVocab?.length || 0} 單字、${todayGrammar?.length || 0} 文法，以及到期複習`
+      : '尚無今日進度時，會從全部單字／文法隨機出題'
+  }, [todayVocab, todayGrammar, todayReview])
+
   function start() {
-    const qs = pickQuiz(10, mode)
+    const qs = pickAdaptiveQuiz({
+      count: 10,
+      type: mode,
+      cardProgress,
+      dailyPlan,
+      today: todayKey(),
+    })
     setQuestions(qs)
+    setSourceInfo(describeQuizSource(qs))
     setCurrent(0)
     setSelected(null)
     setRevealed(false)
@@ -66,8 +84,9 @@ export default function Quiz() {
         <section className="animate-fade-up">
           <h2 className="font-display text-2xl font-bold text-ink">N4 模擬測驗</h2>
           <p className="mt-1 text-sm text-ink-soft">
-            隨機抽題；答錯的相關單字／文法會自動排入今日 SRS 複習。
+            依學習進度動態出題（今日計畫、到期複習優先）；每次開始都會重新抽題。答錯會排入 SRS。
           </p>
+          <p className="mt-2 text-xs text-sea-deep">{focusHint}</p>
         </section>
 
         <section className="surface soft-shadow animate-fade-up stagger-1 rounded-3xl p-5 sm:p-6">
@@ -116,6 +135,11 @@ export default function Quiz() {
           {score} / {total}
         </h2>
         <p className="mt-2 text-ink-soft">正確率 {pct}%</p>
+        {sourceInfo ? (
+          <p className="mt-2 text-xs text-ink-soft">
+            本回：進度題 {sourceInfo.dynamic} · 補充題 {sourceInfo.curated}
+          </p>
+        ) : null}
         <div className="mx-auto mt-5 h-2.5 w-full max-w-xs overflow-hidden rounded-full bg-foam">
           <div className="h-full rounded-full bg-sea" style={{ width: `${pct}%` }} />
         </div>
@@ -148,6 +172,11 @@ export default function Quiz() {
         <h2 className="font-display text-xl font-bold text-ink">模擬測驗</h2>
         <span className="rounded-full bg-foam px-3 py-1 text-xs text-sea-deep">{progressLabel}</span>
       </div>
+      {sourceInfo ? (
+        <p className="text-xs text-ink-soft">
+          依進度出題（動態 {sourceInfo.dynamic}／補充 {sourceInfo.curated}）
+        </p>
+      ) : null}
 
       <article className="surface soft-shadow animate-fade-up rounded-3xl p-5 sm:p-6">
         <span className="rounded-full bg-sea/10 px-3 py-1 text-xs font-medium text-sea-deep">
