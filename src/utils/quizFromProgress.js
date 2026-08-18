@@ -1,5 +1,6 @@
 import { grammar } from '../data/grammar'
 import { GRAMMAR_MEMORY } from '../data/memory'
+import { readingQuestions } from '../data/readings'
 import { quizQuestions, shuffle, withShuffledOptions } from '../data/quiz'
 import { vocabulary } from '../data/vocabulary'
 import { normalizeEntry } from './srs'
@@ -289,7 +290,7 @@ export function pickAdaptiveQuiz({
   let pool = shuffle(generated)
 
   if (wantReading) {
-    const readingBank = shuffle(quizQuestions.filter((q) => q.type === 'reading'))
+    const readingBank = shuffle(readingQuestions)
     const readingCount = type === 'reading' ? count : Math.min(2, readingBank.length)
     pool = [...readingBank.slice(0, readingCount), ...pool]
   }

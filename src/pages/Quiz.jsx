@@ -84,7 +84,7 @@ export default function Quiz() {
         <section className="animate-fade-up">
           <h2 className="font-display text-2xl font-bold text-ink">N4 模擬測驗</h2>
           <p className="mt-1 text-sm text-ink-soft">
-            依學習進度動態出題（今日計畫、到期複習優先）；每次開始都會重新抽題。答錯會排入 SRS。
+            依學習進度動態出題。題庫已對齊 N4 目標（單字 1500、文法 80），優先今日計畫與到期複習。
           </p>
           <p className="mt-2 text-xs text-sea-deep">{focusHint}</p>
         </section>

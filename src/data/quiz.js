@@ -1,4 +1,5 @@
 import { GRAMMAR_MEMORY } from './memory'
+import { readingQuestions } from './readings'
 
 /** @typedef {{ id: string, type: 'vocab'|'grammar'|'reading', prompt: string, passage?: string, options: string[], answer: number, explanation: string, grammarId?: string, vocabId?: string }} QuizQuestion */
 
@@ -126,51 +127,6 @@ export const quizQuestions = [
     explanation: '「〜たばかり」表示「剛剛…」。',
   },
   {
-    id: 'q015',
-    type: 'reading',
-    prompt: 'この文の内容と合っているものを選んでください。',
-    passage:
-      '山田さんは来月から大阪で働きます。今、アパートを探しています。駅から近いところがいいそうです。',
-    options: [
-      '山田さんは今大阪で働いている',
-      '山田さんは駅から近いアパートを探している',
-      '山田さんは来月アパートを探す',
-      '山田さんは駅から遠いところがいい',
-    ],
-    answer: 1,
-    explanation: '文中說他正在找公寓，且希望靠近車站，因此第二項正確。',
-  },
-  {
-    id: 'q016',
-    type: 'reading',
-    prompt: 'この文の内容と合っているものを選んでください。',
-    passage:
-      '明日は雨が降るそうです。運動会は来週に延期になりました。子どもたちは少しがっかりしています。',
-    options: [
-      '運動会は明日行われる',
-      '運動会は来週に延期された',
-      '子どもたちは喜んでいる',
-      '明日は晴れそうだ',
-    ],
-    answer: 1,
-    explanation: '「延期になりました」表示運動會延到下週。',
-  },
-  {
-    id: 'q017',
-    type: 'reading',
-    prompt: 'この文の内容と合っているものを選んでください。',
-    passage:
-      '私は毎日日本語を勉強しています。特に漢字が難しいですが、諦めずに続けています。来年の N4 に合格したいです。',
-    options: [
-      '話者は漢字が簡単だと思っている',
-      '話者は勉強をやめた',
-      '話者は来年 N4 に合格したい',
-      '話者は週に一度だけ勉強する',
-    ],
-    answer: 2,
-    explanation: '最後一句明確寫出「来年の N4 に合格したいです」。',
-  },
-  {
     id: 'q018',
     type: 'vocab',
     prompt: '空欄に入る最も適当な言葉を選んでください。\n足元に（　）してください。',
@@ -230,6 +186,7 @@ export const quizQuestions = [
     answer: 0,
     explanation: 'なければならない＝「不…就不行」＝必須。口語常說「持っていかなきゃ」。',
   },
+  ...readingQuestions,
 ]
 
 export function shuffle(array) {
