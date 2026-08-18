@@ -6,7 +6,8 @@
  *
  * Run: node scripts/generate-audio.mjs
  * Force regenerate: FORCE=1 node scripts/generate-audio.mjs
- * Only Chinese: ONLY=zh node scripts/generate-audio.mjs
+ * Only Japanese: ONLY=ja node scripts/generate-audio.mjs
+ * Concurrency: CONCURRENCY=6 node scripts/generate-audio.mjs
  */
 import { mkdirSync, writeFileSync, existsSync } from 'fs'
 import { join, dirname } from 'path'
@@ -23,55 +24,98 @@ const JA_VOICE = 'ja-JP-NanamiNeural'
 const ZH_VOICE = 'zh-TW-HsiaoChenNeural'
 const cards = [...vocabulary, ...grammar]
 const only = process.env.ONLY || 'all' // all | ja | zh
+const concurrency = Math.max(1, Number(process.env.CONCURRENCY || 6))
+const force = process.env.FORCE === '1'
 
 function sleep(ms) {
   return new Promise((r) => setTimeout(r, ms))
 }
 
 async function synthesizeToFile(text, filePath, voice) {
-  if (!text?.trim()) return false
-  if (existsSync(filePath) && process.env.FORCE !== '1') {
-    console.log('skip', filePath)
-    return true
+  if (!text?.trim()) return 'empty'
+  if (!force && existsSync(filePath)) return 'skip'
+  let lastErr
+  for (let attempt = 0; attempt < 5; attempt += 1) {
+    try {
+      const tts = new EdgeTTS(text.trim(), voice, { rate: '-5%', pitch: '+0Hz' })
+      const result = await tts.synthesize()
+      const raw = result.audio
+      const buf = Buffer.from(raw instanceof Blob ? await raw.arrayBuffer() : raw)
+      if (buf.length < 200) throw new Error(`tiny audio ${buf.length}`)
+      writeFileSync(filePath, buf)
+      return 'ok'
+    } catch (err) {
+      lastErr = err
+      await sleep(400 * (attempt + 1))
+    }
   }
-  const tts = new EdgeTTS(text.trim(), voice, { rate: '-5%', pitch: '+0Hz' })
-  const result = await tts.synthesize()
-  const raw = result.audio
-  const buf = Buffer.from(raw instanceof Blob ? await raw.arrayBuffer() : raw)
-  writeFileSync(filePath, buf)
-  console.log('ok', filePath, buf.length)
-  return true
+  throw lastErr || new Error(`failed ${filePath}`)
 }
 
-let count = 0
-for (const card of cards) {
+function jobsFor(card) {
+  const jobs = []
   if (only === 'all' || only === 'ja') {
-    const wordText = card.reading || card.word
-    const exampleText = card.example
-    await synthesizeToFile(wordText, join(outDir, `${card.id}-word.mp3`), JA_VOICE)
-    await sleep(200)
-    count += 1
-    await synthesizeToFile(exampleText, join(outDir, `${card.id}-example.mp3`), JA_VOICE)
-    await sleep(200)
-    count += 1
+    jobs.push({
+      text: card.reading || card.word,
+      path: join(outDir, `${card.id}-word.mp3`),
+      voice: JA_VOICE,
+    })
+    jobs.push({
+      text: card.example,
+      path: join(outDir, `${card.id}-example.mp3`),
+      voice: JA_VOICE,
+    })
   }
-
   if (only === 'all' || only === 'zh') {
     if (card.meaning) {
-      await synthesizeToFile(card.meaning, join(outDir, `${card.id}-meaning.mp3`), ZH_VOICE)
-      await sleep(200)
-      count += 1
+      jobs.push({
+        text: card.meaning,
+        path: join(outDir, `${card.id}-meaning.mp3`),
+        voice: ZH_VOICE,
+      })
     }
     if (card.exampleMeaning) {
-      await synthesizeToFile(
-        card.exampleMeaning,
-        join(outDir, `${card.id}-example-meaning.mp3`),
-        ZH_VOICE,
-      )
-      await sleep(200)
-      count += 1
+      jobs.push({
+        text: card.exampleMeaning,
+        path: join(outDir, `${card.id}-example-meaning.mp3`),
+        voice: ZH_VOICE,
+      })
     }
   }
+  return jobs
 }
 
-console.log('done processed slots ~', count, 'for', cards.length, 'cards')
+async function runPool(jobs, n, fn) {
+  let index = 0
+  let ok = 0
+  let skipped = 0
+  let failed = 0
+  async function worker() {
+    while (index < jobs.length) {
+      const current = jobs[index]
+      index += 1
+      try {
+        const result = await fn(current)
+        if (result === 'ok') ok += 1
+        else skipped += 1
+      } catch (err) {
+        failed += 1
+        console.error('fail', current.path, err.message || err)
+      }
+      const done = ok + skipped + failed
+      if (done % 50 === 0 || done === jobs.length) {
+        console.log(`audio ${done}/${jobs.length} ok=${ok} skip=${skipped} fail=${failed}`)
+      }
+    }
+  }
+  await Promise.all(Array.from({ length: n }, worker))
+  return { ok, skipped, failed }
+}
+
+const jobs = cards.flatMap(jobsFor)
+console.log('cards', cards.length, 'jobs', jobs.length, 'concurrency', concurrency)
+const stats = await runPool(jobs, concurrency, (job) =>
+  synthesizeToFile(job.text, job.path, job.voice),
+)
+console.log('done', stats)
+if (stats.failed) process.exitCode = 1
