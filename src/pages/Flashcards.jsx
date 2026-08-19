@@ -699,6 +699,13 @@ export default function Flashcards() {
                   </p>
                 ) : null}
 
+                {card.exampleUsage ? (
+                  <p className="mt-4 w-full rounded-xl bg-coral/10 px-3.5 py-2.5 text-left text-sm leading-relaxed text-ink sm:text-base">
+                    <span className="font-medium text-coral">例句用法：</span>
+                    {card.exampleUsage}
+                  </p>
+                ) : null}
+
                 {card.type === 'form' ? null : (
                 <div className="mt-4 w-full rounded-2xl bg-foam/80 p-4 text-left">
                   <p className="text-lg leading-relaxed text-ink">

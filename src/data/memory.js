@@ -40,6 +40,18 @@ export const VOCAB_MEMORY = {
   v038: { pos: 'ナ形容詞', memory: 'まじめ：認真。真面目に勉強する。' },
   v039: { pos: 'ナ形容詞', memory: 'ふべん：不方便。對義：便利。' },
   v040: { pos: 'ナ形容詞', memory: 'ふくざつ：複雜。對義：簡単。' },
+  v1387: {
+    pos: '他動詞／助動',
+    memory: '本義：收好、關起來（本[ほん]をしまう、ドアをしまう）。',
+    exampleUsage:
+      '此例句的 しまう 不是「關上」，而是接在 て形 後面的 てしまう（口語：〜ちゃう／〜じゃう）＝不小心／遺憾地做了…。這裡＝「又要變胖了（真糟糕）」。',
+  },
+  v1388: {
+    pos: '感嘆詞／てしまう過去',
+    memory: '單獨可表「糟了！完了！」（しまった！）。',
+    exampleUsage:
+      '此例句是 寝てしまう＝（不小心）睡著了，屬於 てしまう 的過去式；不是單純罵人的 しまった，但都有「完了／遺憾」的感覺。',
+  },
 }
 
 /**
@@ -563,6 +575,13 @@ export function withMemory(card) {
     }
   }
   const extra = VOCAB_MEMORY[card.id]
-  if (extra) return { ...card, pos: extra.pos, memory: extra.memory }
+  if (extra) {
+    return {
+      ...card,
+      pos: extra.pos,
+      memory: extra.memory,
+      exampleUsage: extra.exampleUsage || card.exampleUsage,
+    }
+  }
   return { ...card, pos: inferPos(card), memory: inferMemory(card) }
 }
