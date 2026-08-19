@@ -3,7 +3,7 @@ import { Link, useSearchParams } from 'react-router-dom'
 import FuriganaText from '../components/FuriganaText'
 import { grammar } from '../data/grammar'
 import { withMemory } from '../data/memory'
-import { FORM_CARDS } from '../data/verbForms'
+import { FORM_CARDS, formRule } from '../data/verbForms'
 import { vocabulary } from '../data/vocabulary'
 import { useProgress } from '../hooks/useProgress'
 import { useSettings } from '../hooks/useSettings'
@@ -97,6 +97,7 @@ export default function Flashcards() {
   const todayMode = mode in MODE_META
   const srsMode = mode === 'today-vocab' || mode === 'today-grammar' || mode === 'today-review'
   const hideReadingOnFront = srsMode
+  const showZhMeaning = showExampleMeaning || mode === 'today-grammar'
 
   const filtered = useMemo(() => {
     if (mode === 'today-vocab') return todayVocab
@@ -654,12 +655,12 @@ export default function Flashcards() {
                   <div className="mt-4 w-full space-y-2.5 text-left text-sm leading-relaxed text-ink sm:text-base">
                     <p className="rounded-xl bg-sand/80 px-3.5 py-2.5">
                       <span className="font-medium text-sea-deep">正確：</span>
-                      {card.meaning}
+                      {card.formDrill?.answer}
                       {card.formDrill?.answerReading ? `（${card.formDrill.answerReading}）` : ''}
                     </p>
                     <p className="rounded-xl bg-foam/90 px-3.5 py-2.5">
                       <span className="font-medium text-sea-deep">規則：</span>
-                      {card.exampleMeaning}
+                      {card.formDrill ? formRule(card.formDrill) : card.exampleMeaning}
                     </p>
                   </div>
                 ) : card.type === 'grammar' ? (
@@ -707,7 +708,7 @@ export default function Flashcards() {
                       showFurigana={showFurigana}
                     />
                   </p>
-                  {showExampleMeaning ? (
+                  {showZhMeaning ? (
                     <p className="mt-2 text-base text-ink-soft">{card.exampleMeaning}</p>
                   ) : (
                     <p className="mt-2 text-sm text-ink-soft">中文解釋已隱藏</p>

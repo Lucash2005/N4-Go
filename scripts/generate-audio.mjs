@@ -55,14 +55,21 @@ async function synthesizeToFile(text, filePath, voice) {
 
 function jobsFor(card) {
   const jobs = []
+  const isForm = card.type === 'form'
+  const wordText = isForm
+    ? card.formDrill?.reading || card.reading || card.word
+    : card.reading || card.word
+  const exampleText = isForm
+    ? card.formDrill?.answerReading || card.example
+    : card.example
   if (only === 'all' || only === 'ja') {
     jobs.push({
-      text: card.reading || card.word,
+      text: wordText,
       path: join(outDir, `${card.id}-word.mp3`),
       voice: JA_VOICE,
     })
     jobs.push({
-      text: card.example,
+      text: exampleText,
       path: join(outDir, `${card.id}-example.mp3`),
       voice: JA_VOICE,
     })

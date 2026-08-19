@@ -57,16 +57,18 @@ export function formRule(item) {
 }
 
 export function formToCard(item) {
+  const promptZh =
+    item.target === 'て形'
+      ? `把「${item.verb}」改成て形`
+      : `把「${item.verb}」改成ない形`
   return {
     id: item.id,
     type: 'form',
     word: item.verb,
     reading: item.reading,
-    meaning: item.answer,
-    // Used for Neural MP3 when flipped (播放「例句」音檔）。
-    // 這裡直接唸正確答案，讓「播放」和翻面對應更一致。
-    example: `${item.answer}（${item.answerReading}）`,
-    exampleMeaning: formRule(item),
+    meaning: promptZh,
+    example: item.answerReading,
+    exampleMeaning: `正確：${item.answer}（${item.answerReading}）`,
     category: item.target,
     pattern: `${item.group}｜${item.target}`,
     formDrill: item,

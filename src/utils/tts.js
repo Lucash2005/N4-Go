@@ -142,7 +142,7 @@ export function speakJapanese(text, options = {}) {
     return Promise.resolve({ engine: 'system' })
   }
 
-  // Prefer prebuilt Neural clip
+  // Prefer prebuilt Neural clip — text is fallback only when the clip fails
   if (clipUrl) {
     return new Promise((resolve) => {
       let settled = false
@@ -157,28 +157,18 @@ export function speakJapanese(text, options = {}) {
       audioEl = new Audio(clipUrl)
       audioEl.preload = 'auto'
       if (typeof options.rate === 'number') {
-        // Map UI rate (around 0.7–1.1) onto audio playbackRate
         audioEl.playbackRate = Math.min(1.25, Math.max(0.7, options.rate / 0.88))
       }
-      audioEl.addEventListener(
-        'playing',
-        () => {
-          done('neural')
-        },
-        { once: true },
-      )
-      audioEl.addEventListener(
-        'error',
-        () => {
-          if (cleaned) speakWithWebSpeech(cleaned, options)
-          done('system')
-        },
-        { once: true },
-      )
-      audioEl.play().catch(() => {
+
+      const fallbackToSystem = () => {
+        if (settled) return
         if (cleaned) speakWithWebSpeech(cleaned, options)
         done('system')
-      })
+      }
+
+      audioEl.addEventListener('playing', () => done('neural'), { once: true })
+      audioEl.addEventListener('error', fallbackToSystem, { once: true })
+      audioEl.play().catch(fallbackToSystem)
     })
   }
 
