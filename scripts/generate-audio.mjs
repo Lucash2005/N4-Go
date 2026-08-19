@@ -15,6 +15,7 @@ import { fileURLToPath } from 'url'
 import { EdgeTTS } from 'edge-tts-universal'
 import { vocabulary } from '../src/data/vocabulary.js'
 import { grammar } from '../src/data/grammar.js'
+import { FORM_CARDS } from '../src/data/verbForms.js'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const outDir = join(__dirname, '../public/audio')
@@ -22,7 +23,7 @@ mkdirSync(outDir, { recursive: true })
 
 const JA_VOICE = 'ja-JP-NanamiNeural'
 const ZH_VOICE = 'zh-TW-HsiaoChenNeural'
-const cards = [...vocabulary, ...grammar]
+const cards = [...vocabulary, ...grammar, ...FORM_CARDS]
 const only = process.env.ONLY || 'all' // all | ja | zh
 const concurrency = Math.max(1, Number(process.env.CONCURRENCY || 6))
 const force = process.env.FORCE === '1'

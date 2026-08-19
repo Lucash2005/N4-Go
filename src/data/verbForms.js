@@ -63,7 +63,9 @@ export function formToCard(item) {
     word: item.verb,
     reading: item.reading,
     meaning: item.answer,
-    example: `${item.verb}（${item.reading}）→ ${item.answer}（${item.answerReading}）`,
+    // Used for Neural MP3 when flipped (播放「例句」音檔）。
+    // 這裡直接唸正確答案，讓「播放」和翻面對應更一致。
+    example: `${item.answer}（${item.answerReading}）`,
     exampleMeaning: formRule(item),
     category: item.target,
     pattern: `${item.group}｜${item.target}`,
