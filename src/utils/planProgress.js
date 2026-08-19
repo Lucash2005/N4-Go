@@ -148,7 +148,7 @@ function buildRemedies({
     return [
       {
         title: '維持節奏即可',
-        detail: '每日完成單字評分＋文法／聽力其中一項，週末做一回測驗。',
+        detail: '每日完成單字評分＋本月路線文法，週末做一回測驗。',
         to: '/',
         cta: '回今日排程',
       },
@@ -179,7 +179,7 @@ function buildRemedies({
   if (grammarBehind) {
     items.push({
       title: `文法回補：每天至少 3 條`,
-      detail: `落後約 ${Math.max(0, Math.round(grammarGap))} 條。用 SRS 評分，同一句型連續念 2 次。`,
+      detail: `落後約 ${Math.max(0, Math.round(grammarGap))} 條。先把路線裡較早的句型評分學會，不要跳去後面的使役受身。`,
       to: '/flashcards?mode=today-grammar',
       cta: '開始文法',
     })

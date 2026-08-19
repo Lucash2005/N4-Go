@@ -7,7 +7,7 @@ export const TARGETS = {
 
 export const DEFAULT_TASKS = [
   { id: 'vocab-15', label: '每日 15 個單字', done: false },
-  { id: 'grammar-2', label: '文法 2 條', done: false },
+  { id: 'grammar-2', label: '文法 2 條（本月路線）', done: false },
   { id: 'listening-15', label: '聽力練習 15 分鐘', done: false },
   { id: 'review-10', label: 'SRS 到期複習（評分）', done: false },
 ]

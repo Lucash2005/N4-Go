@@ -16,6 +16,7 @@ import {
   isLearned,
   normalizeEntry,
 } from '../utils/srs'
+import { GRAMMAR_PATH_VERSION, getGrammarPath } from '../data/grammarPath'
 import { todayKey } from '../utils/storage'
 import { useLocalStorage } from './useLocalStorage'
 
@@ -24,7 +25,13 @@ const ALL_CARDS = [...vocabulary, ...grammar]
 
 function ensurePlan(plan, cardProgress) {
   const today = todayKey()
-  if (plan?.date === today && Array.isArray(plan.vocabIds)) return plan
+  if (
+    plan?.date === today &&
+    Array.isArray(plan.vocabIds) &&
+    plan.grammarPathVersion === GRAMMAR_PATH_VERSION
+  ) {
+    return plan
+  }
   return buildDailyPlan(today, cardProgress)
 }
 
@@ -75,7 +82,7 @@ export function ProgressProvider({ children }) {
         tasks: DEFAULT_TASKS.map((t) => ({ ...t, done: false })),
       })
     }
-    if (dailyPlan.date !== today) {
+    if (dailyPlan.date !== today || dailyPlan.grammarPathVersion !== GRAMMAR_PATH_VERSION) {
       setDailyPlan(buildDailyPlan(today, cardProgress))
     }
   }, [dailyTasks.date, dailyPlan.date, cardProgress, setDailyTasks, setDailyPlan])
@@ -264,10 +271,7 @@ export function ProgressProvider({ children }) {
       resolveCards(plan.vocabIds),
       `session:${sessionSeed}:vocab`,
     )
-    const grammarCards = seededShuffle(
-      resolveCards(plan.grammarIds),
-      `session:${sessionSeed}:grammar`,
-    )
+    const grammarCards = resolveCards(plan.grammarIds)
     const reviewCards = seededShuffle(
       resolveCards(liveReviewIds),
       `session:${sessionSeed}:review`,
@@ -309,6 +313,7 @@ export function ProgressProvider({ children }) {
       markStudied,
       markListened,
       reshuffleTodayPlan,
+      grammarPath: getGrammarPath(plan.date || today),
     }
   }, [
     cardProgress,

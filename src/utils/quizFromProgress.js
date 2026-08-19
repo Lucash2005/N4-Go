@@ -1,7 +1,8 @@
 import { grammar } from '../data/grammar'
+import { getGrammarPath } from '../data/grammarPath'
 import { GRAMMAR_MEMORY } from '../data/memory'
-import { readingQuestions } from '../data/readings'
 import { quizQuestions, shuffle, withShuffledOptions } from '../data/quiz'
+import { readingQuestions } from '../data/readings'
 import { vocabulary } from '../data/vocabulary'
 import { normalizeEntry } from './srs'
 import { todayKey } from './storage'
@@ -260,6 +261,10 @@ export function pickAdaptiveQuiz({
   const wantGrammar = type === 'all' || type === 'grammar'
   const wantReading = type === 'all' || type === 'reading'
 
+  const path = getGrammarPath(today)
+  const unlockedGrammar = new Set(path.unlockedIds)
+  const monthGrammar = new Set(path.newIds)
+
   const vocabWeighted = wantVocab
     ? ALL_VOCAB.map((card) => ({
         card,
@@ -267,9 +272,10 @@ export function pickAdaptiveQuiz({
       }))
     : []
   const grammarWeighted = wantGrammar
-    ? ALL_GRAMMAR.map((card) => ({
+    ? ALL_GRAMMAR.filter((card) => unlockedGrammar.has(card.id)).map((card) => ({
         card,
-        weight: cardPriority(card, cardProgress, planIds, today),
+        weight:
+          cardPriority(card, cardProgress, planIds, today) + (monthGrammar.has(card.id) ? 40 : 0),
       }))
     : []
 

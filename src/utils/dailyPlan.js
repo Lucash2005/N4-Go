@@ -1,4 +1,5 @@
 import { grammar } from '../data/grammar'
+import { GRAMMAR_PATH_VERSION, getGrammarPath, grammarUnlockRank } from '../data/grammarPath'
 import { vocabulary } from '../data/vocabulary'
 import { getDueIds, normalizeEntry } from './srs'
 import { todayKey } from './storage'
@@ -74,6 +75,52 @@ function pickByPriority(cards, count, seedStr, cardProgress, date = todayKey()) 
   return picked
 }
 
+function pickGrammarByPath(count, seedStr, cardProgress, date = todayKey()) {
+  const path = getGrammarPath(date)
+  const unlocked = new Set(path.unlockedIds)
+  const pool = grammar.filter((g) => unlocked.has(g.id))
+  if (!pool.length) return pickByPriority(grammar, count, seedStr, cardProgress, date)
+
+  const newOnes = pool.filter((c) => !normalizeEntry(cardProgress[c.id], date))
+  // Catch up earlier months first, keep listed order within a month, light shuffle among same rank band
+  const newOrdered = [...newOnes].sort((a, b) => {
+    const ra = grammarUnlockRank(a.id, date)
+    const rb = grammarUnlockRank(b.id, date)
+    if (ra !== rb) return ra - rb
+    return 0
+  })
+
+  const dueOnes = pool.filter((c) => {
+    const e = normalizeEntry(cardProgress[c.id], date)
+    return e && e.due <= date
+  })
+  const learningOnes = pool.filter((c) => {
+    const e = normalizeEntry(cardProgress[c.id], date)
+    return e && e.due > date && e.status !== 'learned'
+  })
+  const learnedOnes = pool.filter((c) => {
+    const e = normalizeEntry(cardProgress[c.id], date)
+    return e && e.status === 'learned' && e.due > date
+  })
+
+  const ordered = [
+    ...newOrdered,
+    ...seededShuffle(dueOnes, `${seedStr}:due`),
+    ...seededShuffle(learningOnes, `${seedStr}:learning`),
+    ...seededShuffle(learnedOnes, `${seedStr}:learned`),
+  ]
+
+  const seen = new Set()
+  const picked = []
+  for (const card of ordered) {
+    if (seen.has(card.id)) continue
+    seen.add(card.id)
+    picked.push(card.id)
+    if (picked.length >= count) break
+  }
+  return picked
+}
+
 /**
  * Build a stable daily plan for `date` (YYYY-MM-DD).
  * Prefers new → due → learning → learned.
@@ -89,8 +136,7 @@ export function buildDailyPlan(date, cardProgress = {}, seedExtra = '') {
     cardProgress,
     date,
   )
-  const grammarIds = pickByPriority(
-    grammar,
+  const grammarIds = pickGrammarByPath(
     DAILY_QUOTA.grammar,
     `${seed}:grammar`,
     cardProgress,
@@ -107,6 +153,7 @@ export function buildDailyPlan(date, cardProgress = {}, seedExtra = '') {
     reviewIds,
     studiedIds: [],
     listenedIds: [],
+    grammarPathVersion: GRAMMAR_PATH_VERSION,
   }
 }
 
@@ -129,5 +176,6 @@ export function emptyDailyPlan(date = '') {
     reviewIds: [],
     studiedIds: [],
     listenedIds: [],
+    grammarPathVersion: GRAMMAR_PATH_VERSION,
   }
 }

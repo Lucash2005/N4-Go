@@ -60,6 +60,7 @@ export default function Flashcards() {
     markStudied,
     markListened,
     isStudied,
+    grammarPath,
   } = useProgress()
   const {
     showFurigana,
@@ -325,6 +326,9 @@ export default function Flashcards() {
   const meta = MODE_META[mode]
   const doneSession = srsMode && sessionLeft && sessionLeft.length === 0
   const loopActive = playlist.total > 0
+  const grammarHint = grammarPath
+    ? `${grammarPath.label}「${grammarPath.title}」：翻面前先想接續與對照。${grammarPath.howTo}`
+    : MODE_META['today-grammar'].hint
 
   return (
     <div className="space-y-5">
@@ -333,7 +337,11 @@ export default function Flashcards() {
           {meta ? meta.title : '單字與文法卡片'}
         </h2>
         <p className="mt-1 text-sm text-ink-soft">
-          {meta ? meta.hint : '點擊卡片翻面 · 支援搜尋與分類 · TTS 發音'}
+          {meta
+            ? mode === 'today-grammar'
+              ? grammarHint
+              : meta.hint
+            : '點擊卡片翻面 · 支援搜尋與分類 · TTS 發音'}
         </p>
         {todayMode ? (
           <button

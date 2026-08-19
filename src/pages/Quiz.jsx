@@ -4,7 +4,7 @@ import { todayKey } from '../utils/storage'
 import { describeQuizSource, pickAdaptiveQuiz } from '../utils/quizFromProgress'
 
 export default function Quiz() {
-  const { recordQuiz, cardProgress, dailyPlan, todayVocab, todayGrammar, todayReview } =
+  const { recordQuiz, cardProgress, dailyPlan, todayVocab, todayGrammar, todayReview, grammarPath } =
     useProgress()
   const [mode, setMode] = useState('all')
   const [started, setStarted] = useState(false)
@@ -28,9 +28,9 @@ export default function Quiz() {
     const n =
       (todayVocab?.length || 0) + (todayGrammar?.length || 0) + (todayReview?.length || 0)
     return n > 0
-      ? `優先考今日 ${todayVocab?.length || 0} 單字、${todayGrammar?.length || 0} 文法，以及到期複習`
-      : '尚無今日進度時，會從全部單字／文法隨機出題'
-  }, [todayVocab, todayGrammar, todayReview])
+      ? `優先考已解鎖文法（${grammarPath?.title || '本月路線'}）與今日 ${todayVocab?.length || 0} 單字、${todayGrammar?.length || 0} 文法`
+      : `文法只出已解鎖路線（${grammarPath?.title || '本月'}），不會跳到後面的使役受身`
+  }, [todayVocab, todayGrammar, todayReview, grammarPath])
 
   function start() {
     const qs = pickAdaptiveQuiz({

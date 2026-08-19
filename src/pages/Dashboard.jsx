@@ -27,6 +27,7 @@ export default function Dashboard() {
     listenTarget,
     reshuffleTodayPlan,
     isStudied,
+    grammarPath,
   } = useProgress()
 
   const doneCount = dailyTasks.filter((t) => t.done).length
@@ -59,7 +60,7 @@ export default function Dashboard() {
           <div>
             <h2 className="font-display text-xl font-bold text-ink">計畫進度</h2>
             <p className="mt-1 text-sm text-ink-soft">
-              對照「學習計畫總覽」目標 · 本月 {plan.currentMilestone?.label}
+              對照「學習計畫總覽」目標 · 本月 {plan.currentMilestone?.label} · {grammarPath.title}
             </p>
           </div>
           <span className={`rounded-full px-3 py-1 text-xs font-medium ${planTone}`}>
@@ -89,7 +90,7 @@ export default function Dashboard() {
           <div>
             <h2 className="font-display text-xl font-bold text-ink">今日自動排程</h2>
             <p className="mt-1 text-sm text-ink-soft">
-              間隔重複（SRS）：翻卡後評分，系統會安排下次出現時間
+              文法依 8→12 月路線解鎖；未學完的上個月會先補，不會跳去使役受身
             </p>
           </div>
           <button
@@ -117,6 +118,7 @@ export default function Dashboard() {
             cta="開始文法"
             items={todayGrammar}
             isStudied={isStudied}
+            note={`${grammarPath.label}：${grammarPath.title}。${grammarPath.howTo}`}
           />
           <PlanBlock
             title="到期複習（SRS）"
@@ -229,13 +231,14 @@ export default function Dashboard() {
   )
 }
 
-function PlanBlock({ title, progress, to, cta, items, isStudied, emptyText }) {
+function PlanBlock({ title, progress, to, cta, items, isStudied, emptyText, note }) {
   return (
     <div className="rounded-2xl bg-white/75 p-4 ring-1 ring-line/50">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <div>
           <p className="font-medium text-ink">{title}</p>
           <p className="mt-0.5 text-xs text-ink-soft">進度 {progress}</p>
+          {note ? <p className="mt-1 text-xs leading-relaxed text-sea-deep">{note}</p> : null}
         </div>
         {items.length > 0 ? (
           <Link

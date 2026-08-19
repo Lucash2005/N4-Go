@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import ProgressBar from '../components/ProgressBar'
 import { monthlyMilestones, schedulePhases } from '../data/schedule'
+import { GRAMMAR_MONTH_PATH } from '../data/grammarPath'
 import { useProgress } from '../hooks/useProgress'
 import { getPlanProgress } from '../utils/planProgress'
 
@@ -48,7 +49,7 @@ export default function Schedule() {
       <section className="animate-fade-up">
         <h2 className="font-display text-2xl font-bold text-ink">學習計畫總覽</h2>
         <p className="mt-1 text-sm text-ink-soft">
-          對照目前進度與每月目標；落後時會出現補救建議
+          文法按月解鎖（先補上個月，再開本月新句型）；單字量目標不變
         </p>
       </section>
 
@@ -147,6 +148,7 @@ export default function Schedule() {
             const reachedVocab = learnedVocab >= m.vocabTarget
             const reachedGrammar = learnedGrammar >= m.grammarTarget
             const done = reachedVocab && reachedGrammar
+            const path = GRAMMAR_MONTH_PATH.find((p) => p.month === m.month)
             return (
               <li
                 key={m.month}
@@ -173,6 +175,11 @@ export default function Schedule() {
                     ) : null}
                   </div>
                   <p className="mt-0.5 text-sm text-ink-soft">{m.detail}</p>
+                  {path ? (
+                    <p className="mt-1 text-xs text-sea-deep">
+                      本月新文法：{path.title}（{path.ids.length} 條）
+                    </p>
+                  ) : null}
                   <p className="mt-1 text-xs text-ink-soft">
                     目標：單字 {m.vocabTarget}／文法 {m.grammarTarget}
                     {m.quizRateTarget != null ? `／正確率 ${m.quizRateTarget}%` : ''}
