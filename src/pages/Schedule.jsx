@@ -49,7 +49,7 @@ export default function Schedule() {
       <section className="animate-fade-up">
         <h2 className="font-display text-2xl font-bold text-ink">學習計畫總覽</h2>
         <p className="mt-1 text-sm text-ink-soft">
-          文法按月解鎖（先補上個月，再開本月新句型）；單字量目標不變
+          文法按月解鎖（先補上個月，再開本月新句型）；每日文法含て形／ない形活用，單字量目標不變
         </p>
       </section>
 

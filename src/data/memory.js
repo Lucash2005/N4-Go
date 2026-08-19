@@ -549,6 +549,7 @@ function inferMemory(card) {
 
 export function withMemory(card) {
   if (!card) return card
+  if (card.type === 'form') return card
   if (card.type === 'grammar') {
     const extra = GRAMMAR_MEMORY[card.id]
     if (!extra) return card

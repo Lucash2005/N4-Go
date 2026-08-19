@@ -3,6 +3,7 @@ import { getGrammarPath } from '../data/grammarPath'
 import { GRAMMAR_MEMORY } from '../data/memory'
 import { quizQuestions, shuffle, withShuffledOptions } from '../data/quiz'
 import { readingQuestions } from '../data/readings'
+import { FORM_CARDS, formRule } from '../data/verbForms'
 import { vocabulary } from '../data/vocabulary'
 import { normalizeEntry } from './srs'
 import { todayKey } from './storage'
@@ -73,7 +74,7 @@ function distractors(correct, pool, field, count, rand) {
   return values.slice(0, count)
 }
 
-function buildMcq({ id, type, prompt, correct, options, explanation, vocabId, grammarId }) {
+function buildMcq({ id, type, prompt, correct, options, explanation, vocabId, grammarId, formId }) {
   const allOptions = shuffle([correct, ...options]).slice(0, 4)
   // Ensure correct is present
   if (!allOptions.includes(correct)) {
@@ -92,6 +93,7 @@ function buildMcq({ id, type, prompt, correct, options, explanation, vocabId, gr
     explanation,
     vocabId,
     grammarId,
+    formId,
   }
   if (grammarId && GRAMMAR_MEMORY[grammarId]) {
     const m = GRAMMAR_MEMORY[grammarId]
@@ -229,6 +231,27 @@ function grammarQuestionsFor(card, pool, rand) {
   return qs
 }
 
+function formQuestionsFor(card) {
+  const item = card.formDrill
+  if (!item) return []
+  const others = FORM_CARDS.filter(
+    (c) => c.id !== card.id && c.formDrill?.target === item.target,
+  )
+  const opts = shuffle(others).slice(0, 3).map((c) => c.meaning)
+  if (opts.length < 3) return []
+  return [
+    buildMcq({
+      id: `dyn-${card.id}-form`,
+      type: 'grammar',
+      formId: card.id,
+      prompt: `「${item.verb}」の${item.target}はどれですか。`,
+      correct: item.answer,
+      options: opts,
+      explanation: `${item.group}：${formRule(item)}。正解は「${item.answer}（${item.answerReading}）」。`,
+    }),
+  ]
+}
+
 function mulberryRand(seed) {
   let t = seed >>> 0
   return () => {
@@ -254,6 +277,7 @@ export function pickAdaptiveQuiz({
   const planIds = new Set([
     ...(dailyPlan.vocabIds || []),
     ...(dailyPlan.grammarIds || []),
+    ...(dailyPlan.formIds || []),
     ...(dailyPlan.reviewIds || []),
   ])
 
@@ -283,6 +307,10 @@ export function pickAdaptiveQuiz({
   const vocabTargets = weightedPick(vocabWeighted, Math.max(count, 12), rand)
   const grammarTargets = weightedPick(grammarWeighted, Math.max(Math.ceil(count / 2), 6), rand)
 
+  const formTargets = (dailyPlan.formIds || [])
+    .map((id) => FORM_CARDS.find((c) => c.id === id))
+    .filter(Boolean)
+
   const generated = []
   for (const card of vocabTargets) {
     const variants = vocabQuestionsFor(card, ALL_VOCAB, rand)
@@ -291,6 +319,12 @@ export function pickAdaptiveQuiz({
   for (const card of grammarTargets) {
     const variants = grammarQuestionsFor(card, ALL_GRAMMAR, rand)
     if (variants.length) generated.push(variants[Math.floor(rand() * variants.length)])
+  }
+  if (wantGrammar) {
+    for (const card of formTargets) {
+      const variants = formQuestionsFor(card)
+      if (variants.length) generated.push(variants[0])
+    }
   }
 
   let pool = shuffle(generated)

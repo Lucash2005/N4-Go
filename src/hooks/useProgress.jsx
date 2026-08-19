@@ -1,12 +1,15 @@
 import { createContext, useContext, useEffect, useMemo, useState } from 'react'
 import { DEFAULT_TASKS, TARGETS } from '../data/config'
 import { grammar } from '../data/grammar'
+import { GRAMMAR_PATH_VERSION, getGrammarPath, monthGrammarProgress } from '../data/grammarPath'
+import { FORM_CARDS } from '../data/verbForms'
 import { vocabulary } from '../data/vocabulary'
 import {
   buildDailyPlan,
   DAILY_QUOTA,
   emptyDailyPlan,
   getLiveReviewIds,
+  grammarQueueIds,
   resolveCards,
   seededShuffle,
 } from '../utils/dailyPlan'
@@ -16,18 +19,18 @@ import {
   isLearned,
   normalizeEntry,
 } from '../utils/srs'
-import { GRAMMAR_PATH_VERSION, getGrammarPath } from '../data/grammarPath'
 import { todayKey } from '../utils/storage'
 import { useLocalStorage } from './useLocalStorage'
 
 const ProgressContext = createContext(null)
-const ALL_CARDS = [...vocabulary, ...grammar]
+const ALL_CARDS = [...vocabulary, ...grammar, ...FORM_CARDS]
 
 function ensurePlan(plan, cardProgress) {
   const today = todayKey()
   if (
     plan?.date === today &&
     Array.isArray(plan.vocabIds) &&
+    Array.isArray(plan.formIds) &&
     plan.grammarPathVersion === GRAMMAR_PATH_VERSION
   ) {
     return plan
@@ -54,8 +57,8 @@ function findCardsForAnswer(answerText = '') {
     (c) =>
       c.word === text ||
       c.reading === text ||
-      c.word.includes(text) ||
-      (text.length >= 2 && c.meaning.includes(text)),
+      c.word?.includes(text) ||
+      (text.length >= 2 && c.meaning?.includes(text)),
   ).slice(0, 2)
 }
 
@@ -102,6 +105,7 @@ export function ProgressProvider({ children }) {
           (id) =>
             prev.vocabIds.includes(id) ||
             prev.grammarIds.includes(id) ||
+            (prev.formIds || []).includes(id) ||
             reviewSet.has(id),
         ),
       }
@@ -119,8 +123,9 @@ export function ProgressProvider({ children }) {
 
     const vocabDone =
       plan.vocabIds.length > 0 && plan.vocabIds.every((id) => studied.has(id))
+    const grammarQueue = grammarQueueIds(plan)
     const grammarDone =
-      plan.grammarIds.length > 0 && plan.grammarIds.every((id) => studied.has(id))
+      grammarQueue.length > 0 && grammarQueue.every((id) => studied.has(id))
     const reviewDone =
       liveReviewIds.length === 0 || liveReviewIds.every((id) => studied.has(id))
     const listeningDone =
@@ -271,14 +276,21 @@ export function ProgressProvider({ children }) {
       resolveCards(plan.vocabIds),
       `session:${sessionSeed}:vocab`,
     )
-    const grammarCards = resolveCards(plan.grammarIds)
+    const grammarQueue = grammarQueueIds(plan)
+    const grammarCards = resolveCards(grammarQueue)
     const reviewCards = seededShuffle(
       resolveCards(liveReviewIds),
       `session:${sessionSeed}:review`,
     )
 
+    const learnedGrammarIds = new Set(
+      grammar.filter((g) => isLearned(cardProgress[g.id], today)).map((g) => g.id),
+    )
+    const monthPath = monthGrammarProgress(learnedGrammarIds, plan.date || today)
+    const nextGrammar = resolveCards(monthPath.nextIds)
+
     const vocabStudied = plan.vocabIds.filter((id) => studied.has(id)).length
-    const grammarStudied = plan.grammarIds.filter((id) => studied.has(id)).length
+    const grammarStudied = grammarQueue.filter((id) => studied.has(id)).length
     const reviewStudied = liveReviewIds.filter((id) => studied.has(id)).length
     const listenCount = plan.vocabIds.filter((id) => listened.has(id)).length
 
@@ -314,6 +326,7 @@ export function ProgressProvider({ children }) {
       markListened,
       reshuffleTodayPlan,
       grammarPath: getGrammarPath(plan.date || today),
+      monthGrammarProgress: { ...monthPath, next: nextGrammar },
     }
   }, [
     cardProgress,

@@ -1,7 +1,7 @@
 import { grammar } from './grammar'
 
 /** Bump to rebuild today's plan after path changes. */
-export const GRAMMAR_PATH_VERSION = 2
+export const GRAMMAR_PATH_VERSION = 3
 
 /**
  * Sequential N4 grammar unlocks through Dec 2026.
@@ -164,6 +164,22 @@ export function getGrammarPath(dateStr = '') {
     unlockedIds,
     months: GRAMMAR_MONTH_PATH,
     currentIndex: idx,
+  }
+}
+
+export function monthGrammarProgress(learnedIdSet, dateStr = '') {
+  const path = getGrammarPath(dateStr)
+  const learned = path.newIds.filter((id) => learnedIdSet.has(id)).length
+  const nextIds = path.newIds.filter((id) => !learnedIdSet.has(id)).slice(0, 4)
+  return {
+    learned,
+    total: path.newIds.length,
+    nextIds,
+    label: path.label,
+    title: path.title,
+    focus: path.focus,
+    howTo: path.howTo,
+    month: path.month,
   }
 }
 

@@ -28,7 +28,7 @@ export default function Quiz() {
     const n =
       (todayVocab?.length || 0) + (todayGrammar?.length || 0) + (todayReview?.length || 0)
     return n > 0
-      ? `優先考已解鎖文法（${grammarPath?.title || '本月路線'}）與今日 ${todayVocab?.length || 0} 單字、${todayGrammar?.length || 0} 文法`
+      ? `優先考已解鎖文法（${grammarPath?.title || '本月路線'}）、活用與今日 ${todayVocab?.length || 0} 單字、${todayGrammar?.length || 0} 張文法卡`
       : `文法只出已解鎖路線（${grammarPath?.title || '本月'}），不會跳到後面的使役受身`
   }, [todayVocab, todayGrammar, todayReview, grammarPath])
 
@@ -62,6 +62,7 @@ export default function Quiz() {
     } else {
       if (question.grammarId) missedRef.current.push(question.grammarId)
       if (question.vocabId) missedRef.current.push(question.vocabId)
+      if (question.formId) missedRef.current.push(question.formId)
       const correctText = question.options[question.answer]
       if (correctText) missedRef.current.push(correctText)
     }

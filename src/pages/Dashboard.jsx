@@ -28,6 +28,7 @@ export default function Dashboard() {
     reshuffleTodayPlan,
     isStudied,
     grammarPath,
+    monthGrammarProgress,
   } = useProgress()
 
   const doneCount = dailyTasks.filter((t) => t.done).length
@@ -90,7 +91,7 @@ export default function Dashboard() {
           <div>
             <h2 className="font-display text-xl font-bold text-ink">今日自動排程</h2>
             <p className="mt-1 text-sm text-ink-soft">
-              文法依 8→12 月路線解鎖；未學完的上個月會先補，不會跳去使役受身
+              文法依 8→12 月路線解鎖；今日單字優先抽本月文法例句裡的詞
             </p>
           </div>
           <button
@@ -118,7 +119,7 @@ export default function Dashboard() {
             cta="開始文法"
             items={todayGrammar}
             isStudied={isStudied}
-            note={`${grammarPath.label}：${grammarPath.title}。${grammarPath.howTo}`}
+            note={`${grammarPath.label}：${grammarPath.title}。前兩張是て形／ない形活用。${grammarPath.howTo}`}
           />
           <PlanBlock
             title="到期複習（SRS）"
@@ -155,6 +156,42 @@ export default function Dashboard() {
             </div>
           </div>
         </div>
+      </section>
+
+      <section className="surface soft-shadow animate-fade-up stagger-1 rounded-3xl p-5 sm:p-6">
+        <div className="flex flex-wrap items-start justify-between gap-3">
+          <div>
+            <h2 className="font-display text-xl font-bold text-ink">本月文法路線</h2>
+            <p className="mt-1 text-sm text-ink-soft">
+              {monthGrammarProgress.label}「{monthGrammarProgress.title}」· {monthGrammarProgress.focus}
+            </p>
+          </div>
+          <span className="rounded-full bg-foam px-3 py-1 text-xs text-sea-deep">
+            {monthGrammarProgress.learned}/{monthGrammarProgress.total}
+          </span>
+        </div>
+        <div className="mt-4">
+          <ProgressBar
+            label="本月句型"
+            value={monthGrammarProgress.learned}
+            target={monthGrammarProgress.total}
+            hint={monthGrammarProgress.howTo}
+          />
+        </div>
+        {monthGrammarProgress.next?.length ? (
+          <div className="mt-4">
+            <p className="text-xs text-ink-soft">接下來要學</p>
+            <ul className="mt-2 flex flex-wrap gap-1.5">
+              {monthGrammarProgress.next.map((card) => (
+                <li key={card.id} className="rounded-full bg-foam px-2.5 py-1 text-xs text-ink">
+                  {card.word}
+                </li>
+              ))}
+            </ul>
+          </div>
+        ) : (
+          <p className="mt-4 text-sm text-sea-deep">本月句型都已標記學會，可專心複習與測驗</p>
+        )}
       </section>
 
       <section className="surface soft-shadow animate-fade-up stagger-2 rounded-3xl p-5 sm:p-6">
@@ -262,7 +299,7 @@ function PlanBlock({ title, progress, to, cta, items, isStudied, emptyText, note
                   : 'bg-foam text-ink'
               }`}
             >
-              {card.word}
+              {card.type === 'form' ? `${card.word}（${card.category}）` : card.word}
             </li>
           ))}
         </ul>

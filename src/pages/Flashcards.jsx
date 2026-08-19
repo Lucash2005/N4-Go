@@ -3,6 +3,7 @@ import { Link, useSearchParams } from 'react-router-dom'
 import FuriganaText from '../components/FuriganaText'
 import { grammar } from '../data/grammar'
 import { withMemory } from '../data/memory'
+import { FORM_CARDS } from '../data/verbForms'
 import { vocabulary } from '../data/vocabulary'
 import { useProgress } from '../hooks/useProgress'
 import { useSettings } from '../hooks/useSettings'
@@ -21,7 +22,7 @@ import {
 import { getFilterStatus, GRADE_LABELS, normalizeEntry } from '../utils/srs'
 import { speakJapanese, speechTextForCard, audioClipForCard, stopSpeaking } from '../utils/tts'
 
-const ALL_CARDS = [...vocabulary, ...grammar]
+const ALL_CARDS = [...vocabulary, ...grammar, ...FORM_CARDS]
 
 const MODE_META = {
   'today-vocab': {
@@ -30,7 +31,7 @@ const MODE_META = {
   },
   'today-grammar': {
     title: '今日文法',
-    hint: '先想「什麼時候用」，翻面看接續步驟與易混對照，例句跟讀 2 次再評分',
+    hint: '先做活用，再對文法走三步：接續 → 對照 → 自己造句',
   },
   'today-review': {
     title: '到期複習',
@@ -147,7 +148,11 @@ export default function Flashcards() {
   // Snapshot the deck once when entering an SRS mode (don't reset mid-session on progress updates)
   useEffect(() => {
     if (!srsMode) return
-    setSessionLeft(seededShuffle(filtered, `srs-enter:${Date.now()}:${Math.random()}`))
+    setSessionLeft(
+      mode === 'today-grammar'
+        ? filtered
+        : seededShuffle(filtered, `srs-enter:${Date.now()}:${Math.random()}`),
+    )
     setIndex(0)
     setFlipped(false)
     // eslint-disable-next-line react-hooks/exhaustive-deps -- snapshot only on mode enter
@@ -327,7 +332,7 @@ export default function Flashcards() {
   const doneSession = srsMode && sessionLeft && sessionLeft.length === 0
   const loopActive = playlist.total > 0
   const grammarHint = grammarPath
-    ? `${grammarPath.label}「${grammarPath.title}」：翻面前先想接續與對照。${grammarPath.howTo}`
+    ? `${grammarPath.label}「${grammarPath.title}」：前兩張是活用，後面文法走三步（接續→對照→造句）。${grammarPath.howTo}`
     : MODE_META['today-grammar'].hint
 
   return (
@@ -513,6 +518,12 @@ export default function Flashcards() {
               文法
             </FilterChip>
             <FilterChip
+              active={typeFilter === 'form'}
+              onClick={() => onFilterChange(setTypeFilter, 'form')}
+            >
+              活用
+            </FilterChip>
+            <FilterChip
               active={statusFilter === 'learned'}
               onClick={() =>
                 onFilterChange(setStatusFilter, statusFilter === 'learned' ? 'all' : 'learned')
@@ -591,16 +602,26 @@ export default function Flashcards() {
               }`}
             >
               <CardFace className="[grid-area:stack] [backface-visibility:hidden]">
-                <Badge>{card.type === 'vocab' ? '單字' : '文法'}</Badge>
+                <Badge>
+                  {card.type === 'vocab' ? '單字' : card.type === 'form' ? '活用' : '文法'}
+                </Badge>
                 <p className="mt-6 font-display text-4xl font-bold text-ink sm:text-5xl">
                   {card.word}
                 </p>
                 {hideReadingOnFront ? (
-                  <p className="mt-3 text-base text-ink-soft">
-                    {card.type === 'grammar'
-                      ? '先想：什麼時候用？怎麼接？'
-                      : '先想讀音與意思，再翻面'}
-                  </p>
+                  card.type === 'form' ? (
+                    <p className="mt-3 text-base text-ink-soft">
+                      先改成{card.formDrill?.target || card.category}，再翻面核對
+                    </p>
+                  ) : card.type === 'grammar' ? (
+                    <ol className="mt-4 w-full space-y-1.5 text-left text-sm leading-relaxed text-ink-soft sm:text-base">
+                      <li>1. 接續：接什麼形？</li>
+                      <li>2. 對照：和哪條最容易混？</li>
+                      <li>3. 造句：自己先想一句</li>
+                    </ol>
+                  ) : (
+                    <p className="mt-3 text-base text-ink-soft">先想讀音與意思，再翻面</p>
+                  )
                 ) : showFurigana ? (
                   <p className="mt-3 text-xl text-sea-deep">{card.reading}</p>
                 ) : hasKanji(card.word) ? (
@@ -619,13 +640,29 @@ export default function Flashcards() {
                 ) : null}
                 <p className="mt-2 text-3xl font-bold text-ink">{card.meaning}</p>
                 {(showFurigana || hideReadingOnFront) && card.reading ? (
-                  <p className="mt-1 text-base text-sea-deep">{card.reading}</p>
+                  <p className="mt-1 text-base text-sea-deep">
+                    {card.type === 'form'
+                      ? card.formDrill?.answerReading || card.reading
+                      : card.reading}
+                  </p>
                 ) : null}
                 {card.pattern ? (
                   <p className="mt-2 text-base text-sea-deep">句型：{card.pattern}</p>
                 ) : null}
 
-                {card.type === 'grammar' ? (
+                {card.type === 'form' ? (
+                  <div className="mt-4 w-full space-y-2.5 text-left text-sm leading-relaxed text-ink sm:text-base">
+                    <p className="rounded-xl bg-sand/80 px-3.5 py-2.5">
+                      <span className="font-medium text-sea-deep">正確：</span>
+                      {card.meaning}
+                      {card.formDrill?.answerReading ? `（${card.formDrill.answerReading}）` : ''}
+                    </p>
+                    <p className="rounded-xl bg-foam/90 px-3.5 py-2.5">
+                      <span className="font-medium text-sea-deep">規則：</span>
+                      {card.exampleMeaning}
+                    </p>
+                  </div>
+                ) : card.type === 'grammar' ? (
                   <div className="mt-4 w-full space-y-2.5 text-left text-sm leading-relaxed text-ink sm:text-base">
                     {card.useWhen ? (
                       <p className="rounded-xl bg-foam/90 px-3.5 py-2.5">
@@ -635,13 +672,13 @@ export default function Flashcards() {
                     ) : null}
                     {card.form ? (
                       <p className="whitespace-pre-line rounded-xl bg-sand/80 px-3.5 py-2.5">
-                        <span className="font-medium text-sea-deep">接續：</span>
+                        <span className="font-medium text-sea-deep">1. 接續：</span>
                         {card.form}
                       </p>
                     ) : null}
                     {card.compare ? (
                       <p className="rounded-xl bg-white/80 px-3.5 py-2.5 ring-1 ring-line/60">
-                        <span className="font-medium text-sea-deep">對照：</span>
+                        <span className="font-medium text-sea-deep">2. 對照：</span>
                         {card.compare}
                       </p>
                     ) : null}
@@ -651,6 +688,9 @@ export default function Flashcards() {
                         {card.tip}
                       </p>
                     ) : null}
+                    <p className="rounded-xl bg-white/70 px-3.5 py-2.5 text-ink-soft">
+                      3. 造句：看完例句後，用自己的生活再寫一句
+                    </p>
                   </div>
                 ) : card.memory ? (
                   <p className="mt-4 w-full rounded-xl bg-sand/70 px-3.5 py-2.5 text-left text-sm leading-relaxed text-ink sm:text-base">
@@ -658,6 +698,7 @@ export default function Flashcards() {
                   </p>
                 ) : null}
 
+                {card.type === 'form' ? null : (
                 <div className="mt-4 w-full rounded-2xl bg-foam/80 p-4 text-left">
                   <p className="text-lg leading-relaxed text-ink">
                     <FuriganaText
@@ -672,6 +713,7 @@ export default function Flashcards() {
                     <p className="mt-2 text-sm text-ink-soft">中文解釋已隱藏</p>
                   )}
                 </div>
+                )}
               </CardFace>
             </div>
           </article>

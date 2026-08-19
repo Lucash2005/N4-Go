@@ -1,5 +1,6 @@
 import { grammar } from '../data/grammar'
 import { GRAMMAR_PATH_VERSION, getGrammarPath, grammarUnlockRank } from '../data/grammarPath'
+import { FORM_CARDS } from '../data/verbForms'
 import { vocabulary } from '../data/vocabulary'
 import { getDueIds, normalizeEntry } from './srs'
 import { todayKey } from './storage'
@@ -7,8 +8,22 @@ import { todayKey } from './storage'
 export const DAILY_QUOTA = {
   vocab: 15,
   grammar: 2,
+  forms: 2,
   review: 15,
 }
+
+const GENERIC_VOCAB = new Set([
+  'する',
+  'なる',
+  'ある',
+  'いる',
+  'こと',
+  'もの',
+  'ため',
+  'よう',
+  'とき',
+  'ところ',
+])
 
 /** Deterministic PRNG from a string seed (xmur3 + mulberry32) */
 function mulberry32(seed) {
@@ -121,6 +136,76 @@ function pickGrammarByPath(count, seedStr, cardProgress, date = todayKey()) {
   return picked
 }
 
+function pickFormIds(count, seedStr, cardProgress, date = todayKey()) {
+  const path = getGrammarPath(date)
+  const day = Number(String(date).slice(8, 10)) || 1
+  const te = FORM_CARDS.filter((c) => c.formDrill.theme === 'て形')
+  const nai = FORM_CARDS.filter((c) => c.formDrill.theme === 'ない形')
+
+  let pool = FORM_CARDS
+  if (path.month === '2026-08') {
+    const teNew = te.filter((c) => !normalizeEntry(cardProgress[c.id], date))
+    pool = day <= 18 && teNew.length ? te : nai
+  } else if (path.month === '2026-09') {
+    pool = nai.length ? nai : FORM_CARDS
+  }
+
+  return pickByPriority(pool, count, seedStr, cardProgress, date)
+}
+
+function vocabMatchingTexts(texts) {
+  const hay = texts.filter(Boolean).join('\n')
+  if (!hay) return []
+  return vocabulary.filter((v) => {
+    if (!v.word || v.word.length < 2) return false
+    if (GENERIC_VOCAB.has(v.word)) return false
+    return hay.includes(v.word)
+  })
+}
+
+function pickVocabThemed(count, seedStr, cardProgress, date, grammarIds) {
+  const path = getGrammarPath(date)
+  const byId = new Map(grammar.map((g) => [g.id, g]))
+  const todayTexts = grammarIds.flatMap((id) => {
+    const g = byId.get(id)
+    return g ? [g.example, g.word, g.pattern] : []
+  })
+  const monthTexts = path.newIds.flatMap((id) => {
+    const g = byId.get(id)
+    return g ? [g.example, g.word] : []
+  })
+  const unlockedTexts = path.unlockedIds.flatMap((id) => {
+    const g = byId.get(id)
+    return g ? [g.example] : []
+  })
+
+  const layers = [
+    vocabMatchingTexts(todayTexts),
+    vocabMatchingTexts(monthTexts),
+    vocabMatchingTexts(unlockedTexts),
+    vocabulary,
+  ]
+
+  const picked = []
+  const seen = new Set()
+  for (let i = 0; i < layers.length && picked.length < count; i += 1) {
+    const pool = layers[i].filter((c) => !seen.has(c.id))
+    const ids = pickByPriority(
+      pool,
+      count - picked.length,
+      `${seedStr}:layer${i}`,
+      cardProgress,
+      date,
+    )
+    for (const id of ids) {
+      if (seen.has(id)) continue
+      seen.add(id)
+      picked.push(id)
+    }
+  }
+  return picked
+}
+
 /**
  * Build a stable daily plan for `date` (YYYY-MM-DD).
  * Prefers new → due → learning → learned.
@@ -129,27 +214,29 @@ function pickGrammarByPath(count, seedStr, cardProgress, date = todayKey()) {
 export function buildDailyPlan(date, cardProgress = {}, seedExtra = '') {
   const seed = `n4-go:${date}${seedExtra ? `:${seedExtra}` : ''}`
 
-  const vocabIds = pickByPriority(
-    vocabulary,
-    DAILY_QUOTA.vocab,
-    `${seed}:vocab`,
-    cardProgress,
-    date,
-  )
   const grammarIds = pickGrammarByPath(
     DAILY_QUOTA.grammar,
     `${seed}:grammar`,
     cardProgress,
     date,
   )
+  const formIds = pickFormIds(DAILY_QUOTA.forms, `${seed}:forms`, cardProgress, date)
+  const vocabIds = pickVocabThemed(
+    DAILY_QUOTA.vocab,
+    `${seed}:vocab`,
+    cardProgress,
+    date,
+    grammarIds,
+  )
 
-  const allIds = [...vocabulary, ...grammar].map((c) => c.id)
+  const allIds = [...vocabulary, ...grammar, ...FORM_CARDS].map((c) => c.id)
   const reviewIds = getDueIds(cardProgress, allIds, DAILY_QUOTA.review, date)
 
   return {
     date,
     vocabIds,
     grammarIds,
+    formIds,
     reviewIds,
     studiedIds: [],
     listenedIds: [],
@@ -158,13 +245,13 @@ export function buildDailyPlan(date, cardProgress = {}, seedExtra = '') {
 }
 
 export function resolveCards(ids) {
-  const map = new Map([...vocabulary, ...grammar].map((c) => [c.id, c]))
+  const map = new Map([...vocabulary, ...grammar, ...FORM_CARDS].map((c) => [c.id, c]))
   return ids.map((id) => map.get(id)).filter(Boolean)
 }
 
 /** Live due review queue from SRS schedule. */
 export function getLiveReviewIds(cardProgress = {}, limit = DAILY_QUOTA.review, date = todayKey()) {
-  const allIds = [...vocabulary, ...grammar].map((c) => c.id)
+  const allIds = [...vocabulary, ...grammar, ...FORM_CARDS].map((c) => c.id)
   return getDueIds(cardProgress, allIds, limit > 0 ? limit : 0, date)
 }
 
@@ -173,9 +260,14 @@ export function emptyDailyPlan(date = '') {
     date,
     vocabIds: [],
     grammarIds: [],
+    formIds: [],
     reviewIds: [],
     studiedIds: [],
     listenedIds: [],
     grammarPathVersion: GRAMMAR_PATH_VERSION,
   }
+}
+
+export function grammarQueueIds(plan = {}) {
+  return [...(plan.formIds || []), ...(plan.grammarIds || [])]
 }
