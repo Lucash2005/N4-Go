@@ -9,6 +9,7 @@ import { fileURLToPath } from 'url'
 import { dirname, join } from 'path'
 import { vocabulary } from '../src/data/vocabulary.js'
 import { grammar } from '../src/data/grammar.js'
+import { applyFuriganaOverrides } from './furigana-overrides.mjs'
 
 const require = createRequire(import.meta.url)
 const Kuroshiro = require('kuroshiro').default || require('kuroshiro')
@@ -63,13 +64,13 @@ async function annotate(kuroshiro, text) {
     const html = await kuroshiro.convert(plain, { mode: 'furigana', to: 'hiragana' })
     const converted = rubyHtmlToBrackets(html)
     if (KANJI.test(converted) && (converted.match(/\[/g) || []).length >= kanjiRuns(plain)) {
-      return converted
+      return applyFuriganaOverrides(converted)
     }
   } catch {
     /* fall through */
   }
   const okuri = await kuroshiro.convert(plain, { mode: 'okurigana', to: 'hiragana' })
-  return parenToBrackets(okuri)
+  return applyFuriganaOverrides(parenToBrackets(okuri))
 }
 
 function emitVocab(cards) {

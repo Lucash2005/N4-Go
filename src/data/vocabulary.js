@@ -7991,7 +7991,7 @@ export const vocabulary = [
     meaning: "蔬菜",
     example: "茄子は野菜よ。",
     exampleMeaning: "茄子是一種蔬菜。",
-    exampleFurigana: "茄子[なすび]は野菜[やさい]よ。",
+    exampleFurigana: "茄子[なす/なすび]は野菜[やさい]よ。",
     category: "生活",
     level: "N5",
   },
