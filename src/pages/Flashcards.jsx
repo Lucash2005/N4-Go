@@ -7,6 +7,7 @@ import { FORM_CARDS, formRule } from '../data/verbForms'
 import { vocabulary } from '../data/vocabulary'
 import { useProgress } from '../hooks/useProgress'
 import { useSettings } from '../hooks/useSettings'
+import { useLocalStorage } from '../hooks/useLocalStorage'
 import { seededShuffle } from '../utils/dailyPlan'
 import {
   buildCardTracks,
@@ -93,6 +94,8 @@ export default function Flashcards() {
   const [sessionLeft, setSessionLeft] = useState(null)
   const [browseSeed] = useState(() => `${Date.now()}-${Math.random()}`)
   const [playlist, setPlaylist] = useState(() => getPlaylistState())
+  const [cardNotes, setCardNotes] = useLocalStorage('card-notes', {})
+  const [noteDraft, setNoteDraft] = useState('')
 
   const todayMode = mode in MODE_META
   const srsMode = mode === 'today-vocab' || mode === 'today-grammar' || mode === 'today-review'
@@ -165,8 +168,12 @@ export default function Flashcards() {
     if (!cardId || !deck.length) return
     const idx = deck.findIndex((c) => c.id === cardId)
     if (idx >= 0 && idx !== index) {
+      // Remount face-up first; only open the back when the track is an example
+      setFlipped(false)
       setIndex(idx)
-      setFlipped(playlist.track?.kind === 'example')
+      if (playlist.track?.kind === 'example') {
+        requestAnimationFrame(() => setFlipped(true))
+      }
     }
     if (cardId && playlist.playing) {
       markListened(cardId)
@@ -179,11 +186,37 @@ export default function Flashcards() {
   const card = withMemory(deck[safeIndex])
   const entry = card ? getEntry?.(card.id) || normalizeEntry(cardProgress[card.id]) : null
 
+  // Keep note draft in sync with the current card; avoid leaking previous card's text
+  useEffect(() => {
+    setNoteDraft(card ? cardNotes[card.id] || '' : '')
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- only reload when the card changes
+  }, [card?.id])
+
+  function saveNote(text) {
+    if (!card) return
+    const next = text.trim()
+    setCardNotes((prev) => {
+      const copy = { ...prev }
+      if (!next) delete copy[card.id]
+      else copy[card.id] = next
+      return copy
+    })
+  }
+
+  /** Advance only after the card is face-up, so the next card never flashes its answer. */
+  function advanceTo(nextIndexOrFn, nextDeck = null) {
+    setFlipped(false)
+    // Defer deck/index change to the next frame so this card unflips first
+    requestAnimationFrame(() => {
+      if (nextDeck) setSessionLeft(nextDeck)
+      setIndex(nextIndexOrFn)
+    })
+  }
+
   function go(delta) {
     if (!deck.length) return
     if (card && todayMode && !srsMode) markStudied(card.id)
-    setFlipped(false)
-    setIndex((prev) => (prev + delta + deck.length) % deck.length)
+    advanceTo((prev) => (prev + delta + deck.length) % deck.length)
   }
 
   function flipCard() {
@@ -197,24 +230,21 @@ export default function Flashcards() {
   function onGrade(grade) {
     if (!card) return
     gradeCard(card.id, grade)
-    setFlipped(false)
 
     if (srsMode && sessionLeft) {
-      const nextDeck = sessionLeft.filter((c) => c.id !== card.id)
       // "Again" cards stay in session for another pass
       if (grade === 'again') {
         const rest = sessionLeft.filter((c) => c.id !== card.id)
         const requeue = [...rest, card]
-        setSessionLeft(requeue)
-        setIndex(safeIndex >= rest.length ? 0 : safeIndex)
+        advanceTo(safeIndex >= rest.length ? 0 : safeIndex, requeue)
         return
       }
-      setSessionLeft(nextDeck)
+      const nextDeck = sessionLeft.filter((c) => c.id !== card.id)
       if (!nextDeck.length) {
-        setIndex(0)
+        advanceTo(0, nextDeck)
         return
       }
-      setIndex(Math.min(safeIndex, nextDeck.length - 1))
+      advanceTo(Math.min(safeIndex, nextDeck.length - 1), nextDeck)
       return
     }
 
@@ -584,6 +614,7 @@ export default function Flashcards() {
       ) : (
         <>
           <article
+            key={card.id}
             className="animate-flip-in soft-shadow relative cursor-pointer rounded-3xl [perspective:1200px]"
             onClick={flipCard}
             onKeyDown={(e) => {
@@ -598,8 +629,10 @@ export default function Flashcards() {
           >
             {/* Grid stack: height follows the taller face so content never covers play buttons */}
             <div
-              className={`grid min-h-[280px] transition-transform duration-500 [grid-template-areas:'stack'] [transform-style:preserve-3d] ${
-                flipped ? '[transform:rotateY(180deg)]' : ''
+              className={`grid min-h-[280px] [grid-template-areas:'stack'] [transform-style:preserve-3d] ${
+                flipped
+                  ? 'transition-transform duration-500 [transform:rotateY(180deg)]'
+                  : 'transition-transform duration-500'
               }`}
             >
               <CardFace className="[grid-area:stack] [backface-visibility:hidden]">
@@ -737,6 +770,46 @@ export default function Flashcards() {
               🔊 播放
             </ActionButton>
             {!srsMode ? <ActionButton onClick={() => go(1)}>下一張</ActionButton> : null}
+          </div>
+
+          <div
+            className="surface soft-shadow rounded-3xl p-4 sm:p-5"
+            onClick={(e) => e.stopPropagation()}
+            onKeyDown={(e) => e.stopPropagation()}
+          >
+            <div className="mb-2 flex items-center justify-between gap-2">
+              <p className="text-sm font-medium text-ink">我的筆記</p>
+              <span className="text-xs text-ink-soft">只存在這支手機／瀏覽器</span>
+            </div>
+            <textarea
+              value={noteDraft}
+              onChange={(e) => setNoteDraft(e.target.value)}
+              onBlur={() => saveNote(noteDraft)}
+              rows={3}
+              placeholder="寫下接續口訣、自己的例句、易混對照…"
+              className="w-full resize-y rounded-2xl border border-line bg-white/80 px-3 py-2.5 text-sm text-ink outline-none ring-sea/30 placeholder:text-ink-soft/70 focus:ring-2"
+            />
+            <div className="mt-2 flex justify-end gap-2">
+              {noteDraft.trim() ? (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setNoteDraft('')
+                    saveNote('')
+                  }}
+                  className="rounded-xl bg-white px-3 py-1.5 text-xs text-ink-soft ring-1 ring-line hover:bg-foam"
+                >
+                  清除
+                </button>
+              ) : null}
+              <button
+                type="button"
+                onClick={() => saveNote(noteDraft)}
+                className="rounded-xl bg-sea px-3 py-1.5 text-xs text-white hover:bg-sea-deep"
+              >
+                儲存筆記
+              </button>
+            </div>
           </div>
 
           {srsMode ? (
