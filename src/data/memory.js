@@ -646,14 +646,14 @@ export function withMemory(card) {
     }
   }
   const extra = VOCAB_MEMORY[card.id]
-  if (extra) {
-    return {
-      ...card,
-      pos: extra.pos,
-      memory: extra.memory,
-      exampleUsage: extra.exampleUsage || card.exampleUsage,
-      senses: extra.senses || card.senses,
-    }
-  }
-  return { ...card, pos: inferPos(card), memory: inferMemory(card) }
+  const merged = extra
+    ? {
+        ...card,
+        pos: extra.pos,
+        memory: extra.memory,
+        exampleUsage: extra.exampleUsage || card.exampleUsage,
+        senses: extra.senses || card.senses,
+      }
+    : { ...card, pos: inferPos(card), memory: inferMemory(card) }
+  return merged
 }

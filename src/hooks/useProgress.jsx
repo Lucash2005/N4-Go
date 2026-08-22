@@ -12,6 +12,7 @@ import {
   grammarQueueIds,
   resolveCards,
   seededShuffle,
+  vocabLevelCounts,
 } from '../utils/dailyPlan'
 import {
   applyGrade,
@@ -33,7 +34,7 @@ import {
 const ProgressContext = createContext(null)
 const ALL_CARDS = [...vocabulary, ...grammar, ...FORM_CARDS]
 
-function catchUpVocabQuota(cardProgress) {
+function catchUpPlanOptions(cardProgress) {
   const learnedVocab = vocabulary.filter((v) => isLearned(cardProgress[v.id])).length
   const learnedGrammar = grammar.filter((g) => isLearned(cardProgress[g.id])).length
   const since = addDays(todayKey(), -6)
@@ -50,29 +51,34 @@ function catchUpVocabQuota(cardProgress) {
     appGrammar: grammar.length,
     weekVocabGain,
   })
-  if (!plan.behind.vocab) return DAILY_QUOTA.vocab
-  return Math.min(
-    40,
-    Math.max(20, Math.ceil(plan.month.vocabRemaining / Math.max(7, plan.month.daysLeft))),
-  )
+  const vocabQuota = plan.behind.vocab
+    ? Math.min(
+        40,
+        Math.max(20, Math.ceil(plan.month.vocabRemaining / Math.max(7, plan.month.daysLeft))),
+      )
+    : DAILY_QUOTA.vocab
+  return {
+    vocabQuota,
+    includeExtension: plan.behind.vocab,
+  }
 }
 
 function ensurePlan(plan, cardProgress) {
   const today = todayKey()
-  const vocabQuota = catchUpVocabQuota(cardProgress)
+  const catchUp = catchUpPlanOptions(cardProgress)
+  const vocabQuota = catchUp.vocabQuota
   if (
     plan?.date === today &&
     Array.isArray(plan.vocabIds) &&
     Array.isArray(plan.formIds) &&
     plan.grammarPathVersion === GRAMMAR_PATH_VERSION
   ) {
-    // If catch-up needs more vocab than today's plan holds, rebuild once
     if (vocabQuota > (plan.vocabQuota || DAILY_QUOTA.vocab) || plan.vocabIds.length < vocabQuota) {
-      return buildDailyPlan(today, cardProgress, 'catch-up', { vocabQuota })
+      return buildDailyPlan(today, cardProgress, 'catch-up', catchUp)
     }
     return plan
   }
-  return buildDailyPlan(today, cardProgress, '', { vocabQuota })
+  return buildDailyPlan(today, cardProgress, '', catchUp)
 }
 
 function withTaskDone(tasks, id, done) {
@@ -402,6 +408,9 @@ export function ProgressProvider({ children }) {
       dueCount,
       targets: TARGETS,
       totalVocabInApp: vocabulary.length,
+      coreVocabInApp: vocabLevelCounts().core,
+      extensionVocabInApp: vocabLevelCounts().extension,
+      vocabLevelCounts: vocabLevelCounts(),
       totalGrammarInApp: grammar.length,
       dailyPlan: { ...plan, reviewIds: liveReviewIds },
       todayVocab: vocabCards,

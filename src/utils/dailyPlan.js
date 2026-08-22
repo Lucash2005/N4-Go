@@ -25,6 +25,27 @@ const GENERIC_VOCAB = new Set([
   'ところ',
 ])
 
+export function isCoreVocab(card) {
+  return card?.type === 'vocab' && card.level !== '延伸'
+}
+
+export function vocabStudyPool(options = {}) {
+  if (options.includeExtension) return vocabulary
+  return vocabulary.filter(isCoreVocab)
+}
+
+export function vocabLevelCounts() {
+  let n5 = 0
+  let n4 = 0
+  let ext = 0
+  for (const v of vocabulary) {
+    if (v.level === 'N5') n5 += 1
+    else if (v.level === 'N4') n4 += 1
+    else if (v.level === '延伸') ext += 1
+  }
+  return { n5, n4, core: n5 + n4, extension: ext, total: vocabulary.length }
+}
+
 /** Deterministic PRNG from a string seed (xmur3 + mulberry32) */
 function mulberry32(seed) {
   let t = seed >>> 0
@@ -172,10 +193,10 @@ function pickFormIds(count, seedStr, cardProgress, date = todayKey(), options = 
   return pickByPriority(pool, count, seedStr, cardProgress, date, options)
 }
 
-function vocabMatchingTexts(texts) {
+function vocabMatchingTexts(texts, pool = vocabulary) {
   const hay = texts.filter(Boolean).join('\n')
   if (!hay) return []
-  return vocabulary.filter((v) => {
+  return pool.filter((v) => {
     if (!v.word || v.word.length < 2) return false
     if (GENERIC_VOCAB.has(v.word)) return false
     return hay.includes(v.word)
@@ -184,6 +205,7 @@ function vocabMatchingTexts(texts) {
 
 function pickVocabThemed(count, seedStr, cardProgress, date, grammarIds, options = {}) {
   const path = getGrammarPath(date)
+  const studyPool = vocabStudyPool(options)
   const byId = new Map(grammar.map((g) => [g.id, g]))
   const todayTexts = grammarIds.flatMap((id) => {
     const g = byId.get(id)
@@ -199,10 +221,10 @@ function pickVocabThemed(count, seedStr, cardProgress, date, grammarIds, options
   })
 
   const layers = [
-    vocabMatchingTexts(todayTexts),
-    vocabMatchingTexts(monthTexts),
-    vocabMatchingTexts(unlockedTexts),
-    vocabulary,
+    vocabMatchingTexts(todayTexts, studyPool),
+    vocabMatchingTexts(monthTexts, studyPool),
+    vocabMatchingTexts(unlockedTexts, studyPool),
+    studyPool,
   ]
 
   const picked = []
@@ -236,7 +258,10 @@ function pickVocabThemed(count, seedStr, cardProgress, date, grammarIds, options
  */
 export function buildDailyPlan(date, cardProgress = {}, seedExtra = '', options = {}) {
   const seed = `n4-go:${date}${seedExtra ? `:${seedExtra}` : ''}`
-  const pickOpts = { excludeLearned: options.excludeLearned ?? true }
+  const pickOpts = {
+    excludeLearned: options.excludeLearned ?? true,
+    includeExtension: options.includeExtension ?? false,
+  }
   const vocabQuota = Math.max(
     DAILY_QUOTA.vocab,
     Math.min(40, Number(options.vocabQuota) || DAILY_QUOTA.vocab),

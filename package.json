@@ -8,7 +8,10 @@
     "build": "vite build",
     "lint": "oxlint",
     "preview": "vite preview",
-    "generate:audio": "node scripts/generate-audio.mjs"
+    "generate:audio": "node scripts/generate-audio.mjs",
+    "fetch:openjlpt": "node scripts/fetch-openjlpt.mjs",
+    "build:vocab": "node scripts/build-vocab.mjs",
+    "validate:vocab": "node scripts/validate-vocab.mjs"
   },
   "dependencies": {
     "edge-tts-universal": "^1.4.0",

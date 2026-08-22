@@ -34,6 +34,7 @@ export default function Dashboard() {
     grammarPath,
     monthGrammarProgress,
     dueDrillCount,
+    vocabLevelCounts,
   } = useProgress()
 
   const doneCount = dailyTasks.filter((t) => t.done).length
@@ -118,6 +119,13 @@ export default function Dashboard() {
             考試還有 <span className="font-semibold text-ink">{plan.daysToExam}</span> 天
           </p>
         </div>
+
+        {vocabLevelCounts ? (
+          <p className="mt-3 text-xs text-ink-soft">
+            詞庫 {vocabLevelCounts.core} 核心（N5 {vocabLevelCounts.n5}＋N4{' '}
+            {vocabLevelCounts.n4}）＋ {vocabLevelCounts.extension} 延伸 · 每日排程預設只抽核心，落後時可含延伸
+          </p>
+        ) : null}
 
         <p className="mt-3 text-xs text-ink-soft">
           掌握標準偏誠實：同一字「簡單」或「記得」需成功約兩次才進進度；到期複習不會扣掉已掌握。

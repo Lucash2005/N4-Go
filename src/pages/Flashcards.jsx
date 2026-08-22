@@ -114,7 +114,7 @@ export default function Flashcards() {
       const status = getFilterStatus(cardProgress, card.id)
       if (statusFilter !== 'all' && status !== statusFilter) return false
       if (!q) return true
-      const hay = [card.word, card.reading, card.meaning, card.example, card.category]
+      const hay = [card.word, card.reading, card.meaning, card.meaningEn, card.example, card.category]
         .filter(Boolean)
         .join(' ')
         .toLowerCase()
@@ -669,10 +669,23 @@ export default function Flashcards() {
                 className="[grid-area:stack] [backface-visibility:hidden] [transform:rotateY(180deg)]"
               >
                 <Badge>{card.category}</Badge>
+                {card.level ? (
+                  <span className="ml-2 rounded-full bg-foam px-2 py-0.5 text-xs text-ink-soft">
+                    {card.level}
+                  </span>
+                ) : null}
+                {card.reviewFlags?.length ? (
+                  <span className="ml-2 rounded-full bg-coral/15 px-2 py-0.5 text-xs font-medium text-coral">
+                    建議核對
+                  </span>
+                ) : null}
                 {card.pos ? (
                   <p className="mt-3 text-sm font-medium text-sea-deep">{card.pos}</p>
                 ) : null}
                 <p className="mt-2 text-3xl font-bold text-ink">{card.meaning}</p>
+                {card.meaningEn ? (
+                  <p className="mt-1 text-sm text-ink-soft">EN: {card.meaningEn}</p>
+                ) : null}
                 {(showFurigana || hideReadingOnFront) && card.reading ? (
                   <p className="mt-1 text-base text-sea-deep">
                     {card.type === 'form'
