@@ -88,7 +88,7 @@ export default function Drill() {
     }
     if (mode === 'confusable') {
       return DRILL_THEMES.filter((t) =>
-        ['all', 'te-kara', 'ni-he', 'duty', 'juyo'].includes(t.id),
+        ['all', 'te-kara', 'ni-he', 'duty', 'juyo', 'cond', 'te-aux'].includes(t.id),
       )
     }
     return DRILL_THEMES
@@ -318,6 +318,18 @@ export default function Drill() {
             <p className="mt-2 whitespace-pre-line text-sm leading-relaxed text-ink">
               {question.explanation}
             </p>
+            {question.passageZh ? (
+              <p className="mt-3 whitespace-pre-line rounded-xl bg-white/90 px-3.5 py-2.5 text-sm leading-relaxed text-ink-soft ring-1 ring-line/40">
+                <span className="font-medium text-sea-deep">短文中文：</span>
+                {question.passageZh}
+              </p>
+            ) : null}
+            {question.exampleZh ? (
+              <p className="mt-3 rounded-xl bg-white/90 px-3.5 py-2.5 text-sm leading-relaxed text-ink ring-1 ring-line/40">
+                <span className="font-medium text-sea-deep">正解中文：</span>
+                {question.exampleZh}
+              </p>
+            ) : null}
             {question.memoryCompare || question.memoryTip ? (
               <div className="mt-3 space-y-2 rounded-xl bg-white/80 px-3.5 py-3 text-sm ring-1 ring-line/50">
                 {question.memoryCompare ? (
