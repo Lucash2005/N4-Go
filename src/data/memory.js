@@ -40,6 +40,77 @@ export const VOCAB_MEMORY = {
   v038: { pos: 'ナ形容詞', memory: 'まじめ：認真。真面目に勉強する。' },
   v039: { pos: 'ナ形容詞', memory: 'ふべん：不方便。對義：便利。' },
   v040: { pos: 'ナ形容詞', memory: 'ふくざつ：複雜。對義：簡単。' },
+  v083: {
+    pos: '他動詞（多義）',
+    memory: 'かける 超多義；先記「電話をかける」。別和 出かける（出去）搞混。',
+    exampleUsage:
+      '此卡主例句是「打電話」。下面「多義」列出其他常考用法；出かける 是另一個動詞（出＋かける）。',
+    senses: [
+      {
+        meaning: '打電話',
+        example: '電話をかける',
+        exampleZh: '打電話',
+      },
+      {
+        meaning: '戴（眼鏡／項鍊等）',
+        example: 'メガネをかける',
+        exampleZh: '戴眼鏡',
+      },
+      {
+        meaning: '掛上；上鎖',
+        example: '鍵をかける',
+        exampleZh: '上鎖',
+      },
+      {
+        meaning: '花時間／功夫',
+        example: '時間をかける',
+        exampleZh: '花時間',
+      },
+      {
+        meaning: '坐一下（腰かける）',
+        example: 'いすに腰をかける',
+        exampleZh: '在椅子上坐下',
+      },
+      {
+        meaning: '乘以（算數）',
+        example: '３かける４は１２',
+        exampleZh: '三乘以四等於十二',
+      },
+    ],
+  },
+  v902: {
+    pos: '他動詞（多義）',
+    memory: '漢字寫 掛ける 時多表「掛上」；算數「乘以」也常用這個漢字。與 v083 かける 同一動詞族。',
+    exampleUsage:
+      '此卡主例句是「把畫掛在牆上」。乘以、戴眼鏡等見下方多義；電話をかける 也常寫成平假名。',
+    senses: [
+      {
+        meaning: '掛上（畫、衣服等）',
+        example: '壁に絵を掛ける',
+        exampleZh: '把畫掛在牆上',
+      },
+      {
+        meaning: '乘以',
+        example: '４掛ける２は８',
+        exampleZh: '四乘以二等於八',
+      },
+      {
+        meaning: '戴上（眼鏡等）',
+        example: '眼鏡を掛ける',
+        exampleZh: '戴眼鏡',
+      },
+      {
+        meaning: '打電話',
+        example: '電話を掛ける',
+        exampleZh: '打電話',
+      },
+      {
+        meaning: '花時間',
+        example: '手間を掛ける',
+        exampleZh: '花功夫／費事',
+      },
+    ],
+  },
   v1387: {
     pos: '他動詞／助動',
     memory: '本義：收好、關起來（本[ほん]をしまう、ドアをしまう）。',
@@ -581,6 +652,7 @@ export function withMemory(card) {
       pos: extra.pos,
       memory: extra.memory,
       exampleUsage: extra.exampleUsage || card.exampleUsage,
+      senses: extra.senses || card.senses,
     }
   }
   return { ...card, pos: inferPos(card), memory: inferMemory(card) }

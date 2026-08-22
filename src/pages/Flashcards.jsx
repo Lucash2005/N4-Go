@@ -750,6 +750,26 @@ export default function Flashcards() {
                   </p>
                 ) : null}
 
+                {card.senses?.length ? (
+                  <div className="mt-4 w-full space-y-2 text-left text-sm leading-relaxed text-ink sm:text-base">
+                    <p className="text-xs font-medium text-sea-deep">常用多義（意思＋例句＋中文）</p>
+                    <ul className="space-y-2">
+                      {card.senses.map((sense) => (
+                        <li
+                          key={`${sense.meaning}-${sense.example}`}
+                          className="rounded-xl bg-white/80 px-3.5 py-2.5 ring-1 ring-line/50"
+                        >
+                          <p className="font-medium text-ink">{sense.meaning}</p>
+                          <p className="mt-1 text-sea-deep">{sense.example}</p>
+                          {sense.exampleZh ? (
+                            <p className="mt-0.5 text-ink-soft">{sense.exampleZh}</p>
+                          ) : null}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                ) : null}
+
                 {card.exampleUsage ? (
                   <p className="mt-4 w-full rounded-xl bg-coral/10 px-3.5 py-2.5 text-left text-sm leading-relaxed text-ink sm:text-base">
                     <span className="font-medium text-coral">例句用法：</span>
