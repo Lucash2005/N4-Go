@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { DRILL_THEMES } from '../data/drill'
+import { DRILL_THEMES, drillBankSummary } from '../data/drill'
 import { useProgress } from '../hooks/useProgress'
 import { pickDrillSet } from '../utils/drillProgress'
 import { todayKey } from '../utils/storage'
@@ -19,7 +19,7 @@ const MODES = [
   {
     id: 'passage',
     label: '短文填空',
-    desc: 'JLPT 讀解同型：北海道旅行等 4 格填空',
+    desc: 'JLPT 讀解同型：一篇短文拆成數格填空（機場、日常等）',
   },
   {
     id: 'mistakes',
@@ -44,14 +44,14 @@ export default function Drill() {
   const question = questions[current]
   const progressLabel = questions.length ? `${current + 1} / ${questions.length}` : ''
 
-  const modeMeta = MODES.find((m) => m.id === mode)
+  const bank = useMemo(() => drillBankSummary(), [])
 
   function start() {
     const qs = pickDrillSet({
       mode,
       theme,
       drillProgress,
-      count: mode === 'passage' && theme === 'passage-hokkaido' ? 4 : 8,
+      count: 8,
       today: todayKey(),
     })
     setQuestions(qs)
@@ -83,16 +83,18 @@ export default function Drill() {
   }
 
   const themeOptions = useMemo(() => {
-    if (mode === 'passage') {
-      return DRILL_THEMES.filter((t) => t.id === 'all' || t.id === 'passage-hokkaido')
+    if (mode === 'passage' || mode === 'mistakes') {
+      return [{ id: 'all', label: '全部混合' }]
     }
     if (mode === 'confusable') {
       return DRILL_THEMES.filter((t) =>
         ['all', 'te-kara', 'ni-he', 'duty', 'juyo'].includes(t.id),
       )
     }
-    return [{ id: 'all', label: '全部混合' }]
+    return DRILL_THEMES
   }, [mode])
+
+  const modeMeta = MODES.find((m) => m.id === mode)
 
   if (!started) {
     return (
@@ -103,10 +105,9 @@ export default function Drill() {
           </Link>
           <h2 className="font-display mt-2 text-2xl font-bold text-ink">基礎加強</h2>
           <p className="mt-1 text-sm text-ink-soft">
-            補 N4 考前易錯句型與讀解填空。進度存於{' '}
-            <span className="font-medium text-sea-deep">drill-progress</span>
-            ，<strong className="font-medium text-ink">不會</strong>
-            扣減今日 15 字／文法卡的掌握數。
+            補 N4 考前易錯句型與讀解填空。題庫共 {bank.total} 題（易混 {bank.byKind.confusable} ·
+            短文 {bank.byKind.passage} · 助詞 {bank.byKind.particle}）。進度獨立，不影響今日 15
+            字／文法掌握數。
           </p>
         </section>
 
@@ -198,8 +199,7 @@ export default function Drill() {
             onClick={start}
             className="mt-6 w-full rounded-2xl bg-sea px-4 py-3.5 text-base font-medium text-white transition hover:bg-sea-deep"
           >
-            開始{' '}
-            {mode === 'passage' && theme === 'passage-hokkaido' ? '4' : '8'} 題
+            開始 {Math.min(8, bank.total)} 題
           </button>
         </section>
 

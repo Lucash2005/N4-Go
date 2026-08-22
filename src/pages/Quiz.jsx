@@ -110,7 +110,7 @@ export default function Quiz() {
           <section className="surface soft-shadow animate-fade-up stagger-2 flex flex-col rounded-3xl p-5 sm:p-6">
             <h3 className="font-display text-lg font-bold text-ink">基礎加強</h3>
             <p className="mt-2 flex-1 text-sm leading-relaxed text-ink-soft">
-              てから／から、に／へ、短文填空（含北海道旅行）。錯題走獨立佇列，不扣掌握進度。
+              てから／から、に／へ、讀解型短文填空。錯題走獨立佇列，不扣掌握進度。
             </p>
             <Link
               to="/drill"

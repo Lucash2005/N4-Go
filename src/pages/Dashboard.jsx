@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import Countdown from '../components/Countdown'
 import ProgressBar from '../components/ProgressBar'
+import { DRILL_BANK_SIZE } from '../data/drill'
 import { useProgress } from '../hooks/useProgress'
 import { getPlanProgress } from '../utils/planProgress'
 
@@ -206,7 +207,7 @@ export default function Dashboard() {
               <div>
                 <p className="font-medium text-ink">基礎加強（選修）</p>
                 <p className="mt-0.5 text-xs text-ink-soft">
-                  てから／に／短文填空 · 不計入今日 15 字 · 錯題獨立複習
+                  てから／に／讀解型填空 · 題庫 {DRILL_BANK_SIZE} 題 · 錯題獨立複習
                   {dueDrillCount > 0 ? ` · ${dueDrillCount} 題待複習` : ''}
                 </p>
               </div>

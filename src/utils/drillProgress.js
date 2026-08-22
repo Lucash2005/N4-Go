@@ -67,9 +67,6 @@ export function pickDrillSet({
     if (theme !== 'all') pool = filterDrillQuestions({ kind: 'confusable', theme })
   } else if (mode === 'passage') {
     pool = filterDrillQuestions({ kind: 'passage' })
-    if (theme === 'passage-hokkaido') {
-      pool = filterDrillQuestions({ theme: 'passage-hokkaido' })
-    }
   } else {
     pool = [...drillQuestions]
   }
