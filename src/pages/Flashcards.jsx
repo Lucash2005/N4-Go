@@ -695,6 +695,24 @@ export default function Flashcards() {
                       <span className="font-medium text-sea-deep">規則：</span>
                       {card.formDrill ? formRule(card.formDrill) : card.exampleMeaning}
                     </p>
+                    {card.useWhen ? (
+                      <p className="rounded-xl bg-foam/90 px-3.5 py-2.5">
+                        <span className="font-medium text-sea-deep">用途：</span>
+                        {card.useWhen}
+                      </p>
+                    ) : null}
+                    {card.form ? (
+                      <p className="whitespace-pre-line rounded-xl bg-sand/80 px-3.5 py-2.5">
+                        <span className="font-medium text-sea-deep">接續：</span>
+                        {card.form}
+                      </p>
+                    ) : null}
+                    {card.tip ? (
+                      <p className="rounded-xl bg-sea/10 px-3.5 py-2.5">
+                        <span className="font-medium text-sea-deep">口訣：</span>
+                        {card.tip}
+                      </p>
+                    ) : null}
                   </div>
                 ) : card.type === 'grammar' ? (
                   <div className="mt-4 w-full space-y-2.5 text-left text-sm leading-relaxed text-ink sm:text-base">
@@ -739,7 +757,23 @@ export default function Flashcards() {
                   </p>
                 ) : null}
 
-                {card.type === 'form' ? null : (
+                {card.type === 'form' ? (
+                <div className="mt-4 w-full rounded-2xl bg-foam/80 p-4 text-left">
+                  <p className="text-xs font-medium uppercase tracking-wide text-sea-deep">例句</p>
+                  <p className="mt-2 text-lg leading-relaxed text-ink">
+                    <FuriganaText
+                      text={card.example}
+                      annotated={card.exampleFurigana}
+                      showFurigana={showFurigana}
+                    />
+                  </p>
+                  {showZhMeaning ? (
+                    <p className="mt-2 text-base text-ink-soft">{card.exampleMeaning}</p>
+                  ) : (
+                    <p className="mt-2 text-sm text-ink-soft">中文解釋已隱藏</p>
+                  )}
+                </div>
+                ) : (
                 <div className="mt-4 w-full rounded-2xl bg-foam/80 p-4 text-left">
                   <p className="text-lg leading-relaxed text-ink">
                     <FuriganaText

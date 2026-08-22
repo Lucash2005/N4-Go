@@ -28,7 +28,7 @@ export function speechTextForCard(card, { flipped = false } = {}) {
   if (!card) return ''
   if (card.type === 'form') {
     const drill = card.formDrill
-    if (flipped) return drill?.answerReading || card.meaning || card.word
+    if (flipped) return card.example || drill?.answerReading || card.meaning || card.word
     return drill?.reading || card.reading || card.word
   }
   if (flipped) return card.example || readingForSpeech(card.reading, card.word) || card.word

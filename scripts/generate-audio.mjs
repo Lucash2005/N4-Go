@@ -68,7 +68,7 @@ function jobsFor(card) {
     ? card.formDrill?.reading || card.reading || card.word
     : readingForSpeech(card.reading, card.word)
   const exampleText = isForm
-    ? card.formDrill?.answerReading || card.example
+    ? card.example || card.formDrill?.answerReading
     : card.example
   if (only === 'all' || only === 'ja') {
     jobs.push({
