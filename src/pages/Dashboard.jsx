@@ -142,6 +142,7 @@ export default function Dashboard() {
             type="button"
             onClick={reshuffleTodayPlan}
             className="rounded-full bg-white px-3 py-1.5 text-xs text-ink-soft ring-1 ring-line hover:bg-foam"
+            title="已掌握的字不會再出現，改抽新字；到期複習請用「到期複習」"
           >
             重新抽題
           </button>

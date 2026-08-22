@@ -2,7 +2,7 @@ import { grammar } from '../data/grammar'
 import { GRAMMAR_PATH_VERSION, getGrammarPath, grammarUnlockRank } from '../data/grammarPath'
 import { FORM_CARDS } from '../data/verbForms'
 import { vocabulary } from '../data/vocabulary'
-import { getDueIds, normalizeEntry } from './srs'
+import { getDueIds, isLearned, normalizeEntry } from './srs'
 import { todayKey } from './storage'
 
 export const DAILY_QUOTA = {
@@ -55,22 +55,30 @@ export function seededShuffle(items, seedStr) {
   return copy
 }
 
-function pickByPriority(cards, count, seedStr, cardProgress, date = todayKey()) {
+function pickByPriority(cards, count, seedStr, cardProgress, date = todayKey(), options = {}) {
   if (count <= 0 || !cards.length) return []
 
-  const newOnes = cards.filter((c) => !normalizeEntry(cardProgress[c.id], date))
-  const dueOnes = cards.filter((c) => {
+  const { excludeLearned = false } = options
+  const pool = excludeLearned
+    ? cards.filter((c) => !isLearned(cardProgress[c.id], date))
+    : cards
+  if (!pool.length) return []
+
+  const newOnes = pool.filter((c) => !normalizeEntry(cardProgress[c.id], date))
+  const dueOnes = pool.filter((c) => {
     const e = normalizeEntry(cardProgress[c.id], date)
-    return e && e.due <= date
+    return e && e.due <= date && e.status !== 'learned'
   })
-  const learningOnes = cards.filter((c) => {
+  const learningOnes = pool.filter((c) => {
     const e = normalizeEntry(cardProgress[c.id], date)
     return e && e.due > date && e.status !== 'learned'
   })
-  const learnedOnes = cards.filter((c) => {
-    const e = normalizeEntry(cardProgress[c.id], date)
-    return e && e.status === 'learned' && e.due > date
-  })
+  const learnedOnes = excludeLearned
+    ? []
+    : pool.filter((c) => {
+        const e = normalizeEntry(cardProgress[c.id], date)
+        return e && e.status === 'learned' && e.due > date
+      })
 
   const ordered = [
     ...seededShuffle(newOnes, `${seedStr}:new`),
@@ -90,11 +98,20 @@ function pickByPriority(cards, count, seedStr, cardProgress, date = todayKey()) 
   return picked
 }
 
-function pickGrammarByPath(count, seedStr, cardProgress, date = todayKey()) {
+function pickGrammarByPath(count, seedStr, cardProgress, date = todayKey(), options = {}) {
+  const { excludeLearned = false } = options
   const path = getGrammarPath(date)
   const unlocked = new Set(path.unlockedIds)
-  const pool = grammar.filter((g) => unlocked.has(g.id))
-  if (!pool.length) return pickByPriority(grammar, count, seedStr, cardProgress, date)
+  let pool = grammar.filter((g) => unlocked.has(g.id))
+  if (excludeLearned) {
+    pool = pool.filter((c) => !isLearned(cardProgress[c.id], date))
+  }
+  if (!pool.length) {
+    const fallback = excludeLearned
+      ? grammar.filter((c) => !isLearned(cardProgress[c.id], date))
+      : grammar
+    return pickByPriority(fallback, count, seedStr, cardProgress, date, options)
+  }
 
   const newOnes = pool.filter((c) => !normalizeEntry(cardProgress[c.id], date))
   // Catch up earlier months first, keep listed order within a month, light shuffle among same rank band
@@ -107,16 +124,18 @@ function pickGrammarByPath(count, seedStr, cardProgress, date = todayKey()) {
 
   const dueOnes = pool.filter((c) => {
     const e = normalizeEntry(cardProgress[c.id], date)
-    return e && e.due <= date
+    return e && e.due <= date && e.status !== 'learned'
   })
   const learningOnes = pool.filter((c) => {
     const e = normalizeEntry(cardProgress[c.id], date)
     return e && e.due > date && e.status !== 'learned'
   })
-  const learnedOnes = pool.filter((c) => {
-    const e = normalizeEntry(cardProgress[c.id], date)
-    return e && e.status === 'learned' && e.due > date
-  })
+  const learnedOnes = excludeLearned
+    ? []
+    : pool.filter((c) => {
+        const e = normalizeEntry(cardProgress[c.id], date)
+        return e && e.status === 'learned' && e.due > date
+      })
 
   const ordered = [
     ...newOrdered,
@@ -136,7 +155,7 @@ function pickGrammarByPath(count, seedStr, cardProgress, date = todayKey()) {
   return picked
 }
 
-function pickFormIds(count, seedStr, cardProgress, date = todayKey()) {
+function pickFormIds(count, seedStr, cardProgress, date = todayKey(), options = {}) {
   const path = getGrammarPath(date)
   const day = Number(String(date).slice(8, 10)) || 1
   const te = FORM_CARDS.filter((c) => c.formDrill.theme === 'て形')
@@ -150,7 +169,7 @@ function pickFormIds(count, seedStr, cardProgress, date = todayKey()) {
     pool = nai.length ? nai : FORM_CARDS
   }
 
-  return pickByPriority(pool, count, seedStr, cardProgress, date)
+  return pickByPriority(pool, count, seedStr, cardProgress, date, options)
 }
 
 function vocabMatchingTexts(texts) {
@@ -163,7 +182,7 @@ function vocabMatchingTexts(texts) {
   })
 }
 
-function pickVocabThemed(count, seedStr, cardProgress, date, grammarIds) {
+function pickVocabThemed(count, seedStr, cardProgress, date, grammarIds, options = {}) {
   const path = getGrammarPath(date)
   const byId = new Map(grammar.map((g) => [g.id, g]))
   const todayTexts = grammarIds.flatMap((id) => {
@@ -196,6 +215,7 @@ function pickVocabThemed(count, seedStr, cardProgress, date, grammarIds) {
       `${seedStr}:layer${i}`,
       cardProgress,
       date,
+      options,
     )
     for (const id of ids) {
       if (seen.has(id)) continue
@@ -208,12 +228,15 @@ function pickVocabThemed(count, seedStr, cardProgress, date, grammarIds) {
 
 /**
  * Build a stable daily plan for `date` (YYYY-MM-DD).
- * Prefers new → due → learning → learned.
+ * Prefers new → due → learning → learned (learned skipped when excludeLearned).
  * Optional `seedExtra` reshuffles while keeping the same calendar date.
  * Optional `options.vocabQuota` raises today's new-vocab count when catching up.
+ * Optional `options.excludeLearned` — omit mastered cards from today's study slots
+ *   (they return via the SRS review queue when due).
  */
 export function buildDailyPlan(date, cardProgress = {}, seedExtra = '', options = {}) {
   const seed = `n4-go:${date}${seedExtra ? `:${seedExtra}` : ''}`
+  const pickOpts = { excludeLearned: options.excludeLearned ?? true }
   const vocabQuota = Math.max(
     DAILY_QUOTA.vocab,
     Math.min(40, Number(options.vocabQuota) || DAILY_QUOTA.vocab),
@@ -224,14 +247,16 @@ export function buildDailyPlan(date, cardProgress = {}, seedExtra = '', options 
     `${seed}:grammar`,
     cardProgress,
     date,
+    pickOpts,
   )
-  const formIds = pickFormIds(DAILY_QUOTA.forms, `${seed}:forms`, cardProgress, date)
+  const formIds = pickFormIds(DAILY_QUOTA.forms, `${seed}:forms`, cardProgress, date, pickOpts)
   const vocabIds = pickVocabThemed(
     vocabQuota,
     `${seed}:vocab`,
     cardProgress,
     date,
     grammarIds,
+    pickOpts,
   )
 
   const allIds = [...vocabulary, ...grammar, ...FORM_CARDS].map((c) => c.id)
