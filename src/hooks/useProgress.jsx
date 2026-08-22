@@ -24,6 +24,11 @@ import {
 import { todayKey } from '../utils/storage'
 import { useLocalStorage } from './useLocalStorage'
 import { getPlanProgress } from '../utils/planProgress'
+import {
+  countDueDrills,
+  describeDrillProgress,
+  recordDrillResult,
+} from '../utils/drillProgress'
 
 const ProgressContext = createContext(null)
 const ALL_CARDS = [...vocabulary, ...grammar, ...FORM_CARDS]
@@ -103,6 +108,12 @@ export function ProgressProvider({ children }) {
   })
   const [dailyPlan, setDailyPlan] = useLocalStorage('daily-plan', emptyDailyPlan(todayKey()))
   const [quizStats, setQuizStats] = useLocalStorage('quiz-stats', {
+    attempted: 0,
+    correct: 0,
+    lastScore: null,
+  })
+  const [drillProgress, setDrillProgress] = useLocalStorage('drill-progress', {})
+  const [drillStats, setDrillStats] = useLocalStorage('drill-stats', {
     attempted: 0,
     correct: 0,
     lastScore: null,
@@ -303,6 +314,22 @@ export function ProgressProvider({ children }) {
       }
     }
 
+    function recordDrillAnswer(drillId, correct) {
+      setDrillProgress((prev) => recordDrillResult(prev, drillId, correct, today))
+      setDrillStats((prev) => ({
+        attempted: prev.attempted + 1,
+        correct: prev.correct + (correct ? 1 : 0),
+        lastScore: {
+          drillId,
+          correct,
+          at: new Date().toISOString(),
+        },
+      }))
+    }
+
+    const dueDrillCount = countDueDrills(drillProgress, today)
+    const drillSummary = describeDrillProgress(drillProgress, today)
+
     function markListened(id) {
       setDailyPlan((prev) => {
         const current = ensurePlan(prev, cardProgress)
@@ -361,6 +388,11 @@ export function ProgressProvider({ children }) {
       setTaskDone,
       quizStats,
       recordQuiz,
+      drillProgress,
+      drillStats,
+      dueDrillCount,
+      drillSummary,
+      recordDrillAnswer,
       learnedVocab,
       learningVocab,
       weekVocabGain,
@@ -392,11 +424,15 @@ export function ProgressProvider({ children }) {
     dailyTasks,
     dailyPlan,
     quizStats,
+    drillProgress,
+    drillStats,
     sessionSeed,
     setCardProgress,
     setDailyTasks,
     setDailyPlan,
     setQuizStats,
+    setDrillProgress,
+    setDrillStats,
   ])
 
   return <ProgressContext.Provider value={value}>{children}</ProgressContext.Provider>

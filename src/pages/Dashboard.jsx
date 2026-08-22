@@ -32,6 +32,7 @@ export default function Dashboard() {
     isStudied,
     grammarPath,
     monthGrammarProgress,
+    dueDrillCount,
   } = useProgress()
 
   const doneCount = dailyTasks.filter((t) => t.done).length
@@ -198,6 +199,23 @@ export default function Dashboard() {
                   我已練完
                 </button>
               </div>
+            </div>
+          </div>
+          <div className="rounded-2xl bg-coral/5 p-4 ring-1 ring-coral/20">
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <div>
+                <p className="font-medium text-ink">基礎加強（選修）</p>
+                <p className="mt-0.5 text-xs text-ink-soft">
+                  てから／に／短文填空 · 不計入今日 15 字 · 錯題獨立複習
+                  {dueDrillCount > 0 ? ` · ${dueDrillCount} 題待複習` : ''}
+                </p>
+              </div>
+              <Link
+                to="/drill"
+                className="rounded-xl bg-coral px-3 py-2 text-sm text-white hover:bg-coral/90"
+              >
+                開始加強
+              </Link>
             </div>
           </div>
         </div>

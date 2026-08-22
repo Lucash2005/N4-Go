@@ -1,4 +1,5 @@
 import { useMemo, useRef, useState } from 'react'
+import { Link } from 'react-router-dom'
 import { useProgress } from '../hooks/useProgress'
 import { todayKey } from '../utils/storage'
 import { describeQuizSource, pickAdaptiveQuiz } from '../utils/quizFromProgress'
@@ -7,6 +8,7 @@ export default function Quiz() {
   const { recordQuiz, cardProgress, dailyPlan, todayVocab, todayGrammar, todayReview, grammarPath } =
     useProgress()
   const [mode, setMode] = useState('all')
+  const [view, setView] = useState('hub')
   const [started, setStarted] = useState(false)
   const [questions, setQuestions] = useState([])
   const [current, setCurrent] = useState(0)
@@ -79,11 +81,61 @@ export default function Quiz() {
     setRevealed(false)
   }
 
+  if (!started && view === 'hub') {
+    return (
+      <div className="space-y-5">
+        <section className="animate-fade-up">
+          <h2 className="font-display text-2xl font-bold text-ink">測驗與加強</h2>
+          <p className="mt-1 text-sm text-ink-soft">
+            模擬測驗對齊 N4 進度；基礎加強專補易混句型，不影響今日單字排程。
+          </p>
+        </section>
+
+        <div className="grid gap-4 sm:grid-cols-2">
+          <section className="surface soft-shadow animate-fade-up stagger-1 flex flex-col rounded-3xl p-5 sm:p-6">
+            <h3 className="font-display text-lg font-bold text-ink">N4 模擬測驗</h3>
+            <p className="mt-2 flex-1 text-sm leading-relaxed text-ink-soft">
+              依今日計畫與 SRS 動態出題。錯題會影響對應單字／文法卡的複習排程。
+            </p>
+            <p className="mt-2 text-xs text-sea-deep">{focusHint}</p>
+            <button
+              type="button"
+              onClick={() => setView('exam')}
+              className="mt-5 w-full rounded-2xl bg-sea px-4 py-3.5 text-base font-medium text-white transition hover:bg-sea-deep"
+            >
+              進入模擬測驗
+            </button>
+          </section>
+
+          <section className="surface soft-shadow animate-fade-up stagger-2 flex flex-col rounded-3xl p-5 sm:p-6">
+            <h3 className="font-display text-lg font-bold text-ink">基礎加強</h3>
+            <p className="mt-2 flex-1 text-sm leading-relaxed text-ink-soft">
+              てから／から、に／へ、短文填空（含北海道旅行）。錯題走獨立佇列，不扣掌握進度。
+            </p>
+            <Link
+              to="/drill"
+              className="mt-5 block w-full rounded-2xl bg-coral px-4 py-3.5 text-center text-base font-medium text-white transition hover:bg-coral/90"
+            >
+              開始加強練習
+            </Link>
+          </section>
+        </div>
+      </div>
+    )
+  }
+
   if (!started) {
     return (
       <div className="space-y-5">
         <section className="animate-fade-up">
-          <h2 className="font-display text-2xl font-bold text-ink">N4 模擬測驗</h2>
+          <button
+            type="button"
+            onClick={() => setView('hub')}
+            className="text-sm text-sea-deep hover:underline"
+          >
+            ← 回測驗首頁
+          </button>
+          <h2 className="font-display mt-2 text-2xl font-bold text-ink">N4 模擬測驗</h2>
           <p className="mt-1 text-sm text-ink-soft">
             依學習進度動態出題。題庫已對齊 N4 目標（單字 1500、文法 80），優先今日計畫與到期複習。
           </p>
@@ -154,7 +206,10 @@ export default function Quiz() {
           </button>
           <button
             type="button"
-            onClick={() => setStarted(false)}
+            onClick={() => {
+              setStarted(false)
+              setView('hub')
+            }}
             className="rounded-2xl bg-white px-5 py-3 text-ink ring-1 ring-line"
           >
             回設定
