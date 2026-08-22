@@ -10,6 +10,7 @@ export default function Dashboard() {
     toggleTask,
     setTaskDone,
     learnedVocab,
+    learningVocab,
     learnedGrammar,
     reviewCount,
     dueCount,
@@ -70,14 +71,19 @@ export default function Dashboard() {
         </div>
         <div className="mt-4 grid gap-2 text-sm text-ink-soft sm:grid-cols-2">
           <p>
-            單字 {learnedVocab}／此時應約 {plan.expected.vocab}
+            單字已掌握 {learnedVocab}／此時應約 {plan.expected.vocab}
+            {learningVocab ? ` · 學習中 ${learningVocab}` : ''}
             {plan.behind.vocab ? ` · 落後約 ${Math.max(0, Math.round(plan.gap.vocab))}` : ''}
           </p>
           <p>
-            文法 {learnedGrammar}／此時應約 {plan.expected.grammar}
+            文法已掌握 {learnedGrammar}／此時應約 {plan.expected.grammar}
             {plan.behind.grammar ? ` · 落後約 ${Math.max(0, Math.round(plan.gap.grammar))}` : ''}
           </p>
         </div>
+        <p className="mt-2 text-xs text-ink-soft">
+          「已掌握」：按「簡單」一次，或「記得」兩次就會增加。到期複習不會把數字扣回去。
+          {todayVocab.length > 15 ? ` 今天因落後已加量至 ${todayVocab.length} 個單字。` : ''}
+        </p>
         <Link
           to="/schedule"
           className="mt-4 inline-flex rounded-xl bg-sea px-4 py-2.5 text-sm text-white hover:bg-sea-deep"

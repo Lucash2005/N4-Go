@@ -21,21 +21,44 @@ import {
 } from '../utils/srs'
 import { todayKey } from '../utils/storage'
 import { useLocalStorage } from './useLocalStorage'
+import { getPlanProgress } from '../utils/planProgress'
 
 const ProgressContext = createContext(null)
 const ALL_CARDS = [...vocabulary, ...grammar, ...FORM_CARDS]
 
+function catchUpVocabQuota(cardProgress) {
+  const learnedVocab = vocabulary.filter((v) => isLearned(cardProgress[v.id])).length
+  const learnedGrammar = grammar.filter((g) => isLearned(cardProgress[g.id])).length
+  const plan = getPlanProgress({
+    learnedVocab,
+    learnedGrammar,
+    quizRate: null,
+    appVocab: vocabulary.length,
+    appGrammar: grammar.length,
+  })
+  if (!plan.behind.vocab) return DAILY_QUOTA.vocab
+  return Math.min(
+    40,
+    Math.max(20, Math.ceil(plan.gap.vocab / Math.max(7, Math.floor(plan.daysToExam / 8)))),
+  )
+}
+
 function ensurePlan(plan, cardProgress) {
   const today = todayKey()
+  const vocabQuota = catchUpVocabQuota(cardProgress)
   if (
     plan?.date === today &&
     Array.isArray(plan.vocabIds) &&
     Array.isArray(plan.formIds) &&
     plan.grammarPathVersion === GRAMMAR_PATH_VERSION
   ) {
+    // If catch-up needs more vocab than today's plan holds, rebuild once
+    if (vocabQuota > (plan.vocabQuota || DAILY_QUOTA.vocab) || plan.vocabIds.length < vocabQuota) {
+      return buildDailyPlan(today, cardProgress, 'catch-up', { vocabQuota })
+    }
     return plan
   }
-  return buildDailyPlan(today, cardProgress)
+  return buildDailyPlan(today, cardProgress, '', { vocabQuota })
 }
 
 function withTaskDone(tasks, id, done) {
@@ -85,10 +108,16 @@ export function ProgressProvider({ children }) {
         tasks: DEFAULT_TASKS.map((t) => ({ ...t, done: false })),
       })
     }
-    if (dailyPlan.date !== today || dailyPlan.grammarPathVersion !== GRAMMAR_PATH_VERSION) {
-      setDailyPlan(buildDailyPlan(today, cardProgress))
+    const vocabQuota = catchUpVocabQuota(cardProgress)
+    const needsRebuild =
+      dailyPlan.date !== today ||
+      dailyPlan.grammarPathVersion !== GRAMMAR_PATH_VERSION ||
+      (dailyPlan.vocabIds?.length || 0) < vocabQuota ||
+      (dailyPlan.vocabQuota || DAILY_QUOTA.vocab) < vocabQuota
+    if (needsRebuild) {
+      setDailyPlan(buildDailyPlan(today, cardProgress, '', { vocabQuota }))
     }
-  }, [dailyTasks.date, dailyPlan.date, cardProgress, setDailyTasks, setDailyPlan])
+  }, [dailyTasks.date, dailyPlan.date, dailyPlan.grammarPathVersion, dailyPlan.vocabIds, dailyPlan.vocabQuota, cardProgress, setDailyTasks, setDailyPlan])
 
   // Keep review queue in sync with due SRS cards
   useEffect(() => {
@@ -175,6 +204,10 @@ export function ProgressProvider({ children }) {
 
     const learnedVocab = vocabulary.filter((v) => isLearned(cardProgress[v.id], today)).length
     const learnedGrammar = grammar.filter((g) => isLearned(cardProgress[g.id], today)).length
+    const learningVocab = vocabulary.filter((v) => {
+      const e = normalizeEntry(cardProgress[v.id], today)
+      return e && e.status === 'learning'
+    }).length
     const reviewCount = liveReviewIds.length
     const dueCount = getLiveReviewIds(cardProgress, 0).length
 
@@ -261,7 +294,8 @@ export function ProgressProvider({ children }) {
 
     function reshuffleTodayPlan() {
       const day = todayKey()
-      setDailyPlan(buildDailyPlan(day, cardProgress, `reshuffle:${Date.now()}`))
+      const vocabQuota = catchUpVocabQuota(cardProgress)
+      setDailyPlan(buildDailyPlan(day, cardProgress, `reshuffle:${Date.now()}`, { vocabQuota }))
       setDailyTasks({
         date: day,
         tasks: DEFAULT_TASKS.map((t) => ({ ...t, done: false })),
@@ -306,6 +340,7 @@ export function ProgressProvider({ children }) {
       quizStats,
       recordQuiz,
       learnedVocab,
+      learningVocab,
       learnedGrammar,
       reviewCount,
       dueCount,

@@ -1,7 +1,7 @@
 import { grammar } from './grammar'
 
 /** Bump to rebuild today's plan after path changes. */
-export const GRAMMAR_PATH_VERSION = 3
+export const GRAMMAR_PATH_VERSION = 4
 
 /**
  * Sequential N4 grammar unlocks through Dec 2026.

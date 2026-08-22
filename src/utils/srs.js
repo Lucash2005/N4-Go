@@ -57,11 +57,17 @@ export function normalizeEntry(raw, today = todayKey()) {
 
   if (typeof raw !== 'object') return null
 
+  const interval = typeof raw.interval === 'number' ? raw.interval : 0
+  const repetitions = typeof raw.repetitions === 'number' ? raw.repetitions : 0
+  let status = raw.status || 'learning'
+  // Migrate older learning cards that already earned a long enough interval
+  if (status === 'learning' && interval >= 4) status = 'learned'
+
   return {
-    status: raw.status || 'learning',
+    status,
     ease: typeof raw.ease === 'number' ? raw.ease : DEFAULT_EASE,
-    interval: typeof raw.interval === 'number' ? raw.interval : 0,
-    repetitions: typeof raw.repetitions === 'number' ? raw.repetitions : 0,
+    interval,
+    repetitions,
     due: raw.due || today,
     lapses: typeof raw.lapses === 'number' ? raw.lapses : 0,
     lastGrade: raw.lastGrade ?? null,
@@ -93,7 +99,10 @@ export function isDue(entry, today = todayKey()) {
 
 export function isLearned(entry, today = todayKey()) {
   const n = normalizeEntry(entry, today)
-  return Boolean(n && n.status === 'learned' && n.due > today)
+  // Keep counting as mastered even when due for review — otherwise the
+  // progress bar drops every time SRS brings a card back, while the plan
+  // target keeps climbing and the gap looks worse every day.
+  return Boolean(n && n.status === 'learned')
 }
 
 /**
@@ -141,18 +150,20 @@ export function applyGrade(raw, grade, today = todayKey()) {
     repetitions += 1
   } else if (grade === 'good') {
     if (repetitions === 0) interval = 1
-    else if (repetitions === 1) interval = 3
+    else if (repetitions === 1) interval = 4
     else interval = Math.max(1, Math.round(interval * ease))
     repetitions += 1
   } else if (grade === 'easy') {
     ease += 0.15
-    if (repetitions === 0) interval = 2
-    else if (repetitions === 1) interval = 4
+    if (repetitions === 0) interval = 4
+    else if (repetitions === 1) interval = 7
     else interval = Math.max(1, Math.round(interval * ease * 1.3))
     repetitions += 1
   }
 
-  status = interval >= 7 ? 'learned' : repetitions >= 1 ? 'learning' : 'review'
+  // Mark mastered when interval reaches 4+ days.
+  // easy ×1 or good ×2 is enough to move the plan progress bar.
+  status = interval >= 4 ? 'learned' : repetitions >= 1 ? 'learning' : 'review'
 
   return {
     status,
@@ -220,7 +231,7 @@ export function countByBucket(cardProgress, ids, today = todayKey()) {
     const entry = normalizeEntry(cardProgress[id], today)
     if (!entry) continue
     if (entry.due <= today) due += 1
-    if (entry.status === 'learned' && entry.due > today) learned += 1
+    if (entry.status === 'learned') learned += 1
   }
   return { learned, due }
 }
@@ -232,6 +243,6 @@ function round2(n) {
 export const GRADE_LABELS = {
   again: { label: '忘記', hint: '今天再看', tone: 'coral' },
   hard: { label: '困難', hint: '縮短間隔', tone: 'sand' },
-  good: { label: '記得', hint: '正常間隔', tone: 'sea' },
-  easy: { label: '簡單', hint: '拉長間隔', tone: 'ink' },
+  good: { label: '記得', hint: '再評 1 次可掌握', tone: 'sea' },
+  easy: { label: '簡單', hint: '這次可算掌握', tone: 'ink' },
 }

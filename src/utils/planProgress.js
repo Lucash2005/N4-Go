@@ -160,17 +160,17 @@ function buildRemedies({
   if (vocabBehind) {
     const daily = Math.min(40, Math.max(20, Math.ceil(vocabGap / Math.max(7, Math.floor(daysToExam / 8)))))
     items.push({
-      title: `單字加速：每天約 ${daily} 個（含複習）`,
+      title: `單字加速：今天會自動排約 ${daily} 個`,
       detail:
         learnedVocab >= appVocab
-          ? `App 內 ${appVocab} 字已幾乎學完；請優先清 SRS 到期，並之後擴充題庫。`
-          : `目前落後約 ${Math.max(0, Math.round(vocabGap))} 字。先做今日單字，難的按「困難」。`,
+          ? `App 內 ${appVocab} 字已幾乎學完；請優先清 SRS 到期。`
+          : `落後約 ${Math.max(0, Math.round(vocabGap))} 字。按「簡單」一次即可算掌握；按「記得」再評一次也會進進度。到期複習不會把掌握數扣掉。`,
       to: '/flashcards?mode=today-vocab',
       cta: '開始單字',
     })
     items.push({
       title: '先清到期複習',
-      detail: '落後時優先複習到期卡，避免新字一直進、舊字一直忘。',
+      detail: '到期卡仍算「已掌握」；清完再專心加新字，避免只複習卻覺得沒進步。',
       to: '/flashcards?mode=today-review',
       cta: '開始複習',
     })

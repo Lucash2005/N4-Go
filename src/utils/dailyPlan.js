@@ -210,9 +210,14 @@ function pickVocabThemed(count, seedStr, cardProgress, date, grammarIds) {
  * Build a stable daily plan for `date` (YYYY-MM-DD).
  * Prefers new → due → learning → learned.
  * Optional `seedExtra` reshuffles while keeping the same calendar date.
+ * Optional `options.vocabQuota` raises today's new-vocab count when catching up.
  */
-export function buildDailyPlan(date, cardProgress = {}, seedExtra = '') {
+export function buildDailyPlan(date, cardProgress = {}, seedExtra = '', options = {}) {
   const seed = `n4-go:${date}${seedExtra ? `:${seedExtra}` : ''}`
+  const vocabQuota = Math.max(
+    DAILY_QUOTA.vocab,
+    Math.min(40, Number(options.vocabQuota) || DAILY_QUOTA.vocab),
+  )
 
   const grammarIds = pickGrammarByPath(
     DAILY_QUOTA.grammar,
@@ -222,7 +227,7 @@ export function buildDailyPlan(date, cardProgress = {}, seedExtra = '') {
   )
   const formIds = pickFormIds(DAILY_QUOTA.forms, `${seed}:forms`, cardProgress, date)
   const vocabIds = pickVocabThemed(
-    DAILY_QUOTA.vocab,
+    vocabQuota,
     `${seed}:vocab`,
     cardProgress,
     date,
@@ -241,6 +246,7 @@ export function buildDailyPlan(date, cardProgress = {}, seedExtra = '') {
     studiedIds: [],
     listenedIds: [],
     grammarPathVersion: GRAMMAR_PATH_VERSION,
+    vocabQuota,
   }
 }
 
@@ -265,6 +271,7 @@ export function emptyDailyPlan(date = '') {
     studiedIds: [],
     listenedIds: [],
     grammarPathVersion: GRAMMAR_PATH_VERSION,
+    vocabQuota: DAILY_QUOTA.vocab,
   }
 }
 
