@@ -11,6 +11,8 @@ export default function Dashboard() {
     setTaskDone,
     learnedVocab,
     learningVocab,
+    weekVocabGain,
+    weekGrammarGain,
     learnedGrammar,
     reviewCount,
     dueCount,
@@ -43,9 +45,11 @@ export default function Dashboard() {
     quizRate,
     appVocab: totalVocabInApp,
     appGrammar: totalGrammarInApp,
+    weekVocabGain,
+    weekGrammarGain,
   })
   const planStatus =
-    plan.severity === 'ok' ? '進度正常' : plan.severity === 'mid' ? '略為落後' : '明顯落後'
+    plan.severity === 'ok' ? '節奏可用' : plan.severity === 'mid' ? '需加快' : '需加量追'
   const planTone =
     plan.severity === 'ok'
       ? 'bg-sea/15 text-sea-deep'
@@ -60,35 +64,69 @@ export default function Dashboard() {
       <section className="surface soft-shadow animate-fade-up stagger-1 rounded-3xl p-5 sm:p-6">
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div>
-            <h2 className="font-display text-xl font-bold text-ink">計畫進度</h2>
+            <h2 className="font-display text-xl font-bold text-ink">往目標前進</h2>
             <p className="mt-1 text-sm text-ink-soft">
-              對照「學習計畫總覽」目標 · 本月 {plan.currentMilestone?.label} · {grammarPath.title}
+              看本月／總目標與近一週實際前進 · {grammarPath.title}
             </p>
           </div>
           <span className={`rounded-full px-3 py-1 text-xs font-medium ${planTone}`}>
             {planStatus}
           </span>
         </div>
-        <div className="mt-4 grid gap-2 text-sm text-ink-soft sm:grid-cols-2">
+
+        <div className="mt-4 space-y-4">
+          <ProgressBar
+            label={`本月單字（${plan.currentMilestone?.label || ''}目標）`}
+            value={learnedVocab}
+            target={plan.month.vocabTarget}
+            hint={
+              plan.momentum.daysToMonthVocab != null
+                ? `還差 ${plan.month.vocabRemaining} · 依近 7 日速度約 ${plan.momentum.daysToMonthVocab} 天可到`
+                : `還差 ${plan.month.vocabRemaining} · 近 7 日新掌握 ${weekVocabGain}（開始評分後會算出預估）`
+            }
+          />
+          <ProgressBar
+            label="N4 單字總目標"
+            value={learnedVocab}
+            target={plan.final.vocabTarget}
+            hint={
+              plan.momentum.daysToFinalVocab != null
+                ? `還差 ${plan.final.vocabRemaining} · 約 ${plan.momentum.daysToFinalVocab} 天（近 7 日均速 ${plan.momentum.dailyVocabPace}/天）`
+                : `還差 ${plan.final.vocabRemaining} · 學習中 ${learningVocab}`
+            }
+          />
+          <ProgressBar
+            label={`本月文法（${plan.currentMilestone?.label || ''}）`}
+            value={learnedGrammar}
+            target={plan.month.grammarTarget}
+            hint={`還差 ${plan.month.grammarRemaining} · 近 7 日 +${weekGrammarGain}`}
+          />
+        </div>
+
+        <div className="mt-4 grid gap-2 rounded-2xl bg-foam/70 p-3 text-sm text-ink-soft sm:grid-cols-3">
           <p>
-            單字已掌握 {learnedVocab}／此時應約 {plan.expected.vocab}
-            {learningVocab ? ` · 學習中 ${learningVocab}` : ''}
-            {plan.behind.vocab ? ` · 落後約 ${Math.max(0, Math.round(plan.gap.vocab))}` : ''}
+            近 7 日新掌握單字{' '}
+            <span className="font-semibold text-sea-deep">{weekVocabGain}</span>
           </p>
           <p>
-            文法已掌握 {learnedGrammar}／此時應約 {plan.expected.grammar}
-            {plan.behind.grammar ? ` · 落後約 ${Math.max(0, Math.round(plan.gap.grammar))}` : ''}
+            近 7 日新掌握文法{' '}
+            <span className="font-semibold text-sea-deep">{weekGrammarGain}</span>
+          </p>
+          <p>
+            考試還有 <span className="font-semibold text-ink">{plan.daysToExam}</span> 天
           </p>
         </div>
-        <p className="mt-2 text-xs text-ink-soft">
-          「已掌握」：按「簡單」一次，或「記得」兩次就會增加。到期複習不會把數字扣回去。
-          {todayVocab.length > 15 ? ` 今天因落後已加量至 ${todayVocab.length} 個單字。` : ''}
+
+        <p className="mt-3 text-xs text-ink-soft">
+          掌握標準偏誠實：同一字「簡單」或「記得」需成功約兩次才進進度；到期複習不會扣掉已掌握。
+          動力看「本週有沒有 +N」與「離本月目標還多近」，不是每天被「此時應約」追著跑。
+          {todayVocab.length > 15 ? ` 今天已加量至 ${todayVocab.length} 個單字。` : ''}
         </p>
         <Link
           to="/schedule"
           className="mt-4 inline-flex rounded-xl bg-sea px-4 py-2.5 text-sm text-white hover:bg-sea-deep"
         >
-          看差距與補救措施 →
+          看補救措施 →
         </Link>
       </section>
 

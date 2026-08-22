@@ -18,6 +18,8 @@ import {
   entryFromManualStatus,
   isLearned,
   normalizeEntry,
+  countLearnedSince,
+  addDays,
 } from '../utils/srs'
 import { todayKey } from '../utils/storage'
 import { useLocalStorage } from './useLocalStorage'
@@ -29,17 +31,24 @@ const ALL_CARDS = [...vocabulary, ...grammar, ...FORM_CARDS]
 function catchUpVocabQuota(cardProgress) {
   const learnedVocab = vocabulary.filter((v) => isLearned(cardProgress[v.id])).length
   const learnedGrammar = grammar.filter((g) => isLearned(cardProgress[g.id])).length
+  const since = addDays(todayKey(), -6)
+  const weekVocabGain = countLearnedSince(
+    cardProgress,
+    vocabulary.map((v) => v.id),
+    since,
+  )
   const plan = getPlanProgress({
     learnedVocab,
     learnedGrammar,
     quizRate: null,
     appVocab: vocabulary.length,
     appGrammar: grammar.length,
+    weekVocabGain,
   })
   if (!plan.behind.vocab) return DAILY_QUOTA.vocab
   return Math.min(
     40,
-    Math.max(20, Math.ceil(plan.gap.vocab / Math.max(7, Math.floor(plan.daysToExam / 8)))),
+    Math.max(20, Math.ceil(plan.month.vocabRemaining / Math.max(7, plan.month.daysLeft))),
   )
 }
 
@@ -208,6 +217,19 @@ export function ProgressProvider({ children }) {
       const e = normalizeEntry(cardProgress[v.id], today)
       return e && e.status === 'learning'
     }).length
+    const weekSince = addDays(today, -6)
+    const weekVocabGain = countLearnedSince(
+      cardProgress,
+      vocabulary.map((v) => v.id),
+      weekSince,
+      today,
+    )
+    const weekGrammarGain = countLearnedSince(
+      cardProgress,
+      grammar.map((g) => g.id),
+      weekSince,
+      today,
+    )
     const reviewCount = liveReviewIds.length
     const dueCount = getLiveReviewIds(cardProgress, 0).length
 
@@ -341,6 +363,8 @@ export function ProgressProvider({ children }) {
       recordQuiz,
       learnedVocab,
       learningVocab,
+      weekVocabGain,
+      weekGrammarGain,
       learnedGrammar,
       reviewCount,
       dueCount,

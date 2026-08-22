@@ -11,6 +11,7 @@ import { todayKey } from './storage'
  *   due: string,
  *   lapses: number,
  *   lastGrade?: Grade | null,
+ *   learnedAt?: string | null,
  * }} SrsEntry
  */
 
@@ -40,6 +41,7 @@ export function normalizeEntry(raw, today = todayKey()) {
       due: addDays(today, 7),
       lapses: 0,
       lastGrade: null,
+      learnedAt: today,
     }
   }
 
@@ -52,6 +54,7 @@ export function normalizeEntry(raw, today = todayKey()) {
       due: today,
       lapses: 1,
       lastGrade: null,
+      learnedAt: null,
     }
   }
 
@@ -71,6 +74,8 @@ export function normalizeEntry(raw, today = todayKey()) {
     due: raw.due || today,
     lapses: typeof raw.lapses === 'number' ? raw.lapses : 0,
     lastGrade: raw.lastGrade ?? null,
+    // Do not invent learnedAt=today — that would inflate「近 7 日」統計
+    learnedAt: raw.learnedAt || null,
   }
 }
 
@@ -139,6 +144,7 @@ export function applyGrade(raw, grade, today = todayKey()) {
       due: today,
       lapses,
       lastGrade: grade,
+      learnedAt: null,
     }
   }
 
@@ -155,15 +161,17 @@ export function applyGrade(raw, grade, today = todayKey()) {
     repetitions += 1
   } else if (grade === 'easy') {
     ease += 0.15
-    if (repetitions === 0) interval = 4
+    // First easy: still learning (honest); second success → mastered
+    if (repetitions === 0) interval = 3
     else if (repetitions === 1) interval = 7
     else interval = Math.max(1, Math.round(interval * ease * 1.3))
     repetitions += 1
   }
 
-  // Mark mastered when interval reaches 4+ days.
-  // easy ×1 or good ×2 is enough to move the plan progress bar.
+  // Mastered after a real second success (or interval ≥ 4).
+  // easy×2 / good×2 — not vanity one-tap, still reachable in a few days.
   status = interval >= 4 ? 'learned' : repetitions >= 1 ? 'learning' : 'review'
+  const becameLearned = status === 'learned' && prev.status !== 'learned'
 
   return {
     status,
@@ -173,6 +181,7 @@ export function applyGrade(raw, grade, today = todayKey()) {
     due: addDays(today, interval),
     lapses,
     lastGrade: grade,
+    learnedAt: status === 'learned' ? prev.learnedAt || (becameLearned ? today : null) || today : null,
   }
 }
 
@@ -188,6 +197,7 @@ export function entryFromManualStatus(status, today = todayKey()) {
       due: addDays(today, 14),
       lapses: 0,
       lastGrade: 'good',
+      learnedAt: today,
     }
   }
   if (status === 'review') {
@@ -199,6 +209,7 @@ export function entryFromManualStatus(status, today = todayKey()) {
       due: today,
       lapses: 1,
       lastGrade: 'again',
+      learnedAt: null,
     }
   }
   return null
@@ -243,6 +254,17 @@ function round2(n) {
 export const GRADE_LABELS = {
   again: { label: '忘記', hint: '今天再看', tone: 'coral' },
   hard: { label: '困難', hint: '縮短間隔', tone: 'sand' },
-  good: { label: '記得', hint: '再評 1 次可掌握', tone: 'sea' },
-  easy: { label: '簡單', hint: '這次可算掌握', tone: 'ink' },
+  good: { label: '記得', hint: '再成功 1 次可掌握', tone: 'sea' },
+  easy: { label: '簡單', hint: '再成功 1 次可掌握', tone: 'ink' },
+}
+
+/** Count cards whose learnedAt is on/after `sinceDate` (YYYY-MM-DD). */
+export function countLearnedSince(cardProgress, ids, sinceDate, today = todayKey()) {
+  let n = 0
+  for (const id of ids) {
+    const e = normalizeEntry(cardProgress[id], today)
+    if (!e || e.status !== 'learned' || !e.learnedAt) continue
+    if (e.learnedAt >= sinceDate) n += 1
+  }
+  return n
 }
