@@ -4,6 +4,7 @@
  * playing after the screen locks (speech tracks may pause when locked).
  * Do not import tts.js here (tts imports stopPlaylist from this file).
  */
+import { AUDIO_CACHE_VERSION } from '../data/config'
 
 let audio = null
 let playlist = []
@@ -328,6 +329,7 @@ export function buildCardTracks(cards, options = {}) {
     playExampleMeaning = false,
   } = options
   const base = import.meta.env.BASE_URL || './'
+  const bust = `?v=${AUDIO_CACHE_VERSION}`
   const tracks = []
 
   for (const card of cards || []) {
@@ -338,7 +340,7 @@ export function buildCardTracks(cards, options = {}) {
         id: `${card.id}-word`,
         cardId: card.id,
         kind: 'word',
-        url: `${base}audio/${card.id}-word.mp3`,
+        url: `${base}audio/${card.id}-word.mp3${bust}`,
         title: card.word,
         subtitle: card.reading ? `${card.reading} · 單字` : '單字',
       })
@@ -349,7 +351,7 @@ export function buildCardTracks(cards, options = {}) {
         id: `${card.id}-meaning`,
         cardId: card.id,
         kind: 'meaning',
-        url: `${base}audio/${card.id}-meaning.mp3`,
+        url: `${base}audio/${card.id}-meaning.mp3${bust}`,
         title: card.word,
         subtitle: '詞義解釋',
       })
@@ -360,7 +362,7 @@ export function buildCardTracks(cards, options = {}) {
         id: `${card.id}-example`,
         cardId: card.id,
         kind: 'example',
-        url: `${base}audio/${card.id}-example.mp3`,
+        url: `${base}audio/${card.id}-example.mp3${bust}`,
         title: card.word,
         subtitle: '例句',
       })
@@ -371,7 +373,7 @@ export function buildCardTracks(cards, options = {}) {
         id: `${card.id}-example-meaning`,
         cardId: card.id,
         kind: 'exampleMeaning',
-        url: `${base}audio/${card.id}-example-meaning.mp3`,
+        url: `${base}audio/${card.id}-example-meaning.mp3${bust}`,
         title: card.word,
         subtitle: '例句解釋',
       })

@@ -1,4 +1,6 @@
 import { stopPlaylist } from './playlistPlayer'
+import { AUDIO_CACHE_VERSION } from '../data/config'
+import { speechTextForCard as buildSpeechText } from './speechText'
 
 let preferredVoice = null
 let audioEl = null
@@ -67,15 +69,7 @@ function stopAudio() {
 
 /** Prefer speaking kana/reading for clearer Japanese TTS */
 export function speechTextForCard(card, { flipped = false } = {}) {
-  if (!card) return ''
-  if (card.type === 'form') {
-    const drill = card.formDrill
-    if (flipped) return drill?.answerReading || card.meaning || card.word
-    return drill?.reading || card.reading || card.word
-  }
-  if (flipped) return card.example || card.reading || card.word
-  if (card.reading && card.reading !== card.word) return card.reading
-  return card.word
+  return buildSpeechText(card, { flipped })
 }
 
 export function audioClipForCard(card, { flipped = false } = {}) {
@@ -83,7 +77,7 @@ export function audioClipForCard(card, { flipped = false } = {}) {
   const kind = flipped ? 'example' : 'word'
   // Vite base is './' — resolve relative to site root
   const base = import.meta.env.BASE_URL || './'
-  return `${base}audio/${card.id}-${kind}.mp3`
+  return `${base}audio/${card.id}-${kind}.mp3?v=${AUDIO_CACHE_VERSION}`
 }
 
 function speakWithWebSpeech(text, options = {}) {

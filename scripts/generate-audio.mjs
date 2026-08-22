@@ -16,6 +16,7 @@ import { EdgeTTS } from 'edge-tts-universal'
 import { vocabulary } from '../src/data/vocabulary.js'
 import { grammar } from '../src/data/grammar.js'
 import { FORM_CARDS } from '../src/data/verbForms.js'
+import { readingForSpeech } from '../src/utils/speechText.js'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const outDir = join(__dirname, '../public/audio')
@@ -27,6 +28,12 @@ const cards = [...vocabulary, ...grammar, ...FORM_CARDS]
 const only = process.env.ONLY || 'all' // all | ja | zh
 const concurrency = Math.max(1, Number(process.env.CONCURRENCY || 6))
 const force = process.env.FORCE === '1'
+const onlyIds = new Set(
+  String(process.env.IDS || '')
+    .split(',')
+    .map((s) => s.trim())
+    .filter(Boolean),
+)
 
 function sleep(ms) {
   return new Promise((r) => setTimeout(r, ms))
@@ -54,11 +61,12 @@ async function synthesizeToFile(text, filePath, voice) {
 }
 
 function jobsFor(card) {
+  if (onlyIds.size && !onlyIds.has(card.id)) return []
   const jobs = []
   const isForm = card.type === 'form'
   const wordText = isForm
     ? card.formDrill?.reading || card.reading || card.word
-    : card.reading || card.word
+    : readingForSpeech(card.reading, card.word)
   const exampleText = isForm
     ? card.formDrill?.answerReading || card.example
     : card.example

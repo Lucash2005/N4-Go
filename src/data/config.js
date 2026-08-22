@@ -5,6 +5,9 @@ export const TARGETS = {
   grammar: 80,
 }
 
+/** Bump when Neural mp3s are regenerated so browsers don't keep stale clips. */
+export const AUDIO_CACHE_VERSION = 4
+
 export const DEFAULT_TASKS = [
   { id: 'vocab-15', label: '每日 15 個單字', done: false },
   { id: 'grammar-2', label: '活用 2 題＋文法 2 條（本月路線）', done: false },
