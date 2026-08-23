@@ -769,11 +769,19 @@ export default function Flashcards() {
                     <ul className="space-y-2">
                       {card.senses.map((sense) => (
                         <li
-                          key={`${sense.meaning}-${sense.example}`}
+                          key={`${sense.senseIndex ?? sense.meaning}-${sense.meaningEn ?? sense.meaning}`}
                           className="rounded-xl bg-white/80 px-3.5 py-2.5 ring-1 ring-line/50"
                         >
                           <p className="font-medium text-ink">{sense.meaning}</p>
-                          <p className="mt-1 text-sea-deep">{sense.example}</p>
+                          {sense.meaningEn ? (
+                            <p className="mt-0.5 text-xs text-ink-soft">EN: {sense.meaningEn}</p>
+                          ) : null}
+                          {sense.pos ? (
+                            <p className="mt-0.5 text-xs text-sea-deep">{sense.pos}</p>
+                          ) : null}
+                          {sense.example ? (
+                            <p className="mt-1 text-sea-deep">{sense.example}</p>
+                          ) : null}
                           {sense.exampleZh ? (
                             <p className="mt-0.5 text-ink-soft">{sense.exampleZh}</p>
                           ) : null}

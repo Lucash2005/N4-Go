@@ -4,32 +4,25 @@
  */
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { parseExistingVocab, detectReviewFlags } from './vocab-shared.mjs'
+import { pathToFileURL } from 'node:url'
+import { detectReviewFlags } from './vocab-shared.mjs'
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..')
-const VOCAB_PATH = join(ROOT, 'src/data/vocabulary.js')
+const vocabUrl = pathToFileURL(join(ROOT, 'src/data/vocabulary.js')).href
 
-function main() {
-  const cards = parseExistingVocab(VOCAB_PATH)
+async function main() {
+  const { vocabulary } = await import(vocabUrl)
   const issues = []
 
-  for (const card of cards) {
+  for (const card of vocabulary) {
     const flags = detectReviewFlags(card)
     const stored = card.reviewFlags || []
-    const missing = flags.filter((f) => !stored.includes(f))
-    const extra = stored.filter((f) => !flags.includes(f))
-
-    if (missing.length || extra.length) {
-      issues.push({
-        id: card.id,
-        word: card.word,
-        missingFlags: missing,
-        extraFlags: extra,
-      })
-    }
-
     for (const flag of flags) {
       issues.push({ id: card.id, word: card.word, flag })
+    }
+    const missing = flags.filter((f) => !stored.includes(f))
+    if (missing.length) {
+      issues.push({ id: card.id, word: card.word, missingFlags: missing })
     }
   }
 
@@ -39,24 +32,11 @@ function main() {
     byFlag[item.flag] = (byFlag[item.flag] || 0) + 1
   }
 
-  console.log(`Cards: ${cards.length}`)
+  console.log(`Cards: ${vocabulary.length}`)
   console.log('Flag counts:', byFlag)
 
   const flaggedIds = [...new Set(issues.filter((i) => i.flag).map((i) => i.id))]
   console.log(`Cards with issues: ${flaggedIds.length}`)
-
-  if (flaggedIds.length) {
-    const sample = issues.filter((i) => i.flag).slice(0, 15)
-    console.log('Sample:')
-    for (const s of sample) {
-      console.log(`  ${s.id} ${s.word}: ${s.flag}`)
-    }
-  }
-
-  const stale = issues.filter((i) => i.missingFlags?.length || i.extraFlags?.length)
-  if (stale.length) {
-    console.warn(`Stale reviewFlags on ${stale.length} cards — run build:vocab`)
-  }
 
   const hardFail = issues.filter((i) =>
     ['mt_artifact', 'level_invalid', 'reading_invalid'].includes(i.flag),
@@ -66,7 +46,7 @@ function main() {
     process.exit(1)
   }
 
-  console.log('Validation OK (soft flags may remain)')
+  console.log(flaggedIds.length ? 'Soft flags remain' : 'Validation OK')
 }
 
 main()

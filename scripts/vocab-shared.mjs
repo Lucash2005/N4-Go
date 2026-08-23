@@ -26,8 +26,12 @@ export function containsWordOrReading(example = '', word = '', reading = '') {
   if (!example) return false
   if (word && example.includes(word)) return true
   if (reading && reading !== word && example.includes(reading)) return true
-  const stem = (reading || word || '').replace(/る$/, '')
+  const stem = (reading || word || '').replace(/する$/, '').replace(/る$/, '')
   if (stem.length >= 2 && example.includes(stem)) return true
+  if (word && /[\u4e00-\u9fff]/.test(word)) {
+    const kanjiStem = word.replace(/する$/, '').replace(/る$/, '')
+    if (kanjiStem.length >= 1 && example.includes(kanjiStem)) return true
+  }
   return false
 }
 

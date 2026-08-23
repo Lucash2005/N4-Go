@@ -11,6 +11,9 @@
     "generate:audio": "node scripts/generate-audio.mjs",
     "fetch:openjlpt": "node scripts/fetch-openjlpt.mjs",
     "build:vocab": "node scripts/build-vocab.mjs",
+    "enrich:vocab": "node scripts/enrich-vocab.mjs",
+    "build:vocab:full": "node scripts/build-vocab.mjs && node scripts/enrich-vocab.mjs",
+    "regen:changed-audio": "node scripts/regen-changed-audio.mjs",
     "validate:vocab": "node scripts/validate-vocab.mjs"
   },
   "dependencies": {

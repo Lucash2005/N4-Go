@@ -32,5 +32,51 @@
   "v1387": {
     "meaning": "收好；關上；（て形）不小心做了…",
     "meaningEn": "to put away; to finish doing (regret)"
+  },
+  "v1388": {
+    "meaning": "糟了！完了！",
+    "meaningEn": "oh no!; too bad! (しまった)",
+    "meaningZh": ["糟了","完了"],
+    "example": "しまった！",
+    "exampleMeaning": "糟了！",
+    "exampleFurigana": "しまった！"
+  },
+  "v1404": {
+    "meaning": "不好意思；對不起",
+    "meaningEn": "excuse me; sorry",
+    "meaningZh": ["不好意思", "對不起"]
+  },
+  "v1439": {
+    "meaning": "請…；務必（祈願）",
+    "meaningEn": "please (pray; wish)",
+    "meaningZh": ["請", "務必"],
+    "example": "どうかよろしくお願いします。",
+    "exampleMeaning": "請多多關照。",
+    "exampleFurigana": "どうかよろしくお願[ねが]いします。"
+  },
+  "v1451": {
+    "meaning": "豈有此理（とんでもない）",
+    "meaningEn": "outrageous; unexpected (in とんでもない)",
+    "meaningZh": ["豈有此理", "離譜"],
+    "example": "とんでもない！",
+    "exampleMeaning": "豈有此理！",
+    "exampleFurigana": "とんでもない！"
+  },
+  "v1461": {
+    "meaning": "吧；呢（句末語氣）",
+    "meaningEn": "sentence-ending particle (seeking agreement)",
+    "meaningZh": ["吧", "呢"],
+    "example": "連絡してね。",
+    "exampleMeaning": "要聯絡我喔。",
+    "exampleFurigana": "連絡[れんらく]してね。"
+  },
+  "v1482": {
+    "meaning": "忽然；不經意",
+    "meaningEn": "suddenly; unintentionally",
+    "meaningZh": ["忽然", "不經意"]
+  },
+  "v028": {
+    "meaningEn": "to deliver; to send",
+    "meaningZh": ["送達", "寄送"]
   }
 }

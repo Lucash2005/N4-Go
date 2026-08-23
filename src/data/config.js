@@ -6,7 +6,7 @@ export const TARGETS = {
 }
 
 /** Bump when Neural mp3s are regenerated so browsers don't keep stale clips. */
-export const AUDIO_CACHE_VERSION = 6
+export const AUDIO_CACHE_VERSION = 7
 
 export const DEFAULT_TASKS = [
   { id: 'vocab-15', label: '每日單字（落後時會自動加量）', done: false },
