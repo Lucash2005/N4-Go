@@ -1,0 +1,152 @@
+{
+  "generatedAt": "2026-08-23T07:59:18.651Z",
+  "total": 1500,
+  "summary": {
+    "meaning": 0,
+    "translation": 0,
+    "example": 2,
+    "furigana": 1,
+    "reading": 17,
+    "ui": 0
+  },
+  "byCategory": {
+    "audio": {
+      "note": "Audio mp3 not checked in CI (run on device)",
+      "count": 0,
+      "items": []
+    },
+    "meaning": {
+      "count": 0,
+      "items": []
+    },
+    "translation": {
+      "count": 0,
+      "items": []
+    },
+    "example": {
+      "count": 2,
+      "items": [
+        {
+          "id": "v207",
+          "word": "もう一度",
+          "example": "もう一度おやり。",
+          "source": "openjlpt"
+        },
+        {
+          "id": "v1125",
+          "word": "贈り物",
+          "example": "贈り物があります。",
+          "source": "openjlpt"
+        }
+      ]
+    },
+    "furigana": {
+      "count": 1,
+      "items": [
+        {
+          "id": "v083",
+          "word": "かける",
+          "example": "電話をかける"
+        }
+      ]
+    },
+    "reading": {
+      "count": 17,
+      "items": [
+        {
+          "id": "v052",
+          "word": "いい",
+          "reading": "いい/よい"
+        },
+        {
+          "id": "v092",
+          "word": "キロ",
+          "reading": "キロ/キログラム"
+        },
+        {
+          "id": "v093",
+          "word": "キロ",
+          "reading": "キロ/キロメートル"
+        },
+        {
+          "id": "v110",
+          "word": "じゃ",
+          "reading": "じゃ/じゃあ"
+        },
+        {
+          "id": "v125",
+          "word": "そうして",
+          "reading": "そうして/そして"
+        },
+        {
+          "id": "v214",
+          "word": "ラジカセ",
+          "reading": "ラジカセ / ラジオカセット"
+        },
+        {
+          "id": "v258",
+          "word": "何",
+          "reading": "なん/なに"
+        },
+        {
+          "id": "v318",
+          "word": "九",
+          "reading": "きゅう / く"
+        },
+        {
+          "id": "v396",
+          "word": "四",
+          "reading": "し / よん"
+        },
+        {
+          "id": "v418",
+          "word": "七",
+          "reading": "しち / なな"
+        },
+        {
+          "id": "v647",
+          "word": "毎月",
+          "reading": "まいげつ/まいつき"
+        },
+        {
+          "id": "v651",
+          "word": "毎年",
+          "reading": "まいねん/まいとし"
+        },
+        {
+          "id": "v730",
+          "word": "お金持ち",
+          "reading": "かねもち/おかねもち"
+        },
+        {
+          "id": "v750",
+          "word": "けれど",
+          "reading": "けれど/けれども"
+        },
+        {
+          "id": "v761",
+          "word": "コンピュータ",
+          "reading": "コンピュータ/コンピューター"
+        },
+        {
+          "id": "v845",
+          "word": "やはり",
+          "reading": "やはり/やっぱり"
+        },
+        {
+          "id": "v848",
+          "word": "レポート",
+          "reading": "レポート/リポート"
+        }
+      ]
+    },
+    "ui": {
+      "count": 0,
+      "items": []
+    }
+  },
+  "reviewFlags": {
+    "needs_example_zh": 10,
+    "example_mismatch": 1
+  }
+}

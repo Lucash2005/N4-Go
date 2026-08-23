@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import { useState } from 'react'
 import Countdown from '../components/Countdown'
 import ProgressBar from '../components/ProgressBar'
 import { DRILL_BANK_SIZE } from '../data/drill'
@@ -38,8 +39,10 @@ export default function Dashboard() {
     reportedCount,
     reportedItems,
     clearCardReports,
+    copyReportsExport,
     unreportCardIssue,
   } = useProgress()
+  const [exportMsg, setExportMsg] = useState('')
 
   const doneCount = dailyTasks.filter((t) => t.done).length
   const quizRate =
@@ -316,15 +319,35 @@ export default function Dashboard() {
                 本機暫存 {reportedCount} 張，不會再出現於練習／瀏覽；內容更新後會自動解除隱藏。
               </p>
             </div>
-            <button
-              type="button"
-              onClick={clearCardReports}
-              className="rounded-full bg-white px-3 py-1.5 text-xs text-ink-soft ring-1 ring-line hover:bg-foam"
-            >
-              全部恢復顯示
-            </button>
+            <div className="flex flex-wrap gap-2">
+              <button
+                type="button"
+                onClick={async () => {
+                  try {
+                    await copyReportsExport()
+                    setExportMsg('已複製回報清單到剪貼簿，可貼給開發者')
+                  } catch {
+                    setExportMsg('複製失敗，請改用瀏覽器允許剪貼簿權限')
+                  }
+                  window.setTimeout(() => setExportMsg(''), 3500)
+                }}
+                className="rounded-full bg-white px-3 py-1.5 text-xs text-ink-soft ring-1 ring-line hover:bg-foam"
+              >
+                複製回報清單
+              </button>
+              <button
+                type="button"
+                onClick={clearCardReports}
+                className="rounded-full bg-white px-3 py-1.5 text-xs text-ink-soft ring-1 ring-line hover:bg-foam"
+              >
+                全部恢復顯示
+              </button>
+            </div>
           </div>
-          <ul className="mt-4 max-h-48 space-y-2 overflow-y-auto">
+          {exportMsg ? (
+            <p className="mt-2 text-xs text-sea-deep">{exportMsg}</p>
+          ) : null}
+          <ul className="mt-4 max-h-64 space-y-2 overflow-y-auto">
             {(reportedItems || []).map((item) => (
               <li
                 key={item.id}

@@ -16,6 +16,7 @@ import {
 } from '../utils/dailyPlan'
 import {
   clearAllReports,
+  exportReportsJson,
   filterOutReported,
   loadReportedCards,
   REPORT_REASONS,
@@ -448,6 +449,14 @@ export function ProgressProvider({ children }) {
       setReportedStore(clearAllReports())
     }
 
+    function copyReportsExport() {
+      const text = exportReportsJson(reportedStore)
+      if (navigator.clipboard?.writeText) {
+        return navigator.clipboard.writeText(text).then(() => text)
+      }
+      return Promise.resolve(text)
+    }
+
     function getEntry(id) {
       return normalizeEntry(cardProgress[id], today)
     }
@@ -521,6 +530,7 @@ export function ProgressProvider({ children }) {
       reportCardIssue,
       unreportCardIssue,
       clearCardReports,
+      copyReportsExport,
       reportedItems,
       reportedCount,
       reportReasons: REPORT_REASONS,

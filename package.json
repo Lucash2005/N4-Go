@@ -16,7 +16,8 @@
     "regen:changed-audio": "node scripts/regen-changed-audio.mjs",
     "validate:vocab": "node scripts/validate-vocab.mjs",
     "postprocess:vocab": "node scripts/postprocess-vocab.mjs",
-    "audit:vocab": "node scripts/audit-vocab.mjs"
+    "audit:vocab": "node scripts/audit-vocab.mjs",
+    "audit:quality": "node scripts/audit-quality.mjs"
   },
   "dependencies": {
     "edge-tts-universal": "^1.4.0",

@@ -20,8 +20,10 @@ import {
 import {
   buildFallbackExample,
   clearOpenJlptExampleCache,
+  findJlptExtraExample,
   findOpenJlptExample,
   isWeakTemplateExample,
+  loadJlptExtraExamples,
   primaryWriting,
 } from './example-frames.mjs'
 
@@ -201,16 +203,31 @@ async function main() {
       c.exampleSource === 'missing' ||
       /例句準備中/.test(c.example || '') ||
       (c.reviewFlags || []).includes('needs_example')
+    const exampleInvalid =
+      c.example &&
+      !isExampleValidForCard(c.example, c.word, c.reading) &&
+      !isTrivialExample(c.example, c.word, c.reading)
     const needsExample =
       !overrideHasExample &&
       (isPlaceholderExample ||
-        !isExampleValidForCard(c.example, c.word, c.reading) ||
+        exampleInvalid ||
         isTrivialExample(c.example, c.word, c.reading) ||
         isWeakTemplateExample(c.example, c.word) ||
         suffixMisapplied)
 
     if (overrideHasExample) {
       c.exampleSource = 'override'
+    } else if (
+      !overrideHasExample &&
+      needsExample &&
+      loadJlptExtraExamples().byId.has(c.id)
+    ) {
+      const idFix = loadJlptExtraExamples().byId.get(c.id)
+      c.example = idFix.example
+      c.exampleMeaning = idFix.exampleMeaning || c.exampleMeaning
+      c.exampleFurigana = ''
+      c.exampleSource = 'jlpt'
+      exFixed += 1
     } else if (needsExample) {
       const open = findOpenJlptExample(c)
       if (open?.ja) {
@@ -276,6 +293,25 @@ async function main() {
     if (patch) {
       c = { ...c, ...patch }
       if (patch.example) c.exampleSource = 'override'
+    }
+
+    // Chinese gloss for example sentence
+    if (c.exampleMeaning && !hasChinese(c.exampleMeaning)) {
+      const enLine = String(c.exampleMeaning).trim()
+      let zh =
+        translateEnGloss(enLine, glossary) ||
+        translateMeanings(enLine.split(/[.!?。！？]/).map((s) => s.trim()).filter(Boolean), glossary)[0] ||
+        ''
+      if (!zh && hasChinese(c.meaning)) {
+        const hint = (c.meaning || '').split(/[；;]/)[0].trim()
+        zh = hint ? `例句大意：${hint}` : ''
+      }
+      if (zh) {
+        c.exampleMeaning = zh
+        c.reviewFlags = (c.reviewFlags || []).filter((f) => f !== 'needs_example_zh')
+      } else {
+        c.reviewFlags = [...new Set([...(c.reviewFlags || []), 'needs_example_zh'])]
+      }
     }
 
     out.push(c)

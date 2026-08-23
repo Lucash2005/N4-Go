@@ -120,3 +120,39 @@ export function filterOutReported(cards, store = loadReportedCards()) {
   if (!hidden.size) return cards
   return cards.filter((c) => !hidden.has(c.id))
 }
+
+/** Serialize reports for copy/export (device-local). */
+export function exportReportsJson(store = loadReportedCards()) {
+  const items = Object.values(store.items || {})
+  return JSON.stringify(
+    {
+      exportedAt: new Date().toISOString(),
+      contentVersion: store.contentVersion,
+      count: items.length,
+      items: items.sort((a, b) => (a.at || '').localeCompare(b.at || '')),
+    },
+    null,
+    2,
+  )
+}
+
+export function importReportsJson(jsonText, store = loadReportedCards()) {
+  let parsed
+  try {
+    parsed = JSON.parse(jsonText)
+  } catch {
+    return { ok: false, error: 'invalid_json', store }
+  }
+  const incoming = Array.isArray(parsed?.items) ? parsed.items : []
+  const items = { ...(store.items || {}) }
+  for (const item of incoming) {
+    if (!item?.id) continue
+    items[item.id] = {
+      ...item,
+      contentVersion: CONTENT_VERSION,
+    }
+  }
+  const next = { contentVersion: CONTENT_VERSION, items }
+  saveReportedCards(next)
+  return { ok: true, merged: incoming.length, store: next }
+}

@@ -1,4 +1,44 @@
 {
+  "v177": {
+    "example": "はい、わかりました。",
+    "exampleMeaning": "是的，我明白了。"
+  },
+  "v1106": {
+    "example": "空いている席がありますか。",
+    "exampleMeaning": "有空位嗎？"
+  },
+  "v1108": {
+    "example": "大きな石が道にあります。",
+    "exampleMeaning": "路上有一塊大石頭。"
+  },
+  "v1178": {
+    "example": "東京都に住んでいます。",
+    "exampleMeaning": "住在東京都。"
+  },
+  "v1194": {
+    "example": "今日はいい日ですね。",
+    "exampleMeaning": "今天天氣真好啊。"
+  },
+  "v1205": {
+    "example": "髪を短く切りました。",
+    "exampleMeaning": "把頭髮剪短了。"
+  },
+  "v1338": {
+    "example": "おや、もう夕方ですね。",
+    "exampleMeaning": "哎呀，已經傍晚了呢。"
+  },
+  "v1492": {
+    "example": "電車のホームで待っています。",
+    "exampleMeaning": "在月台上等電車。"
+  },
+  "v838": {
+    "example": "バスまたは電車で行きます。",
+    "exampleMeaning": "搭公車或電車去。"
+  },
+  "v137": {
+    "example": "この紙のたてとよこを測ってください。",
+    "exampleMeaning": "請量這張紙的長與寬。"
+  },
   "あびる": {
     "example": "毎朝シャワーをあびます。",
     "exampleMeaning": "每天早上沖澡。"
