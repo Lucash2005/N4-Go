@@ -332,7 +332,12 @@ export default function Dashboard() {
               >
                 <div>
                   <span className="font-medium text-ink">{item.word}</span>
-                  <span className="ml-2 text-xs text-ink-soft">{item.reasonLabel}</span>
+                  <span className="ml-2 text-xs text-ink-soft">
+                    {(item.reasonLabels || [item.reasonLabel]).filter(Boolean).join('、')}
+                  </span>
+                  {item.note ? (
+                    <p className="mt-0.5 text-xs text-ink-soft">{item.note}</p>
+                  ) : null}
                 </div>
                 <button
                   type="button"

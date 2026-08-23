@@ -197,9 +197,14 @@ async function main() {
       /^太郎.+は学生です/.test(c.example || '') &&
       !['ちゃん', 'さん', 'くん'].includes(c.word)
     const overrideHasExample = Boolean(patch?.example)
+    const isPlaceholderExample =
+      c.exampleSource === 'missing' ||
+      /例句準備中/.test(c.example || '') ||
+      (c.reviewFlags || []).includes('needs_example')
     const needsExample =
       !overrideHasExample &&
-      (!isExampleValidForCard(c.example, c.word, c.reading) ||
+      (isPlaceholderExample ||
+        !isExampleValidForCard(c.example, c.word, c.reading) ||
         isTrivialExample(c.example, c.word, c.reading) ||
         isWeakTemplateExample(c.example, c.word) ||
         suffixMisapplied)

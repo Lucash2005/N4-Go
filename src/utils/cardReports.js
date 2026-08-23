@@ -6,10 +6,15 @@ const STORAGE_KEY = 'reported-cards'
 export const REPORT_REASONS = [
   { id: 'audio', label: '音檔不一致' },
   { id: 'meaning', label: '字義有誤／疑慮' },
+  { id: 'translation', label: '翻譯問題' },
   { id: 'example', label: '例句有問題' },
-  { id: 'ui', label: '畫面有問題' },
+  { id: 'furigana', label: '振り仮名有誤' },
+  { id: 'reading', label: '讀音有誤' },
+  { id: 'ui', label: '畫面／排版問題' },
   { id: 'other', label: '其他錯誤' },
 ]
+
+const REASON_MAP = new Map(REPORT_REASONS.map((r) => [r.id, r]))
 
 function normalizeStore(raw) {
   if (!raw || typeof raw !== 'object') return { contentVersion: CONTENT_VERSION, items: {} }
@@ -17,6 +22,22 @@ function normalizeStore(raw) {
     contentVersion: raw.contentVersion || 0,
     items: raw.items && typeof raw.items === 'object' ? raw.items : {},
   }
+}
+
+function normalizeReasonIds(reasonIds) {
+  const list = Array.isArray(reasonIds) ? reasonIds : reasonIds ? [reasonIds] : []
+  const seen = new Set()
+  const out = []
+  for (const id of list) {
+    if (!REASON_MAP.has(id) || seen.has(id)) continue
+    seen.add(id)
+    out.push(id)
+  }
+  return out.length ? out : ['other']
+}
+
+function labelsFor(reasonIds) {
+  return reasonIds.map((id) => REASON_MAP.get(id)?.label || id)
 }
 
 /** Drop hides from older content builds so fixed cards can return after an update. */
@@ -45,9 +66,16 @@ export function isCardReported(id, store = loadReportedCards()) {
   return Boolean(id && store.items?.[id])
 }
 
-export function reportCard(card, reasonId, note = '', store = loadReportedCards()) {
+/**
+ * @param {object} card
+ * @param {string|string[]} reasonIds - one or more reason ids (multi-select)
+ * @param {string} note
+ * @param {object} store
+ */
+export function reportCard(card, reasonIds, note = '', store = loadReportedCards()) {
   if (!card?.id) return store
-  const reason = REPORT_REASONS.find((r) => r.id === reasonId) || REPORT_REASONS[REPORT_REASONS.length - 1]
+  const reasons = normalizeReasonIds(reasonIds)
+  const reasonLabels = labelsFor(reasons)
   const next = {
     contentVersion: CONTENT_VERSION,
     items: {
@@ -57,8 +85,11 @@ export function reportCard(card, reasonId, note = '', store = loadReportedCards(
         word: card.word || card.reading || card.id,
         type: card.type || 'vocab',
         level: card.level || '',
-        reason: reason.id,
-        reasonLabel: reason.label,
+        // Keep singular fields for older UI; prefer `reasons` going forward
+        reason: reasons[0],
+        reasonLabel: reasonLabels.join('、'),
+        reasons,
+        reasonLabels,
         note: String(note || '').trim().slice(0, 200),
         at: new Date().toISOString(),
         contentVersion: CONTENT_VERSION,

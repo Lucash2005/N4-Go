@@ -1,0 +1,270 @@
+{
+  "あびる": {
+    "example": "毎朝シャワーをあびます。",
+    "exampleMeaning": "每天早上沖澡。"
+  },
+  "じゃ": {
+    "example": "じゃ、また後で。",
+    "exampleMeaning": "那麼，待會見。"
+  },
+  "しょうゆ": {
+    "example": "しょうゆを少し入れてください。",
+    "exampleMeaning": "請加一點醬油。"
+  },
+  "そうして": {
+    "example": "勉強して、そうして寝ます。",
+    "exampleMeaning": "念書，然後睡覺。"
+  },
+  "たて": {
+    "example": "この紙のたてとよこを測ってください。",
+    "exampleMeaning": "請量這張紙的長與寬。"
+  },
+  "とり肉": {
+    "example": "とり肉の料理が好きです。",
+    "exampleMeaning": "我喜歡雞肉料理。"
+  },
+  "など": {
+    "example": "本やノートなどを買いました。",
+    "exampleMeaning": "買了書和筆記本等等。"
+  },
+  "はい": {
+    "example": "はい、わかりました。",
+    "exampleMeaning": "是的，我明白了。"
+  },
+  "はく": {
+    "example": "靴をはいて出かけます。",
+    "exampleMeaning": "穿上鞋子出門。"
+  },
+  "より、ほう": {
+    "example": "電車よりバスのほうが安いです。",
+    "exampleMeaning": "巴士比電車便宜。"
+  },
+  "ラジカセ": {
+    "example": "ラジカセで音楽を聞きます。",
+    "exampleMeaning": "用收錄音機聽音樂。"
+  },
+  "暇": {
+    "example": "週末は暇ですか。",
+    "exampleMeaning": "週末有空嗎？"
+  },
+  "曲る": {
+    "example": "次の角を右へ曲ってください。",
+    "exampleMeaning": "請在下一個轉角右轉。"
+  },
+  "九日": {
+    "example": "九日に友だちと会います。",
+    "exampleMeaning": "九號要和朋友見面。"
+  },
+  "見る観る": {
+    "example": "映画を見るのが好きです。",
+    "exampleMeaning": "我喜歡看電影。"
+  },
+  "御飯": {
+    "example": "朝御飯を食べましたか。",
+    "exampleMeaning": "你吃早餐了嗎？"
+  },
+  "国": {
+    "example": "私の国は台湾です。",
+    "exampleMeaning": "我的國家是台灣。"
+  },
+  "黒": {
+    "example": "黒い猫がいます。",
+    "exampleMeaning": "有一隻黑貓。"
+  },
+  "十日": {
+    "example": "十日まで休みます。",
+    "exampleMeaning": "休息到十號。"
+  },
+  "女": {
+    "example": "あの女の人は先生です。",
+    "exampleMeaning": "那位女士是老師。"
+  },
+  "上": {
+    "example": "本は机の上にあります。",
+    "exampleMeaning": "書在桌子上。"
+  },
+  "前": {
+    "example": "駅の前で待ちます。",
+    "exampleMeaning": "在車站前面等。"
+  },
+  "昼御飯": {
+    "example": "昼御飯は何を食べますか。",
+    "exampleMeaning": "午餐要吃什麼？"
+  },
+  "八日": {
+    "example": "八日は日曜日です。",
+    "exampleMeaning": "八號是星期日。"
+  },
+  "番号": {
+    "example": "電話番号を教えてください。",
+    "exampleMeaning": "請告訴我電話號碼。"
+  },
+  "いただく": {
+    "example": "お茶をいただきます。",
+    "exampleMeaning": "我（恭敬地）喝茶／領受茶。"
+  },
+  "うかがう": {
+    "example": "ちょっとうかがってもいいですか。",
+    "exampleMeaning": "可以請教您一下嗎？"
+  },
+  "おいでになる": {
+    "example": "先生がおいでになりました。",
+    "exampleMeaning": "老師來了（敬語）。"
+  },
+  "かっこう": {
+    "example": "かっこうがおかしいです。",
+    "exampleMeaning": "外表看起來怪怪的。"
+  },
+  "かまう": {
+    "example": "どうぞおかまいなく。",
+    "exampleMeaning": "請不用費心。"
+  },
+  "けれど": {
+    "example": "行きたいけれど、時間がない。",
+    "exampleMeaning": "想去，可是沒時間。"
+  },
+  "ごらんになる": {
+    "example": "これをごらんください。",
+    "exampleMeaning": "請看這個（敬語）。"
+  },
+  "コンピュータ": {
+    "example": "コンピュータで調べます。",
+    "exampleMeaning": "用電腦查。"
+  },
+  "しかる": {
+    "example": "先生にしかられました。",
+    "exampleMeaning": "被老師罵了。"
+  },
+  "すく": {
+    "example": "お腹がすきました。",
+    "exampleMeaning": "肚子餓了。"
+  },
+  "とこや": {
+    "example": "とこやで髪を切ってもらいます。",
+    "exampleMeaning": "在理髮店請人剪頭髮。"
+  },
+  "ねだん": {
+    "example": "このかばんのねだんは高いです。",
+    "exampleMeaning": "這個包包的價格很貴。"
+  },
+  "または": {
+    "example": "バスまたは電車で行きます。",
+    "exampleMeaning": "搭公車或電車去。"
+  },
+  "楽む": {
+    "example": "旅行を楽しみます。",
+    "exampleMeaning": "好好享受旅行。"
+  },
+  "市民": {
+    "example": "市民のための図書館です。",
+    "exampleMeaning": "這是給市民用的圖書館。"
+  },
+  "辞典": {
+    "example": "わからない言葉は辞典で調べます。",
+    "exampleMeaning": "不懂的詞用辭典查。"
+  },
+  "集る": {
+    "example": "駅前に人が集ります。",
+    "exampleMeaning": "人在車站前聚集。"
+  },
+  "申す": {
+    "example": "田中と申します。",
+    "exampleMeaning": "我叫田中（謙讓語）。"
+  },
+  "席": {
+    "example": "空いている席がありますか。",
+    "exampleMeaning": "有空位嗎？"
+  },
+  "石": {
+    "example": "大きな石が道にあります。",
+    "exampleMeaning": "路上有一塊大石頭。"
+  },
+  "都": {
+    "example": "東京都に住んでいます。",
+    "exampleMeaning": "住在東京都。"
+  },
+  "答": {
+    "example": "正しい答を書いてください。",
+    "exampleMeaning": "請寫出正確答案。"
+  },
+  "二階建て": {
+    "example": "二階建ての家に住んでいます。",
+    "exampleMeaning": "住在兩層樓的房子。"
+  },
+  "日": {
+    "example": "今日はいい日ですね。",
+    "exampleMeaning": "今天天氣真好啊。"
+  },
+  "髪": {
+    "example": "髪を短く切りました。",
+    "exampleMeaning": "把頭髮剪短了。"
+  },
+  "夫": {
+    "example": "私の夫は会社員です。",
+    "exampleMeaning": "我的丈夫是公司職員。"
+  },
+  "沸かす": {
+    "example": "お湯を沸かしてください。",
+    "exampleMeaning": "請把水燒開。"
+  },
+  "味": {
+    "example": "このスープの味はいいです。",
+    "exampleMeaning": "這湯的味道很好。"
+  },
+  "訳": {
+    "example": "どういう訳ですか。",
+    "exampleMeaning": "是什麼緣故呢？"
+  },
+  "落る": {
+    "example": "木から葉が落ちます。",
+    "exampleMeaning": "葉子從樹上落下。"
+  },
+  "連れる": {
+    "example": "子どもを連れて行きます。",
+    "exampleMeaning": "帶著孩子去。"
+  },
+  "あっ": {
+    "example": "あっ、忘れた！",
+    "exampleMeaning": "啊，忘了！"
+  },
+  "あるいは": {
+    "example": "今日あるいは明日行きます。",
+    "exampleMeaning": "今天或者明天去。"
+  },
+  "おや": {
+    "example": "おや、もう夕方ですね。",
+    "exampleMeaning": "哎呀，已經傍晚了呢。"
+  },
+  "こんにちは": {
+    "example": "こんにちは。元気ですか。",
+    "exampleMeaning": "你好。你好嗎？"
+  },
+  "しかも": {
+    "example": "安くて、しかもおいしいです。",
+    "exampleMeaning": "又便宜，而且好吃。"
+  },
+  "したがって": {
+    "example": "雨です。したがって試合は中止です。",
+    "exampleMeaning": "下雨了。因此比賽中止。"
+  },
+  "すなわち": {
+    "example": "母の母、すなわち祖母です。",
+    "exampleMeaning": "母親的母親，也就是祖母。"
+  },
+  "すみません": {
+    "example": "すみません、駅はどこですか。",
+    "exampleMeaning": "不好意思，車站在哪裡？"
+  },
+  "たとえ": {
+    "example": "たとえ雨でも行きます。",
+    "exampleMeaning": "即使下雨也要去。"
+  },
+  "ピン": {
+    "example": "書類をピンで止めます。",
+    "exampleMeaning": "用別針把文件固定。"
+  },
+  "ホーム": {
+    "example": "電車のホームで待っています。",
+    "exampleMeaning": "在月台上等電車。"
+  }
+}

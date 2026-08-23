@@ -433,9 +433,9 @@ export function ProgressProvider({ children }) {
       })
     }
 
-    function reportCardIssue(card, reasonId, note = '') {
+    function reportCardIssue(card, reasonIds, note = '') {
       if (!card?.id) return
-      const next = saveReport(card, reasonId, note, reportedStore)
+      const next = saveReport(card, reasonIds, note, reportedStore)
       setReportedStore(next)
     }
 
