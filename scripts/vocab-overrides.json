@@ -37,9 +37,9 @@
     "meaning": "糟了！完了！",
     "meaningEn": "oh no!; too bad! (しまった)",
     "meaningZh": ["糟了","完了"],
-    "example": "しまった！",
-    "exampleMeaning": "糟了！",
-    "exampleFurigana": "しまった！"
+    "example": "しまった、忘れた！",
+    "exampleMeaning": "糟了，忘記了！",
+    "exampleFurigana": "しまった、忘[わす]れた！"
   },
   "v1404": {
     "meaning": "不好意思；對不起",
@@ -146,5 +146,69 @@
         "pos": "副詞"
       }
     ]
+  },
+  "v802": {
+    "meaning": "親暱稱呼的後綴",
+    "meaningEn": "suffix for familiar person",
+    "meaningZh": ["親暱後綴"],
+    "example": "太郎ちゃんは学生です。",
+    "exampleMeaning": "太郎（親暱叫法）是學生。",
+    "exampleFurigana": "太郎[たろう]ちゃんは学生[がくせい]です。",
+    "senses": [
+      {
+        "senseIndex": 0,
+        "meaning": "親暱後綴（～ちゃん）",
+        "meaningEn": "suffix for familiar person",
+        "pos": "接尾詞"
+      }
+    ]
+  },
+  "v1340": {
+    "meaning": "彼此；互相",
+    "meaningEn": "each other; one another",
+    "meaningZh": ["彼此", "互相"],
+    "example": "お互いに助け合います。",
+    "exampleMeaning": "彼此互相幫忙。",
+    "exampleFurigana": "お互[たが]いに助[たす]け合[あ]います。",
+    "senses": [
+      {
+        "senseIndex": 0,
+        "meaning": "彼此；互相",
+        "meaningEn": "each other; one another",
+        "pos": "名詞；副詞"
+      }
+    ]
+  },
+  "v314": {
+    "meaning": "近的；靠近",
+    "meaningEn": "near; close; short (distance)",
+    "meaningZh": ["近", "靠近"],
+    "example": "駅が近いです。",
+    "exampleMeaning": "車站很近。",
+    "exampleFurigana": "駅[えき]が近[ちか]いです。",
+    "senses": [
+      {
+        "senseIndex": 0,
+        "meaning": "近",
+        "meaningEn": "near; close; short (distance)",
+        "pos": "い形容詞"
+      },
+      {
+        "senseIndex": 1,
+        "meaning": "不久",
+        "meaningEn": "close (in time); soon",
+        "pos": "い形容詞"
+      }
+    ]
+  },
+  "v446": {
+    "example": "静かな所が好きです。",
+    "exampleMeaning": "我喜歡安靜的地方。",
+    "exampleFurigana": "静[しず]かな所[ところ]が好[す]きです。"
+  },
+  "v650": {
+    "example": "毎日日本語を勉強します。",
+    "exampleMeaning": "我每天學日文。",
+    "exampleFurigana": "毎日[まいにち]日本語[にほんご]を勉強[べんきょう]します。"
   }
 }

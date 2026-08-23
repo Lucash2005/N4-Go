@@ -24,28 +24,76 @@ export function isMostlyAscii(text = '') {
 
 export function isExampleValidForCard(example = '', word = '', reading = '') {
   if (!example) return false
-  if (reading && example.includes(reading)) return true
-  if (!word || !example.includes(word)) return false
-  // 短漢字如「足」嵌在「満足」等複合詞且讀音不在例句 → 不匹配
-  if (
-    word.length <= 2 &&
-    /[\u4e00-\u9fff]/.test(word) &&
-    reading &&
-    !example.includes(reading)
-  ) {
-    return hasStandaloneKanjiUse(example, word)
+  if (isTrivialExample(example, word, reading)) return false
+
+  // Only when headword itself is short kana (ちゃん ≠ ちゃんと)
+  if (word && isKana(word) && word.length <= 3) {
+    if (hasShortKanaMatch(example, word)) return true
+    if (reading && hasShortKanaMatch(example, reading)) return true
+    return false
   }
+
+  if (reading && example.includes(reading)) return true
+
+  if (word && example.includes(word)) {
+    // 短漢字如「足」嵌在「満足」等複合詞且讀音不在例句 → 不匹配
+    if (
+      word.length <= 2 &&
+      /[\u4e00-\u9fff]/.test(word) &&
+      reading &&
+      !example.includes(reading)
+    ) {
+      return hasStandaloneKanjiUse(example, word)
+    }
+    return true
+  }
+
   return containsWordOrReading(example, word, reading)
 }
 
-/** Word appears bordered by non-kanji (e.g. 右の足が), not inside a compound (満足). */
+/** Example is only the headword (e.g. 近い。 / 旅行。) — not a real sentence. */
+export function isTrivialExample(example = '', word = '', reading = '') {
+  const plain = String(example)
+    .replace(/\[[^\]]*\]/g, '')
+    .replace(/[。．.！!？?\s]/g, '')
+    .trim()
+  if (!plain) return true
+  if (word && plain === word) return true
+  if (reading && plain === reading) return true
+  return false
+}
+
+/**
+ * Short kana match that is not a prefix of a longer kana word.
+ * さくらちゃんは → OK；ちゃんと → reject for ちゃん.
+ */
+function hasShortKanaMatch(example = '', token = '') {
+  if (!token || !example.includes(token)) return false
+  const grammarAfter =
+    /^(は|が|を|に|で|も|へ|や|か|ね|よ|な|の|から|まで|より|です|だ|でした|ます|ました|、|。|！|？|$)/
+  let idx = 0
+  while ((idx = example.indexOf(token, idx)) !== -1) {
+    const rest = example.slice(idx + token.length)
+    if (!rest || !/^[\u3040-\u309f\u30a0-\u30ffー]/.test(rest) || grammarAfter.test(rest)) {
+      return true
+    }
+    if (/^(する|した|して|します|しました)/.test(rest)) return true
+    // 「と」後面接助詞／漢字可；「と」後接假名多半是另一詞（ちゃんと）
+    if (/^と([^\u3040-\u309f\u30a0-\u30ffー]|た|して|いう)/.test(rest)) return true
+    idx += 1
+  }
+  return false
+}
+
+/** Word not glued to a kanji on the left (rejects 満足 for 足; allows 毎日話す・右の足). */
 function hasStandaloneKanjiUse(example = '', word = '') {
+  // Verb/adj with okurigana (決める・近い) — full surface match is enough
+  if (/[\u3040-\u309f\u30a0-\u30ff]/.test(word) && example.includes(word)) return true
   const kanji = /[\u4e00-\u9fff]/
   let idx = 0
   while ((idx = example.indexOf(word, idx)) !== -1) {
     const before = idx > 0 ? example[idx - 1] : ''
-    const after = example[idx + word.length] || ''
-    if (!kanji.test(before) && !kanji.test(after)) return true
+    if (!kanji.test(before)) return true
     idx += 1
   }
   return false
@@ -59,6 +107,15 @@ export function containsWordOrReading(example = '', word = '', reading = '') {
   if (!example) return false
   if (word && example.includes(word)) return true
   if (reading && reading !== word && example.includes(reading)) return true
+  // する動詞：拝見する → 拝見します
+  if (word && word.endsWith('する')) {
+    const stem = word.slice(0, -2)
+    if (stem && (example.includes(`${stem}し`) || example.includes(`${stem}する`))) return true
+  }
+  if (reading && reading.endsWith('する')) {
+    const stem = reading.slice(0, -2)
+    if (stem && example.includes(`${stem}し`)) return true
+  }
   const stem = (reading || word || '').replace(/する$/, '').replace(/る$/, '')
   if (stem.length >= 2 && example.includes(stem)) return true
   if (word && /[\u4e00-\u9fff]/.test(word)) {
