@@ -4,12 +4,15 @@ import { GRAMMAR_MEMORY } from '../data/memory'
 import { quizQuestions, shuffle, withShuffledOptions } from '../data/quiz'
 import { readingQuestions } from '../data/readings'
 import { FORM_CARDS, formRule } from '../data/verbForms'
-import { vocabulary } from '../data/vocabulary'
+import { getVocabulary } from '../data/vocabulary'
 import { normalizeEntry } from './srs'
 import { todayKey } from './storage'
 
-const ALL_VOCAB = vocabulary
 const ALL_GRAMMAR = grammar
+
+function allVocab() {
+  return getVocabulary()
+}
 
 function cardPriority(card, cardProgress, planIds, today) {
   const entry = normalizeEntry(cardProgress[card.id], today)
@@ -62,7 +65,7 @@ function distractors(correct, pool, field, count, rand) {
   }
   // Fill from any remaining if still short
   if (values.length < count) {
-    for (const card of shuffle([...ALL_VOCAB, ...ALL_GRAMMAR])) {
+    for (const card of shuffle([...allVocab(), ...ALL_GRAMMAR])) {
       if (card.type !== correct.type) continue
       const val = card[field]
       if (!val || seen.has(val)) continue
@@ -290,7 +293,7 @@ export function pickAdaptiveQuiz({
   const monthGrammar = new Set(path.newIds)
 
   const vocabWeighted = wantVocab
-    ? ALL_VOCAB.map((card) => ({
+    ? allVocab().map((card) => ({
         card,
         weight: cardPriority(card, cardProgress, planIds, today),
       }))
@@ -313,7 +316,7 @@ export function pickAdaptiveQuiz({
 
   const generated = []
   for (const card of vocabTargets) {
-    const variants = vocabQuestionsFor(card, ALL_VOCAB, rand)
+    const variants = vocabQuestionsFor(card, allVocab(), rand)
     if (variants.length) generated.push(variants[Math.floor(rand() * variants.length)])
   }
   for (const card of grammarTargets) {

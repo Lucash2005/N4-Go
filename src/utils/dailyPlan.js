@@ -1,7 +1,7 @@
 import { grammar } from '../data/grammar'
 import { GRAMMAR_PATH_VERSION, getGrammarPath, grammarUnlockRank } from '../data/grammarPath'
 import { FORM_CARDS } from '../data/verbForms'
-import { vocabulary } from '../data/vocabulary'
+import { getVocabulary } from '../data/vocabulary'
 import { getDueIds, isLearned, normalizeEntry } from './srs'
 import { todayKey } from './storage'
 
@@ -30,11 +30,13 @@ export function isCoreVocab(card) {
 }
 
 export function vocabStudyPool(options = {}) {
+  const vocabulary = getVocabulary()
   if (options.includeExtension) return vocabulary
   return vocabulary.filter(isCoreVocab)
 }
 
 export function vocabLevelCounts() {
+  const vocabulary = getVocabulary()
   let n5 = 0
   let n4 = 0
   let ext = 0
@@ -193,7 +195,7 @@ function pickFormIds(count, seedStr, cardProgress, date = todayKey(), options = 
   return pickByPriority(pool, count, seedStr, cardProgress, date, options)
 }
 
-function vocabMatchingTexts(texts, pool = vocabulary) {
+function vocabMatchingTexts(texts, pool = getVocabulary()) {
   const hay = texts.filter(Boolean).join('\n')
   if (!hay) return []
   return pool.filter((v) => {
@@ -284,6 +286,7 @@ export function buildDailyPlan(date, cardProgress = {}, seedExtra = '', options 
     pickOpts,
   )
 
+  const vocabulary = getVocabulary()
   const allIds = [...vocabulary, ...grammar, ...FORM_CARDS].map((c) => c.id)
   const reviewIds = getDueIds(cardProgress, allIds, DAILY_QUOTA.review, date)
 
@@ -301,12 +304,14 @@ export function buildDailyPlan(date, cardProgress = {}, seedExtra = '', options 
 }
 
 export function resolveCards(ids) {
+  const vocabulary = getVocabulary()
   const map = new Map([...vocabulary, ...grammar, ...FORM_CARDS].map((c) => [c.id, c]))
   return ids.map((id) => map.get(id)).filter(Boolean)
 }
 
 /** Live due review queue from SRS schedule. */
 export function getLiveReviewIds(cardProgress = {}, limit = DAILY_QUOTA.review, date = todayKey()) {
+  const vocabulary = getVocabulary()
   const allIds = [...vocabulary, ...grammar, ...FORM_CARDS].map((c) => c.id)
   return getDueIds(cardProgress, allIds, limit > 0 ? limit : 0, date)
 }

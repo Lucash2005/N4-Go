@@ -8,7 +8,7 @@
  */
 import { readFileSync, writeFileSync, existsSync } from 'node:fs'
 import { dirname, join } from 'node:path'
-import { fileURLToPath, pathToFileURL } from 'node:url'
+import { fileURLToPath } from 'node:url'
 import {
   fetchJishoForCard,
   loadJishoCache,
@@ -18,14 +18,13 @@ import {
   annotateHeadword,
   detectReviewFlags,
   inferCategory,
-  jsStr,
   loadGlossary,
   translateEnGloss,
   translateMeanings,
 } from './vocab-shared.mjs'
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..')
-const VOCAB_PATH = join(ROOT, 'src/data/vocabulary.js')
+const VOCAB_JSON = join(ROOT, 'public/data/vocabulary.json')
 const ZH_CACHE_PATH = join(ROOT, 'data/zh-cache.json')
 const OVERRIDES_PATH = join(ROOT, 'scripts/vocab-overrides.json')
 const CHANGED_IDS_PATH = join(ROOT, 'data/vocab-changed-ids.json')
@@ -87,47 +86,14 @@ function cardChanged(before, after) {
   return keys.some((k) => before[k] !== after[k])
 }
 
-function emitVocab(cards) {
-  const lines = [
-    '/** @typedef {{ id: string, type: \'vocab\', word: string, reading: string, meaning: string, meaningEn?: string, meaningZh?: string[], example: string, exampleFurigana?: string, exampleMeaning: string, category: string, level?: string, source?: string, pos?: string, senseIndex?: number, senses?: Array<{ senseIndex: number, meaning: string, meaningEn?: string, pos?: string }>, reviewFlags?: string[] }} VocabCard */',
-    '',
-    '/** N5+N4 core (OpenJLPT + Jisho/JMdict) + N3 extension. Chinese: glossary/zh-cache; verify via meaningEn. */',
-    '/** @type {VocabCard[]} */',
-    'export const vocabulary = [',
-  ]
+function trimCard(card) {
+  const o = { ...card }
+  if (o.senses?.length > 3) o.senses = o.senses.slice(0, 3)
+  return o
+}
 
-  for (const card of cards) {
-    lines.push('  {')
-    lines.push(`    id: ${jsStr(card.id)},`)
-    lines.push("    type: 'vocab',")
-    lines.push(`    word: ${jsStr(card.word)},`)
-    lines.push(`    reading: ${jsStr(card.reading)},`)
-    lines.push(`    meaning: ${jsStr(card.meaning)},`)
-    if (card.meaningEn) lines.push(`    meaningEn: ${jsStr(card.meaningEn)},`)
-    if (card.meaningZh?.length) {
-      lines.push(`    meaningZh: ${JSON.stringify(card.meaningZh)},`)
-    }
-    lines.push(`    example: ${jsStr(card.example)},`)
-    lines.push(`    exampleMeaning: ${jsStr(card.exampleMeaning)},`)
-    if (card.exampleFurigana) {
-      lines.push(`    exampleFurigana: ${jsStr(card.exampleFurigana)},`)
-    }
-    lines.push(`    category: ${jsStr(card.category)},`)
-    if (card.level) lines.push(`    level: ${jsStr(card.level)},`)
-    if (card.source) lines.push(`    source: ${jsStr(card.source)},`)
-    if (card.pos) lines.push(`    pos: ${jsStr(card.pos)},`)
-    if (card.senseIndex != null) lines.push(`    senseIndex: ${card.senseIndex},`)
-    if (card.senses?.length) {
-      lines.push(`    senses: ${JSON.stringify(card.senses)},`)
-    }
-    if (card.reviewFlags?.length) {
-      lines.push(`    reviewFlags: ${JSON.stringify(card.reviewFlags)},`)
-    }
-    lines.push('  },')
-  }
-  lines.push(']')
-  lines.push('')
-  return lines.join('\n')
+function writeVocabJson(cards) {
+  writeFileSync(VOCAB_JSON, JSON.stringify(cards.map(trimCard)))
 }
 
 function enrichCard(card, jisho, glossary, zhCache, overrides) {
@@ -173,8 +139,10 @@ function enrichCard(card, jisho, glossary, zhCache, overrides) {
 }
 
 async function loadCards() {
-  const mod = await import(pathToFileURL(VOCAB_PATH).href)
-  return mod.vocabulary
+  if (!existsSync(VOCAB_JSON)) {
+    throw new Error(`Missing ${VOCAB_JSON}`)
+  }
+  return JSON.parse(readFileSync(VOCAB_JSON, 'utf8'))
 }
 
 async function main() {
@@ -216,12 +184,12 @@ async function main() {
 
   saveJishoCache(jishoCache)
   saveZhCache(zhCache)
-  writeFileSync(VOCAB_PATH, emitVocab(enriched), 'utf8')
+  writeVocabJson(enriched)
   writeFileSync(CHANGED_IDS_PATH, JSON.stringify(changedIds, null, 2), 'utf8')
 
   const flagged = enriched.filter((c) => c.reviewFlags?.length).length
   console.log(`Done. Changed: ${changedIds.length}, flagged: ${flagged}`)
-  console.log(`Changed IDs → ${CHANGED_IDS_PATH}`)
+  console.log(`Written ${VOCAB_JSON}`)
 }
 
 main().catch((err) => {

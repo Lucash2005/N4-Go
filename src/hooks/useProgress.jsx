@@ -3,7 +3,7 @@ import { DEFAULT_TASKS, TARGETS } from '../data/config'
 import { grammar } from '../data/grammar'
 import { GRAMMAR_PATH_VERSION, getGrammarPath, monthGrammarProgress } from '../data/grammarPath'
 import { FORM_CARDS } from '../data/verbForms'
-import { vocabulary } from '../data/vocabulary'
+import { getVocabulary, loadVocabulary } from '../data/vocabulary'
 import {
   buildDailyPlan,
   DAILY_QUOTA,
@@ -32,9 +32,9 @@ import {
 } from '../utils/drillProgress'
 
 const ProgressContext = createContext(null)
-const ALL_CARDS = [...vocabulary, ...grammar, ...FORM_CARDS]
 
 function catchUpPlanOptions(cardProgress) {
+  const vocabulary = getVocabulary()
   const learnedVocab = vocabulary.filter((v) => isLearned(cardProgress[v.id])).length
   const learnedGrammar = grammar.filter((g) => isLearned(cardProgress[g.id])).length
   const since = addDays(todayKey(), -6)
@@ -94,9 +94,10 @@ function sameIds(a = [], b = []) {
 function findCardsForAnswer(answerText = '') {
   const text = answerText.trim()
   if (!text) return []
-  const byId = ALL_CARDS.find((c) => c.id === text)
+  const allCards = [...getVocabulary(), ...grammar, ...FORM_CARDS]
+  const byId = allCards.find((c) => c.id === text)
   if (byId) return [byId]
-  return ALL_CARDS.filter(
+  return allCards.filter(
     (c) =>
       c.word === text ||
       c.reading === text ||
@@ -107,6 +108,8 @@ function findCardsForAnswer(answerText = '') {
 
 export function ProgressProvider({ children }) {
   const [sessionSeed] = useState(() => `${Date.now()}-${Math.random().toString(36).slice(2)}`)
+  const [vocabReady, setVocabReady] = useState(false)
+  const [vocabError, setVocabError] = useState(null)
   const [cardProgress, setCardProgress] = useLocalStorage('card-progress', {})
   const [dailyTasks, setDailyTasks] = useLocalStorage('daily-tasks', {
     date: todayKey(),
@@ -125,8 +128,23 @@ export function ProgressProvider({ children }) {
     lastScore: null,
   })
 
-  // Reset / create today's plan & tasks
   useEffect(() => {
+    let cancelled = false
+    loadVocabulary()
+      .then(() => {
+        if (!cancelled) setVocabReady(true)
+      })
+      .catch((err) => {
+        if (!cancelled) setVocabError(err?.message || '詞彙載入失敗')
+      })
+    return () => {
+      cancelled = true
+    }
+  }, [])
+
+  // Reset / create today's plan & tasks (after vocab loaded)
+  useEffect(() => {
+    if (!vocabReady) return
     const today = todayKey()
     if (dailyTasks.date !== today) {
       setDailyTasks({
@@ -134,20 +152,21 @@ export function ProgressProvider({ children }) {
         tasks: DEFAULT_TASKS.map((t) => ({ ...t, done: false })),
       })
     }
-    const vocabQuota = catchUpVocabQuota(cardProgress)
+    const catchUp = catchUpPlanOptions(cardProgress)
+    const vocabQuota = catchUp.vocabQuota
     const needsRebuild =
       dailyPlan.date !== today ||
       dailyPlan.grammarPathVersion !== GRAMMAR_PATH_VERSION ||
       (dailyPlan.vocabIds?.length || 0) < vocabQuota ||
       (dailyPlan.vocabQuota || DAILY_QUOTA.vocab) < vocabQuota
     if (needsRebuild) {
-      setDailyPlan(buildDailyPlan(today, cardProgress, '', { vocabQuota }))
+      setDailyPlan(buildDailyPlan(today, cardProgress, '', catchUp))
     }
-  }, [dailyTasks.date, dailyPlan.date, dailyPlan.grammarPathVersion, dailyPlan.vocabIds, dailyPlan.vocabQuota, cardProgress, setDailyTasks, setDailyPlan])
+  }, [vocabReady, dailyTasks.date, dailyPlan.date, dailyPlan.grammarPathVersion, dailyPlan.vocabIds, dailyPlan.vocabQuota, cardProgress, setDailyTasks, setDailyPlan])
 
   // Keep review queue in sync with due SRS cards
   useEffect(() => {
-    if (dailyPlan.date !== todayKey()) return
+    if (!vocabReady || dailyPlan.date !== todayKey()) return
     const liveReviewIds = getLiveReviewIds(cardProgress, DAILY_QUOTA.review)
     setDailyPlan((prev) => {
       if (prev.date !== todayKey()) return prev
@@ -169,6 +188,7 @@ export function ProgressProvider({ children }) {
 
   // Auto-complete checklist from plan progress
   useEffect(() => {
+    if (!vocabReady) return
     const plan = ensurePlan(dailyPlan, cardProgress)
     if (plan.date !== todayKey()) return
 
@@ -219,9 +239,10 @@ export function ProgressProvider({ children }) {
       })
       return changed ? { ...prev, tasks } : prev
     })
-  }, [dailyPlan, cardProgress, setDailyTasks])
+  }, [vocabReady, dailyPlan, cardProgress, setDailyTasks])
 
   const value = useMemo(() => {
+    const vocabulary = getVocabulary()
     const plan = ensurePlan(dailyPlan, cardProgress)
     const studied = new Set(plan.studiedIds || [])
     const listened = new Set(plan.listenedIds || [])
@@ -349,8 +370,8 @@ export function ProgressProvider({ children }) {
 
     function reshuffleTodayPlan() {
       const day = todayKey()
-      const vocabQuota = catchUpVocabQuota(cardProgress)
-      setDailyPlan(buildDailyPlan(day, cardProgress, `reshuffle:${Date.now()}`, { vocabQuota }))
+      const catchUp = catchUpPlanOptions(cardProgress)
+      setDailyPlan(buildDailyPlan(day, cardProgress, `reshuffle:${Date.now()}`, catchUp))
       setDailyTasks({
         date: day,
         tasks: DEFAULT_TASKS.map((t) => ({ ...t, done: false })),
@@ -436,6 +457,7 @@ export function ProgressProvider({ children }) {
     drillProgress,
     drillStats,
     sessionSeed,
+    vocabReady,
     setCardProgress,
     setDailyTasks,
     setDailyPlan,
@@ -443,6 +465,31 @@ export function ProgressProvider({ children }) {
     setDrillProgress,
     setDrillStats,
   ])
+
+  if (vocabError) {
+    return (
+      <div className="flex min-h-[100dvh] flex-col items-center justify-center gap-3 bg-foam px-6 text-center text-ink">
+        <p className="font-display text-lg font-bold">詞彙載入失敗</p>
+        <p className="text-sm text-ink-soft">{vocabError}</p>
+        <button
+          type="button"
+          className="rounded-2xl bg-sea px-4 py-2 text-white"
+          onClick={() => window.location.reload()}
+        >
+          重新整理
+        </button>
+      </div>
+    )
+  }
+
+  if (!vocabReady) {
+    return (
+      <div className="flex min-h-[100dvh] flex-col items-center justify-center gap-2 bg-foam text-ink">
+        <p className="font-display text-lg font-bold">N4 Go</p>
+        <p className="text-sm text-ink-soft">載入詞彙資料中…</p>
+      </div>
+    )
+  }
 
   return <ProgressContext.Provider value={value}>{children}</ProgressContext.Provider>
 }

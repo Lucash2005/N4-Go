@@ -4,7 +4,7 @@ import FuriganaText from '../components/FuriganaText'
 import { grammar } from '../data/grammar'
 import { withMemory } from '../data/memory'
 import { FORM_CARDS, formRule } from '../data/verbForms'
-import { vocabulary } from '../data/vocabulary'
+import { getVocabulary } from '../data/vocabulary'
 import { useProgress } from '../hooks/useProgress'
 import { useSettings } from '../hooks/useSettings'
 import { useLocalStorage } from '../hooks/useLocalStorage'
@@ -23,7 +23,9 @@ import {
 import { getFilterStatus, GRADE_LABELS, normalizeEntry } from '../utils/srs'
 import { speakJapanese, speechTextForCard, audioClipForCard, stopSpeaking } from '../utils/tts'
 
-const ALL_CARDS = [...vocabulary, ...grammar, ...FORM_CARDS]
+function allBrowseCards() {
+  return [...getVocabulary(), ...grammar, ...FORM_CARDS]
+}
 
 const MODE_META = {
   'today-vocab': {
@@ -109,7 +111,7 @@ export default function Flashcards() {
     if (mode === 'today-listening') return todayVocab
 
     const q = query.trim().toLowerCase()
-    const list = ALL_CARDS.filter((card) => {
+    const list = allBrowseCards().filter((card) => {
       if (typeFilter !== 'all' && card.type !== typeFilter) return false
       const status = getFilterStatus(cardProgress, card.id)
       if (statusFilter !== 'all' && status !== statusFilter) return false

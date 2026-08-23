@@ -9,16 +9,18 @@
  * Only Japanese: ONLY=ja node scripts/generate-audio.mjs
  * Concurrency: CONCURRENCY=6 node scripts/generate-audio.mjs
  */
-import { mkdirSync, writeFileSync, existsSync } from 'fs'
-import { join, dirname } from 'path'
-import { fileURLToPath } from 'url'
+import { readFileSync, mkdirSync, writeFileSync, existsSync } from 'node:fs'
+import { join, dirname } from 'node:path'
+import { fileURLToPath } from 'node:url'
 import { EdgeTTS } from 'edge-tts-universal'
-import { vocabulary } from '../src/data/vocabulary.js'
 import { grammar } from '../src/data/grammar.js'
 import { FORM_CARDS } from '../src/data/verbForms.js'
 import { readingForSpeech } from '../src/utils/speechText.js'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
+const vocabulary = JSON.parse(
+  readFileSync(join(__dirname, '../public/data/vocabulary.json'), 'utf8'),
+)
 const outDir = join(__dirname, '../public/audio')
 mkdirSync(outDir, { recursive: true })
 

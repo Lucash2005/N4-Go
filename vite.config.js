@@ -21,7 +21,7 @@ export default defineConfig({
         display: 'standalone',
         orientation: 'portrait-primary',
         lang: 'zh-Hant',
-        start_url: '/',
+        start_url: './',
         icons: [
           {
             src: 'pwa-192.png',

@@ -22,7 +22,7 @@ import {
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..')
 const OPENJLPT_DIR = join(ROOT, 'data/openjlpt')
-const VOCAB_PATH = join(ROOT, 'src/data/vocabulary.js')
+const VOCAB_JSON = join(ROOT, 'public/data/vocabulary.json')
 const OVERRIDES_PATH = join(ROOT, 'scripts/vocab-overrides.json')
 
 function loadOpenJlpt(level) {
@@ -262,7 +262,9 @@ async function main() {
 
   const glossary = loadGlossary()
   const overrides = loadOverrides()
-  const existing = parseExistingVocab(VOCAB_PATH)
+  const existing = existsSync(VOCAB_JSON)
+    ? JSON.parse(readFileSync(VOCAB_JSON, 'utf8'))
+    : []
   const existingByKey = new Map(existing.map((c) => [makeKey(c.word, c.reading), c]))
 
   console.log(`Existing cards: ${existing.length}`)
@@ -283,8 +285,12 @@ async function main() {
     if (c.reviewFlags?.length) flagged += 1
   }
 
-  writeFileSync(VOCAB_PATH, emitVocab(cards), 'utf8')
-  console.log('Written', VOCAB_PATH)
+  writeFileSync(VOCAB_JSON, JSON.stringify(cards.map((c) => {
+    const o = { ...c }
+    if (o.senses?.length > 3) o.senses = o.senses.slice(0, 3)
+    return o
+  })))
+  console.log('Written', VOCAB_JSON)
   console.log('Levels:', levelCounts)
   console.log(`Flagged for review: ${flagged}`)
 }
