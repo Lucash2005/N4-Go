@@ -35,7 +35,7 @@ export function isWeakTemplateExample(example = '', word = '') {
   const ex = String(example || '').trim()
   if (!ex) return true
   if (/[/／]/.test(ex)) return true
-  if (/^もう一度.+。$/.test(ex)) return true
+  if (/^もう一度[^。]{0,8}。$/.test(ex) && !/言って|聞いて|読んで|試して|確認/.test(ex)) return true
   if (/^ここに.+があります。$/.test(ex)) return true
   if (/ことができます。$/.test(ex)) return true
   if (new RegExp(`^${escapeRe(word)}があります。$`).test(ex)) return true
