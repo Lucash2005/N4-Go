@@ -13,6 +13,8 @@ export const FURIGANA_OVERRIDES = [
   { pattern: /散歩\[さんぽする\]/g, replace: '散歩[さんぽ]' },
   { pattern: /出\[しゅつ\]ろ/g, replace: '出[で]ろ' },
   { pattern: /出席\[しゅっせきする\]/g, replace: '出席[しゅっせき]' },
+  { pattern: /大勢\[たいせい\]/g, replace: '大勢[おおぜい]' },
+  { pattern: /一番乗\[いちばんの\]/g, replace: '一番[いちばん]乗[の]り' },
 ]
 
 export function applyFuriganaOverrides(text) {

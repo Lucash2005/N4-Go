@@ -22,9 +22,25 @@ export function isMostlyAscii(text = '') {
   return ascii / text.length > 0.55
 }
 
+/** OpenJLPT/Tatoeba often pairs a kanji with a homophone compound (十→十分, 山→山羊). */
+export function isMisleadingHomophoneExample(example = '', word = '') {
+  const ex = String(example || '')
+  const w = String(word || '').trim()
+  if (!ex || !w) return false
+  const traps = {
+    十: ['十分'],
+    山: ['山羊'],
+    一: ['一番乗', '一緒', '一人'],
+  }
+  const patterns = traps[w]
+  if (!patterns) return false
+  return patterns.some((p) => ex.includes(p))
+}
+
 export function isExampleValidForCard(example = '', word = '', reading = '') {
   if (!example) return false
   if (isTrivialExample(example, word, reading)) return false
+  if (isMisleadingHomophoneExample(example, word)) return false
 
   // 常見假名 ↔ 漢字（例句常用漢字形）
   const kanaKanji = {

@@ -267,5 +267,78 @@
     "example": "病気と闘う。",
     "exampleMeaning": "與疾病搏鬥。",
     "exampleFurigana": "病気[びょうき]と闘[たたか]う。"
+  },
+  "v435": {
+    "reading": "じゅう/とお",
+    "meaning": "十；十個",
+    "meaningEn": "ten; 10",
+    "meaningZh": ["十", "十個"],
+    "example": "十個ください。",
+    "exampleMeaning": "請給我十個。",
+    "exampleFurigana": "十[じゅう]個[こ]ください。"
+  },
+  "v227": {
+    "meaning": "一；一個",
+    "meaningEn": "one; 1",
+    "meaningZh": ["一", "一個"],
+    "example": "一つください。",
+    "exampleMeaning": "請給我一個。",
+    "exampleFurigana": "一[ひと]つください。"
+  },
+  "v011": {
+    "example": "返事を待っています。",
+    "exampleMeaning": "在等回覆。",
+    "exampleFurigana": "返事[へんじ]を待[ま]っています。"
+  },
+  "v1104": {
+    "meaning": "踴躍；興盛；盛行",
+    "meaningEn": "active; lively; prosperous; popular",
+    "meaningZh": ["踴躍", "興盛", "盛行"],
+    "example": "この店はとても盛んです。",
+    "exampleMeaning": "這家店很興盛（生意很好）。",
+    "exampleFurigana": "この店[みせ]はとても盛[さか]んです。"
+  },
+  "v052": {
+    "reading": "いい/よい",
+    "meaning": "好的；不錯",
+    "meaningEn": "good; fine; nice",
+    "meaningZh": ["好的", "不錯"],
+    "example": "運がいいね。",
+    "exampleMeaning": "運氣真好啊。",
+    "exampleFurigana": "運[うん]がいいね。"
+  },
+  "v521": {
+    "reading": "おおぜい",
+    "meaning": "很多人；大批人",
+    "meaningEn": "crowd of people; many people",
+    "meaningZh": ["很多人", "大批人"],
+    "category": "生活",
+    "example": "大勢の人がいます。",
+    "exampleMeaning": "有很多人。",
+    "exampleFurigana": "大勢[おおぜい]の人[ひと]がいます。"
+  },
+  "v370": {
+    "meaning": "今天早上；今晨",
+    "meaningEn": "this morning",
+    "meaningZh": ["今天早上", "今晨"],
+    "example": "今朝は七時に起きました。",
+    "exampleMeaning": "今天早上七點起床。",
+    "exampleFurigana": "今朝[けさ]は七[しち]時[じ]に起[お]きました。"
+  },
+  "v392": {
+    "meaning": "山；山峰",
+    "meaningEn": "mountain; hill",
+    "meaningZh": ["山", "山峰"],
+    "example": "あの山は高いです。",
+    "exampleMeaning": "那座山很高。",
+    "exampleFurigana": "あの山[やま]は高[たか]いです。"
+  },
+  "v584": {
+    "meaning": "肉；肉類",
+    "meaningEn": "meat",
+    "meaningZh": ["肉", "肉類"],
+    "example": "肉はとてもおいしいです。",
+    "exampleMeaning": "肉很好吃。",
+    "exampleFurigana": "肉[にく]はとてもおいしいです。"
   }
 }

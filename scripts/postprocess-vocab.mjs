@@ -12,6 +12,7 @@ import {
   cleanEnGloss,
   hasChinese,
   isExampleValidForCard,
+  isMisleadingHomophoneExample,
   isTrivialExample,
   loadGlossary,
   translateEnGloss,
@@ -179,6 +180,12 @@ async function main() {
     if (surface && surface !== c.word) {
       c.word = surface
     }
+    if (c.reading && /\s/.test(c.reading)) {
+      c.reading = c.reading
+        .split(/\s+/)
+        .filter(Boolean)
+        .join('/')
+    }
 
     c.meaning = ensureZh(c.meaning, c.meaningEn, glossary, cache)
     if (c.meaningEn) {
@@ -205,7 +212,8 @@ async function main() {
       (c.reviewFlags || []).includes('needs_example')
     const exampleInvalid =
       c.example &&
-      !isExampleValidForCard(c.example, c.word, c.reading) &&
+      (!isExampleValidForCard(c.example, c.word, c.reading) ||
+        isMisleadingHomophoneExample(c.example, c.word)) &&
       !isTrivialExample(c.example, c.word, c.reading)
     const needsExample =
       !overrideHasExample &&
