@@ -101,6 +101,7 @@ export default function Flashcards() {
   const [noteDraft, setNoteDraft] = useState('')
   const [showMoreSenses, setShowMoreSenses] = useState(false)
   const [showMoreDetail, setShowMoreDetail] = useState(false)
+  const [showNotes, setShowNotes] = useState(false)
 
   const todayMode = mode in MODE_META
   const srsMode = mode === 'today-vocab' || mode === 'today-grammar' || mode === 'today-review'
@@ -196,6 +197,7 @@ export default function Flashcards() {
     setNoteDraft(card ? cardNotes[card.id] || '' : '')
     setShowMoreSenses(false)
     setShowMoreDetail(false)
+    setShowNotes(false)
     // eslint-disable-next-line react-hooks/exhaustive-deps -- only reload when the card changes
   }, [card?.id])
 
@@ -778,44 +780,62 @@ export default function Flashcards() {
             </div>
           )}
 
-          <div
-            className="surface soft-shadow rounded-3xl p-4 sm:p-5"
-            onClick={(e) => e.stopPropagation()}
-            onKeyDown={(e) => e.stopPropagation()}
-          >
-            <div className="mb-2 flex items-center justify-between gap-2">
-              <p className="text-sm font-medium text-ink">我的筆記</p>
-              <span className="text-xs text-ink-soft">只存在這支手機／瀏覽器</span>
-            </div>
-            <textarea
-              value={noteDraft}
-              onChange={(e) => setNoteDraft(e.target.value)}
-              onBlur={() => saveNote(noteDraft)}
-              rows={2}
-              placeholder="寫下接續口訣、自己的例句、易混對照…"
-              className="w-full resize-y rounded-2xl border border-line bg-white/80 px-3 py-2.5 text-sm text-ink outline-none ring-sea/30 placeholder:text-ink-soft/70 focus:ring-2"
-            />
-            <div className="mt-2 flex justify-end gap-2">
-              {noteDraft.trim() ? (
-                <button
-                  type="button"
-                  onClick={() => {
-                    setNoteDraft('')
-                    saveNote('')
-                  }}
-                  className="rounded-xl bg-white px-3 py-1.5 text-xs text-ink-soft ring-1 ring-line hover:bg-foam"
-                >
-                  清除
-                </button>
-              ) : null}
+          <div className="mt-1">
+            {!showNotes ? (
               <button
                 type="button"
-                onClick={() => saveNote(noteDraft)}
-                className="rounded-xl bg-sea px-3 py-1.5 text-xs text-white hover:bg-sea-deep"
+                onClick={() => setShowNotes(true)}
+                className="w-full rounded-2xl bg-white/80 px-4 py-2.5 text-sm text-ink-soft ring-1 ring-line hover:bg-foam"
               >
-                儲存筆記
+                我的筆記（選填）
               </button>
-            </div>
+            ) : (
+              <div
+                className="surface soft-shadow rounded-3xl p-4 sm:p-5"
+                onClick={(e) => e.stopPropagation()}
+                onKeyDown={(e) => e.stopPropagation()}
+              >
+                <div className="mb-2 flex items-center justify-between gap-2">
+                  <p className="text-sm font-medium text-ink">我的筆記</p>
+                  <button
+                    type="button"
+                    onClick={() => setShowNotes(false)}
+                    className="text-xs text-ink-soft underline-offset-2 hover:underline"
+                  >
+                    收合
+                  </button>
+                </div>
+                <textarea
+                  value={noteDraft}
+                  onChange={(e) => setNoteDraft(e.target.value)}
+                  onBlur={() => saveNote(noteDraft)}
+                  rows={2}
+                  placeholder="寫下接續口訣、自己的例句、易混對照…"
+                  className="w-full resize-y rounded-2xl border border-line bg-white/80 px-3 py-2.5 text-sm text-ink outline-none ring-sea/30 placeholder:text-ink-soft/70 focus:ring-2"
+                />
+                <div className="mt-2 flex justify-end gap-2">
+                  {noteDraft.trim() ? (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setNoteDraft('')
+                        saveNote('')
+                      }}
+                      className="rounded-xl bg-white px-3 py-1.5 text-xs text-ink-soft ring-1 ring-line hover:bg-foam"
+                    >
+                      清除
+                    </button>
+                  ) : null}
+                  <button
+                    type="button"
+                    onClick={() => saveNote(noteDraft)}
+                    className="rounded-xl bg-sea px-3 py-1.5 text-xs text-white hover:bg-sea-deep"
+                  >
+                    儲存筆記
+                  </button>
+                </div>
+              </div>
+            )}
           </div>
         </>
       )}
@@ -833,30 +853,25 @@ function VocabCardBack({
   showMoreDetail,
   setShowMoreDetail,
 }) {
-  const senses = card.senses || []
-  const compactLines = compactSenseGlosses(senses, 2)
-  const mainLines = compactGlossLines(
-    isChineseGloss(card.meaning) ? card.meaning : '',
-    2,
-  )
-  const displayLines =
-    compactLines.length > 0
-      ? compactLines
-      : mainLines.length > 0
-        ? mainLines
-        : []
-  const extraSenses = senses.slice(2)
-  const hiddenSenseCount = Math.max(0, senses.length - 2)
+  // Prefer Chinese glosses only; English stays behind「更多說明」
+  const zhSenses = (card.senses || []).filter((s) => isChineseGloss(s.meaning))
+  const sensePool = zhSenses
+  const primaryLines = (() => {
+    const fromSenses = compactSenseGlosses(sensePool, 2)
+    if (fromSenses.length) return fromSenses
+    return compactGlossLines(isChineseGloss(card.meaning) ? card.meaning : '', 2)
+  })()
+  const extraSenses = sensePool.slice(2)
+  const hiddenSenseCount = Math.max(0, sensePool.length - 2)
   const hasHiddenSenses = hiddenSenseCount > 0 && !showMoreSenses
-  const showSenseBlock = displayLines.length > 0 && senses.length > 1
+  const showSenseBlock = primaryLines.length > 0 && sensePool.length > 1
   const canExpandDetail =
     card.memory ||
     card.exampleUsage ||
     card.meaningEn ||
     card.pos ||
-    senses.some((s) => !isChineseGloss(s.meaning)) ||
-    senses.some((s) => s.example || s.exampleZh) ||
-    hiddenSenseCount > 0
+    (card.senses || []).some((s) => !isChineseGloss(s.meaning)) ||
+    (card.senses || []).some((s) => s.example || s.exampleZh)
 
   return (
     <div className="w-full text-left">
@@ -871,7 +886,7 @@ function VocabCardBack({
         <div className="mt-2 space-y-1 text-sm leading-snug text-ink">
           <p className="text-[11px] font-medium text-sea-deep">常用多義</p>
           <ul className="space-y-0.5">
-            {displayLines.map((line) => (
+            {primaryLines.map((line) => (
               <li key={line} className="rounded-md bg-white/70 px-2 py-0.5 ring-1 ring-line/40">
                 {line}
               </li>
@@ -891,19 +906,16 @@ function VocabCardBack({
           ) : null}
           {showMoreSenses && extraSenses.length ? (
             <ul className="mt-1 space-y-0.5">
-              {extraSenses.map((sense) => {
-                const lines = isChineseGloss(sense.meaning)
-                  ? compactGlossLines(sense.meaning, 2, 32)
-                  : [sense.meaningEn || sense.meaning]
-                return lines.map((line) => (
+              {extraSenses.map((sense) =>
+                compactGlossLines(sense.meaning, 2, 32).map((line) => (
                   <li
                     key={`${sense.senseIndex}-${line}`}
                     className="rounded-md bg-white/70 px-2 py-0.5 ring-1 ring-line/40"
                   >
                     {line}
                   </li>
-                ))
-              })}
+                )),
+              )}
             </ul>
           ) : null}
         </div>
@@ -935,7 +947,7 @@ function VocabCardBack({
               }}
               className="text-xs text-sea-deep underline-offset-2 hover:underline"
             >
-              更多說明
+              更多說明（含英文）
             </button>
           ) : (
             <div className="mt-1 space-y-1.5 text-xs leading-relaxed text-ink sm:text-sm">
@@ -950,45 +962,14 @@ function VocabCardBack({
                   {card.exampleUsage}
                 </p>
               ) : null}
-              {senses.some((s) => !isChineseGloss(s.meaning)) ? (
-                <ul className="space-y-1">
-                  {senses
-                    .filter((s) => !isChineseGloss(s.meaning))
-                    .map((sense) => (
-                      <li
-                        key={`en-${sense.senseIndex ?? sense.meaningEn}`}
-                        className="rounded-lg bg-white/80 px-2.5 py-1.5 ring-1 ring-line/50"
-                      >
-                        <SenseDetail sense={sense} />
-                      </li>
-                    ))}
-                </ul>
-              ) : null}
-              {senses.some((s) => s.example) ? (
-                <div className="space-y-1">
-                  <p className="font-medium text-sea-deep">多義例句</p>
-                  {senses.map((sense) =>
-                    sense.example ? (
-                      <div
-                        key={`ex-${sense.senseIndex ?? sense.meaning}`}
-                        className="rounded-lg bg-white/80 px-2.5 py-1.5 ring-1 ring-line/50"
-                      >
-                        <p className="font-medium text-ink">{sense.meaning}</p>
-                        <p className="mt-0.5 text-sea-deep">
-                          <FuriganaText
-                            text={sense.example}
-                            annotated={sense.exampleFurigana || sense.example}
-                            showFurigana={true}
-                          />
-                        </p>
-                        {sense.exampleZh ? (
-                          <p className="mt-0.5 text-ink-soft">{sense.exampleZh}</p>
-                        ) : null}
-                      </div>
-                    ) : null,
-                  )}
+              {(card.senses || []).map((sense) => (
+                <div
+                  key={`all-${sense.senseIndex ?? sense.meaningEn}`}
+                  className="rounded-lg bg-white/80 px-2.5 py-1.5 ring-1 ring-line/50"
+                >
+                  <SenseDetail sense={sense} />
                 </div>
-              ) : null}
+              ))}
             </div>
           )}
         </div>

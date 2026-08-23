@@ -124,5 +124,27 @@
         "pos": "形容動詞"
       }
     ]
+  },
+  "v834": {
+    "meaning": "幾乎；大多",
+    "meaningEn": "almost; nearly; mostly; hardly",
+    "meaningZh": ["幾乎", "大多"],
+    "example": "本はほとんどない。",
+    "exampleMeaning": "書幾乎沒有。",
+    "exampleFurigana": "本[ほん]はほとんどない。",
+    "senses": [
+      {
+        "senseIndex": 0,
+        "meaning": "幾乎",
+        "meaningEn": "almost; nearly; mostly",
+        "pos": "副詞"
+      },
+      {
+        "senseIndex": 1,
+        "meaning": "幾乎沒；很少",
+        "meaningEn": "hardly; barely; scarcely; little",
+        "pos": "副詞"
+      }
+    ]
   }
 }
