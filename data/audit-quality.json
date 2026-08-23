@@ -1,10 +1,10 @@
 {
-  "generatedAt": "2026-08-23T08:33:28.723Z",
+  "generatedAt": "2026-08-23T09:59:43.611Z",
   "total": 1500,
   "summary": {
     "meaning": 0,
     "translation": 0,
-    "example": 0,
+    "example": 9,
     "furigana": 0,
     "reading": 18,
     "ui": 0
@@ -24,8 +24,63 @@
       "items": []
     },
     "example": {
-      "count": 0,
-      "items": []
+      "count": 9,
+      "items": [
+        {
+          "id": "v012",
+          "word": "説明",
+          "example": "もう一度説明してください。",
+          "source": "override"
+        },
+        {
+          "id": "v023",
+          "word": "急に",
+          "example": "（例句準備中：急に）",
+          "source": "missing"
+        },
+        {
+          "id": "v235",
+          "word": "引く",
+          "example": "ドアを引いてください。",
+          "source": "override"
+        },
+        {
+          "id": "v755",
+          "word": "このあいだ",
+          "example": "（例句準備中：このあいだ）",
+          "source": "missing"
+        },
+        {
+          "id": "v767",
+          "word": "さ来月",
+          "example": "再来月は１２月だ。",
+          "source": "openjlpt"
+        },
+        {
+          "id": "v768",
+          "word": "さ来週",
+          "example": "また再来週。",
+          "source": "openjlpt"
+        },
+        {
+          "id": "v1244",
+          "word": "放送",
+          "example": "絶賛放送中！",
+          "source": "openjlpt"
+        },
+        {
+          "id": "v1309",
+          "word": "あんなに",
+          "example": "（例句準備中：あんなに）",
+          "source": "missing"
+        },
+        {
+          "id": "v1317",
+          "word": "いち",
+          "example": "彼の正位置はサードだ。",
+          "source": "openjlpt"
+        }
+      ]
     },
     "furigana": {
       "count": 0,
@@ -131,5 +186,8 @@
       "items": []
     }
   },
-  "reviewFlags": {}
+  "reviewFlags": {
+    "needs_example": 3,
+    "example_mismatch": 10
+  }
 }

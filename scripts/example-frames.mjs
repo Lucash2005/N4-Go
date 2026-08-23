@@ -30,10 +30,21 @@ function escapeRe(s = '') {
   return String(s).replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
 }
 
+/** Headword + します／してください only — not a real OpenJLPT sentence. */
+export function isLazyHeadwordExample(example = '', word = '') {
+  const ex = String(example || '').trim()
+  const w = String(word || '').trim()
+  if (!ex || !w) return false
+  if (new RegExp(`^${escapeRe(w)}してください。$`).test(ex)) return true
+  if (new RegExp(`^${escapeRe(w)}します。$`).test(ex)) return true
+  return false
+}
+
 /** Naive POS frames we previously generated — always rebuild these. */
 export function isWeakTemplateExample(example = '', word = '') {
   const ex = String(example || '').trim()
   if (!ex) return true
+  if (isLazyHeadwordExample(ex, word)) return true
   if (/[/／]/.test(ex)) return true
   if (/^もう一度[^。]{0,8}。$/.test(ex) && !/言って|聞いて|読んで|試して|確認/.test(ex)) return true
   if (/^ここに.+があります。$/.test(ex)) return true
@@ -156,6 +167,9 @@ function pickValidExample(examples, card, entry, { loose = false } = {}) {
   const cardWord = primaryWriting(card.word)
   const cardReading = (card.reading || '').trim() || cardWord
   for (const ex of examples || []) {
+    if (isLazyHeadwordExample(ex.ja, cardWord) || isLazyHeadwordExample(ex.ja, entry.word)) {
+      continue
+    }
     const strictOk =
       isExampleValidForCard(ex.ja, cardWord, cardReading) ||
       isExampleValidForCard(ex.ja, entry.word, entry.reading)

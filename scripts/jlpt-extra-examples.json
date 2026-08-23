@@ -343,6 +343,30 @@
     "example": "大分の温泉は有名です。",
     "exampleMeaning": "大分的溫泉很有名。"
   },
+  "v443": {
+    "example": "もうすぐ春です。",
+    "exampleMeaning": "快要春天了。"
+  },
+  "v962": {
+    "example": "京都で見物をしました。",
+    "exampleMeaning": "在京都觀光了。"
+  },
+  "v1143": {
+    "example": "男性より女性が先。",
+    "exampleMeaning": "女士優先。"
+  },
+  "春": {
+    "example": "もうすぐ春です。",
+    "exampleMeaning": "快要春天了。"
+  },
+  "見物": {
+    "example": "京都で見物をしました。",
+    "exampleMeaning": "在京都觀光了。"
+  },
+  "男性": {
+    "example": "男性より女性が先。",
+    "exampleMeaning": "女士優先。"
+  },
   "ホーム": {
     "example": "電車のホームで待っています。",
     "exampleMeaning": "在月台上等電車。"

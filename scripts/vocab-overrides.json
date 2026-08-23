@@ -387,5 +387,16 @@
     "example": "ドアを引いてください。",
     "exampleMeaning": "請拉開門。",
     "exampleFurigana": "ドアを引[ひ]いてください。"
+  },
+  "v1143": {
+    "exampleMeaning": "女士優先。"
+  },
+  "v868": {
+    "example": "毎日運動しています。",
+    "exampleMeaning": "每天運動。"
+  },
+  "v1052": {
+    "example": "今日の会議に出席します。",
+    "exampleMeaning": "今天會參加會議。"
   }
 }
