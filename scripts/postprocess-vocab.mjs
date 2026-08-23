@@ -211,6 +211,15 @@ async function main() {
         .filter(Boolean)
         .join('/')
     }
+    // Suru-noun readings should not include する when headword is the noun (生産 not 生産する)
+    if (
+      c.reading &&
+      /する$/.test(c.reading) &&
+      c.word &&
+      !c.word.endsWith('する')
+    ) {
+      c.reading = c.reading.replace(/する$/, '')
+    }
 
     c.meaning = ensureZh(c.meaning, c.meaningEn, glossary, cache)
     if (c.meaningEn) {

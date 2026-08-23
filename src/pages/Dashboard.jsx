@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom'
 import { useState } from 'react'
+import { CONTENT_VERSION } from '../data/config'
 import Countdown from '../components/Countdown'
 import ProgressBar from '../components/ProgressBar'
 import { DRILL_BANK_SIZE } from '../data/drill'
@@ -31,6 +32,9 @@ export default function Dashboard() {
     listenCount,
     listenTarget,
     reshuffleTodayPlan,
+    catchUpTodayPlan,
+    applyVocabUpdate,
+    vocabUpdatePending,
     isStudied,
     grammarPath,
     monthGrammarProgress,
@@ -43,6 +47,7 @@ export default function Dashboard() {
     unreportCardIssue,
   } = useProgress()
   const [exportMsg, setExportMsg] = useState('')
+  const [vocabMsg, setVocabMsg] = useState('')
 
   const doneCount = dailyTasks.filter((t) => t.done).length
   const quizRate =
@@ -70,6 +75,34 @@ export default function Dashboard() {
   return (
     <div className="space-y-5">
       <Countdown />
+
+      {vocabUpdatePending ? (
+        <section className="rounded-3xl border border-sea/30 bg-sea/10 p-4 sm:p-5">
+          <div className="flex flex-wrap items-start justify-between gap-3">
+            <div>
+              <h2 className="font-display text-lg font-bold text-ink">詞彙內容已更新（v{CONTENT_VERSION}）</h2>
+              <p className="mt-1 text-sm text-ink-soft">
+                今日單字不會自動換新；請手動載入最新詞彙。若要重抽今日進度，再按「重新抽題」。
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={async () => {
+                try {
+                  await applyVocabUpdate()
+                  setVocabMsg('已載入最新詞彙')
+                } catch {
+                  setVocabMsg('載入失敗，請稍後再試')
+                }
+              }}
+              className="rounded-full bg-sea px-4 py-2 text-sm text-white hover:bg-sea-deep"
+            >
+              載入最新詞彙
+            </button>
+          </div>
+          {vocabMsg ? <p className="mt-2 text-xs text-sea-deep">{vocabMsg}</p> : null}
+        </section>
+      ) : null}
 
       <section className="surface soft-shadow animate-fade-up stagger-1 rounded-3xl p-5 sm:p-6">
         <div className="flex flex-wrap items-start justify-between gap-3">
@@ -138,7 +171,7 @@ export default function Dashboard() {
         <p className="mt-3 text-xs text-ink-soft">
           掌握標準偏誠實：同一字「簡單」或「記得」需成功約兩次才進進度；到期複習不會扣掉已掌握。
           動力看「本週有沒有 +N」與「離本月目標還多近」，不是每天被「此時應約」追著跑。
-          {todayVocab.length > 15 ? ` 今天已加量至 ${todayVocab.length} 個單字。` : ''}
+          {todayVocab.length > 15 ? ` 今天已加量至 ${todayVocab.length} 個單字（手動重抽／加量）。` : ''}
         </p>
         <Link
           to="/schedule"
@@ -156,6 +189,14 @@ export default function Dashboard() {
               文法依 8→12 月路線解鎖；今日單字優先抽本月文法例句裡的詞
             </p>
           </div>
+          <button
+            type="button"
+            onClick={catchUpTodayPlan}
+            className="rounded-full bg-white px-3 py-1.5 text-xs text-ink-soft ring-1 ring-line hover:bg-foam"
+            title="落後時手動加量至建議字數（會重抽今日單字）"
+          >
+            手動加量
+          </button>
           <button
             type="button"
             onClick={reshuffleTodayPlan}
@@ -316,7 +357,7 @@ export default function Dashboard() {
             <div>
               <h2 className="font-display text-xl font-bold text-ink">已回報隱藏</h2>
               <p className="mt-1 text-sm text-ink-soft">
-                本機暫存 {reportedCount} 張，不會再出現於練習／瀏覽；內容更新後會自動解除隱藏。
+                本機暫存 {reportedCount} 張，不會再出現於練習／瀏覽；確認修正後請手動按「解除隱藏」。
               </p>
             </div>
             <div className="flex flex-wrap gap-2">

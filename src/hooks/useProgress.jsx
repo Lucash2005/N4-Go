@@ -3,7 +3,12 @@ import { DEFAULT_TASKS, TARGETS } from '../data/config'
 import { grammar } from '../data/grammar'
 import { GRAMMAR_PATH_VERSION, getGrammarPath, monthGrammarProgress } from '../data/grammarPath'
 import { FORM_CARDS } from '../data/verbForms'
-import { getVocabulary, loadVocabulary } from '../data/vocabulary'
+import {
+  clearVocabularyCache,
+  getVocabulary,
+  hasPendingVocabUpdate,
+  loadVocabulary,
+} from '../data/vocabulary'
 import {
   buildDailyPlan,
   DAILY_QUOTA,
@@ -76,8 +81,6 @@ function catchUpPlanOptions(cardProgress) {
 
 function ensurePlan(plan, cardProgress) {
   const today = todayKey()
-  const catchUp = catchUpPlanOptions(cardProgress)
-  const vocabQuota = catchUp.vocabQuota
   const hiddenIds = reportedIdSet()
   if (
     plan?.date === today &&
@@ -85,11 +88,9 @@ function ensurePlan(plan, cardProgress) {
     Array.isArray(plan.formIds) &&
     plan.grammarPathVersion === GRAMMAR_PATH_VERSION
   ) {
-    if (vocabQuota > (plan.vocabQuota || DAILY_QUOTA.vocab) || plan.vocabIds.length < vocabQuota) {
-      return buildDailyPlan(today, cardProgress, 'catch-up', { ...catchUp, hiddenIds })
-    }
     return plan
   }
+  const catchUp = catchUpPlanOptions(cardProgress)
   return buildDailyPlan(today, cardProgress, '', { ...catchUp, hiddenIds })
 }
 
@@ -122,6 +123,7 @@ export function ProgressProvider({ children }) {
   const [sessionSeed] = useState(() => `${Date.now()}-${Math.random().toString(36).slice(2)}`)
   const [vocabReady, setVocabReady] = useState(false)
   const [vocabError, setVocabError] = useState(null)
+  const [vocabUpdatePending, setVocabUpdatePending] = useState(() => hasPendingVocabUpdate())
   const [cardProgress, setCardProgress] = useLocalStorage('card-progress', {})
   const [dailyTasks, setDailyTasks] = useLocalStorage('daily-tasks', {
     date: todayKey(),
@@ -166,12 +168,9 @@ export function ProgressProvider({ children }) {
       })
     }
     const catchUp = catchUpPlanOptions(cardProgress)
-    const vocabQuota = catchUp.vocabQuota
     const needsRebuild =
       dailyPlan.date !== today ||
-      dailyPlan.grammarPathVersion !== GRAMMAR_PATH_VERSION ||
-      (dailyPlan.vocabIds?.length || 0) < vocabQuota ||
-      (dailyPlan.vocabQuota || DAILY_QUOTA.vocab) < vocabQuota
+      dailyPlan.grammarPathVersion !== GRAMMAR_PATH_VERSION
     if (needsRebuild) {
       setDailyPlan(
         buildDailyPlan(today, cardProgress, '', {
@@ -434,6 +433,23 @@ export function ProgressProvider({ children }) {
       })
     }
 
+    async function applyVocabUpdate() {
+      clearVocabularyCache()
+      await loadVocabulary({ force: true })
+      setVocabUpdatePending(false)
+    }
+
+    function catchUpTodayPlan() {
+      const day = todayKey()
+      const catchUp = catchUpPlanOptions(cardProgress)
+      setDailyPlan(
+        buildDailyPlan(day, cardProgress, `catch-up:${Date.now()}`, {
+          ...catchUp,
+          hiddenIds: reportedIdSet(reportedStore),
+        }),
+      )
+    }
+
     function reportCardIssue(card, reasonIds, note = '') {
       if (!card?.id) return
       const next = saveReport(card, reasonIds, note, reportedStore)
@@ -527,6 +543,9 @@ export function ProgressProvider({ children }) {
       markStudied,
       markListened,
       reshuffleTodayPlan,
+      catchUpTodayPlan,
+      applyVocabUpdate,
+      vocabUpdatePending,
       reportCardIssue,
       unreportCardIssue,
       clearCardReports,
@@ -547,6 +566,7 @@ export function ProgressProvider({ children }) {
     drillStats,
     sessionSeed,
     vocabReady,
+    vocabUpdatePending,
     reportedStore,
     setCardProgress,
     setDailyTasks,

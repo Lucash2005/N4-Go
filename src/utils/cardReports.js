@@ -40,11 +40,11 @@ function labelsFor(reasonIds) {
   return reasonIds.map((id) => REASON_MAP.get(id)?.label || id)
 }
 
-/** Drop hides from older content builds so fixed cards can return after an update. */
+/** Load reported cards — persists across content updates until user manually clears. */
 export function loadReportedCards() {
   const store = normalizeStore(loadJSON(STORAGE_KEY, null))
   if (store.contentVersion !== CONTENT_VERSION) {
-    const next = { contentVersion: CONTENT_VERSION, items: {} }
+    const next = { ...store, contentVersion: CONTENT_VERSION }
     saveJSON(STORAGE_KEY, next)
     return next
   }
@@ -85,7 +85,6 @@ export function reportCard(card, reasonIds, note = '', store = loadReportedCards
         word: card.word || card.reading || card.id,
         type: card.type || 'vocab',
         level: card.level || '',
-        // Keep singular fields for older UI; prefer `reasons` going forward
         reason: reasons[0],
         reasonLabel: reasonLabels.join('、'),
         reasons,

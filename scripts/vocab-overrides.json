@@ -340,5 +340,52 @@
     "example": "肉はとてもおいしいです。",
     "exampleMeaning": "肉很好吃。",
     "exampleFurigana": "肉[にく]はとてもおいしいです。"
+  },
+  "v1103": {
+    "reading": "せいさん",
+    "meaning": "生產",
+    "meaningEn": "production",
+    "example": "この工場は自動車を生産しています。",
+    "exampleMeaning": "這座工廠在生產汽車。",
+    "exampleFurigana": "この工場[こうじょう]は自動車[じどうしゃ]を生産[せいさん]しています。"
+  },
+  "v012": {
+    "example": "もう一度説明してください。",
+    "exampleMeaning": "請再說明一次。",
+    "exampleFurigana": "もう一度[もういちど]説明[せつめい]してください。"
+  },
+  "v872": {
+    "reading": "えんりょ",
+    "meaning": "客氣；婉拒；不必麻煩",
+    "meaningEn": "reserve; restraint; hold back",
+    "meaningZh": ["客氣", "婉拒", "不必麻煩"],
+    "example": "どうぞ遠慮なく召し上がってください。",
+    "exampleMeaning": "請不必客氣，請用。",
+    "exampleFurigana": "どうぞ遠慮[えんりょ]なく召[め]し上[あ]がってください。"
+  },
+  "v536": {
+    "meaning": "晚的；慢的；遲的",
+    "meaningEn": "slow; late",
+    "meaningZh": ["晚的", "慢的", "遲的"],
+    "example": "電車が遅いです。",
+    "exampleMeaning": "電車誤點了。",
+    "exampleFurigana": "電車[でんしゃ]が遅[おそ]いです。"
+  },
+  "v866": {
+    "reading": "うんてん",
+    "meaning": "開車；駕駛",
+    "meaningEn": "driving; operation (of a machine)",
+    "meaningZh": ["開車", "駕駛"],
+    "example": "父は毎日車を運転します。",
+    "exampleMeaning": "爸爸每天開車。",
+    "exampleFurigana": "父[ちち]は毎日[まいにち]車[くるま]を運転[うんてん]します。"
+  },
+  "v235": {
+    "meaning": "拉；抽；引起（風邪を引く）",
+    "meaningEn": "to pull; to draw; to catch (a cold)",
+    "meaningZh": ["拉", "抽", "引起（感冒）"],
+    "example": "ドアを引いてください。",
+    "exampleMeaning": "請拉開門。",
+    "exampleFurigana": "ドアを引[ひ]いてください。"
   }
 }
