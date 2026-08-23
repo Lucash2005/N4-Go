@@ -101,6 +101,7 @@ export default function Flashcards() {
 
   const [query, setQuery] = useState('')
   const [typeFilter, setTypeFilter] = useState('all')
+  const [levelFilter, setLevelFilter] = useState('core') // core = N5+N4
   const [statusFilter, setStatusFilter] = useState('all')
   const [index, setIndex] = useState(0)
   const [flipped, setFlipped] = useState(false)
@@ -128,6 +129,13 @@ export default function Flashcards() {
     const q = query.trim().toLowerCase()
     const list = allBrowseCards().filter((card) => {
       if (typeFilter !== 'all' && card.type !== typeFilter) return false
+      if (card.type === 'vocab') {
+        if (levelFilter === 'core' && card.level === '延伸') return false
+        if (levelFilter === 'N5' && card.level !== 'N5') return false
+        if (levelFilter === 'N4' && card.level !== 'N4') return false
+        if (levelFilter === '延伸' && card.level !== '延伸') return false
+        // levelFilter === 'all' → no level restriction
+      }
       const status = getFilterStatus(cardProgress, card.id)
       if (statusFilter !== 'all' && status !== statusFilter) return false
       if (!q) return true
@@ -137,7 +145,15 @@ export default function Flashcards() {
         .toLowerCase()
       return hay.includes(q)
     })
-    return seededShuffle(list, `browse:${browseSeed}:${typeFilter}:${statusFilter}:${q}`)
+    const levelRank = (c) => {
+      if (c.type !== 'vocab') return 3
+      if (c.level === 'N5') return 0
+      if (c.level === 'N4') return 1
+      if (c.level === '延伸') return 2
+      return 3
+    }
+    const shuffled = seededShuffle(list, `browse:${browseSeed}:${typeFilter}:${levelFilter}:${statusFilter}:${q}`)
+    return [...shuffled].sort((a, b) => levelRank(a) - levelRank(b))
   }, [
     mode,
     todayVocab,
@@ -145,6 +161,7 @@ export default function Flashcards() {
     todayReview,
     query,
     typeFilter,
+    levelFilter,
     statusFilter,
     cardProgress,
     browseSeed,
@@ -164,7 +181,7 @@ export default function Flashcards() {
     setIndex(0)
     setFlipped(false)
     if (!srsMode) setSessionLeft(null)
-  }, [mode, query, typeFilter, statusFilter, srsMode])
+  }, [mode, query, typeFilter, levelFilter, statusFilter, srsMode])
 
   // Snapshot the deck once when entering an SRS mode (don't reset mid-session on progress updates)
   useEffect(() => {
@@ -575,6 +592,38 @@ export default function Flashcards() {
               活用
             </FilterChip>
             <FilterChip
+              active={levelFilter === 'core'}
+              onClick={() => onFilterChange(setLevelFilter, 'core')}
+            >
+              N5＋N4
+            </FilterChip>
+            <FilterChip
+              active={levelFilter === 'N5'}
+              onClick={() => onFilterChange(setLevelFilter, levelFilter === 'N5' ? 'core' : 'N5')}
+            >
+              只看 N5
+            </FilterChip>
+            <FilterChip
+              active={levelFilter === 'N4'}
+              onClick={() => onFilterChange(setLevelFilter, levelFilter === 'N4' ? 'core' : 'N4')}
+            >
+              只看 N4
+            </FilterChip>
+            <FilterChip
+              active={levelFilter === 'all'}
+              onClick={() => onFilterChange(setLevelFilter, 'all')}
+            >
+              含延伸（錯誤較多）
+            </FilterChip>
+            <FilterChip
+              active={levelFilter === '延伸'}
+              onClick={() =>
+                onFilterChange(setLevelFilter, levelFilter === '延伸' ? 'core' : '延伸')
+              }
+            >
+              只看延伸
+            </FilterChip>
+            <FilterChip
               active={statusFilter === 'learned'}
               onClick={() =>
                 onFilterChange(setStatusFilter, statusFilter === 'learned' ? 'all' : 'learned')
@@ -591,6 +640,7 @@ export default function Flashcards() {
               只看需複習
             </FilterChip>
           </div>
+          <p className="text-xs text-ink-soft">預設只顯示 N5／N4；延伸詞庫錯誤較多，需手動開啟。</p>
         </section>
       ) : null}
 
@@ -933,7 +983,15 @@ function VocabCardBack({
       ) : null}
 
       <div className="mt-2 rounded-xl bg-foam/80 px-3 py-2">
-        <p className="text-base leading-relaxed text-ink sm:text-lg">
+        <div className="flex flex-wrap items-baseline justify-between gap-x-2 gap-y-0.5">
+          <p className="text-xs font-medium text-sea-deep">例句</p>
+          {card.exampleSource ? (
+            <p className="text-[11px] text-ink-soft">
+              出處：{exampleSourceLabel(card.exampleSource)}
+            </p>
+          ) : null}
+        </div>
+        <p className="mt-1.5 text-base leading-relaxed text-ink sm:text-lg">
           <FuriganaText
             text={card.example}
             annotated={card.exampleFurigana || card.example}
@@ -945,11 +1003,6 @@ function VocabCardBack({
         ) : (
           <p className="mt-1 text-xs text-ink-soft">中文解釋已隱藏</p>
         )}
-        {card.exampleSource ? (
-          <p className="mt-1 text-[11px] text-ink-soft/80">
-            例句來源：{exampleSourceLabel(card.exampleSource)}
-          </p>
-        ) : null}
       </div>
 
       {canExpandDetail ? (

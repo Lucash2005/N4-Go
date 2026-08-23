@@ -59,7 +59,8 @@ function catchUpPlanOptions(cardProgress) {
     : DAILY_QUOTA.vocab
   return {
     vocabQuota,
-    includeExtension: plan.behind.vocab,
+    // Prefer N5/N4 only for now — 延伸 cards have more data quality issues
+    includeExtension: false,
   }
 }
 

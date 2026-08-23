@@ -123,7 +123,8 @@ export default function Dashboard() {
         {vocabLevelCounts ? (
           <p className="mt-3 text-xs text-ink-soft">
             詞庫 {vocabLevelCounts.core} 核心（N5 {vocabLevelCounts.n5}＋N4{' '}
-            {vocabLevelCounts.n4}）＋ {vocabLevelCounts.extension} 延伸 · 每日排程預設只抽核心，落後時可含延伸
+            {vocabLevelCounts.n4}）＋ {vocabLevelCounts.extension} 延伸 · 每日與瀏覽預設只抽
+            N5／N4，延伸需手動開啟
           </p>
         ) : null}
 
