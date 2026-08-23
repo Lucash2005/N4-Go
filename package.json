@@ -14,7 +14,8 @@
     "enrich:vocab": "node scripts/enrich-vocab.mjs",
     "build:vocab:full": "node scripts/build-vocab.mjs && node scripts/enrich-vocab.mjs",
     "regen:changed-audio": "node scripts/regen-changed-audio.mjs",
-    "validate:vocab": "node scripts/validate-vocab.mjs"
+    "validate:vocab": "node scripts/validate-vocab.mjs",
+    "postprocess:vocab": "node scripts/postprocess-vocab.mjs"
   },
   "dependencies": {
     "edge-tts-universal": "^1.4.0",

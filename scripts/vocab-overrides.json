@@ -78,5 +78,27 @@
   "v028": {
     "meaningEn": "to deliver; to send",
     "meaningZh": ["送達", "寄送"]
+  },
+  "v505": {
+    "meaning": "腳；腿",
+    "meaningEn": "foot; leg",
+    "meaningZh": ["腳", "腿"],
+    "example": "右の足が痛いです。",
+    "exampleMeaning": "右腳痛。",
+    "exampleFurigana": "右[みぎ]の足[あし]が痛[いた]いです。",
+    "senses": [
+      {
+        "senseIndex": 0,
+        "meaning": "腳",
+        "meaningEn": "foot",
+        "pos": "名詞"
+      },
+      {
+        "senseIndex": 1,
+        "meaning": "腿",
+        "meaningEn": "leg",
+        "pos": "名詞"
+      }
+    ]
   }
 }

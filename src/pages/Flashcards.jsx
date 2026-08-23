@@ -98,6 +98,8 @@ export default function Flashcards() {
   const [playlist, setPlaylist] = useState(() => getPlaylistState())
   const [cardNotes, setCardNotes] = useLocalStorage('card-notes', {})
   const [noteDraft, setNoteDraft] = useState('')
+  const [showMoreSenses, setShowMoreSenses] = useState(false)
+  const [showMoreDetail, setShowMoreDetail] = useState(false)
 
   const todayMode = mode in MODE_META
   const srsMode = mode === 'today-vocab' || mode === 'today-grammar' || mode === 'today-review'
@@ -191,6 +193,8 @@ export default function Flashcards() {
   // Keep note draft in sync with the current card; avoid leaking previous card's text
   useEffect(() => {
     setNoteDraft(card ? cardNotes[card.id] || '' : '')
+    setShowMoreSenses(false)
+    setShowMoreDetail(false)
     // eslint-disable-next-line react-hooks/exhaustive-deps -- only reload when the card changes
   }, [card?.id])
 
@@ -681,156 +685,22 @@ export default function Flashcards() {
                     建議核對
                   </span>
                 ) : null}
-                {card.pos ? (
-                  <p className="mt-3 text-sm font-medium text-sea-deep">{card.pos}</p>
-                ) : null}
-                <p className="mt-2 text-3xl font-bold text-ink">{card.meaning}</p>
-                {card.meaningEn ? (
-                  <p className="mt-1 text-sm text-ink-soft">EN: {card.meaningEn}</p>
-                ) : null}
-                {(showFurigana || hideReadingOnFront) && card.reading ? (
-                  <p className="mt-1 text-base text-sea-deep">
-                    {card.type === 'form'
-                      ? card.formDrill?.answerReading || card.reading
-                      : card.reading}
-                  </p>
-                ) : null}
-                {card.pattern ? (
-                  <p className="mt-2 text-base text-sea-deep">句型：{card.pattern}</p>
-                ) : null}
 
                 {card.type === 'form' ? (
-                  <div className="mt-4 w-full space-y-2.5 text-left text-sm leading-relaxed text-ink sm:text-base">
-                    <p className="rounded-xl bg-sand/80 px-3.5 py-2.5">
-                      <span className="font-medium text-sea-deep">正確：</span>
-                      {card.formDrill?.answer}
-                      {card.formDrill?.answerReading ? `（${card.formDrill.answerReading}）` : ''}
-                    </p>
-                    <p className="rounded-xl bg-foam/90 px-3.5 py-2.5">
-                      <span className="font-medium text-sea-deep">規則：</span>
-                      {card.formDrill ? formRule(card.formDrill) : card.exampleMeaning}
-                    </p>
-                    {card.useWhen ? (
-                      <p className="rounded-xl bg-foam/90 px-3.5 py-2.5">
-                        <span className="font-medium text-sea-deep">用途：</span>
-                        {card.useWhen}
-                      </p>
-                    ) : null}
-                    {card.form ? (
-                      <p className="whitespace-pre-line rounded-xl bg-sand/80 px-3.5 py-2.5">
-                        <span className="font-medium text-sea-deep">接續：</span>
-                        {card.form}
-                      </p>
-                    ) : null}
-                    {card.tip ? (
-                      <p className="rounded-xl bg-sea/10 px-3.5 py-2.5">
-                        <span className="font-medium text-sea-deep">口訣：</span>
-                        {card.tip}
-                      </p>
-                    ) : null}
-                  </div>
+                  <FormCardBack card={card} showZhMeaning={showZhMeaning} showFurigana={showFurigana} />
                 ) : card.type === 'grammar' ? (
-                  <div className="mt-4 w-full space-y-2.5 text-left text-sm leading-relaxed text-ink sm:text-base">
-                    {card.useWhen ? (
-                      <p className="rounded-xl bg-foam/90 px-3.5 py-2.5">
-                        <span className="font-medium text-sea-deep">場面：</span>
-                        {card.useWhen}
-                      </p>
-                    ) : null}
-                    {card.form ? (
-                      <p className="whitespace-pre-line rounded-xl bg-sand/80 px-3.5 py-2.5">
-                        <span className="font-medium text-sea-deep">1. 接續：</span>
-                        {card.form}
-                      </p>
-                    ) : null}
-                    {card.compare ? (
-                      <p className="rounded-xl bg-white/80 px-3.5 py-2.5 ring-1 ring-line/60">
-                        <span className="font-medium text-sea-deep">2. 對照：</span>
-                        {card.compare}
-                      </p>
-                    ) : null}
-                    {card.tip ? (
-                      <p className="rounded-xl bg-sea/10 px-3.5 py-2.5">
-                        <span className="font-medium text-sea-deep">口訣：</span>
-                        {card.tip}
-                      </p>
-                    ) : null}
-                    <p className="rounded-xl bg-white/70 px-3.5 py-2.5 text-ink-soft">
-                      3. 造句：看完例句後，用自己的生活再寫一句
-                    </p>
-                  </div>
-                ) : card.memory ? (
-                  <p className="mt-4 w-full rounded-xl bg-sand/70 px-3.5 py-2.5 text-left text-sm leading-relaxed text-ink sm:text-base">
-                    記憶：{card.memory}
-                  </p>
-                ) : null}
-
-                {card.senses?.length ? (
-                  <div className="mt-4 w-full space-y-2 text-left text-sm leading-relaxed text-ink sm:text-base">
-                    <p className="text-xs font-medium text-sea-deep">常用多義（意思＋例句＋中文）</p>
-                    <ul className="space-y-2">
-                      {card.senses.map((sense) => (
-                        <li
-                          key={`${sense.senseIndex ?? sense.meaning}-${sense.meaningEn ?? sense.meaning}`}
-                          className="rounded-xl bg-white/80 px-3.5 py-2.5 ring-1 ring-line/50"
-                        >
-                          <p className="font-medium text-ink">{sense.meaning}</p>
-                          {sense.meaningEn ? (
-                            <p className="mt-0.5 text-xs text-ink-soft">EN: {sense.meaningEn}</p>
-                          ) : null}
-                          {sense.pos ? (
-                            <p className="mt-0.5 text-xs text-sea-deep">{sense.pos}</p>
-                          ) : null}
-                          {sense.example ? (
-                            <p className="mt-1 text-sea-deep">{sense.example}</p>
-                          ) : null}
-                          {sense.exampleZh ? (
-                            <p className="mt-0.5 text-ink-soft">{sense.exampleZh}</p>
-                          ) : null}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                ) : null}
-
-                {card.exampleUsage ? (
-                  <p className="mt-4 w-full rounded-xl bg-coral/10 px-3.5 py-2.5 text-left text-sm leading-relaxed text-ink sm:text-base">
-                    <span className="font-medium text-coral">例句用法：</span>
-                    {card.exampleUsage}
-                  </p>
-                ) : null}
-
-                {card.type === 'form' ? (
-                <div className="mt-4 w-full rounded-2xl bg-foam/80 p-4 text-left">
-                  <p className="text-xs font-medium uppercase tracking-wide text-sea-deep">例句</p>
-                  <p className="mt-2 text-lg leading-relaxed text-ink">
-                    <FuriganaText
-                      text={card.example}
-                      annotated={card.exampleFurigana}
-                      showFurigana={showFurigana}
-                    />
-                  </p>
-                  {showZhMeaning ? (
-                    <p className="mt-2 text-base text-ink-soft">{card.exampleMeaning}</p>
-                  ) : (
-                    <p className="mt-2 text-sm text-ink-soft">中文解釋已隱藏</p>
-                  )}
-                </div>
+                  <GrammarCardBack card={card} />
                 ) : (
-                <div className="mt-4 w-full rounded-2xl bg-foam/80 p-4 text-left">
-                  <p className="text-lg leading-relaxed text-ink">
-                    <FuriganaText
-                      text={card.example}
-                      annotated={card.exampleFurigana}
-                      showFurigana={showFurigana}
-                    />
-                  </p>
-                  {showZhMeaning ? (
-                    <p className="mt-2 text-base text-ink-soft">{card.exampleMeaning}</p>
-                  ) : (
-                    <p className="mt-2 text-sm text-ink-soft">中文解釋已隱藏</p>
-                  )}
-                </div>
+                  <VocabCardBack
+                    card={card}
+                    showZhMeaning={showZhMeaning}
+                    showFurigana={showFurigana}
+                    hideReadingOnFront={hideReadingOnFront}
+                    showMoreSenses={showMoreSenses}
+                    setShowMoreSenses={setShowMoreSenses}
+                    showMoreDetail={showMoreDetail}
+                    setShowMoreDetail={setShowMoreDetail}
+                  />
                 )}
               </CardFace>
             </div>
@@ -949,6 +819,273 @@ export default function Flashcards() {
         </>
       )}
     </div>
+  )
+}
+
+function VocabCardBack({
+  card,
+  showZhMeaning,
+  showFurigana,
+  hideReadingOnFront,
+  showMoreSenses,
+  setShowMoreSenses,
+  showMoreDetail,
+  setShowMoreDetail,
+}) {
+  const senses = card.senses || []
+  const primarySenses = showMoreSenses ? senses : senses.slice(0, 2)
+  const hiddenSenseCount = senses.length - 2
+  const hasHiddenSenses = hiddenSenseCount > 0 && !showMoreSenses
+  const canExpandDetail =
+    card.memory ||
+    card.exampleUsage ||
+    card.meaningEn ||
+    card.pos ||
+    senses.some((s) => s.example || s.exampleZh)
+
+  return (
+    <>
+      <p className="mt-2 text-3xl font-bold text-ink">{card.meaning}</p>
+      {(showFurigana || hideReadingOnFront) && card.reading ? (
+        <p className="mt-1 text-base text-sea-deep">{card.reading}</p>
+      ) : null}
+
+      {primarySenses.length ? (
+        <div className="mt-3 w-full space-y-1.5 text-left text-sm leading-relaxed text-ink">
+          <p className="text-xs font-medium text-sea-deep">常用多義</p>
+          <ul className="space-y-1">
+            {primarySenses.map((sense) => (
+              <li
+                key={`${sense.senseIndex ?? sense.meaning}-${sense.meaningEn ?? sense.meaning}`}
+                className="rounded-lg bg-white/70 px-3 py-1.5 ring-1 ring-line/40"
+              >
+                <span className="font-medium">{sense.meaning}</span>
+                {sense.pos ? (
+                  <span className="ml-2 text-xs text-ink-soft">{sense.pos}</span>
+                ) : null}
+              </li>
+            ))}
+          </ul>
+          {hasHiddenSenses ? (
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation()
+                setShowMoreSenses(true)
+              }}
+              className="text-sm text-sea-deep underline-offset-2 hover:underline"
+            >
+              更多多義（{hiddenSenseCount}）
+            </button>
+          ) : null}
+        </div>
+      ) : null}
+
+      <div className="mt-3 w-full rounded-2xl bg-foam/80 p-4 text-left">
+        <p className="text-xs font-medium text-sea-deep">例句</p>
+        <p className="mt-2 text-lg leading-relaxed text-ink">
+          <FuriganaText
+            text={card.example}
+            annotated={card.exampleFurigana}
+            showFurigana={true}
+          />
+        </p>
+        {showZhMeaning ? (
+          <p className="mt-2 text-base text-ink-soft">{card.exampleMeaning}</p>
+        ) : (
+          <p className="mt-2 text-sm text-ink-soft">中文解釋已隱藏</p>
+        )}
+      </div>
+
+      {canExpandDetail ? (
+        <div className="mt-3 w-full">
+          {!showMoreDetail ? (
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation()
+                setShowMoreDetail(true)
+              }}
+              className="text-sm text-sea-deep underline-offset-2 hover:underline"
+            >
+              更多說明
+            </button>
+          ) : (
+            <div className="space-y-2.5 text-left text-sm leading-relaxed text-ink sm:text-base">
+              {card.pos ? <p className="text-sm font-medium text-sea-deep">{card.pos}</p> : null}
+              {card.meaningEn ? <p className="text-ink-soft">EN: {card.meaningEn}</p> : null}
+              {card.memory ? (
+                <p className="rounded-xl bg-sand/70 px-3.5 py-2.5">記憶：{card.memory}</p>
+              ) : null}
+              {card.exampleUsage ? (
+                <p className="rounded-xl bg-coral/10 px-3.5 py-2.5">
+                  <span className="font-medium text-coral">例句用法：</span>
+                  {card.exampleUsage}
+                </p>
+              ) : null}
+              {showMoreSenses && senses.length > 2 ? (
+                <ul className="space-y-2">
+                  {senses.slice(2).map((sense) => (
+                    <li
+                      key={`extra-${sense.senseIndex ?? sense.meaning}`}
+                      className="rounded-xl bg-white/80 px-3.5 py-2.5 ring-1 ring-line/50"
+                    >
+                      <SenseDetail sense={sense} />
+                    </li>
+                  ))}
+                </ul>
+              ) : null}
+              {senses.some((s) => s.example) ? (
+                <div className="space-y-2">
+                  <p className="text-xs font-medium text-sea-deep">多義例句</p>
+                  {senses.map((sense) =>
+                    sense.example ? (
+                      <div
+                        key={`ex-${sense.senseIndex ?? sense.meaning}`}
+                        className="rounded-xl bg-white/80 px-3.5 py-2.5 ring-1 ring-line/50"
+                      >
+                        <p className="font-medium text-ink">{sense.meaning}</p>
+                        <p className="mt-1 text-sea-deep">
+                          <FuriganaText
+                            text={sense.example}
+                            annotated={sense.exampleFurigana}
+                            showFurigana={true}
+                          />
+                        </p>
+                        {sense.exampleZh ? (
+                          <p className="mt-0.5 text-ink-soft">{sense.exampleZh}</p>
+                        ) : null}
+                      </div>
+                    ) : null,
+                  )}
+                </div>
+              ) : null}
+            </div>
+          )}
+        </div>
+      ) : null}
+    </>
+  )
+}
+
+function SenseDetail({ sense }) {
+  return (
+    <>
+      <p className="font-medium text-ink">{sense.meaning}</p>
+      {sense.meaningEn && sense.meaningEn !== sense.meaning ? (
+        <p className="mt-0.5 text-xs text-ink-soft">EN: {sense.meaningEn}</p>
+      ) : null}
+      {sense.pos ? <p className="mt-0.5 text-xs text-sea-deep">{sense.pos}</p> : null}
+    </>
+  )
+}
+
+function FormCardBack({ card, showZhMeaning, showFurigana }) {
+  return (
+    <>
+      <p className="mt-2 text-3xl font-bold text-ink">{card.meaning}</p>
+      {showFurigana && card.reading ? (
+        <p className="mt-1 text-base text-sea-deep">
+          {card.formDrill?.answerReading || card.reading}
+        </p>
+      ) : null}
+      <div className="mt-4 w-full space-y-2.5 text-left text-sm leading-relaxed text-ink sm:text-base">
+        <p className="rounded-xl bg-sand/80 px-3.5 py-2.5">
+          <span className="font-medium text-sea-deep">正確：</span>
+          {card.formDrill?.answer}
+          {card.formDrill?.answerReading ? `（${card.formDrill.answerReading}）` : ''}
+        </p>
+        <p className="rounded-xl bg-foam/90 px-3.5 py-2.5">
+          <span className="font-medium text-sea-deep">規則：</span>
+          {card.formDrill ? formRule(card.formDrill) : card.exampleMeaning}
+        </p>
+        {card.useWhen ? (
+          <p className="rounded-xl bg-foam/90 px-3.5 py-2.5">
+            <span className="font-medium text-sea-deep">用途：</span>
+            {card.useWhen}
+          </p>
+        ) : null}
+        {card.form ? (
+          <p className="whitespace-pre-line rounded-xl bg-sand/80 px-3.5 py-2.5">
+            <span className="font-medium text-sea-deep">接續：</span>
+            {card.form}
+          </p>
+        ) : null}
+        {card.tip ? (
+          <p className="rounded-xl bg-sea/10 px-3.5 py-2.5">
+            <span className="font-medium text-sea-deep">口訣：</span>
+            {card.tip}
+          </p>
+        ) : null}
+      </div>
+      <div className="mt-4 w-full rounded-2xl bg-foam/80 p-4 text-left">
+        <p className="text-xs font-medium uppercase tracking-wide text-sea-deep">例句</p>
+        <p className="mt-2 text-lg leading-relaxed text-ink">
+          <FuriganaText
+            text={card.example}
+            annotated={card.exampleFurigana}
+            showFurigana={true}
+          />
+        </p>
+        {showZhMeaning ? (
+          <p className="mt-2 text-base text-ink-soft">{card.exampleMeaning}</p>
+        ) : (
+          <p className="mt-2 text-sm text-ink-soft">中文解釋已隱藏</p>
+        )}
+      </div>
+    </>
+  )
+}
+
+function GrammarCardBack({ card }) {
+  return (
+    <>
+      <p className="mt-2 text-3xl font-bold text-ink">{card.meaning}</p>
+      {card.pattern ? <p className="mt-2 text-base text-sea-deep">句型：{card.pattern}</p> : null}
+      <div className="mt-4 w-full space-y-2.5 text-left text-sm leading-relaxed text-ink sm:text-base">
+        {card.useWhen ? (
+          <p className="rounded-xl bg-foam/90 px-3.5 py-2.5">
+            <span className="font-medium text-sea-deep">場面：</span>
+            {card.useWhen}
+          </p>
+        ) : null}
+        {card.form ? (
+          <p className="whitespace-pre-line rounded-xl bg-sand/80 px-3.5 py-2.5">
+            <span className="font-medium text-sea-deep">1. 接續：</span>
+            {card.form}
+          </p>
+        ) : null}
+        {card.compare ? (
+          <p className="rounded-xl bg-white/80 px-3.5 py-2.5 ring-1 ring-line/60">
+            <span className="font-medium text-sea-deep">2. 對照：</span>
+            {card.compare}
+          </p>
+        ) : null}
+        {card.tip ? (
+          <p className="rounded-xl bg-sea/10 px-3.5 py-2.5">
+            <span className="font-medium text-sea-deep">口訣：</span>
+            {card.tip}
+          </p>
+        ) : null}
+        <p className="rounded-xl bg-white/70 px-3.5 py-2.5 text-ink-soft">
+          3. 造句：看完例句後，用自己的生活再寫一句
+        </p>
+      </div>
+      {card.example ? (
+        <div className="mt-4 w-full rounded-2xl bg-foam/80 p-4 text-left">
+          <p className="text-lg leading-relaxed text-ink">
+            <FuriganaText
+              text={card.example}
+              annotated={card.exampleFurigana}
+              showFurigana={true}
+            />
+          </p>
+          {card.exampleMeaning ? (
+            <p className="mt-2 text-base text-ink-soft">{card.exampleMeaning}</p>
+          ) : null}
+        </div>
+      ) : null}
+    </>
   )
 }
 

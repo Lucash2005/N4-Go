@@ -64,7 +64,7 @@ function enrichSenses(jishoSenses, glossary, zhCache) {
   return jishoSenses.slice(0, 5).map((s) => {
     const meaningZh =
       zhFromEn(s.meaningEn, glossary, zhCache) ||
-      translateMeanings(s.meaningEn.split('; '), glossary).join('；')
+      translateMeanings(s.meaningEn.split(/[;；]/), glossary).join('；')
     return {
       senseIndex: s.senseIndex,
       meaning: meaningZh || s.meaningEn,

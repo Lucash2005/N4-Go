@@ -22,6 +22,39 @@ export function isMostlyAscii(text = '') {
   return ascii / text.length > 0.55
 }
 
+export function isExampleValidForCard(example = '', word = '', reading = '') {
+  if (!example) return false
+  if (reading && example.includes(reading)) return true
+  if (!word || !example.includes(word)) return false
+  // 短漢字如「足」嵌在「満足」等複合詞且讀音不在例句 → 不匹配
+  if (
+    word.length <= 2 &&
+    /[\u4e00-\u9fff]/.test(word) &&
+    reading &&
+    !example.includes(reading)
+  ) {
+    return hasStandaloneKanjiUse(example, word)
+  }
+  return containsWordOrReading(example, word, reading)
+}
+
+/** Word appears bordered by non-kanji (e.g. 右の足が), not inside a compound (満足). */
+function hasStandaloneKanjiUse(example = '', word = '') {
+  const kanji = /[\u4e00-\u9fff]/
+  let idx = 0
+  while ((idx = example.indexOf(word, idx)) !== -1) {
+    const before = idx > 0 ? example[idx - 1] : ''
+    const after = example[idx + word.length] || ''
+    if (!kanji.test(before) && !kanji.test(after)) return true
+    idx += 1
+  }
+  return false
+}
+
+export function hasChinese(text = '') {
+  return /[\u4e00-\u9fff]/.test(text)
+}
+
 export function containsWordOrReading(example = '', word = '', reading = '') {
   if (!example) return false
   if (word && example.includes(word)) return true
@@ -133,7 +166,7 @@ export function detectReviewFlags(card) {
   } else if (meaning && /^[A-Za-z0-9\s\(\);,\-\.]+$/.test(meaning)) {
     flags.push('needs_zh')
   }
-  if (card.example && !containsWordOrReading(card.example, card.word, card.reading)) {
+  if (card.example && !isExampleValidForCard(card.example, card.word, card.reading)) {
     flags.push('example_mismatch')
   }
   if (card.reading && /[\u4e00-\u9fff]/.test(card.reading)) flags.push('reading_invalid')
