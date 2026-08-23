@@ -35,6 +35,10 @@ export default function Dashboard() {
     monthGrammarProgress,
     dueDrillCount,
     vocabLevelCounts,
+    reportedCount,
+    reportedItems,
+    clearCardReports,
+    unreportCardIssue,
   } = useProgress()
 
   const doneCount = dailyTasks.filter((t) => t.done).length
@@ -302,6 +306,46 @@ export default function Dashboard() {
           <p className="mt-4 text-xs text-ink-soft">尚未進行測驗，可到「測驗」開始第一回。</p>
         )}
       </section>
+
+      {reportedCount > 0 ? (
+        <section className="surface soft-shadow animate-fade-up rounded-3xl p-5 sm:p-6">
+          <div className="flex flex-wrap items-start justify-between gap-3">
+            <div>
+              <h2 className="font-display text-xl font-bold text-ink">已回報隱藏</h2>
+              <p className="mt-1 text-sm text-ink-soft">
+                本機暫存 {reportedCount} 張，不會再出現於練習／瀏覽；內容更新後會自動解除隱藏。
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={clearCardReports}
+              className="rounded-full bg-white px-3 py-1.5 text-xs text-ink-soft ring-1 ring-line hover:bg-foam"
+            >
+              全部恢復顯示
+            </button>
+          </div>
+          <ul className="mt-4 max-h-48 space-y-2 overflow-y-auto">
+            {(reportedItems || []).map((item) => (
+              <li
+                key={item.id}
+                className="flex flex-wrap items-center justify-between gap-2 rounded-2xl bg-foam/70 px-3 py-2 text-sm"
+              >
+                <div>
+                  <span className="font-medium text-ink">{item.word}</span>
+                  <span className="ml-2 text-xs text-ink-soft">{item.reasonLabel}</span>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => unreportCardIssue(item.id)}
+                  className="text-xs text-sea-deep underline-offset-2 hover:underline"
+                >
+                  恢復
+                </button>
+              </li>
+            ))}
+          </ul>
+        </section>
+      ) : null}
 
       <section className="surface soft-shadow animate-fade-up stagger-3 rounded-3xl p-5 sm:p-6">
         <div className="mb-4 flex items-end justify-between">

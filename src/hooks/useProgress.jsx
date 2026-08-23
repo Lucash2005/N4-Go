@@ -15,6 +15,15 @@ import {
   vocabLevelCounts,
 } from '../utils/dailyPlan'
 import {
+  clearAllReports,
+  filterOutReported,
+  loadReportedCards,
+  REPORT_REASONS,
+  reportCard as saveReport,
+  reportedIdSet,
+  unreportCard as removeReport,
+} from '../utils/cardReports'
+import {
   applyGrade,
   entryFromManualStatus,
   isLearned,
@@ -68,6 +77,7 @@ function ensurePlan(plan, cardProgress) {
   const today = todayKey()
   const catchUp = catchUpPlanOptions(cardProgress)
   const vocabQuota = catchUp.vocabQuota
+  const hiddenIds = reportedIdSet()
   if (
     plan?.date === today &&
     Array.isArray(plan.vocabIds) &&
@@ -75,11 +85,11 @@ function ensurePlan(plan, cardProgress) {
     plan.grammarPathVersion === GRAMMAR_PATH_VERSION
   ) {
     if (vocabQuota > (plan.vocabQuota || DAILY_QUOTA.vocab) || plan.vocabIds.length < vocabQuota) {
-      return buildDailyPlan(today, cardProgress, 'catch-up', catchUp)
+      return buildDailyPlan(today, cardProgress, 'catch-up', { ...catchUp, hiddenIds })
     }
     return plan
   }
-  return buildDailyPlan(today, cardProgress, '', catchUp)
+  return buildDailyPlan(today, cardProgress, '', { ...catchUp, hiddenIds })
 }
 
 function withTaskDone(tasks, id, done) {
@@ -117,6 +127,7 @@ export function ProgressProvider({ children }) {
     tasks: DEFAULT_TASKS,
   })
   const [dailyPlan, setDailyPlan] = useLocalStorage('daily-plan', emptyDailyPlan(todayKey()))
+  const [reportedStore, setReportedStore] = useState(() => loadReportedCards())
   const [quizStats, setQuizStats] = useLocalStorage('quiz-stats', {
     attempted: 0,
     correct: 0,
@@ -161,9 +172,47 @@ export function ProgressProvider({ children }) {
       (dailyPlan.vocabIds?.length || 0) < vocabQuota ||
       (dailyPlan.vocabQuota || DAILY_QUOTA.vocab) < vocabQuota
     if (needsRebuild) {
-      setDailyPlan(buildDailyPlan(today, cardProgress, '', catchUp))
+      setDailyPlan(
+        buildDailyPlan(today, cardProgress, '', {
+          ...catchUp,
+          hiddenIds: reportedIdSet(reportedStore),
+        }),
+      )
     }
-  }, [vocabReady, dailyTasks.date, dailyPlan.date, dailyPlan.grammarPathVersion, dailyPlan.vocabIds, dailyPlan.vocabQuota, cardProgress, setDailyTasks, setDailyPlan])
+  }, [vocabReady, dailyTasks.date, dailyPlan.date, dailyPlan.grammarPathVersion, dailyPlan.vocabIds, dailyPlan.vocabQuota, cardProgress, reportedStore, setDailyTasks, setDailyPlan])
+
+  // Drop reported cards from today's plan slots (quota may shrink until reshuffle)
+  useEffect(() => {
+    if (!vocabReady || dailyPlan.date !== todayKey()) return
+    const hidden = reportedIdSet(reportedStore)
+    if (!hidden.size) return
+    setDailyPlan((prev) => {
+      if (prev.date !== todayKey()) return prev
+      const vocabIds = (prev.vocabIds || []).filter((id) => !hidden.has(id))
+      const grammarIds = (prev.grammarIds || []).filter((id) => !hidden.has(id))
+      const formIds = (prev.formIds || []).filter((id) => !hidden.has(id))
+      const reviewIds = (prev.reviewIds || []).filter((id) => !hidden.has(id))
+      const studiedIds = (prev.studiedIds || []).filter((id) => !hidden.has(id))
+      const listenedIds = (prev.listenedIds || []).filter((id) => !hidden.has(id))
+      if (
+        sameIds(prev.vocabIds, vocabIds) &&
+        sameIds(prev.grammarIds, grammarIds) &&
+        sameIds(prev.formIds, formIds) &&
+        sameIds(prev.reviewIds, reviewIds)
+      ) {
+        return prev
+      }
+      return {
+        ...prev,
+        vocabIds,
+        grammarIds,
+        formIds,
+        reviewIds,
+        studiedIds,
+        listenedIds,
+      }
+    })
+  }, [vocabReady, reportedStore, dailyPlan.date, setDailyPlan])
 
   // Keep review queue in sync with due SRS cards
   useEffect(() => {
@@ -185,7 +234,7 @@ export function ProgressProvider({ children }) {
         ),
       }
     })
-  }, [cardProgress, dailyPlan.date, setDailyPlan])
+  }, [cardProgress, dailyPlan.date, reportedStore, setDailyPlan])
 
   // Auto-complete checklist from plan progress
   useEffect(() => {
@@ -372,26 +421,46 @@ export function ProgressProvider({ children }) {
     function reshuffleTodayPlan() {
       const day = todayKey()
       const catchUp = catchUpPlanOptions(cardProgress)
-      setDailyPlan(buildDailyPlan(day, cardProgress, `reshuffle:${Date.now()}`, catchUp))
+      setDailyPlan(
+        buildDailyPlan(day, cardProgress, `reshuffle:${Date.now()}`, {
+          ...catchUp,
+          hiddenIds: reportedIdSet(reportedStore),
+        }),
+      )
       setDailyTasks({
         date: day,
         tasks: DEFAULT_TASKS.map((t) => ({ ...t, done: false })),
       })
     }
 
+    function reportCardIssue(card, reasonId, note = '') {
+      if (!card?.id) return
+      const next = saveReport(card, reasonId, note, reportedStore)
+      setReportedStore(next)
+    }
+
+    function unreportCardIssue(id) {
+      if (!id) return
+      setReportedStore(removeReport(id, reportedStore))
+    }
+
+    function clearCardReports() {
+      setReportedStore(clearAllReports())
+    }
+
     function getEntry(id) {
       return normalizeEntry(cardProgress[id], today)
     }
 
-    const vocabCards = seededShuffle(
-      resolveCards(plan.vocabIds),
-      `session:${sessionSeed}:vocab`,
+    const vocabCards = filterOutReported(
+      seededShuffle(resolveCards(plan.vocabIds), `session:${sessionSeed}:vocab`),
+      reportedStore,
     )
     const grammarQueue = grammarQueueIds(plan)
-    const grammarCards = resolveCards(grammarQueue)
-    const reviewCards = seededShuffle(
-      resolveCards(liveReviewIds),
-      `session:${sessionSeed}:review`,
+    const grammarCards = filterOutReported(resolveCards(grammarQueue), reportedStore)
+    const reviewCards = filterOutReported(
+      seededShuffle(resolveCards(liveReviewIds), `session:${sessionSeed}:review`),
+      reportedStore,
     )
 
     const learnedGrammarIds = new Set(
@@ -404,6 +473,8 @@ export function ProgressProvider({ children }) {
     const grammarStudied = grammarQueue.filter((id) => studied.has(id)).length
     const reviewStudied = liveReviewIds.filter((id) => studied.has(id)).length
     const listenCount = plan.vocabIds.filter((id) => listened.has(id)).length
+    const reportedItems = Object.values(reportedStore.items || {})
+    const reportedCount = reportedItems.length
 
     return {
       cardProgress,
@@ -447,6 +518,13 @@ export function ProgressProvider({ children }) {
       markStudied,
       markListened,
       reshuffleTodayPlan,
+      reportCardIssue,
+      unreportCardIssue,
+      clearCardReports,
+      reportedItems,
+      reportedCount,
+      reportReasons: REPORT_REASONS,
+      isCardReported: (id) => Boolean(id && reportedStore.items?.[id]),
       grammarPath: getGrammarPath(plan.date || today),
       monthGrammarProgress: { ...monthPath, next: nextGrammar },
     }
@@ -459,6 +537,7 @@ export function ProgressProvider({ children }) {
     drillStats,
     sessionSeed,
     vocabReady,
+    reportedStore,
     setCardProgress,
     setDailyTasks,
     setDailyPlan,
