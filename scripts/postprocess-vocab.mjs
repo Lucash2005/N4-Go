@@ -25,6 +25,8 @@ import {
   findJlptExtraExample,
   findOpenJlptExample,
   isWeakTemplateExample,
+  isUnnaturalHeadwordExample,
+  isBadGeneratedExample,
   isLazyHeadwordExample,
   loadJlptExtraExamples,
   primaryWriting,
@@ -135,10 +137,11 @@ function fixHeadwordFurigana(furi, word, reading) {
   return furi.replace(re, `${word}[${variants[0]}]`)
 }
 
-function isNonsenseExample(example = '', word = '') {
+function isNonsenseExample(example = '', card = {}) {
   const ex = String(example || '').trim()
-  if (isLazyHeadwordExample(ex, word)) return true
-  return /^(今朝|昨夜|今晩|来週|さ来年|大分|春|夏|秋|冬|今|今日|今週|今月|今年|去年|午前|午後|一日)してください。$/.test(ex)
+  if (isUnnaturalHeadwordExample(ex, card)) return true
+  if (isBadGeneratedExample(ex, card)) return true
+  return false
 }
 
 function leftoverKanji(annotated = '') {
@@ -249,8 +252,9 @@ async function main() {
       (c.reviewFlags || []).includes('needs_example')
     const exampleInvalid =
       c.example &&
-      (isNonsenseExample(c.example, c.word) ||
-        isLazyHeadwordExample(c.example, c.word) ||
+      (isNonsenseExample(c.example, c) ||
+        isUnnaturalHeadwordExample(c.example, c) ||
+        isBadGeneratedExample(c.example, c) ||
         !isExampleValidForCard(c.example, c.word, c.reading) ||
         isMisleadingHomophoneExample(c.example, c.word)) &&
       !isTrivialExample(c.example, c.word, c.reading)

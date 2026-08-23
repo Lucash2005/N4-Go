@@ -1,10 +1,10 @@
 {
-  "generatedAt": "2026-08-23T09:59:43.611Z",
+  "generatedAt": "2026-08-23T12:10:16.112Z",
   "total": 1500,
   "summary": {
     "meaning": 0,
     "translation": 0,
-    "example": 9,
+    "example": 12,
     "furigana": 0,
     "reading": 18,
     "ui": 0
@@ -24,7 +24,7 @@
       "items": []
     },
     "example": {
-      "count": 9,
+      "count": 12,
       "items": [
         {
           "id": "v012",
@@ -45,6 +45,12 @@
           "source": "override"
         },
         {
+          "id": "v379",
+          "word": "細い",
+          "example": "とても心細いです。",
+          "source": "openjlpt"
+        },
+        {
           "id": "v755",
           "word": "このあいだ",
           "example": "（例句準備中：このあいだ）",
@@ -63,6 +69,12 @@
           "source": "openjlpt"
         },
         {
+          "id": "v795",
+          "word": "たいてい",
+          "example": "私は大抵朝早く起きる。",
+          "source": "openjlpt"
+        },
+        {
           "id": "v1244",
           "word": "放送",
           "example": "絶賛放送中！",
@@ -78,6 +90,12 @@
           "id": "v1317",
           "word": "いち",
           "example": "彼の正位置はサードだ。",
+          "source": "openjlpt"
+        },
+        {
+          "id": "v1452",
+          "word": "とんでもない",
+          "example": "とんでもない！",
           "source": "openjlpt"
         }
       ]
@@ -188,6 +206,6 @@
   },
   "reviewFlags": {
     "needs_example": 3,
-    "example_mismatch": 10
+    "example_mismatch": 14
   }
 }

@@ -398,5 +398,43 @@
   "v1052": {
     "example": "今日の会議に出席します。",
     "exampleMeaning": "今天會參加會議。"
+  },
+  "v990": {
+    "exampleMeaning": "今晚能見面嗎？"
+  },
+  "v393": {
+    "exampleMeaning": "去散步了。"
+  },
+  "v304": {
+    "exampleMeaning": "是去年的新人。"
+  },
+  "v1122": {
+    "example": "荷物を送ります。",
+    "exampleMeaning": "寄送行李。",
+    "exampleFurigana": "荷物[にもつ]を送[おく]ります。"
+  },
+  "v252": {
+    "example": "花は黄色い。",
+    "exampleMeaning": "花是黃色的。",
+    "exampleFurigana": "花[はな]は黄色[きいろ]い。"
+  },
+  "v1137": {
+    "example": "健康が一番大事です。",
+    "exampleMeaning": "健康最重要。",
+    "exampleFurigana": "健康[けんこう]が一番[いちばん]大事[だいじ]です。"
+  },
+  "v090": {
+    "example": "ギターを弾きますか。",
+    "exampleMeaning": "你會彈吉他嗎？",
+    "exampleFurigana": "ギターを弾[ひ]きますか。"
+  },
+  "v624": {
+    "exampleMeaning": "請看一下這件衣服。"
+  },
+  "v1253": {
+    "exampleMeaning": "這湯的味道很好。"
+  },
+  "v805": {
+    "exampleMeaning": "你用的是哪一本課本？"
   }
 }

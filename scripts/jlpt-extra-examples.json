@@ -367,6 +367,22 @@
     "example": "男性より女性が先。",
     "exampleMeaning": "女士優先。"
   },
+  "v1122": {
+    "example": "荷物を送ります。",
+    "exampleMeaning": "寄送行李。"
+  },
+  "v252": {
+    "example": "花は黄色い。",
+    "exampleMeaning": "花是黃色的。"
+  },
+  "v1137": {
+    "example": "健康が一番大事です。",
+    "exampleMeaning": "健康最重要。"
+  },
+  "v090": {
+    "example": "ギターを弾きますか。",
+    "exampleMeaning": "你會彈吉他嗎？"
+  },
   "ホーム": {
     "example": "電車のホームで待っています。",
     "exampleMeaning": "在月台上等電車。"

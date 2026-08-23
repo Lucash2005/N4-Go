@@ -30,13 +30,66 @@ function escapeRe(s = '') {
   return String(s).replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
 }
 
-/** Headword + します／してください only — not a real OpenJLPT sentence. */
-export function isLazyHeadwordExample(example = '', word = '') {
+const TIME_SEASON_WORDS = new Set([
+  '今', '今日', '今週', '今月', '今年', '去年', '午前', '午後', '一日',
+  '春', '夏', '秋', '冬', '今夜', '今朝', '昨夜', '今晩', '来週', 'さ来年', '大分',
+  '毎日', '毎週', '毎月', '毎年',
+])
+
+const ADVERB_NO_PLEASE = new Set(['特に', '必ず', '急に', '近く'])
+
+function isSuruCapable(card = {}) {
+  const pos = `${card?.pos || ''} ${card?.meaningEn || ''}`.toLowerCase()
+  const w = String(card?.word || '').trim()
+  const r = String(card?.reading || '').trim()
+  if (/suru verb/.test(pos)) return true
+  if (w.endsWith('する') || r.endsWith('する')) return true
+  if (/^to /.test(String(card?.meaningEn || '').trim().toLowerCase())) return true
+  return false
+}
+
+/**
+ * Only flag headword+します／してください when semantically unnatural.
+ * 旅行します・準備してください → OK；春してください・服します → NG
+ */
+export function isUnnaturalHeadwordExample(example = '', card = {}) {
   const ex = String(example || '').trim()
-  const w = String(word || '').trim()
+  const w = String(card?.word || card || '').trim()
   if (!ex || !w) return false
-  if (new RegExp(`^${escapeRe(w)}してください。$`).test(ex)) return true
-  if (new RegExp(`^${escapeRe(w)}します。$`).test(ex)) return true
+
+  const pleaseRe = new RegExp(`^${escapeRe(w)}してください。$`)
+  const shimasuRe = new RegExp(`^${escapeRe(w)}します。$`)
+
+  if (pleaseRe.test(ex)) {
+    if (TIME_SEASON_WORDS.has(w)) return true
+    if (ADVERB_NO_PLEASE.has(w)) return true
+    if (/色$/.test(w)) return true
+    if (['服', '味', 'ギター', 'テキスト', '黄色'].includes(w)) return true
+    if (!isSuruCapable(card)) return true
+    return false
+  }
+
+  if (shimasuRe.test(ex)) {
+    if (!isSuruCapable(card)) return true
+    return false
+  }
+
+  return false
+}
+
+/** @deprecated use isUnnaturalHeadwordExample */
+export function isLazyHeadwordExample(example = '', word = '') {
+  return isUnnaturalHeadwordExample(example, { word })
+}
+
+/** Auto-generated frames that read unnaturally for this headword. */
+export function isBadGeneratedExample(example = '', card = {}) {
+  const ex = String(example || '').trim()
+  const w = String(card?.word || '').trim()
+  if (!ex || !w) return false
+  if (/色$/.test(w) && new RegExp(`^${escapeRe(w)}な人です。$`).test(ex)) return true
+  if (new RegExp(`^ここは${escapeRe(w)}です。$`).test(ex)) return true
+  if (/^とても.+です。$/.test(ex) && /色$/.test(w)) return true
   return false
 }
 
@@ -44,7 +97,8 @@ export function isLazyHeadwordExample(example = '', word = '') {
 export function isWeakTemplateExample(example = '', word = '') {
   const ex = String(example || '').trim()
   if (!ex) return true
-  if (isLazyHeadwordExample(ex, word)) return true
+  if (isUnnaturalHeadwordExample(ex, { word })) return true
+  if (isBadGeneratedExample(ex, { word })) return true
   if (/[/／]/.test(ex)) return true
   if (/^もう一度[^。]{0,8}。$/.test(ex) && !/言って|聞いて|読んで|試して|確認/.test(ex)) return true
   if (/^ここに.+があります。$/.test(ex)) return true
@@ -167,7 +221,10 @@ function pickValidExample(examples, card, entry, { loose = false } = {}) {
   const cardWord = primaryWriting(card.word)
   const cardReading = (card.reading || '').trim() || cardWord
   for (const ex of examples || []) {
-    if (isLazyHeadwordExample(ex.ja, cardWord) || isLazyHeadwordExample(ex.ja, entry.word)) {
+    if (
+      isUnnaturalHeadwordExample(ex.ja, card) ||
+      isUnnaturalHeadwordExample(ex.ja, { word: entry.word, pos: entry.meanings?.join(' ') })
+    ) {
       continue
     }
     const strictOk =
