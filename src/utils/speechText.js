@@ -4,16 +4,16 @@
  */
 export function readingForSpeech(reading = '', word = '') {
   let text = String(reading || '').trim()
-  if (!text) return String(word || '').trim()
+  if (!text) return sanitizeSurface(word)
 
   // Meta placeholders: （感）（副）（終わり）など
   if (/^[（(]/.test(text) || /[）)]$/.test(text)) {
-    return String(word || '').trim() || text.replace(/[（）()]/g, '')
+    return sanitizeSurface(word) || text.replace(/[（）()]/g, '')
   }
 
   // Broken fragments like「（1000」
   if (/[（(]/.test(text) && !/[）)]/.test(text)) {
-    return String(word || '').trim() || text.replace(/[（(]/g, '')
+    return sanitizeSurface(word) || text.replace(/[（(]/g, '')
   }
 
   // Prefer the first reading when alternatives are listed
@@ -21,16 +21,31 @@ export function readingForSpeech(reading = '', word = '') {
     text = text.split(/[/／]/)[0].trim()
   }
 
-  return text || String(word || '').trim()
+  return text || sanitizeSurface(word)
+}
+
+/** Strip slash alternatives and brackets for clearer TTS. */
+export function sanitizeSurface(text = '') {
+  return String(text || '')
+    .replace(/\[[^\]]*\]/g, '')
+    .replace(/([^\s/／]+)[/／][^\s]+/g, '$1')
+    .replace(/\s+/g, ' ')
+    .trim()
 }
 
 export function speechTextForCard(card, { flipped = false } = {}) {
   if (!card) return ''
   if (card.type === 'form') {
     const drill = card.formDrill
-    if (flipped) return card.example || drill?.answerReading || card.meaning || card.word
+    if (flipped) return sanitizeSurface(card.example || drill?.answerReading || card.meaning || card.word)
     return drill?.reading || card.reading || card.word
   }
-  if (flipped) return card.example || readingForSpeech(card.reading, card.word) || card.word
-  return readingForSpeech(card.reading, card.word) || card.word
+  if (flipped) {
+    return (
+      sanitizeSurface(card.example) ||
+      readingForSpeech(card.reading, card.word) ||
+      sanitizeSurface(card.word)
+    )
+  }
+  return readingForSpeech(card.reading, card.word) || sanitizeSurface(card.word)
 }

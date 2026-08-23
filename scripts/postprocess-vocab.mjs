@@ -17,6 +17,11 @@ import {
   translateEnGloss,
   translateMeanings,
 } from './vocab-shared.mjs'
+import {
+  buildFallbackExample,
+  isWeakTemplateExample,
+  primaryWriting,
+} from './example-frames.mjs'
 
 const require = createRequire(import.meta.url)
 const Kuroshiro = require('kuroshiro').default || require('kuroshiro')
@@ -103,90 +108,6 @@ function fixSenses(senses, glossary, cache) {
   })
 }
 
-function fallbackExample(card) {
-  const w = card.word
-  const r = card.reading
-  const meaning = (card.meaning || '').split(/[；;]/)[0].trim() || '…'
-  const pos = `${card.pos || ''} ${card.meaningEn || ''}`.toLowerCase()
-
-  if (w === '足' && r === 'あし') {
-    return { example: '右の足が痛いです。', exampleMeaning: '右腳痛。' }
-  }
-  if (w === 'ちゃん' || w === 'くん' || w === 'さん' || /^suffix for familiar/i.test(card.meaningEn || '')) {
-    return {
-      example: `太郎${w}は学生です。`,
-      exampleMeaning: `太郎（親暱／敬稱）是學生。`,
-    }
-  }
-  if (/noun, used as a suffix|used as a suffix/i.test(pos) && w.length <= 2) {
-    return {
-      example: `この${w}を見てください。`,
-      exampleMeaning: `請看這個${meaning}。`,
-    }
-  }
-  if (w === 'お互い' || r === 'おたがい') {
-    return {
-      example: 'お互いに助け合います。',
-      exampleMeaning: '彼此互相幫忙。',
-    }
-  }
-  if (/i-adjective|い形容|keiyoushi/.test(pos) || (/い$/.test(w) && /adjective|形容/.test(pos))) {
-    return {
-      example: `ここは${w}です。`,
-      exampleMeaning: `這裡很${meaning}。`,
-    }
-  }
-  if (/na-adjective|な形容|keiyodoshi/.test(pos)) {
-    return {
-      example: `${w}な人です。`,
-      exampleMeaning: `是${meaning}的人。`,
-    }
-  }
-  if (/adverb|副詞|fukushi/.test(pos)) {
-    // Avoid 「ぜひしてください」for discourse adverbs
-    if (/ぜひ|つまり|きっと|やはり|たぶん/.test(w)) {
-      return {
-        example: `${w}行きます。`,
-        exampleMeaning: `${meaning}會去。`,
-      }
-    }
-    if (/っと$|んと$|り$/.test(w) || /onomatopoeic|mimetic/i.test(pos)) {
-      return {
-        example: `${w}した。`,
-        exampleMeaning: `${meaning}。`,
-      }
-    }
-    return {
-      example: `${w}話してください。`,
-      exampleMeaning: `請${meaning}地說。`,
-    }
-  }
-  if (/suru verb/.test(pos) || /する$/.test(w)) {
-    const base = w.replace(/する$/, '')
-    return {
-      example: `${base}します。`,
-      exampleMeaning: `要${meaning}。`,
-    }
-  }
-  if ((card.meaningEn || '').toLowerCase().startsWith('to ') || /verb|動詞/.test(pos)) {
-    return {
-      example: `もう一度${w}。`,
-      exampleMeaning: `再${meaning}一次。`,
-    }
-  }
-  // noun / default — full sentence, not bare word
-  if (/^[ァ-ヶー]+$/.test(w) || /^[ぁ-ん]+$/.test(w) && w.length >= 3) {
-    return {
-      example: `${w}をもう一度お願いします。`,
-      exampleMeaning: `請再給我一次${meaning}。`,
-    }
-  }
-  return {
-    example: `${w}があります。`,
-    exampleMeaning: `有${meaning}。`,
-  }
-}
-
 function leftoverKanji(annotated = '') {
   const stripped = String(annotated).replace(
     /[\u4e00-\u9fff々〆ヵヶ]+(?:[\u3040-\u309f\u30a0-\u30ff]*)\[[^\]]+\]/g,
@@ -248,6 +169,12 @@ async function main() {
     let c = { ...card }
     const patch = overrides[c.id]
 
+    // Normalize OpenJLPT slash headwords: 川/河 → 川
+    const surface = primaryWriting(c.word)
+    if (surface && surface !== c.word) {
+      c.word = surface
+    }
+
     c.meaning = ensureZh(c.meaning, c.meaningEn, glossary, cache)
     if (c.meaningEn) {
       c.meaningZh = translateMeanings(c.meaningEn.split(/[;；]/), glossary)
@@ -266,14 +193,13 @@ async function main() {
     const suffixMisapplied =
       /^太郎.+は学生です/.test(c.example || '') &&
       !['ちゃん', 'さん', 'くん'].includes(c.word)
-    const weakVerbEx = /^毎日[^、]/.test(c.example || '') && /verb/i.test(c.pos || '')
-    if (
+    const needsExample =
       !isExampleValidForCard(c.example, c.word, c.reading) ||
       isTrivialExample(c.example, c.word, c.reading) ||
-      suffixMisapplied ||
-      weakVerbEx
-    ) {
-      const fb = fallbackExample(c)
+      isWeakTemplateExample(c.example, c.word) ||
+      suffixMisapplied
+    if (needsExample) {
+      const fb = buildFallbackExample(c, c.word)
       if (fb) {
         c.example = fb.example
         c.exampleMeaning = fb.exampleMeaning

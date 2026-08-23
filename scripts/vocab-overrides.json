@@ -210,5 +210,43 @@
     "example": "毎日日本語を勉強します。",
     "exampleMeaning": "我每天學日文。",
     "exampleFurigana": "毎日[まいにち]日本語[にほんご]を勉強[べんきょう]します。"
+  },
+  "v1285": {
+    "word": "立てる",
+    "reading": "たてる",
+    "meaning": "豎起；設立",
+    "meaningEn": "to stand up; to put up; to erect",
+    "meaningZh": ["豎起", "設立"],
+    "example": "旗を立てます。",
+    "exampleMeaning": "把旗子豎起來。",
+    "exampleFurigana": "旗[はた]を立[た]てます。",
+    "senses": [
+      {
+        "senseIndex": 0,
+        "meaning": "豎起；立起",
+        "meaningEn": "to stand up; to put up",
+        "pos": "他動詞"
+      }
+    ]
+  },
+  "v956": {
+    "word": "建てる",
+    "reading": "たてる",
+    "meaning": "建造；蓋（房子）",
+    "meaningEn": "to build; to construct",
+    "meaningZh": ["建造", "蓋"],
+    "example": "家を建てます。",
+    "exampleMeaning": "蓋房子。",
+    "exampleFurigana": "家[いえ]を建[た]てます。"
+  },
+  "v496": {
+    "word": "川",
+    "reading": "かわ",
+    "meaning": "河；河川",
+    "meaningEn": "river",
+    "meaningZh": ["河", "河川"],
+    "example": "大きな川があります。",
+    "exampleMeaning": "有一條大河。",
+    "exampleFurigana": "大[おお]きな川[かわ]があります。"
   }
 }

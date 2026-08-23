@@ -77,7 +77,7 @@ function hasShortKanaMatch(example = '', token = '') {
     if (!rest || !/^[\u3040-\u309f\u30a0-\u30ffー]/.test(rest) || grammarAfter.test(rest)) {
       return true
     }
-    if (/^(する|した|して|します|しました)/.test(rest)) return true
+    if (/^(する|した|して|します|しました|こと|ください|下さい)/.test(rest)) return true
     // 「と」後面接助詞／漢字可；「と」後接假名多半是另一詞（ちゃんと）
     if (/^と([^\u3040-\u309f\u30a0-\u30ffー]|た|して|いう)/.test(rest)) return true
     idx += 1
