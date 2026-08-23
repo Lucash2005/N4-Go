@@ -239,6 +239,20 @@
     "exampleMeaning": "蓋房子。",
     "exampleFurigana": "家[いえ]を建[た]てます。"
   },
+  "v955": {
+    "word": "堅い",
+    "reading": "かたい",
+    "meaning": "硬的；堅固",
+    "meaningEn": "hard; solid; tough",
+    "example": "このパンは堅いです。",
+    "exampleMeaning": "這個麵包很硬。",
+    "exampleFurigana": "このパンは堅[かた]いです。"
+  },
+  "v141": {
+    "example": "お茶をちゃわんに入れてください。",
+    "exampleMeaning": "請把茶倒進碗裡。",
+    "exampleFurigana": "お茶[ちゃ]をちゃわんに入[い]れてください。"
+  },
   "v496": {
     "word": "川",
     "reading": "かわ",
@@ -248,5 +262,10 @@
     "example": "大きな川があります。",
     "exampleMeaning": "有一條大河。",
     "exampleFurigana": "大[おお]きな川[かわ]があります。"
+  },
+  "v619": {
+    "example": "病気と闘う。",
+    "exampleMeaning": "與疾病搏鬥。",
+    "exampleFurigana": "病気[びょうき]と闘[たたか]う。"
   }
 }

@@ -19,6 +19,8 @@ import {
 } from './vocab-shared.mjs'
 import {
   buildFallbackExample,
+  clearOpenJlptExampleCache,
+  findOpenJlptExample,
   isWeakTemplateExample,
   primaryWriting,
 } from './example-frames.mjs'
@@ -152,6 +154,7 @@ function needsFurigana(card) {
 }
 
 async function main() {
+  clearOpenJlptExampleCache()
   const glossary = loadGlossary()
   const cache = loadZhCache()
   const overrides = loadOverrides()
@@ -193,26 +196,69 @@ async function main() {
     const suffixMisapplied =
       /^太郎.+は学生です/.test(c.example || '') &&
       !['ちゃん', 'さん', 'くん'].includes(c.word)
+    const overrideHasExample = Boolean(patch?.example)
     const needsExample =
-      !isExampleValidForCard(c.example, c.word, c.reading) ||
-      isTrivialExample(c.example, c.word, c.reading) ||
-      isWeakTemplateExample(c.example, c.word) ||
-      suffixMisapplied
-    if (needsExample) {
-      const fb = buildFallbackExample(c, c.word)
-      if (fb) {
-        c.example = fb.example
-        c.exampleMeaning = fb.exampleMeaning
-        c.exampleFurigana = '' // force re-annotate
+      !overrideHasExample &&
+      (!isExampleValidForCard(c.example, c.word, c.reading) ||
+        isTrivialExample(c.example, c.word, c.reading) ||
+        isWeakTemplateExample(c.example, c.word) ||
+        suffixMisapplied)
+
+    if (overrideHasExample) {
+      c.exampleSource = 'override'
+    } else if (needsExample) {
+      const open = findOpenJlptExample(c)
+      if (open?.ja) {
+        c.example = open.ja
+        const zh =
+          translateEnGloss(open.en || '', glossary) ||
+          translateMeanings([open.en || ''], glossary)[0] ||
+          ''
+        if (hasChinese(zh)) {
+          c.exampleMeaning = zh
+        } else if (open.en && hasChinese(c.meaning)) {
+          // Keep OpenJLPT English until we have a proper ZH sentence gloss
+          c.exampleMeaning = open.en
+          c.reviewFlags = [...new Set([...(c.reviewFlags || []), 'needs_example_zh'])]
+        } else {
+          c.exampleMeaning = open.en || c.meaning
+        }
+        c.exampleFurigana = ''
+        c.exampleSource = 'openjlpt'
         exFixed += 1
-      }
-      if (!isExampleValidForCard(c.example, c.word, c.reading)) {
-        c.reviewFlags = [...new Set([...(c.reviewFlags || []), 'example_mismatch'])]
       } else {
-        c.reviewFlags = (c.reviewFlags || []).filter((f) => f !== 'example_mismatch')
+        const fb = buildFallbackExample(c, c.word)
+        if (fb) {
+          c.example = fb.example
+          c.exampleMeaning = fb.exampleMeaning
+          c.exampleFurigana = ''
+          c.exampleSource = fb.exampleSource || 'template'
+          exFixed += 1
+        } else {
+          // Drop unnatural templates; leave a clear placeholder
+          c.example = `（例句準備中：${c.word}）`
+          c.exampleMeaning = '此字卡尚無合適例句，請先記單字本身。'
+          c.exampleFurigana = c.example
+          c.exampleSource = 'missing'
+          c.reviewFlags = [...new Set([...(c.reviewFlags || []), 'needs_example'])]
+          exFixed += 1
+        }
       }
     } else {
+      // Infer source for existing sentence
+      const open = findOpenJlptExample(c)
+      if (open?.ja && open.ja === c.example) c.exampleSource = 'openjlpt'
+      else if (isWeakTemplateExample(c.example, c.word)) c.exampleSource = 'template'
+      else c.exampleSource = c.exampleSource || 'openjlpt'
+    }
+
+    if (!isExampleValidForCard(c.example, c.word, c.reading) && c.exampleSource !== 'missing') {
+      c.reviewFlags = [...new Set([...(c.reviewFlags || []), 'example_mismatch'])]
+    } else {
       c.reviewFlags = (c.reviewFlags || []).filter((f) => f !== 'example_mismatch')
+    }
+    if (c.exampleSource !== 'missing') {
+      c.reviewFlags = (c.reviewFlags || []).filter((f) => f !== 'needs_example')
     }
 
     if (needsFurigana(c)) {
@@ -222,7 +268,10 @@ async function main() {
       c.exampleFurigana = annotateHeadword(c.example, c.word, c.reading) || c.example
     }
 
-    if (patch) c = { ...c, ...patch }
+    if (patch) {
+      c = { ...c, ...patch }
+      if (patch.example) c.exampleSource = 'override'
+    }
 
     out.push(c)
   }

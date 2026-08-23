@@ -10,6 +10,17 @@ import { useSettings } from '../hooks/useSettings'
 import { useLocalStorage } from '../hooks/useLocalStorage'
 import { seededShuffle } from '../utils/dailyPlan'
 import { compactGlossLines, compactSenseGlosses, isChineseGloss } from '../utils/gloss'
+
+const EXAMPLE_SOURCE_LABEL = {
+  openjlpt: 'OpenJLPT',
+  override: '手動校正',
+  template: '安全模板',
+  missing: '待補',
+}
+
+function exampleSourceLabel(source) {
+  return EXAMPLE_SOURCE_LABEL[source] || source
+}
 import {
   buildCardTracks,
   getPlaylistState,
@@ -934,6 +945,11 @@ function VocabCardBack({
         ) : (
           <p className="mt-1 text-xs text-ink-soft">中文解釋已隱藏</p>
         )}
+        {card.exampleSource ? (
+          <p className="mt-1 text-[11px] text-ink-soft/80">
+            例句來源：{exampleSourceLabel(card.exampleSource)}
+          </p>
+        ) : null}
       </div>
 
       {canExpandDetail ? (
