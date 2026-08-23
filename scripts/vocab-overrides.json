@@ -100,5 +100,29 @@
         "pos": "名詞"
       }
     ]
+  },
+  "v215": {
+    "word": "立派",
+    "reading": "りっぱ",
+    "meaning": "出色；了不起",
+    "meaningEn": "splendid; fine; impressive; praiseworthy",
+    "meaningZh": ["出色", "了不起"],
+    "example": "立派な人ですね。",
+    "exampleMeaning": "真是出色的人啊。",
+    "exampleFurigana": "立派[りっぱ]な人[ひと]ですね。",
+    "senses": [
+      {
+        "senseIndex": 0,
+        "meaning": "出色；漂亮",
+        "meaningEn": "splendid; fine; handsome; elegant",
+        "pos": "形容動詞"
+      },
+      {
+        "senseIndex": 1,
+        "meaning": "值得稱讚",
+        "meaningEn": "praiseworthy; creditable; worthy",
+        "pos": "形容動詞"
+      }
+    ]
   }
 }

@@ -125,6 +125,9 @@ export function translateEnGloss(en = '', glossary = loadGlossary()) {
   const lower = src.toLowerCase()
   if (glossary.has(lower)) return glossary.get(lower)
 
+  const bare = lower.replace(/^to /, '').trim()
+  if (bare && glossary.has(bare)) return glossary.get(bare)
+
   const toMatch = lower.match(/^to (.+)$/)
   if (toMatch) {
     const rest = toMatch[1]

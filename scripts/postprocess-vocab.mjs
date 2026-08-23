@@ -9,6 +9,7 @@ import { fileURLToPath } from 'node:url'
 import { applyFuriganaOverrides } from './furigana-overrides.mjs'
 import {
   annotateHeadword,
+  cleanEnGloss,
   hasChinese,
   isExampleValidForCard,
   loadGlossary,
@@ -63,13 +64,43 @@ function ensureZh(text, enFallback, glossary, cache) {
   return hasChinese(text) ? text : enFallback || text
 }
 
+function uniqueZhParts(parts = []) {
+  const seen = new Set()
+  const out = []
+  for (const p of parts) {
+    const t = (p || '').trim()
+    if (!t || seen.has(t)) continue
+    seen.add(t)
+    out.push(t)
+  }
+  return out
+}
+
 function fixSenses(senses, glossary, cache) {
   if (!senses?.length) return senses
-  return senses.slice(0, 5).map((s) => ({
-    ...s,
-    meaning: ensureZh(s.meaning, s.meaningEn, glossary, cache),
-    meaningEn: s.meaningEn || s.meaning,
-  }))
+  const filtered = senses
+    .filter((s) => !/wikipedia/i.test(s.pos || ''))
+    .slice(0, 5)
+  return filtered.map((s) => {
+    const meaningEn = cleanEnGloss(s.meaningEn || s.meaning || '')
+    const parts = meaningEn
+      .split(/[;；]/)
+      .map((p) => p.trim())
+      .filter(Boolean)
+    const zhParts = uniqueZhParts(translateMeanings(parts, glossary))
+    let meaning = zhParts.slice(0, 3).join('；')
+    if (!meaning) {
+      meaning = ensureZh(s.meaning, meaningEn, glossary, cache)
+    }
+    if (!hasChinese(meaning) || meaning === meaningEn) {
+      meaning = zhParts.length ? zhParts.slice(0, 3).join('；') : meaningEn
+    }
+    return {
+      ...s,
+      meaning,
+      meaningEn,
+    }
+  })
 }
 
 function fallbackExample(card) {
@@ -150,7 +181,6 @@ async function main() {
   for (const card of cards) {
     let c = { ...card }
     const patch = overrides[c.id]
-    if (patch) c = { ...c, ...patch }
 
     c.meaning = ensureZh(c.meaning, c.meaningEn, glossary, cache)
     if (c.meaningEn) {
@@ -185,6 +215,8 @@ async function main() {
     } else if (!c.exampleFurigana) {
       c.exampleFurigana = annotateHeadword(c.example, c.word, c.reading) || c.example
     }
+
+    if (patch) c = { ...c, ...patch }
 
     out.push(c)
   }

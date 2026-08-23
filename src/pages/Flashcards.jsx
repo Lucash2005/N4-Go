@@ -9,6 +9,7 @@ import { useProgress } from '../hooks/useProgress'
 import { useSettings } from '../hooks/useSettings'
 import { useLocalStorage } from '../hooks/useLocalStorage'
 import { seededShuffle } from '../utils/dailyPlan'
+import { compactGlossLines, compactSenseGlosses, isChineseGloss } from '../utils/gloss'
 import {
   buildCardTracks,
   getPlaylistState,
@@ -448,7 +449,7 @@ export default function Flashcards() {
         </p>
       </section>
 
-      {deck.length > 0 && !doneSession ? (
+      {deck.length > 0 && !doneSession && !(srsMode && flipped) ? (
         <section className="surface soft-shadow animate-fade-up stagger-1 rounded-3xl p-4 sm:p-5">
           <div className="flex flex-wrap items-start justify-between gap-3">
             <div>
@@ -635,13 +636,13 @@ export default function Flashcards() {
           >
             {/* Grid stack: height follows the taller face so content never covers play buttons */}
             <div
-              className={`grid min-h-[280px] [grid-template-areas:'stack'] [transform-style:preserve-3d] ${
+              className={`grid h-[min(46vh,300px)] min-h-[220px] [grid-template-areas:'stack'] [transform-style:preserve-3d] ${
                 flipped
                   ? 'transition-transform duration-500 [transform:rotateY(180deg)]'
                   : 'transition-transform duration-500'
               }`}
             >
-              <CardFace className="[grid-area:stack] [backface-visibility:hidden]">
+              <CardFace className="[grid-area:stack] [backface-visibility:hidden] overflow-hidden">
                 <Badge>
                   {card.type === 'vocab' ? '單字' : card.type === 'form' ? '活用' : '文法'}
                 </Badge>
@@ -672,7 +673,7 @@ export default function Flashcards() {
 
               <CardFace
                 align="start"
-                className="[grid-area:stack] [backface-visibility:hidden] [transform:rotateY(180deg)]"
+                className="[grid-area:stack] [backface-visibility:hidden] [transform:rotateY(180deg)] overflow-y-auto overscroll-contain"
               >
                 <Badge>{card.category}</Badge>
                 {card.level ? (
@@ -717,46 +718,6 @@ export default function Flashcards() {
               🔊 播放
             </ActionButton>
             {!srsMode ? <ActionButton onClick={() => go(1)}>下一張</ActionButton> : null}
-          </div>
-
-          <div
-            className="surface soft-shadow rounded-3xl p-4 sm:p-5"
-            onClick={(e) => e.stopPropagation()}
-            onKeyDown={(e) => e.stopPropagation()}
-          >
-            <div className="mb-2 flex items-center justify-between gap-2">
-              <p className="text-sm font-medium text-ink">我的筆記</p>
-              <span className="text-xs text-ink-soft">只存在這支手機／瀏覽器</span>
-            </div>
-            <textarea
-              value={noteDraft}
-              onChange={(e) => setNoteDraft(e.target.value)}
-              onBlur={() => saveNote(noteDraft)}
-              rows={3}
-              placeholder="寫下接續口訣、自己的例句、易混對照…"
-              className="w-full resize-y rounded-2xl border border-line bg-white/80 px-3 py-2.5 text-sm text-ink outline-none ring-sea/30 placeholder:text-ink-soft/70 focus:ring-2"
-            />
-            <div className="mt-2 flex justify-end gap-2">
-              {noteDraft.trim() ? (
-                <button
-                  type="button"
-                  onClick={() => {
-                    setNoteDraft('')
-                    saveNote('')
-                  }}
-                  className="rounded-xl bg-white px-3 py-1.5 text-xs text-ink-soft ring-1 ring-line hover:bg-foam"
-                >
-                  清除
-                </button>
-              ) : null}
-              <button
-                type="button"
-                onClick={() => saveNote(noteDraft)}
-                className="rounded-xl bg-sea px-3 py-1.5 text-xs text-white hover:bg-sea-deep"
-              >
-                儲存筆記
-              </button>
-            </div>
           </div>
 
           {srsMode ? (
@@ -816,6 +777,46 @@ export default function Flashcards() {
               </StatusButton>
             </div>
           )}
+
+          <div
+            className="surface soft-shadow rounded-3xl p-4 sm:p-5"
+            onClick={(e) => e.stopPropagation()}
+            onKeyDown={(e) => e.stopPropagation()}
+          >
+            <div className="mb-2 flex items-center justify-between gap-2">
+              <p className="text-sm font-medium text-ink">我的筆記</p>
+              <span className="text-xs text-ink-soft">只存在這支手機／瀏覽器</span>
+            </div>
+            <textarea
+              value={noteDraft}
+              onChange={(e) => setNoteDraft(e.target.value)}
+              onBlur={() => saveNote(noteDraft)}
+              rows={2}
+              placeholder="寫下接續口訣、自己的例句、易混對照…"
+              className="w-full resize-y rounded-2xl border border-line bg-white/80 px-3 py-2.5 text-sm text-ink outline-none ring-sea/30 placeholder:text-ink-soft/70 focus:ring-2"
+            />
+            <div className="mt-2 flex justify-end gap-2">
+              {noteDraft.trim() ? (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setNoteDraft('')
+                    saveNote('')
+                  }}
+                  className="rounded-xl bg-white px-3 py-1.5 text-xs text-ink-soft ring-1 ring-line hover:bg-foam"
+                >
+                  清除
+                </button>
+              ) : null}
+              <button
+                type="button"
+                onClick={() => saveNote(noteDraft)}
+                className="rounded-xl bg-sea px-3 py-1.5 text-xs text-white hover:bg-sea-deep"
+              >
+                儲存筆記
+              </button>
+            </div>
+          </div>
         </>
       )}
     </div>
@@ -833,36 +834,46 @@ function VocabCardBack({
   setShowMoreDetail,
 }) {
   const senses = card.senses || []
-  const primarySenses = showMoreSenses ? senses : senses.slice(0, 2)
-  const hiddenSenseCount = senses.length - 2
+  const compactLines = compactSenseGlosses(senses, 2)
+  const mainLines = compactGlossLines(
+    isChineseGloss(card.meaning) ? card.meaning : '',
+    2,
+  )
+  const displayLines =
+    compactLines.length > 0
+      ? compactLines
+      : mainLines.length > 0
+        ? mainLines
+        : []
+  const extraSenses = senses.slice(2)
+  const hiddenSenseCount = Math.max(0, senses.length - 2)
   const hasHiddenSenses = hiddenSenseCount > 0 && !showMoreSenses
+  const showSenseBlock = displayLines.length > 0 && senses.length > 1
   const canExpandDetail =
     card.memory ||
     card.exampleUsage ||
     card.meaningEn ||
     card.pos ||
-    senses.some((s) => s.example || s.exampleZh)
+    senses.some((s) => !isChineseGloss(s.meaning)) ||
+    senses.some((s) => s.example || s.exampleZh) ||
+    hiddenSenseCount > 0
 
   return (
-    <>
-      <p className="mt-2 text-3xl font-bold text-ink">{card.meaning}</p>
+    <div className="w-full text-left">
+      <p className="mt-1 text-2xl font-bold leading-snug text-ink sm:text-3xl">
+        {isChineseGloss(card.meaning) ? card.meaning.split(/[；;]/)[0].trim() : card.meaning}
+      </p>
       {(showFurigana || hideReadingOnFront) && card.reading ? (
-        <p className="mt-1 text-base text-sea-deep">{card.reading}</p>
+        <p className="mt-0.5 text-sm text-sea-deep">{card.reading}</p>
       ) : null}
 
-      {primarySenses.length ? (
-        <div className="mt-3 w-full space-y-1.5 text-left text-sm leading-relaxed text-ink">
-          <p className="text-xs font-medium text-sea-deep">常用多義</p>
-          <ul className="space-y-1">
-            {primarySenses.map((sense) => (
-              <li
-                key={`${sense.senseIndex ?? sense.meaning}-${sense.meaningEn ?? sense.meaning}`}
-                className="rounded-lg bg-white/70 px-3 py-1.5 ring-1 ring-line/40"
-              >
-                <span className="font-medium">{sense.meaning}</span>
-                {sense.pos ? (
-                  <span className="ml-2 text-xs text-ink-soft">{sense.pos}</span>
-                ) : null}
+      {showSenseBlock ? (
+        <div className="mt-2 space-y-1 text-sm leading-snug text-ink">
+          <p className="text-[11px] font-medium text-sea-deep">常用多義</p>
+          <ul className="space-y-0.5">
+            {displayLines.map((line) => (
+              <li key={line} className="rounded-md bg-white/70 px-2 py-0.5 ring-1 ring-line/40">
+                {line}
               </li>
             ))}
           </ul>
@@ -873,32 +884,48 @@ function VocabCardBack({
                 e.stopPropagation()
                 setShowMoreSenses(true)
               }}
-              className="text-sm text-sea-deep underline-offset-2 hover:underline"
+              className="text-xs text-sea-deep underline-offset-2 hover:underline"
             >
               更多多義（{hiddenSenseCount}）
             </button>
           ) : null}
+          {showMoreSenses && extraSenses.length ? (
+            <ul className="mt-1 space-y-0.5">
+              {extraSenses.map((sense) => {
+                const lines = isChineseGloss(sense.meaning)
+                  ? compactGlossLines(sense.meaning, 2, 32)
+                  : [sense.meaningEn || sense.meaning]
+                return lines.map((line) => (
+                  <li
+                    key={`${sense.senseIndex}-${line}`}
+                    className="rounded-md bg-white/70 px-2 py-0.5 ring-1 ring-line/40"
+                  >
+                    {line}
+                  </li>
+                ))
+              })}
+            </ul>
+          ) : null}
         </div>
       ) : null}
 
-      <div className="mt-3 w-full rounded-2xl bg-foam/80 p-4 text-left">
-        <p className="text-xs font-medium text-sea-deep">例句</p>
-        <p className="mt-2 text-lg leading-relaxed text-ink">
+      <div className="mt-2 rounded-xl bg-foam/80 px-3 py-2">
+        <p className="text-base leading-relaxed text-ink sm:text-lg">
           <FuriganaText
             text={card.example}
-            annotated={card.exampleFurigana}
+            annotated={card.exampleFurigana || card.example}
             showFurigana={true}
           />
         </p>
         {showZhMeaning ? (
-          <p className="mt-2 text-base text-ink-soft">{card.exampleMeaning}</p>
+          <p className="mt-1 text-sm text-ink-soft">{card.exampleMeaning}</p>
         ) : (
-          <p className="mt-2 text-sm text-ink-soft">中文解釋已隱藏</p>
+          <p className="mt-1 text-xs text-ink-soft">中文解釋已隱藏</p>
         )}
       </div>
 
       {canExpandDetail ? (
-        <div className="mt-3 w-full">
+        <div className="mt-2">
           {!showMoreDetail ? (
             <button
               type="button"
@@ -906,49 +933,51 @@ function VocabCardBack({
                 e.stopPropagation()
                 setShowMoreDetail(true)
               }}
-              className="text-sm text-sea-deep underline-offset-2 hover:underline"
+              className="text-xs text-sea-deep underline-offset-2 hover:underline"
             >
               更多說明
             </button>
           ) : (
-            <div className="space-y-2.5 text-left text-sm leading-relaxed text-ink sm:text-base">
-              {card.pos ? <p className="text-sm font-medium text-sea-deep">{card.pos}</p> : null}
+            <div className="mt-1 space-y-1.5 text-xs leading-relaxed text-ink sm:text-sm">
+              {card.pos ? <p className="font-medium text-sea-deep">{card.pos}</p> : null}
               {card.meaningEn ? <p className="text-ink-soft">EN: {card.meaningEn}</p> : null}
               {card.memory ? (
-                <p className="rounded-xl bg-sand/70 px-3.5 py-2.5">記憶：{card.memory}</p>
+                <p className="rounded-lg bg-sand/70 px-2.5 py-1.5">記憶：{card.memory}</p>
               ) : null}
               {card.exampleUsage ? (
-                <p className="rounded-xl bg-coral/10 px-3.5 py-2.5">
+                <p className="rounded-lg bg-coral/10 px-2.5 py-1.5">
                   <span className="font-medium text-coral">例句用法：</span>
                   {card.exampleUsage}
                 </p>
               ) : null}
-              {showMoreSenses && senses.length > 2 ? (
-                <ul className="space-y-2">
-                  {senses.slice(2).map((sense) => (
-                    <li
-                      key={`extra-${sense.senseIndex ?? sense.meaning}`}
-                      className="rounded-xl bg-white/80 px-3.5 py-2.5 ring-1 ring-line/50"
-                    >
-                      <SenseDetail sense={sense} />
-                    </li>
-                  ))}
+              {senses.some((s) => !isChineseGloss(s.meaning)) ? (
+                <ul className="space-y-1">
+                  {senses
+                    .filter((s) => !isChineseGloss(s.meaning))
+                    .map((sense) => (
+                      <li
+                        key={`en-${sense.senseIndex ?? sense.meaningEn}`}
+                        className="rounded-lg bg-white/80 px-2.5 py-1.5 ring-1 ring-line/50"
+                      >
+                        <SenseDetail sense={sense} />
+                      </li>
+                    ))}
                 </ul>
               ) : null}
               {senses.some((s) => s.example) ? (
-                <div className="space-y-2">
-                  <p className="text-xs font-medium text-sea-deep">多義例句</p>
+                <div className="space-y-1">
+                  <p className="font-medium text-sea-deep">多義例句</p>
                   {senses.map((sense) =>
                     sense.example ? (
                       <div
                         key={`ex-${sense.senseIndex ?? sense.meaning}`}
-                        className="rounded-xl bg-white/80 px-3.5 py-2.5 ring-1 ring-line/50"
+                        className="rounded-lg bg-white/80 px-2.5 py-1.5 ring-1 ring-line/50"
                       >
                         <p className="font-medium text-ink">{sense.meaning}</p>
-                        <p className="mt-1 text-sea-deep">
+                        <p className="mt-0.5 text-sea-deep">
                           <FuriganaText
                             text={sense.example}
-                            annotated={sense.exampleFurigana}
+                            annotated={sense.exampleFurigana || sense.example}
                             showFurigana={true}
                           />
                         </p>
@@ -964,7 +993,7 @@ function VocabCardBack({
           )}
         </div>
       ) : null}
-    </>
+    </div>
   )
 }
 
@@ -1113,7 +1142,7 @@ function FilterChip({ active, onClick, children }) {
 function CardFace({ className = '', align = 'center', children }) {
   return (
     <div
-      className={`surface flex h-full min-h-[280px] w-full flex-col items-center rounded-3xl p-5 text-center sm:p-6 ${
+      className={`surface flex h-full w-full flex-col items-center rounded-3xl p-4 text-center sm:p-5 ${
         align === 'start' ? 'justify-start' : 'justify-center'
       } ${className}`}
     >
