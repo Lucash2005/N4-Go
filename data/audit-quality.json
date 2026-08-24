@@ -1,12 +1,12 @@
 {
-  "generatedAt": "2026-08-23T12:10:16.112Z",
+  "generatedAt": "2026-08-24T15:44:11.990Z",
   "total": 1500,
   "summary": {
     "meaning": 0,
     "translation": 0,
-    "example": 12,
+    "example": 15,
     "furigana": 0,
-    "reading": 18,
+    "reading": 17,
     "ui": 0
   },
   "byCategory": {
@@ -24,7 +24,7 @@
       "items": []
     },
     "example": {
-      "count": 12,
+      "count": 15,
       "items": [
         {
           "id": "v012",
@@ -42,6 +42,12 @@
           "id": "v235",
           "word": "引く",
           "example": "ドアを引いてください。",
+          "source": "override"
+        },
+        {
+          "id": "v376",
+          "word": "差す",
+          "example": "雨なので傘を差します。",
           "source": "override"
         },
         {
@@ -75,6 +81,18 @@
           "source": "openjlpt"
         },
         {
+          "id": "v817",
+          "word": "ねっしん",
+          "example": "勉強熱心だね！",
+          "source": "openjlpt"
+        },
+        {
+          "id": "v865",
+          "word": "運ぶ",
+          "example": "荷物を運んでください。",
+          "source": "override"
+        },
+        {
           "id": "v1244",
           "word": "放送",
           "example": "絶賛放送中！",
@@ -105,13 +123,8 @@
       "items": []
     },
     "reading": {
-      "count": 18,
+      "count": 17,
       "items": [
-        {
-          "id": "v052",
-          "word": "いい",
-          "reading": "いい/よい"
-        },
         {
           "id": "v092",
           "word": "キロ",
@@ -206,6 +219,6 @@
   },
   "reviewFlags": {
     "needs_example": 3,
-    "example_mismatch": 14
+    "example_mismatch": 20
   }
 }

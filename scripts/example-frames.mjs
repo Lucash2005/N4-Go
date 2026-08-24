@@ -88,6 +88,8 @@ export function isBadGeneratedExample(example = '', card = {}) {
   const w = String(card?.word || '').trim()
   if (!ex || !w) return false
   if (/色$/.test(w) && new RegExp(`^${escapeRe(w)}な人です。$`).test(ex)) return true
+  // Na-adj / noun boilerplate「複雑な人です」
+  if (new RegExp(`^${escapeRe(w)}な人です。$`).test(ex)) return true
   if (new RegExp(`^ここは${escapeRe(w)}です。$`).test(ex)) return true
   if (/^とても.+です。$/.test(ex) && /色$/.test(w)) return true
   return false

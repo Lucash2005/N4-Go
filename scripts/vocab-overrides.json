@@ -298,15 +298,6 @@
     "exampleMeaning": "這家店很興盛（生意很好）。",
     "exampleFurigana": "この店[みせ]はとても盛[さか]んです。"
   },
-  "v052": {
-    "reading": "いい/よい",
-    "meaning": "好的；不錯",
-    "meaningEn": "good; fine; nice",
-    "meaningZh": ["好的", "不錯"],
-    "example": "運がいいね。",
-    "exampleMeaning": "運氣真好啊。",
-    "exampleFurigana": "運[うん]がいいね。"
-  },
   "v521": {
     "reading": "おおぜい",
     "meaning": "很多人；大批人",
@@ -436,5 +427,173 @@
   },
   "v805": {
     "exampleMeaning": "你用的是哪一本課本？"
+  },
+  "v413": {
+    "meaning": "耳朵",
+    "meaningEn": "ear",
+    "example": "耳が痛いです。",
+    "exampleMeaning": "耳朵痛。",
+    "exampleFurigana": "耳[みみ]が痛[いた]いです。"
+  },
+  "v615": {
+    "example": "飛行機が見えた。",
+    "exampleMeaning": "看到飛機了。",
+    "exampleFurigana": "飛行機[ひこうき]が見[み]えた。"
+  },
+  "v528": {
+    "example": "今日は暖かいです。",
+    "exampleMeaning": "今天很暖和。",
+    "exampleFurigana": "今日[きょう]は暖[あたた]かいです。"
+  },
+  "v040": {
+    "example": "この問題は複雑です。",
+    "exampleMeaning": "這個問題很複雜。",
+    "exampleFurigana": "この問題[もんだい]は複雑[ふくざつ]です。"
+  },
+  "v376": {
+    "meaning": "撐（傘）；指；注入",
+    "meaningEn": "to hold up (an umbrella); to point; to pour",
+    "meaningZh": ["撐（傘）", "指", "注入"],
+    "example": "雨なので傘を差します。",
+    "exampleMeaning": "因為下雨，所以撐傘。",
+    "exampleFurigana": "雨[あめ]なので傘[かさ]を差[さ]します。"
+  },
+  "v1178": {
+    "meaning": "都（行政區劃，如東京都）",
+    "meaningEn": "metropolis (e.g. Tokyo Metropolis)",
+    "meaningZh": ["都（行政區劃）"],
+    "example": "東京都に住んでいます。",
+    "exampleMeaning": "住在東京都。",
+    "exampleFurigana": "東京[とうきょう]都[と]に住[す]んでいます。"
+  },
+  "v019": {
+    "example": "もう十分です。",
+    "exampleMeaning": "已經夠了。",
+    "exampleFurigana": "もう十分[じゅうぶん]です。"
+  },
+  "v934": {
+    "exampleMeaning": "我和他比賽了。"
+  },
+  "v334": {
+    "example": "これは犬です。",
+    "exampleMeaning": "這是狗。",
+    "exampleFurigana": "これは犬[いぬ]です。"
+  },
+  "v885": {
+    "exampleMeaning": "火會燃燒。"
+  },
+  "v958": {
+    "meaning": "研究室；實驗室",
+    "meaningEn": "laboratory; research room",
+    "meaningZh": ["研究室", "實驗室"],
+    "exampleMeaning": "請回研究室。",
+    "exampleFurigana": "研究室[けんきゅうしつ]に戻[もど]りなさい。"
+  },
+  "v320": {
+    "meaning": "九號；九天",
+    "meaningEn": "ninth day of the month; nine days",
+    "meaningZh": ["九號", "九天"],
+    "exampleFurigana": "九日[ここのか]に友[とも]だちと会[あ]います。"
+  },
+  "v071": {
+    "example": "お兄さんは何歳ですか。",
+    "exampleMeaning": "你哥哥幾歲？",
+    "exampleFurigana": "お兄[にい]さんは何歳[なんさい]ですか。"
+  },
+  "v052": {
+    "reading": "いい",
+    "meaning": "好的；不錯",
+    "example": "この本はいいです。",
+    "exampleMeaning": "這本書很好。",
+    "exampleFurigana": "この本[ほん]はいいです。"
+  },
+  "v865": {
+    "meaning": "搬運；運送",
+    "meaningEn": "to carry; to transport",
+    "meaningZh": ["搬運", "運送"],
+    "example": "荷物を運んでください。",
+    "exampleMeaning": "請搬行李。",
+    "exampleFurigana": "荷物[にもつ]を運[はこ]んでください。"
+  },
+  "v972": {
+    "meaning": "前往；朝向",
+    "meaningEn": "to face; to go toward",
+    "meaningZh": ["前往", "朝向"],
+    "example": "彼女は明日東京に向かう。",
+    "exampleMeaning": "她明天要前往東京。",
+    "exampleFurigana": "彼女[かのじょ]は明日[あした]東京[とうきょう]に向[む]かう。"
+  },
+  "v1157": {
+    "example": "丁寧におじぎをしました。",
+    "exampleMeaning": "禮貌地鞠躬了。",
+    "exampleFurigana": "丁寧[ていねい]におじぎをしました。"
+  },
+  "v731": {
+    "meaning": "探望（病人）；慰問",
+    "meaningEn": "visit to a sick person; inquiry after someone's health",
+    "meaningZh": ["探望（病人）", "慰問"],
+    "example": "お見舞いありがとう。",
+    "exampleMeaning": "謝謝您來探望。",
+    "exampleFurigana": "お見舞[みま]いありがとう。"
+  },
+  "v703": {
+    "meaning": "飾品；配件",
+    "meaningEn": "accessory; jewelry",
+    "meaningZh": ["飾品", "配件"],
+    "exampleMeaning": "她在衣服上戴了飾品。"
+  },
+  "v457": {
+    "meaning": "上面；上方",
+    "meaningEn": "above; up; on top",
+    "meaningZh": ["上面", "上方"]
+  },
+  "v664": {
+    "example": "門を閉めてください。",
+    "exampleMeaning": "請把門關上。",
+    "exampleFurigana": "門[もん]を閉[し]めてください。"
+  },
+  "v203": {
+    "meaning": "火柴",
+    "meaningEn": "match (for lighting a fire)",
+    "meaningZh": ["火柴"],
+    "example": "マッチありますか。",
+    "exampleMeaning": "有火柴嗎？",
+    "exampleFurigana": "マッチありますか。"
+  },
+  "v877": {
+    "meaning": "聲音",
+    "meaningEn": "sound; noise",
+    "meaningZh": ["聲音"],
+    "example": "今の何の音？",
+    "exampleMeaning": "剛才是什麼聲音？",
+    "exampleFurigana": "今[いま]の何[なん]の音[おと]？"
+  },
+  "v354": {
+    "meaning": "厚的",
+    "meaningEn": "thick; deep; kind",
+    "meaningZh": ["厚的"],
+    "example": "この本は厚いです。",
+    "exampleMeaning": "這本書很厚。",
+    "exampleFurigana": "この本[ほん]は厚[あつ]いです。"
+  },
+  "v280": {
+    "example": "階段を上がってください。",
+    "exampleMeaning": "請上樓（爬樓梯）。",
+    "exampleFurigana": "階段[かいだん]を上[あ]がってください。"
+  },
+  "v657": {
+    "word": "明るい",
+    "reading": "あかるい",
+    "meaning": "明亮的；開朗的",
+    "meaningEn": "bright; cheerful",
+    "meaningZh": ["明亮的", "開朗的"],
+    "example": "部屋が明るいです。",
+    "exampleMeaning": "房間很明亮。",
+    "exampleFurigana": "部屋[へや]が明[あか]るいです。"
+  },
+  "v363": {
+    "example": "このかばんは高いです。",
+    "exampleMeaning": "這個包包很貴。",
+    "exampleFurigana": "このかばんは高[たか]いです。"
   }
 }
