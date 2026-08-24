@@ -7,7 +7,7 @@ import { readFileSync, writeFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { applyFuriganaOverrides } from './furigana-overrides.mjs'
-import { lookupExampleZh } from './example-zh-cache.mjs'
+import { resolveExampleZh, isBadExampleZh } from './example-zh-cache.mjs'
 import {
   annotateHeadword,
   cleanEnGloss,
@@ -282,27 +282,15 @@ async function main() {
       if (open?.ja) {
         c.example = open.ja
         const zh =
+          resolveExampleZh({ ja: open.ja, en: open.en || '' }) ||
           translateEnGloss(open.en || '', glossary) ||
           translateMeanings([open.en || ''], glossary)[0] ||
           ''
-        if (hasChinese(zh)) {
+        if (zh && !isBadExampleZh(zh, open.ja)) {
           c.exampleMeaning = zh
-        } else if (open.en) {
-          const cached = lookupExampleZh(open.en)
-          if (cached) {
-            c.exampleMeaning = cached
-          } else if (open.en && hasChinese(c.meaning)) {
-            c.exampleMeaning = open.en
-            c.reviewFlags = [...new Set([...(c.reviewFlags || []), 'needs_example_zh'])]
-          } else {
-            c.exampleMeaning = open.en || c.meaning
-          }
-        } else if (open.en && hasChinese(c.meaning)) {
-          // Keep OpenJLPT English until we have a proper ZH sentence gloss
-          c.exampleMeaning = open.en
-          c.reviewFlags = [...new Set([...(c.reviewFlags || []), 'needs_example_zh'])]
         } else {
           c.exampleMeaning = open.en || c.meaning
+          c.reviewFlags = [...new Set([...(c.reviewFlags || []), 'needs_example_zh'])]
         }
         c.exampleFurigana = ''
         c.exampleSource = 'openjlpt'
@@ -364,38 +352,45 @@ async function main() {
       c = { ...c, ...patch }
       if (patch.example) c.exampleSource = 'override'
       else if (patch.exampleMeaning && c.exampleSource === 'openjlpt') c.exampleSource = 'override'
+      if (patch.exampleMeaning && !isBadExampleZh(patch.exampleMeaning, c.example || patch.example || '')) {
+        c.reviewFlags = (c.reviewFlags || []).filter((f) => f !== 'needs_example_zh')
+      }
     }
 
-    // Chinese gloss for example sentence
-    if (c.exampleMeaning && !hasChinese(c.exampleMeaning)) {
-      const enLine = String(c.exampleMeaning).trim()
-      let zh = lookupExampleZh(enLine) || translateEnGloss(enLine, glossary)
-      if (!zh) {
-        zh =
-          translateMeanings(enLine.split(/[.!?。！？]/).map((s) => s.trim()).filter(Boolean), glossary)[0] ||
-          ''
+    // Chinese gloss for example sentence — prefer JA→zh cache; never keep lazy/bad glosses.
+    // Manual overrides win: do not overwrite curated exampleMeaning.
+    if (!(patch && patch.exampleMeaning)) {
+      const jaEx = c.example || ''
+      const openForZh = findOpenJlptExample(c)
+      const enEx =
+        openForZh?.en ||
+        (c.exampleMeaning && !hasChinese(c.exampleMeaning) ? String(c.exampleMeaning) : '') ||
+        ''
+      let zhEx = resolveExampleZh({ ja: jaEx, en: enEx })
+      if (
+        !zhEx &&
+        c.exampleMeaning &&
+        hasChinese(c.exampleMeaning) &&
+        !isBadExampleZh(c.exampleMeaning, jaEx)
+      ) {
+        zhEx = c.exampleMeaning
       }
-      if (!zh && hasChinese(c.meaning)) {
-        const hint = (c.meaning || '').split(/[；;]/)[0].trim()
-        zh = hint ? `例句大意：${hint}` : ''
+      if (!zhEx && enEx) {
+        zhEx = translateEnGloss(enEx, glossary) || ''
       }
-      if (zh) {
-        c.exampleMeaning = zh
+      if (zhEx && !isBadExampleZh(zhEx, jaEx)) {
+        c.exampleMeaning = zhEx
         c.reviewFlags = (c.reviewFlags || []).filter((f) => f !== 'needs_example_zh')
-      } else {
+      } else if (
+        !c.exampleMeaning ||
+        isBadExampleZh(c.exampleMeaning, jaEx) ||
+        c.exampleMeaning.startsWith('例句大意：')
+      ) {
         c.reviewFlags = [...new Set([...(c.reviewFlags || []), 'needs_example_zh'])]
+        if (c.exampleMeaning?.startsWith('例句大意：')) {
+          c.exampleMeaning = enEx || `（待補例句翻譯：${c.word}）`
+        }
       }
-    } else if (c.exampleMeaning?.startsWith('例句大意：')) {
-      const open = findOpenJlptExample(c)
-      const cached = open?.en ? lookupExampleZh(open.en) : ''
-      if (cached) {
-        c.exampleMeaning = cached
-        c.reviewFlags = (c.reviewFlags || []).filter((f) => f !== 'needs_example_zh')
-      }
-    }
-
-    if (c.exampleMeaning && hasChinese(c.exampleMeaning) && !c.exampleMeaning.startsWith('例句大意：')) {
-      c.reviewFlags = (c.reviewFlags || []).filter((f) => f !== 'needs_example_zh')
     }
 
     out.push(c)

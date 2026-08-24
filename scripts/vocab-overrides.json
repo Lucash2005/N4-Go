@@ -595,5 +595,67 @@
     "example": "このかばんは高いです。",
     "exampleMeaning": "這個包包很貴。",
     "exampleFurigana": "このかばんは高[たか]いです。"
+  },
+  "v706": {
+    "meaning": "播音員；主持人",
+    "meaningEn": "announcer; presenter",
+    "meaningZh": ["播音員", "主持人"]
+  },
+  "v986": {
+    "meaning": "適合；合得來；一致",
+    "meaningEn": "to fit; to suit; to agree with",
+    "meaningZh": ["適合", "合得來", "一致"],
+    "example": "この靴はサイズが合う。",
+    "exampleMeaning": "這雙鞋尺寸剛好。",
+    "exampleFurigana": "この靴[くつ]はサイズが合[あ]う。"
+  },
+  "v1250": {
+    "meaning": "我（男性用語）",
+    "meaningEn": "I; me (male)",
+    "meaningZh": ["我（男性用語）"]
+  },
+  "v1312": {
+    "meaning": "不（いいえ的口語）；家",
+    "meaningEn": "no; house",
+    "meaningZh": ["不", "家"],
+    "example": "いえ、結構です。",
+    "exampleMeaning": "不，不用了／謝謝。",
+    "exampleFurigana": "いえ、結構[けっこう]です。"
+  },
+  "v073": {
+    "exampleMeaning": "是在說你姐姐的事。"
+  },
+  "v092": {
+    "example": "りんごを一キロください。",
+    "exampleMeaning": "請給我一公斤蘋果。",
+    "exampleFurigana": "りんごを一[いち]キロください。"
+  },
+  "v093": {
+    "example": "ここから三キロです。",
+    "exampleMeaning": "從這裡算起有三公里。",
+    "exampleFurigana": "ここから三[さん]キロです。"
+  },
+  "v096": {
+    "example": "お砂糖を百グラムください。",
+    "exampleMeaning": "請給我一百公克糖。",
+    "exampleFurigana": "お砂糖[さとう]を百[ひゃく]グラムください。"
+  },
+  "v1167": {
+    "example": "適当に選んでください。",
+    "exampleMeaning": "請適當地選／看著辦選一個。",
+    "exampleFurigana": "適当[てきとう]に選[えら]んでください。"
+  },
+  "v610": {
+    "example": "晩ごはんは何ですか。",
+    "exampleMeaning": "晚餐吃什麼？",
+    "exampleFurigana": "晩[ばん]ごはんは何[なん]ですか。"
+  },
+  "v1317": {
+    "meaning": "一；第一名",
+    "meaningEn": "one; first place",
+    "meaningZh": ["一", "第一名"],
+    "example": "クラスでいちばんです。",
+    "exampleMeaning": "在班上是第一名。",
+    "exampleFurigana": "クラスでいちばんです。"
   }
 }

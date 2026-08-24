@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-24T15:44:11.990Z",
+  "generatedAt": "2026-08-24T18:04:32.389Z",
   "total": 1500,
   "summary": {
     "meaning": 0,
@@ -107,8 +107,8 @@
         {
           "id": "v1317",
           "word": "いち",
-          "example": "彼の正位置はサードだ。",
-          "source": "openjlpt"
+          "example": "クラスでいちばんです。",
+          "source": "override"
         },
         {
           "id": "v1452",

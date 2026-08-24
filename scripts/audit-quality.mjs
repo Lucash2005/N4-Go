@@ -63,7 +63,7 @@ for (const c of cards) {
   if (!hasChinese(c.meaning)) {
     push('meaning', { id: c.id, word: c.word, meaning: c.meaning?.slice(0, 80) })
   }
-  if (c.exampleMeaning && !hasChinese(c.exampleMeaning)) {
+  if (c.exampleMeaning && (!hasChinese(c.exampleMeaning) || c.exampleMeaning.startsWith('例句大意：'))) {
     push('translation', {
       id: c.id,
       word: c.word,

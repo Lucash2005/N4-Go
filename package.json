@@ -18,7 +18,9 @@
     "postprocess:vocab": "node scripts/postprocess-vocab.mjs",
     "audit:vocab": "node scripts/audit-vocab.mjs",
     "audit:quality": "node scripts/audit-quality.mjs",
-    "build:example-zh": "node scripts/build-example-zh-cache.mjs"
+    "build:example-zh": "node scripts/build-example-zh-cache.mjs",
+    "build:example-zh:force": "FORCE=1 node scripts/build-example-zh-cache.mjs",
+    "build:example-zh:lazy": "ONLY_LAZY=1 node scripts/build-example-zh-cache.mjs"
   },
   "dependencies": {
     "edge-tts-universal": "^1.4.0",
