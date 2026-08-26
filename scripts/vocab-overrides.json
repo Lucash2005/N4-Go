@@ -657,5 +657,165 @@
     "example": "クラスでいちばんです。",
     "exampleMeaning": "在班上是第一名。",
     "exampleFurigana": "クラスでいちばんです。"
+  },
+  "v498": {
+    "meaning": "洗衣；洗衣服",
+    "meaningEn": "washing; laundry",
+    "meaningZh": ["洗衣", "洗衣服"],
+    "example": "今日は洗濯をします。",
+    "exampleMeaning": "今天要洗衣服。",
+    "exampleFurigana": "今日[きょう]は洗濯[せんたく]をします。"
+  },
+  "v1050": {
+    "meaning": "柔軟的；軟的",
+    "meaningEn": "soft; tender; flexible",
+    "meaningZh": ["柔軟的", "軟的"],
+    "example": "このパンは柔らかいです。",
+    "exampleMeaning": "這個麵包很軟。",
+    "exampleFurigana": "このパンは柔[やわ]らかいです。"
+  },
+  "v545": {
+    "meaning": "城鎮；街區",
+    "meaningEn": "town; neighborhood",
+    "meaningZh": ["城鎮", "街區"],
+    "example": "この町に住んでいます。",
+    "exampleMeaning": "我住在這個城鎮。",
+    "exampleFurigana": "この町[まち]に住[す]んでいます。"
+  },
+  "v420": {
+    "meaning": "七日；七號；七天",
+    "meaningEn": "7th day of the month; seven days",
+    "meaningZh": ["七日", "七號", "七天"],
+    "example": "七月七日は七夕です。",
+    "exampleMeaning": "七月七日是七夕。",
+    "exampleFurigana": "七月[しちがつ]七日[なのか]は七夕[たなばた]です。"
+  },
+  "v689": {
+    "meaning": "綠色；綠意",
+    "meaningEn": "green; greenery",
+    "meaningZh": ["綠色", "綠意"],
+    "example": "緑のシャツを着ています。",
+    "exampleMeaning": "穿著綠色的襯衫。",
+    "exampleFurigana": "緑[みどり]のシャツを着[き]ています。"
+  },
+  "v312": {
+    "meaning": "轉彎；彎曲",
+    "meaningEn": "to turn; to bend; to curve",
+    "meaningZh": ["轉彎", "彎曲"],
+    "example": "次の角を右へ曲ってください。",
+    "exampleMeaning": "請在下一個轉角右轉。",
+    "exampleFurigana": "次[つぎ]の角[かど]を右[みぎ]へ曲[まが]ってください。"
+  },
+  "v1127": {
+    "meaning": "加；加上",
+    "meaningEn": "to add (numbers); to add (something)",
+    "meaningZh": ["加", "加上"],
+    "example": "１足す２は３です。",
+    "exampleMeaning": "一加二等於三。",
+    "exampleFurigana": "１足[た]す２は３です。"
+  },
+  "v969": {
+    "meaning": "光；光線",
+    "meaningEn": "light; illumination; ray",
+    "meaningZh": ["光", "光線"],
+    "example": "窓から光が入っています。",
+    "exampleMeaning": "光線從窗戶照進來。",
+    "exampleFurigana": "窓[まど]から光[ひかり]が入[はい]っています。"
+  },
+  "v692": {
+    "meaning": "冰箱",
+    "meaningEn": "refrigerator; fridge",
+    "meaningZh": ["冰箱"],
+    "example": "牛乳は冷蔵庫に入れてください。",
+    "exampleMeaning": "請把牛奶放進冰箱。",
+    "exampleFurigana": "牛乳[ぎゅうにゅう]は冷蔵庫[れいぞうこ]に入[い]れてください。"
+  },
+  "v756": {
+    "meaning": "最近；近來",
+    "meaningEn": "these days; nowadays",
+    "meaningZh": ["最近", "近來"],
+    "example": "このごろ忙しいです。",
+    "exampleMeaning": "最近很忙。",
+    "exampleFurigana": "このごろ忙[いそが]しいです。"
+  },
+  "v609": {
+    "meaning": "吵鬧的；煩人的",
+    "meaningEn": "noisy; loud; annoying",
+    "meaningZh": ["吵鬧的", "煩人的"],
+    "example": "隣がうるさくて眠れません。",
+    "exampleMeaning": "隔壁太吵，睡不著。",
+    "exampleFurigana": "隣[となり]がうるさくて眠[ねむ]れません。"
+  },
+  "v181": {
+    "meaning": "奶油（butter）",
+    "meaningEn": "butter",
+    "meaningZh": ["奶油"],
+    "example": "パンにバターを塗ります。",
+    "exampleMeaning": "把奶油塗在麵包上。",
+    "exampleFurigana": "パンにバターを塗[ぬ]ります。"
+  },
+  "v335": {
+    "meaning": "給…看；出示",
+    "meaningEn": "to show; to display",
+    "meaningZh": ["給看", "出示"],
+    "example": "パスポートを見せてください。",
+    "exampleMeaning": "請出示護照。",
+    "exampleFurigana": "パスポートを見[み]せてください。"
+  },
+  "v062": {
+    "meaning": "嗯；是的",
+    "meaningEn": "yes; that is correct",
+    "meaningZh": ["嗯", "是的"],
+    "example": "ええ、そうです。",
+    "exampleMeaning": "嗯，是的。",
+    "exampleFurigana": "ええ、そうです。"
+  },
+  "v1197": {
+    "meaning": "入學",
+    "meaningEn": "admission (to a school); entrance; enrollment",
+    "meaningZh": ["入學"],
+    "example": "来年、大学に入学します。",
+    "exampleMeaning": "明年要進大學。",
+    "exampleFurigana": "来年[らいねん]、大学[だいがく]に入学[にゅうがく]します。"
+  },
+  "v153": {
+    "meaning": "但是；不過",
+    "meaningEn": "but; however; though",
+    "meaningZh": ["但是", "不過"],
+    "example": "雨です。でも、行きます。",
+    "exampleMeaning": "下雨了。但是，我還是去。",
+    "exampleFurigana": "雨[あめ]です。でも、行[い]きます。"
+  },
+  "v852": {
+    "meaning": "以下；不超過",
+    "meaningEn": "not more than; ... and under; below",
+    "meaningZh": ["以下", "不超過"],
+    "example": "十八歳以下は入れません。",
+    "exampleMeaning": "十八歲以下不得進入。",
+    "exampleFurigana": "十八[じゅうはち]歳[さい]以下[いか]は入[はい]れません。"
+  },
+  "v1073": {
+    "meaning": "榻榻米；草蓆",
+    "meaningEn": "tatami mat",
+    "meaningZh": ["榻榻米", "草蓆"],
+    "example": "和室に畳が敷いてあります。",
+    "exampleMeaning": "和室鋪著榻榻米。",
+    "exampleFurigana": "和室[わしつ]に畳[たたみ]が敷[し]いてあります。"
+  },
+  "v470": {
+    "meaning": "辣的；鹹的",
+    "meaningEn": "spicy; hot; salty",
+    "meaningZh": ["辣的", "鹹的"],
+    "example": "このカレーは辛いです。",
+    "exampleMeaning": "這道咖哩很辣。",
+    "exampleFurigana": "このカレーは辛[から]いです。"
+  },
+  "v555": {
+    "meaning": "貼；黏上",
+    "meaningEn": "to stick; to paste; to affix",
+    "meaningZh": ["貼", "黏上"],
+    "example": "手紙に切手を貼ってください。",
+    "exampleMeaning": "請在信上貼郵票。",
+    "exampleFurigana": "手紙[てがみ]に切手[きって]を貼[は]ってください。"
   }
 }
