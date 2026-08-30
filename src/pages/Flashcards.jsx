@@ -13,6 +13,7 @@ import { compactGlossLines, compactSenseGlosses, isChineseGloss } from '../utils
 
 const EXAMPLE_SOURCE_LABEL = {
   openjlpt: 'OpenJLPT',
+  jlpt: '日檢教材風',
   override: '手動校正',
   template: '安全模板',
   missing: '待補',
@@ -77,6 +78,9 @@ export default function Flashcards() {
     markListened,
     isStudied,
     grammarPath,
+    reportCardIssue,
+    reportReasons,
+    isCardReported,
   } = useProgress()
   const {
     showFurigana,
@@ -114,6 +118,10 @@ export default function Flashcards() {
   const [showMoreSenses, setShowMoreSenses] = useState(false)
   const [showMoreDetail, setShowMoreDetail] = useState(false)
   const [showNotes, setShowNotes] = useState(false)
+  const [showReport, setShowReport] = useState(false)
+  const [reportReasonsSelected, setReportReasonsSelected] = useState(() => ['meaning'])
+  const [reportNote, setReportNote] = useState('')
+  const [reportToast, setReportToast] = useState('')
 
   const todayMode = mode in MODE_META
   const srsMode = mode === 'today-vocab' || mode === 'today-grammar' || mode === 'today-review'
@@ -128,6 +136,7 @@ export default function Flashcards() {
 
     const q = query.trim().toLowerCase()
     const list = allBrowseCards().filter((card) => {
+      if (isCardReported?.(card.id)) return false
       if (typeFilter !== 'all' && card.type !== typeFilter) return false
       if (card.type === 'vocab') {
         if (levelFilter === 'core' && card.level === '延伸') return false
@@ -165,6 +174,7 @@ export default function Flashcards() {
     statusFilter,
     cardProgress,
     browseSeed,
+    isCardReported,
   ])
 
   const deck = sessionLeft ?? filtered
@@ -226,6 +236,9 @@ export default function Flashcards() {
     setShowMoreSenses(false)
     setShowMoreDetail(false)
     setShowNotes(false)
+    setShowReport(false)
+    setReportReasonsSelected(['meaning'])
+    setReportNote('')
     // eslint-disable-next-line react-hooks/exhaustive-deps -- only reload when the card changes
   }, [card?.id])
 
@@ -238,6 +251,45 @@ export default function Flashcards() {
       else copy[card.id] = next
       return copy
     })
+  }
+
+  function removeCardFromSession(cardId) {
+    setFlipped(false)
+    if (srsMode && sessionLeft) {
+      const nextDeck = sessionLeft.filter((c) => c.id !== cardId)
+      requestAnimationFrame(() => {
+        setSessionLeft(nextDeck)
+        setIndex((prev) => {
+          if (!nextDeck.length) return 0
+          return Math.min(prev, nextDeck.length - 1)
+        })
+      })
+      return
+    }
+    // Browse / listening: filtered list drops the card on next render
+    requestAnimationFrame(() => {
+      setIndex((prev) => Math.max(0, prev))
+    })
+  }
+
+  function toggleReportReason(id) {
+    setReportReasonsSelected((prev) => {
+      if (prev.includes(id)) {
+        const next = prev.filter((x) => x !== id)
+        return next.length ? next : prev
+      }
+      return [...prev, id]
+    })
+  }
+
+  function submitReport() {
+    if (!card || !reportCardIssue) return
+    if (!reportReasonsSelected.length) return
+    reportCardIssue(card, reportReasonsSelected, reportNote)
+    setShowReport(false)
+    setReportToast('已回報並隱藏，下次內容更新後再一併處理')
+    window.setTimeout(() => setReportToast(''), 2800)
+    removeCardFromSession(card.id)
   }
 
   /** Advance only after the card is face-up, so the next card never flashes its answer. */
@@ -842,6 +894,80 @@ export default function Flashcards() {
           )}
 
           <div className="mt-1">
+            {!showReport ? (
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation()
+                  setShowReport(true)
+                  setShowNotes(false)
+                }}
+                className="w-full rounded-2xl bg-white/80 px-4 py-2.5 text-sm text-ink-soft ring-1 ring-line hover:bg-foam"
+              >
+                回報問題（隱藏此卡直到下次更新）
+              </button>
+            ) : (
+              <div
+                className="surface soft-shadow rounded-3xl p-4 sm:p-5"
+                onClick={(e) => e.stopPropagation()}
+                onKeyDown={(e) => e.stopPropagation()}
+              >
+                <div className="mb-2 flex items-center justify-between gap-2">
+                  <p className="text-sm font-medium text-ink">回報問題並隱藏</p>
+                  <button
+                    type="button"
+                    onClick={() => setShowReport(false)}
+                    className="text-xs text-ink-soft underline-offset-2 hover:underline"
+                  >
+                    取消
+                  </button>
+                </div>
+                <p className="mb-3 text-xs leading-relaxed text-ink-soft">
+                  可多選問題類型。確認後此卡不會再出現，等內容更新後再一併處理。
+                </p>
+                <div className="flex flex-wrap gap-2">
+                  {(reportReasons || []).map((reason) => {
+                    const active = reportReasonsSelected.includes(reason.id)
+                    return (
+                      <button
+                        key={reason.id}
+                        type="button"
+                        onClick={() => toggleReportReason(reason.id)}
+                        className={`rounded-full px-3 py-1.5 text-xs transition ${
+                          active
+                            ? 'bg-coral/15 font-medium text-coral ring-1 ring-coral/40'
+                            : 'bg-foam text-ink-soft ring-1 ring-line hover:bg-white'
+                        }`}
+                      >
+                        {active ? '✓ ' : ''}
+                        {reason.label}
+                      </button>
+                    )
+                  })}
+                </div>
+                <textarea
+                  value={reportNote}
+                  onChange={(e) => setReportNote(e.target.value)}
+                  rows={2}
+                  placeholder="補充說明（選填）…"
+                  className="mt-3 w-full resize-y rounded-2xl border border-line bg-white/80 px-3 py-2.5 text-sm text-ink outline-none ring-sea/30 placeholder:text-ink-soft/70 focus:ring-2"
+                />
+                <button
+                  type="button"
+                  onClick={submitReport}
+                  disabled={!reportReasonsSelected.length}
+                  className="mt-3 w-full rounded-2xl bg-coral px-4 py-2.5 text-sm font-medium text-white hover:bg-coral/90 disabled:opacity-50"
+                >
+                  確認回報並隱藏
+                  {reportReasonsSelected.length > 1
+                    ? `（${reportReasonsSelected.length} 項）`
+                    : ''}
+                </button>
+              </div>
+            )}
+          </div>
+
+          <div className="mt-1">
             {!showNotes ? (
               <button
                 type="button"
@@ -898,6 +1024,12 @@ export default function Flashcards() {
               </div>
             )}
           </div>
+
+          {reportToast ? (
+            <p className="animate-fade-up rounded-2xl bg-sea/10 px-4 py-2 text-center text-sm text-sea-deep">
+              {reportToast}
+            </p>
+          ) : null}
         </>
       )}
     </div>

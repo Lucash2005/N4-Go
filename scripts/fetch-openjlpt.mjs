@@ -11,7 +11,7 @@ const OUT_DIR = join(ROOT, 'data/openjlpt')
 const BASE =
   'https://raw.githubusercontent.com/evanclan/OpenJLPT/main/data/json/vocab'
 
-const LEVELS = ['n5', 'n4', 'n3']
+const LEVELS = ['n5', 'n4', 'n3', 'n2']
 
 async function fetchLevel(level) {
   const url = `${BASE}/${level}.json`

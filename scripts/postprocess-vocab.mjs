@@ -7,11 +7,13 @@ import { readFileSync, writeFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { applyFuriganaOverrides } from './furigana-overrides.mjs'
+import { resolveExampleZh, isBadExampleZh } from './example-zh-cache.mjs'
 import {
   annotateHeadword,
   cleanEnGloss,
   hasChinese,
   isExampleValidForCard,
+  isMisleadingHomophoneExample,
   isTrivialExample,
   loadGlossary,
   translateEnGloss,
@@ -20,8 +22,13 @@ import {
 import {
   buildFallbackExample,
   clearOpenJlptExampleCache,
+  findJlptExtraExample,
   findOpenJlptExample,
   isWeakTemplateExample,
+  isUnnaturalHeadwordExample,
+  isBadGeneratedExample,
+  isLazyHeadwordExample,
+  loadJlptExtraExamples,
   primaryWriting,
 } from './example-frames.mjs'
 
@@ -110,6 +117,33 @@ function fixSenses(senses, glossary, cache) {
   })
 }
 
+function escapeRe(s = '') {
+  return String(s).replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+}
+
+/** Fix Kuroshiro homograph misreads when the card reading is known (角[かく]→角[かど]). */
+function fixHeadwordFurigana(furi, word, reading) {
+  if (!furi || !word || !reading) return furi
+  if (/一\[ひと\]つ|一\[ひと\]り|一\[ひと\]人/.test(furi)) return furi
+  const variants = String(reading)
+    .split(/[/／\s]/)
+    .map((s) => s.trim())
+    .filter(Boolean)
+  const re = new RegExp(`${escapeRe(word)}\\[([^\\]]+)\\]`)
+  const m = furi.match(re)
+  if (!m) return furi
+  const rb = m[1].split('/')[0]
+  if (variants.some((r) => rb === r || rb.startsWith(r) || r.startsWith(rb))) return furi
+  return furi.replace(re, `${word}[${variants[0]}]`)
+}
+
+function isNonsenseExample(example = '', card = {}) {
+  const ex = String(example || '').trim()
+  if (isUnnaturalHeadwordExample(ex, card)) return true
+  if (isBadGeneratedExample(ex, card)) return true
+  return false
+}
+
 function leftoverKanji(annotated = '') {
   const stripped = String(annotated).replace(
     /[\u4e00-\u9fff々〆ヵヶ]+(?:[\u3040-\u309f\u30a0-\u30ff]*)\[[^\]]+\]/g,
@@ -177,6 +211,21 @@ async function main() {
     if (surface && surface !== c.word) {
       c.word = surface
     }
+    if (c.reading && /\s/.test(c.reading)) {
+      c.reading = c.reading
+        .split(/\s+/)
+        .filter(Boolean)
+        .join('/')
+    }
+    // Suru-noun readings should not include する when headword is the noun (生産 not 生産する)
+    if (
+      c.reading &&
+      /する$/.test(c.reading) &&
+      c.word &&
+      !c.word.endsWith('する')
+    ) {
+      c.reading = c.reading.replace(/する$/, '')
+    }
 
     c.meaning = ensureZh(c.meaning, c.meaningEn, glossary, cache)
     if (c.meaningEn) {
@@ -197,31 +246,51 @@ async function main() {
       /^太郎.+は学生です/.test(c.example || '') &&
       !['ちゃん', 'さん', 'くん'].includes(c.word)
     const overrideHasExample = Boolean(patch?.example)
+    const isPlaceholderExample =
+      c.exampleSource === 'missing' ||
+      /例句準備中/.test(c.example || '') ||
+      (c.reviewFlags || []).includes('needs_example')
+    const exampleInvalid =
+      c.example &&
+      (isNonsenseExample(c.example, c) ||
+        isUnnaturalHeadwordExample(c.example, c) ||
+        isBadGeneratedExample(c.example, c) ||
+        !isExampleValidForCard(c.example, c.word, c.reading) ||
+        isMisleadingHomophoneExample(c.example, c.word)) &&
+      !isTrivialExample(c.example, c.word, c.reading)
     const needsExample =
       !overrideHasExample &&
-      (!isExampleValidForCard(c.example, c.word, c.reading) ||
+      (isPlaceholderExample ||
+        exampleInvalid ||
         isTrivialExample(c.example, c.word, c.reading) ||
         isWeakTemplateExample(c.example, c.word) ||
         suffixMisapplied)
 
+    const lazyExampleZh = c.exampleMeaning?.startsWith('例句大意：')
+    const idFix = loadJlptExtraExamples().byId.get(c.id)
+
     if (overrideHasExample) {
       c.exampleSource = 'override'
+    } else if (!overrideHasExample && idFix && (needsExample || lazyExampleZh)) {
+      c.example = idFix.example
+      c.exampleMeaning = idFix.exampleMeaning || c.exampleMeaning
+      c.exampleFurigana = ''
+      c.exampleSource = 'jlpt'
+      exFixed += 1
     } else if (needsExample) {
       const open = findOpenJlptExample(c)
       if (open?.ja) {
         c.example = open.ja
         const zh =
+          resolveExampleZh({ ja: open.ja, en: open.en || '' }) ||
           translateEnGloss(open.en || '', glossary) ||
           translateMeanings([open.en || ''], glossary)[0] ||
           ''
-        if (hasChinese(zh)) {
+        if (zh && !isBadExampleZh(zh, open.ja)) {
           c.exampleMeaning = zh
-        } else if (open.en && hasChinese(c.meaning)) {
-          // Keep OpenJLPT English until we have a proper ZH sentence gloss
-          c.exampleMeaning = open.en
-          c.reviewFlags = [...new Set([...(c.reviewFlags || []), 'needs_example_zh'])]
         } else {
           c.exampleMeaning = open.en || c.meaning
+          c.reviewFlags = [...new Set([...(c.reviewFlags || []), 'needs_example_zh'])]
         }
         c.exampleFurigana = ''
         c.exampleSource = 'openjlpt'
@@ -262,15 +331,66 @@ async function main() {
     }
 
     if (needsFurigana(c)) {
-      c.exampleFurigana = await annotateExample(kuroshiro, c.example)
+      c.exampleFurigana = fixHeadwordFurigana(
+        await annotateExample(kuroshiro, c.example),
+        c.word,
+        c.reading,
+      )
       furiFixed += 1
     } else if (!c.exampleFurigana) {
-      c.exampleFurigana = annotateHeadword(c.example, c.word, c.reading) || c.example
+      c.exampleFurigana =
+        fixHeadwordFurigana(
+          annotateHeadword(c.example, c.word, c.reading) || c.example,
+          c.word,
+          c.reading,
+        )
+    } else if (c.exampleFurigana) {
+      c.exampleFurigana = fixHeadwordFurigana(c.exampleFurigana, c.word, c.reading)
     }
 
     if (patch) {
       c = { ...c, ...patch }
       if (patch.example) c.exampleSource = 'override'
+      else if (patch.exampleMeaning && c.exampleSource === 'openjlpt') c.exampleSource = 'override'
+      if (patch.exampleMeaning && !isBadExampleZh(patch.exampleMeaning, c.example || patch.example || '')) {
+        c.reviewFlags = (c.reviewFlags || []).filter((f) => f !== 'needs_example_zh')
+      }
+    }
+
+    // Chinese gloss for example sentence — prefer JA→zh cache; never keep lazy/bad glosses.
+    // Manual overrides win: do not overwrite curated exampleMeaning.
+    if (!(patch && patch.exampleMeaning)) {
+      const jaEx = c.example || ''
+      const openForZh = findOpenJlptExample(c)
+      const enEx =
+        openForZh?.en ||
+        (c.exampleMeaning && !hasChinese(c.exampleMeaning) ? String(c.exampleMeaning) : '') ||
+        ''
+      let zhEx = resolveExampleZh({ ja: jaEx, en: enEx })
+      if (
+        !zhEx &&
+        c.exampleMeaning &&
+        hasChinese(c.exampleMeaning) &&
+        !isBadExampleZh(c.exampleMeaning, jaEx)
+      ) {
+        zhEx = c.exampleMeaning
+      }
+      if (!zhEx && enEx) {
+        zhEx = translateEnGloss(enEx, glossary) || ''
+      }
+      if (zhEx && !isBadExampleZh(zhEx, jaEx)) {
+        c.exampleMeaning = zhEx
+        c.reviewFlags = (c.reviewFlags || []).filter((f) => f !== 'needs_example_zh')
+      } else if (
+        !c.exampleMeaning ||
+        isBadExampleZh(c.exampleMeaning, jaEx) ||
+        c.exampleMeaning.startsWith('例句大意：')
+      ) {
+        c.reviewFlags = [...new Set([...(c.reviewFlags || []), 'needs_example_zh'])]
+        if (c.exampleMeaning?.startsWith('例句大意：')) {
+          c.exampleMeaning = enEx || `（待補例句翻譯：${c.word}）`
+        }
+      }
     }
 
     out.push(c)

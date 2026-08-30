@@ -2,6 +2,7 @@ import { grammar } from '../data/grammar'
 import { GRAMMAR_PATH_VERSION, getGrammarPath, grammarUnlockRank } from '../data/grammarPath'
 import { FORM_CARDS } from '../data/verbForms'
 import { getVocabulary } from '../data/vocabulary'
+import { reportedIdSet } from './cardReports'
 import { getDueIds, isLearned, normalizeEntry } from './srs'
 import { todayKey } from './storage'
 
@@ -82,9 +83,11 @@ function pickByPriority(cards, count, seedStr, cardProgress, date = todayKey(), 
   if (count <= 0 || !cards.length) return []
 
   const { excludeLearned = false } = options
+  const hidden = options.hiddenIds || reportedIdSet()
+  const visible = hidden.size ? cards.filter((c) => !hidden.has(c.id)) : cards
   const pool = excludeLearned
-    ? cards.filter((c) => !isLearned(cardProgress[c.id], date))
-    : cards
+    ? visible.filter((c) => !isLearned(cardProgress[c.id], date))
+    : visible
   if (!pool.length) return []
 
   const newOnes = pool.filter((c) => !normalizeEntry(cardProgress[c.id], date))
@@ -123,16 +126,18 @@ function pickByPriority(cards, count, seedStr, cardProgress, date = todayKey(), 
 
 function pickGrammarByPath(count, seedStr, cardProgress, date = todayKey(), options = {}) {
   const { excludeLearned = false } = options
+  const hidden = options.hiddenIds || reportedIdSet()
   const path = getGrammarPath(date)
   const unlocked = new Set(path.unlockedIds)
-  let pool = grammar.filter((g) => unlocked.has(g.id))
+  let pool = grammar.filter((g) => unlocked.has(g.id) && !hidden.has(g.id))
   if (excludeLearned) {
     pool = pool.filter((c) => !isLearned(cardProgress[c.id], date))
   }
   if (!pool.length) {
-    const fallback = excludeLearned
+    const fallback = (excludeLearned
       ? grammar.filter((c) => !isLearned(cardProgress[c.id], date))
       : grammar
+    ).filter((c) => !hidden.has(c.id))
     return pickByPriority(fallback, count, seedStr, cardProgress, date, options)
   }
 
@@ -263,6 +268,7 @@ export function buildDailyPlan(date, cardProgress = {}, seedExtra = '', options 
   const pickOpts = {
     excludeLearned: options.excludeLearned ?? true,
     includeExtension: options.includeExtension ?? false,
+    hiddenIds: options.hiddenIds || reportedIdSet(),
   }
   const vocabQuota = Math.max(
     DAILY_QUOTA.vocab,
@@ -287,7 +293,10 @@ export function buildDailyPlan(date, cardProgress = {}, seedExtra = '', options 
   )
 
   const vocabulary = getVocabulary()
-  const allIds = [...vocabulary, ...grammar, ...FORM_CARDS].map((c) => c.id)
+  const hidden = pickOpts.hiddenIds
+  const allIds = [...vocabulary, ...grammar, ...FORM_CARDS]
+    .map((c) => c.id)
+    .filter((id) => !hidden.has(id))
   const reviewIds = getDueIds(cardProgress, allIds, DAILY_QUOTA.review, date)
 
   return {
@@ -312,7 +321,10 @@ export function resolveCards(ids) {
 /** Live due review queue from SRS schedule. */
 export function getLiveReviewIds(cardProgress = {}, limit = DAILY_QUOTA.review, date = todayKey()) {
   const vocabulary = getVocabulary()
-  const allIds = [...vocabulary, ...grammar, ...FORM_CARDS].map((c) => c.id)
+  const hidden = reportedIdSet()
+  const allIds = [...vocabulary, ...grammar, ...FORM_CARDS]
+    .map((c) => c.id)
+    .filter((id) => !hidden.has(id))
   return getDueIds(cardProgress, allIds, limit > 0 ? limit : 0, date)
 }
 

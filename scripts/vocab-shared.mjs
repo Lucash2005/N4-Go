@@ -22,18 +22,93 @@ export function isMostlyAscii(text = '') {
   return ascii / text.length > 0.55
 }
 
+/** OpenJLPT/Tatoeba often pairs a kanji with a homophone compound (十→十分, 山→山羊). */
+export function isMisleadingHomophoneExample(example = '', word = '') {
+  const ex = String(example || '')
+  const w = String(word || '').trim()
+  if (!ex || !w) return false
+  const traps = {
+    十: ['十分', '十円', '十回'],
+    山: ['山羊'],
+    一: ['一番乗', '一緒', '一人', '一旦', '一定'],
+    二: ['二十', '二人'],
+    三: ['三十', '三人'],
+    四: ['四十', '四人'],
+    五: ['五十', '五分', '五人'],
+    六: ['六十', '六回'],
+    七: ['七十', '七人'],
+    八: ['八十', '八人'],
+    九: ['九十', '九人', '九州'],
+    音: ['音楽', '発音', '音読'],
+    上: ['以上', '上手', '上着'],
+    服: ['一服', '退服'],
+    咳: ['出席', '欠席', '座席'],
+    席: ['咳払', '咳き込'],
+    紙: ['髪型', '白髪', '長髪'],
+    髪: ['紙幣', '用紙', '紙箱'],
+    石: ['意志', '意識'],
+    戸: ['京都', '都会', '都合'],
+    都: ['戸籍', '戸口', '戸棚'],
+  }
+  const patterns = traps[w]
+  if (!patterns) return false
+  return patterns.some((p) => ex.includes(p))
+}
+
 export function isExampleValidForCard(example = '', word = '', reading = '') {
   if (!example) return false
   if (isTrivialExample(example, word, reading)) return false
+  if (isMisleadingHomophoneExample(example, word)) return false
+
+  // 常見假名 ↔ 漢字（例句常用漢字形）
+  const kanaKanji = {
+    しょうゆ: ['醤油', 'しょうゆ'],
+    はく: ['履', 'はく', '靴', 'ズボン', 'パンツ'],
+    あびる: ['浴び', 'あび', 'シャワー'],
+    かっこう: ['格好', 'かっこ'],
+    かまう: ['構', '構う', '構っ'],
+    ねだん: ['値段', 'ねだん'],
+    とこや: ['床屋', 'とこや'],
+    うかがう: ['伺', 'うかが'],
+    しかる: ['叱'],
+    たて: ['たて', '縦'],
+    いただく: ['頂', 'いただ'],
+    ごらんになる: ['ごらん', '御覧'],
+    より: ['より'],
+    ほう: ['ほう', '方'],
+    すく: ['空', '空く', '空い'],
+    もうす: ['申', '申し'],
+    わかす: ['沸', '沸か'],
+  }
+  const keys = [
+    word,
+    ...String(word || '').split(/[/／、,，]/),
+    ...(String(reading || '').split(/[/／]/)),
+  ]
+    .map((k) => k.trim())
+    .filter(Boolean)
+  for (const key of keys) {
+    const alts = kanaKanji[key]
+    if (alts?.some((k) => example.includes(k))) return true
+  }
 
   // Only when headword itself is short kana (ちゃん ≠ ちゃんと)
   if (word && isKana(word) && word.length <= 3) {
     if (hasShortKanaMatch(example, word)) return true
-    if (reading && hasShortKanaMatch(example, reading)) return true
-    return false
+    for (const part of String(reading || '').split(/[/／]/)) {
+      const r = part.trim()
+      if (r && hasShortKanaMatch(example, r)) return true
+    }
+    if (word.length <= 2) return false
   }
 
   if (reading && example.includes(reading)) return true
+
+  // Alternate readings (じゃ/じゃあ)
+  for (const part of String(reading || '').split(/[/／]/)) {
+    const r = part.trim()
+    if (r && example.includes(r)) return true
+  }
 
   if (word && example.includes(word)) {
     // 短漢字如「足」嵌在「満足」等複合詞且讀音不在例句 → 不匹配
@@ -43,7 +118,12 @@ export function isExampleValidForCard(example = '', word = '', reading = '') {
       reading &&
       !example.includes(reading)
     ) {
-      return hasStandaloneKanjiUse(example, word)
+      if (hasStandaloneKanjiUse(example, word)) return true
+      // 允許複合詞尾：夕御飯、電話番号
+      const idx = example.indexOf(word)
+      const after = example[idx + word.length]
+      if (idx >= 0 && (!after || !/[\u4e00-\u9fff]/.test(after))) return true
+      return false
     }
     return true
   }
@@ -58,7 +138,13 @@ export function isTrivialExample(example = '', word = '', reading = '') {
     .replace(/[。．.！!？?\s]/g, '')
     .trim()
   if (!plain) return true
-  if (word && plain === word) return true
+  if (word && plain === word) {
+    // Allow set phrases used as full examples (こんにちは。／すみません。)
+    if (/^(こんにちは|すみません|ありがとう|おはよう|こんばんは|さようなら)$/.test(word)) {
+      return false
+    }
+    return true
+  }
   if (reading && plain === reading) return true
   return false
 }
@@ -116,12 +202,24 @@ export function containsWordOrReading(example = '', word = '', reading = '') {
     const stem = reading.slice(0, -2)
     if (stem && example.includes(`${stem}し`)) return true
   }
-  const stem = (reading || word || '').replace(/する$/, '').replace(/る$/, '')
+  // Verb stems: 呼ぶ→よび／呼, 磨く→みがき／磨, 済む→すみ／済, 食べる→たべ
+  const godanOrIchidan = /[るうくぐすつぬぶむゆ]$/
+  const stem = (reading || word || '').replace(/する$/, '').replace(godanOrIchidan, '')
   if (stem.length >= 2 && example.includes(stem)) return true
   if (word && /[\u4e00-\u9fff]/.test(word)) {
-    const kanjiStem = word.replace(/する$/, '').replace(/る$/, '')
-    if (kanjiStem.length >= 1 && example.includes(kanjiStem)) return true
+    const kanjiStem = word.replace(/する$/, '').replace(godanOrIchidan, '')
+    if (kanjiStem.length >= 1 && example.includes(kanjiStem)) {
+      // 單漢字避免嵌進複合詞（足→満足）
+      if (kanjiStem.length === 1) {
+        if (hasStandaloneKanjiUse(example, kanjiStem)) return true
+      } else {
+        return true
+      }
+    }
   }
+  // Kana headword ↔ kanji form with same reading stem (楽む ↔ 楽しむ)
+  if (reading && reading.includes('たのし') && /楽し/.test(example)) return true
+  if (reading && reading.includes('みる') && /見[るれ]?/.test(example)) return true
   return false
 }
 

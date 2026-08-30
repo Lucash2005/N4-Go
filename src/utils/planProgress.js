@@ -237,7 +237,7 @@ function buildRemedies({
   if (vocabBehind) {
     const daily = Math.min(40, Math.max(20, Math.ceil(vocabGap / Math.max(7, Math.floor(daysToExam / 8)))))
     items.push({
-      title: `單字加速：今天會自動排約 ${daily} 個`,
+      title: `單字加速：今天可手動加量至約 ${daily} 個`,
       detail:
         learnedVocab >= appVocab
           ? `App 內 ${appVocab} 字已幾乎學完；請優先清 SRS 到期。`
