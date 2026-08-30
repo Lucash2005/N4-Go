@@ -202,11 +202,20 @@ export function containsWordOrReading(example = '', word = '', reading = '') {
     const stem = reading.slice(0, -2)
     if (stem && example.includes(`${stem}し`)) return true
   }
-  const stem = (reading || word || '').replace(/する$/, '').replace(/る$/, '')
+  // Verb stems: 呼ぶ→よび／呼, 磨く→みがき／磨, 済む→すみ／済, 食べる→たべ
+  const godanOrIchidan = /[るうくぐすつぬぶむゆ]$/
+  const stem = (reading || word || '').replace(/する$/, '').replace(godanOrIchidan, '')
   if (stem.length >= 2 && example.includes(stem)) return true
   if (word && /[\u4e00-\u9fff]/.test(word)) {
-    const kanjiStem = word.replace(/する$/, '').replace(/る$/, '')
-    if (kanjiStem.length >= 1 && example.includes(kanjiStem)) return true
+    const kanjiStem = word.replace(/する$/, '').replace(godanOrIchidan, '')
+    if (kanjiStem.length >= 1 && example.includes(kanjiStem)) {
+      // 單漢字避免嵌進複合詞（足→満足）
+      if (kanjiStem.length === 1) {
+        if (hasStandaloneKanjiUse(example, kanjiStem)) return true
+      } else {
+        return true
+      }
+    }
   }
   // Kana headword ↔ kanji form with same reading stem (楽む ↔ 楽しむ)
   if (reading && reading.includes('たのし') && /楽し/.test(example)) return true
