@@ -254,7 +254,7 @@ function applyResults(items) {
   saveJson(VOCAB_OVERRIDES_PATH, vocabOverrides)
   saveJson(GRAMMAR_OVERRIDES_PATH, grammarOverrides)
   console.log(JSON.stringify({ appliedVocab: vPatch, appliedGrammar: gPatch }, null, 2))
-  console.log('Next: npm run postprocess:vocab && npm run apply:grammar-overrides')
+  console.log('Next: npm run postprocess:vocab && npm run apply:grammar-overrides && npm run build:content-updates')
   return { vPatch, gPatch }
 }
 

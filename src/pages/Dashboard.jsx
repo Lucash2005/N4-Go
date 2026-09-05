@@ -6,6 +6,7 @@ import ProgressBar from '../components/ProgressBar'
 import { DRILL_BANK_SIZE } from '../data/drill'
 import { useProgress } from '../hooks/useProgress'
 import { getPlanProgress } from '../utils/planProgress'
+import { checkContentUpdates, getTodayKey } from '../utils/contentUpdates'
 
 export default function Dashboard() {
   const {
@@ -48,6 +49,9 @@ export default function Dashboard() {
   } = useProgress()
   const [exportMsg, setExportMsg] = useState('')
   const [vocabMsg, setVocabMsg] = useState('')
+  const [contentCheckMsg, setContentCheckMsg] = useState('')
+  const [contentChecking, setContentChecking] = useState(false)
+  const [todayUpdateCount, setTodayUpdateCount] = useState(0)
 
   const doneCount = dailyTasks.filter((t) => t.done).length
   const quizRate =
@@ -103,6 +107,59 @@ export default function Dashboard() {
           {vocabMsg ? <p className="mt-2 text-xs text-sea-deep">{vocabMsg}</p> : null}
         </section>
       ) : null}
+
+      <section className="rounded-3xl border border-line bg-foam/60 p-4 sm:p-5">
+        <div className="flex flex-wrap items-start justify-between gap-3">
+          <div>
+            <h2 className="font-display text-lg font-bold text-ink">檢查今日內容更新</h2>
+            <p className="mt-1 text-sm text-ink-soft">
+              確認今天用的字卡／文法是否已修正。已更新的卡片會標「已更新」，回報時不會重複送 Gemini，省免費額度。
+            </p>
+          </div>
+          <button
+            type="button"
+            disabled={contentChecking}
+            onClick={async () => {
+              setContentChecking(true)
+              try {
+                const result = await checkContentUpdates({
+                  vocabPending: vocabUpdatePending,
+                })
+                setTodayUpdateCount(result.todayCount)
+                setContentCheckMsg(result.message)
+                if (vocabUpdatePending) {
+                  try {
+                    await applyVocabUpdate()
+                    setVocabMsg('已載入最新詞彙')
+                  } catch {
+                    setVocabMsg('詞彙載入失敗，請稍後再試')
+                  }
+                }
+              } catch {
+                setContentCheckMsg('檢查失敗，請稍後再試')
+              } finally {
+                setContentChecking(false)
+              }
+            }}
+            className="rounded-full bg-sea px-4 py-2 text-sm text-white hover:bg-sea-deep disabled:opacity-50"
+          >
+            {contentChecking ? '檢查中…' : '檢查今日更新'}
+          </button>
+        </div>
+        {contentCheckMsg ? (
+          <p className="mt-2 text-xs text-sea-deep">{contentCheckMsg}</p>
+        ) : (
+          <p className="mt-2 text-xs text-ink-soft">今天（{getTodayKey()}）· 內容版 v{CONTENT_VERSION}</p>
+        )}
+        {todayUpdateCount > 0 ? (
+          <p className="mt-2 text-xs text-ink-soft">
+            <Link to="/flashcards?status=updated" className="text-sea-deep underline-offset-2 hover:underline">
+              查看 {todayUpdateCount} 張已更新卡片
+            </Link>
+          </p>
+        ) : null}
+      </section>
+
 
       <section className="surface soft-shadow animate-fade-up stagger-1 rounded-3xl p-5 sm:p-6">
         <div className="flex flex-wrap items-start justify-between gap-3">

@@ -37,6 +37,15 @@ import { getFilterStatus, GRADE_LABELS, normalizeEntry } from '../utils/srs'
 import { speakJapanese, speechTextForCard, audioClipForCard, stopSpeaking } from '../utils/tts'
 import { frontPromptForCard, scriptFormsForCard } from '../utils/scriptForms'
 import { reviewCardWithGemini } from '../utils/geminiReview'
+import {
+  bumpGeminiDayUsage,
+  checkContentUpdates,
+  fetchContentUpdates,
+  getCachedGeminiReview,
+  getGeminiDayUsage,
+  isCardContentUpdated,
+  setCachedGeminiReview,
+} from '../utils/contentUpdates'
 
 function allBrowseCards() {
   return [...getVocabulary(), ...grammar, ...FORM_CARDS]
@@ -112,7 +121,10 @@ export default function Flashcards() {
   const [query, setQuery] = useState('')
   const [typeFilter, setTypeFilter] = useState('all')
   const [levelFilter, setLevelFilter] = useState('core') // core = N5+N4
-  const [statusFilter, setStatusFilter] = useState('all')
+  const [statusFilter, setStatusFilter] = useState(() => {
+    const s = searchParams.get('status')
+    return s === 'updated' || s === 'learned' || s === 'review' ? s : 'all'
+  })
   const [index, setIndex] = useState(0)
   const [flipped, setFlipped] = useState(false)
   const [voiceEngine, setVoiceEngine] = useState(null)
@@ -132,6 +144,26 @@ export default function Flashcards() {
   const [geminiError, setGeminiError] = useState('')
   const [geminiAnalysis, setGeminiAnalysis] = useState('')
   const [geminiKeyDraft, setGeminiKeyDraft] = useState('')
+  const [contentManifest, setContentManifest] = useState(null)
+  const [updateCheckMsg, setUpdateCheckMsg] = useState('')
+  const [updateChecking, setUpdateChecking] = useState(false)
+  const [geminiSkipReason, setGeminiSkipReason] = useState('')
+
+
+  useEffect(() => {
+    let cancelled = false
+    ;(async () => {
+      try {
+        const manifest = await fetchContentUpdates()
+        if (!cancelled) setContentManifest(manifest)
+      } catch {
+        /* ignore */
+      }
+    })()
+    return () => {
+      cancelled = true
+    }
+  }, [])
 
   const todayMode = mode in MODE_META
   const srsMode = mode === 'today-vocab' || mode === 'today-grammar' || mode === 'today-review'
@@ -155,8 +187,12 @@ export default function Flashcards() {
         if (levelFilter === '延伸' && card.level !== '延伸') return false
         // levelFilter === 'all' → no level restriction
       }
-      const status = getFilterStatus(cardProgress, card.id)
-      if (statusFilter !== 'all' && status !== statusFilter) return false
+      if (statusFilter === 'updated') {
+        if (!isCardContentUpdated(card.id, contentManifest)) return false
+      } else {
+        const status = getFilterStatus(cardProgress, card.id)
+        if (statusFilter !== 'all' && status !== statusFilter) return false
+      }
       if (!q) return true
       const hay = [card.word, card.reading, card.meaning, card.meaningEn, card.example, card.category]
         .filter(Boolean)
@@ -185,9 +221,11 @@ export default function Flashcards() {
     cardProgress,
     browseSeed,
     isCardReported,
+    contentManifest,
   ])
 
   const deck = sessionLeft ?? filtered
+
 
   useEffect(() => subscribePlaylist(setPlaylist), [])
 
@@ -239,6 +277,9 @@ export default function Flashcards() {
   const safeIndex = deck.length ? Math.min(index, deck.length - 1) : 0
   const card = withMemory(deck[safeIndex])
   const entry = card ? getEntry?.(card.id) || normalizeEntry(cardProgress[card.id]) : null
+
+  const cardIsUpdated = Boolean(card && isCardContentUpdated(card.id, contentManifest))
+  const geminiDayUsage = getGeminiDayUsage()
 
   // Keep note draft in sync with the current card; avoid leaking previous card's text
   useEffect(() => {
@@ -292,8 +333,30 @@ export default function Flashcards() {
     })
   }
 
-  async function runGeminiReview(targetCard = card, keyOverride = '') {
+  async function runGeminiReview(targetCard = card, keyOverride = '', { force = false } = {}) {
     if (!targetCard) return
+    setGeminiSkipReason('')
+
+    if (!force) {
+      const cached = getCachedGeminiReview(targetCard.id)
+      if (cached?.text) {
+        setGeminiAnalysis(cached.text)
+        setReportNote(cached.text)
+        setGeminiError('')
+        setGeminiSkipReason('cache')
+        return
+      }
+      if (isCardContentUpdated(targetCard.id, contentManifest)) {
+        const msg =
+          '此卡已在內容更新中修正過，略過自動送 Gemini（省額度）。若更新後仍有錯，請直接回報；需要可按「重新檢查」。'
+        setGeminiAnalysis('')
+        setReportNote(msg)
+        setGeminiError('')
+        setGeminiSkipReason('updated')
+        return
+      }
+    }
+
     const key = String(keyOverride || geminiApiKey || '').trim()
     if (!key) {
       setGeminiError('missing_key')
@@ -316,6 +379,8 @@ export default function Flashcards() {
       )
       return
     }
+    setCachedGeminiReview(targetCard.id, result.text, { model: result.model || '' })
+    bumpGeminiDayUsage()
     setGeminiAnalysis(result.text)
     setReportNote(result.text)
   }
@@ -326,8 +391,22 @@ export default function Flashcards() {
     setReportReasonsSelected(['meaning'])
     setGeminiAnalysis('')
     setGeminiError('')
+    setGeminiSkipReason('')
     setGeminiKeyDraft(geminiApiKey || '')
-    void runGeminiReview(card, geminiApiKey)
+    void runGeminiReview(card, geminiApiKey, { force: false })
+  }
+
+  async function handleCheckContentUpdates() {
+    setUpdateChecking(true)
+    try {
+      const result = await checkContentUpdates({ vocabPending: false })
+      setContentManifest(result.manifest)
+      setUpdateCheckMsg(result.message)
+    } catch {
+      setUpdateCheckMsg('檢查失敗，請稍後再試')
+    } finally {
+      setUpdateChecking(false)
+    }
   }
 
   function submitReport() {
@@ -755,10 +834,36 @@ export default function Flashcards() {
             >
               只看需複習
             </FilterChip>
+            <FilterChip
+              active={statusFilter === 'updated'}
+              onClick={() =>
+                onFilterChange(setStatusFilter, statusFilter === 'updated' ? 'all' : 'updated')
+              }
+            >
+              只看已更新
+            </FilterChip>
           </div>
           <p className="text-xs text-ink-soft">預設只顯示 N5／N4；延伸詞庫錯誤較多，需手動開啟。</p>
         </section>
       ) : null}
+
+      <div className="flex flex-wrap items-center gap-2">
+        <button
+          type="button"
+          onClick={() => void handleCheckContentUpdates()}
+          disabled={updateChecking}
+          className="rounded-full bg-foam px-3 py-1.5 text-xs font-medium text-sea-deep ring-1 ring-line hover:bg-sea/10 disabled:opacity-50"
+        >
+          {updateChecking ? '檢查中…' : '檢查今日內容更新'}
+        </button>
+        {updateCheckMsg ? (
+          <span className="text-xs text-ink-soft">{updateCheckMsg}</span>
+        ) : (
+          <span className="text-xs text-ink-soft">
+            今日 Gemini 已用 {geminiDayUsage.count} 次（本機計數）
+          </span>
+        )}
+      </div>
 
       <p className="text-xs text-ink-soft">
         {srsMode
@@ -825,6 +930,11 @@ export default function Flashcards() {
                 <Badge>
                   {card.type === 'vocab' ? '單字' : card.type === 'form' ? '活用' : '文法'}
                 </Badge>
+                {cardIsUpdated ? (
+                  <span className="ml-2 rounded-full bg-sea/15 px-2 py-0.5 text-xs font-medium text-sea-deep">
+                    已更新
+                  </span>
+                ) : null}
                 <p className="mt-6 font-display text-4xl font-bold text-ink sm:text-5xl">
                   {card.type === 'vocab'
                     ? frontPromptForCard(card, promptScript)
@@ -865,6 +975,11 @@ export default function Flashcards() {
                 className="[grid-area:stack] [backface-visibility:hidden] [transform:rotateY(180deg)] overflow-y-auto overscroll-contain"
               >
                 <Badge>{card.category}</Badge>
+                {cardIsUpdated ? (
+                  <span className="ml-2 rounded-full bg-sea/15 px-2 py-0.5 text-xs font-medium text-sea-deep">
+                    已更新
+                  </span>
+                ) : null}
                 {card.level ? (
                   <span className="ml-2 rounded-full bg-foam px-2 py-0.5 text-xs text-ink-soft">
                     {card.level}
@@ -997,8 +1112,18 @@ export default function Flashcards() {
                   </button>
                 </div>
                 <p className="mb-3 text-xs leading-relaxed text-ink-soft">
-                  只選問題類型。開啟時會把本卡字義＋例句送 Gemini 檢查，結果寫入下方補充說明，方便之後修正參考。
+                  只選問題類型。若此卡尚未更新／尚未檢查過，會自動送 Gemini；已更新或本版已檢查過會略過，避免重複耗額度。更新後若仍有錯再回報即可。
                 </p>
+                {geminiSkipReason === 'updated' ? (
+                  <p className="mb-2 rounded-2xl bg-sea/10 px-3 py-2 text-xs text-sea-deep">
+                    已略過 API：此卡在內容更新清單中。請先核對修正後內容；仍有錯再回報。
+                  </p>
+                ) : null}
+                {geminiSkipReason === 'cache' ? (
+                  <p className="mb-2 rounded-2xl bg-foam px-3 py-2 text-xs text-ink-soft">
+                    已略過 API：沿用本版先前的 Gemini 檢查結果。
+                  </p>
+                ) : null}
                 <div className="flex flex-wrap gap-2">
                   {(reportReasons || []).map((reason) => {
                     const active = reportReasonsSelected.includes(reason.id)
@@ -1065,7 +1190,7 @@ export default function Flashcards() {
                   <button
                     type="button"
                     disabled={geminiChecking}
-                    onClick={() => void runGeminiReview(card)}
+                    onClick={() => void runGeminiReview(card, geminiApiKey, { force: true })}
                     className="text-xs text-sea-deep underline-offset-2 hover:underline disabled:opacity-50"
                   >
                     重新檢查

@@ -1,0 +1,7 @@
+{
+  "contentVersion": 26,
+  "updatedAt": "2026-09-05T00:00:00.000Z",
+  "days": {},
+  "ids": [],
+  "note": "Populated by scripts/build-content-updates.mjs after Gemini/apply batches."
+}

@@ -17,6 +17,8 @@
     "validate:vocab": "node scripts/validate-vocab.mjs",
     "postprocess:vocab": "node scripts/postprocess-vocab.mjs",
     "apply:grammar-overrides": "node scripts/apply-grammar-overrides.mjs",
+    "build:content-updates": "node scripts/build-content-updates.mjs",
+    "build:content-updates:batch": "node scripts/build-content-updates.mjs --from-batch",
     "gemini:batch": "node scripts/batch-gemini-fix.mjs",
     "gemini:batch:resume": "node scripts/batch-gemini-fix.mjs --resume",
     "gemini:batch:apply": "node scripts/batch-gemini-fix.mjs --apply-only",
