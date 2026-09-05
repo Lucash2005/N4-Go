@@ -1,7 +1,34 @@
+import { grammarOverrides } from './grammarOverrides.js'
+
 /** @typedef {{ id: string, type: 'grammar', word: string, reading: string, meaning: string, example: string, exampleFurigana?: string, exampleMeaning: string, category: string, pattern: string }} GrammarCard */
 
+/**
+ * @param {GrammarCard[]} cards
+ * @returns {GrammarCard[]}
+ */
+function withGrammarOverrides(cards) {
+  return cards.map((card) => {
+    const patch = grammarOverrides?.[card.id]
+    if (!patch || typeof patch !== 'object') return card
+    const next = { ...card }
+    for (const key of [
+      'word',
+      'reading',
+      'meaning',
+      'pattern',
+      'example',
+      'exampleMeaning',
+      'exampleFurigana',
+      'category',
+    ]) {
+      if (patch[key] != null && String(patch[key]).length > 0) next[key] = patch[key]
+    }
+    return next
+  })
+}
+
 /** @type {GrammarCard[]} */
-export const grammar = [
+const grammarBase = [
   {
     id: "g001",
     type: 'grammar',
@@ -963,3 +990,7 @@ export const grammar = [
     category: "決定",
   },
 ]
+
+export { grammarBase }
+/** @type {GrammarCard[]} */
+export const grammar = withGrammarOverrides(grammarBase)

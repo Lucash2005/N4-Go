@@ -12,6 +12,9 @@ dist
 dist-ssr
 *.local
 
+# Gemini batch checkpoints (regenerable; may be large)
+data/gemini-batch-results.json
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
