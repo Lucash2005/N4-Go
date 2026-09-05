@@ -3,8 +3,14 @@
  * API key is device-local (settings); never invent a key server-side.
  */
 
-const GEMINI_MODEL = 'gemini-2.0-flash'
-const ENDPOINT = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent`
+/** Prefer current Flash models; try fallbacks if one ID is retired. */
+const GEMINI_MODELS = [
+  'gemini-2.5-flash',
+  'gemini-2.5-flash-lite',
+  'gemini-flash-latest',
+]
+
+const API_BASE = 'https://generativelanguage.googleapis.com/v1beta/models'
 
 function cardSnapshot(card = {}) {
   return {
@@ -49,11 +55,29 @@ export function buildGeminiReviewPrompt(card = {}) {
 同音異義注意：（無關則寫「無」）`
 }
 
+async function callGeminiModel(model, key, prompt, signal) {
+  const url = `${API_BASE}/${model}:generateContent?key=${encodeURIComponent(key)}`
+  const res = await fetch(url, {
+    method: 'POST',
+    signal,
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      contents: [{ role: 'user', parts: [{ text: prompt }] }],
+      generationConfig: {
+        temperature: 0.2,
+        maxOutputTokens: 512,
+      },
+    }),
+  })
+  const body = await res.text().catch(() => '')
+  return { res, body }
+}
+
 /**
  * @param {object} card
  * @param {string} apiKey
  * @param {{ signal?: AbortSignal }} [opts]
- * @returns {Promise<{ ok: boolean, text: string, error?: string }>}
+ * @returns {Promise<{ ok: boolean, text: string, error?: string, model?: string }>}
  */
 export async function reviewCardWithGemini(card, apiKey, opts = {}) {
   const key = String(apiKey || '').trim()
@@ -66,43 +90,48 @@ export async function reviewCardWithGemini(card, apiKey, opts = {}) {
   }
 
   const prompt = buildGeminiReviewPrompt(card)
-  const url = `${ENDPOINT}?key=${encodeURIComponent(key)}`
+  let lastError = ''
 
   try {
-    const res = await fetch(url, {
-      method: 'POST',
-      signal: opts.signal,
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        contents: [{ role: 'user', parts: [{ text: prompt }] }],
-        generationConfig: {
-          temperature: 0.2,
-          maxOutputTokens: 512,
-        },
-      }),
-    })
-
-    if (!res.ok) {
-      const body = await res.text().catch(() => '')
-      return {
-        ok: false,
-        text: '',
-        error: `http_${res.status}${body ? `: ${body.slice(0, 180)}` : ''}`,
+    for (const model of GEMINI_MODELS) {
+      const { res, body } = await callGeminiModel(model, key, prompt, opts.signal)
+      if (res.status === 404) {
+        lastError = `http_404: ${body.slice(0, 180)}`
+        continue
       }
+      if (!res.ok) {
+        return {
+          ok: false,
+          text: '',
+          error: `http_${res.status}${body ? `: ${body.slice(0, 180)}` : ''}`,
+        }
+      }
+
+      let data
+      try {
+        data = JSON.parse(body)
+      } catch {
+        return { ok: false, text: '', error: 'invalid_json' }
+      }
+
+      const text =
+        data?.candidates?.[0]?.content?.parts
+          ?.map((p) => p.text || '')
+          .join('')
+          .trim() || ''
+
+      if (!text) {
+        return { ok: false, text: '', error: 'empty_response', model }
+      }
+
+      return { ok: true, text: text.slice(0, 1200), model }
     }
 
-    const data = await res.json()
-    const text =
-      data?.candidates?.[0]?.content?.parts
-        ?.map((p) => p.text || '')
-        .join('')
-        .trim() || ''
-
-    if (!text) {
-      return { ok: false, text: '', error: 'empty_response' }
+    return {
+      ok: false,
+      text: '',
+      error: lastError || 'no_available_model',
     }
-
-    return { ok: true, text: text.slice(0, 1200) }
   } catch (err) {
     if (err?.name === 'AbortError') {
       return { ok: false, text: '', error: 'aborted' }
