@@ -249,9 +249,14 @@
     "exampleFurigana": "静[しず]かな所[ところ]が好[す]きです。"
   },
   "v650": {
-    "example": "毎日日本語を勉強します。",
-    "exampleMeaning": "我每天學日文。",
-    "exampleFurigana": "毎日[まいにち]日本語[にほんご]を勉強[べんきょう]します。"
+    "example": "毎日勉強します。",
+    "exampleMeaning": "每天讀書。",
+    "exampleFurigana": "毎日[まいにち]勉強[べんきょう]します。",
+    "meaning": "每天",
+    "meaningEn": "every day",
+    "meaningZh": [
+      "每天"
+    ]
   },
   "v1285": {
     "word": "立てる",
@@ -361,16 +366,16 @@
   },
   "v521": {
     "reading": "おおぜい",
-    "meaning": "很多人；大批人",
-    "meaningEn": "crowd of people; many people",
+    "meaning": "很多人；多數人",
+    "meaningEn": "crowd; many people",
     "meaningZh": [
       "很多人",
-      "大批人"
+      "多數人"
     ],
     "category": "生活",
-    "example": "大勢の人がいます。",
-    "exampleMeaning": "有很多人。",
-    "exampleFurigana": "大勢[おおぜい]の人[ひと]がいます。"
+    "example": "大勢来ました。",
+    "exampleMeaning": "來了很多人。",
+    "exampleFurigana": "大勢[おおぜい]来[き]ました。"
   },
   "v370": {
     "meaning": "今天早上；今晨",
@@ -471,8 +476,14 @@
     "exampleMeaning": "女士優先。"
   },
   "v868": {
-    "example": "毎日運動しています。",
-    "exampleMeaning": "每天運動。"
+    "example": "毎日運動します。",
+    "exampleMeaning": "每天運動。",
+    "meaning": "運動",
+    "meaningEn": "exercise; motion",
+    "meaningZh": [
+      "運動"
+    ],
+    "exampleFurigana": "毎日[まいにち]運動[うんどう]します。"
   },
   "v1052": {
     "example": "今日の会議に出席します。",
@@ -1330,5 +1341,381 @@
     "example": "都合がいいです。",
     "exampleMeaning": "方便／時間合適。",
     "exampleFurigana": "都合[つごう]がいいです。"
+  },
+  "v1191": {
+    "meaning": "特急（列車）",
+    "meaningEn": "limited express (train)",
+    "meaningZh": [
+      "特急",
+      "特快車"
+    ],
+    "example": "特急に乗ります。",
+    "exampleMeaning": "搭特急。",
+    "exampleFurigana": "特急[とっきゅう]に乗[の]ります。"
+  },
+  "v699": {
+    "meaning": "說；說話",
+    "meaningEn": "to speak; to talk",
+    "meaningZh": [
+      "說",
+      "說話"
+    ],
+    "example": "日本語を話します。",
+    "exampleMeaning": "說日語。",
+    "exampleFurigana": "日本語[にほんご]を話[はな]します。"
+  },
+  "v097": {
+    "meaning": "外套；大衣",
+    "meaningEn": "coat",
+    "meaningZh": [
+      "外套",
+      "大衣"
+    ],
+    "example": "コートを着ます。",
+    "exampleMeaning": "穿外套。",
+    "exampleFurigana": "コートを着[き]ます。"
+  },
+  "v871": {
+    "meaning": "遠處；遠方",
+    "meaningEn": "far away; distant place",
+    "meaningZh": [
+      "遠處",
+      "遠方"
+    ],
+    "example": "遠くに山が見えます。",
+    "exampleMeaning": "遠處看得到山。",
+    "exampleFurigana": "遠[とお]くに山[やま]が見[み]えます。"
+  },
+  "v346": {
+    "meaning": "五日；五號；五天",
+    "meaningEn": "5th day of the month; five days",
+    "meaningZh": [
+      "五日",
+      "五號",
+      "五天"
+    ],
+    "example": "五日に行きます。",
+    "exampleMeaning": "五號要去。",
+    "exampleFurigana": "五日[いつか]に行[い]きます。"
+  },
+  "v954": {
+    "meaning": "血",
+    "meaningEn": "blood",
+    "meaningZh": [
+      "血"
+    ],
+    "example": "血が出ました。",
+    "exampleMeaning": "流血了。",
+    "exampleFurigana": "血[ち]が出[で]ました。"
+  },
+  "v184": {
+    "meaning": "底片；膠卷",
+    "meaningEn": "film (camera)",
+    "meaningZh": [
+      "底片",
+      "膠卷"
+    ],
+    "example": "フィルムを買います。",
+    "exampleMeaning": "買底片。",
+    "exampleFurigana": "フィルムを買[か]います。"
+  },
+  "v144": {
+    "meaning": "打開；開啟；附上",
+    "meaningEn": "to turn on; to attach; to put on",
+    "meaningZh": [
+      "打開",
+      "開啟",
+      "附上"
+    ],
+    "kanji": "付ける",
+    "example": "電気を付けます。",
+    "exampleMeaning": "開燈。",
+    "exampleFurigana": "電気[でんき]を付[つ]けます。"
+  },
+  "v327": {
+    "meaning": "輕的",
+    "meaningEn": "light (weight); slight",
+    "meaningZh": [
+      "輕的"
+    ],
+    "example": "この荷物は軽いです。",
+    "exampleMeaning": "這個行李很輕。",
+    "exampleFurigana": "この荷物[にもつ]は軽[かる]いです。"
+  },
+  "v162": {
+    "meaning": "哪邊；哪個",
+    "meaningEn": "which; which way",
+    "meaningZh": [
+      "哪邊",
+      "哪個"
+    ],
+    "example": "どちらがいいですか。",
+    "exampleMeaning": "哪個比較好？",
+    "exampleFurigana": "どちらがいいですか。"
+  },
+  "v1208": {
+    "meaning": "他；男朋友",
+    "meaningEn": "he; boyfriend",
+    "meaningZh": [
+      "他",
+      "男朋友"
+    ],
+    "example": "彼は学生です。",
+    "exampleMeaning": "他是學生。",
+    "exampleFurigana": "彼[かれ]は学生[がくせい]です。"
+  },
+  "v859": {
+    "meaning": "養育；培養",
+    "meaningEn": "to raise; to bring up; to rear",
+    "meaningZh": [
+      "養育",
+      "培養"
+    ],
+    "example": "子どもを育てます。",
+    "exampleMeaning": "養育孩子。",
+    "exampleFurigana": "子どもを育[そだ]てます。"
+  },
+  "v914": {
+    "meaning": "關係",
+    "meaningEn": "relation; connection",
+    "meaningZh": [
+      "關係"
+    ],
+    "example": "関係があります。",
+    "exampleMeaning": "有關係。",
+    "exampleFurigana": "関係[かんけい]があります。"
+  },
+  "v552": {
+    "meaning": "繫緊；扭緊",
+    "meaningEn": "to tighten; to fasten",
+    "meaningZh": [
+      "繫緊",
+      "扭緊"
+    ],
+    "example": "ベルトを締めます。",
+    "exampleMeaning": "繫上皮帶。",
+    "exampleFurigana": "ベルトを締[し]めます。"
+  },
+  "v840": {
+    "meaning": "如果；萬一",
+    "meaningEn": "if; in case",
+    "meaningZh": [
+      "如果",
+      "萬一"
+    ],
+    "example": "もし雨なら行きません。",
+    "exampleMeaning": "如果下雨就不去。",
+    "exampleFurigana": "もし雨[あめ]なら行[い]きません。"
+  },
+  "v129": {
+    "meaning": "那個（離聽話人近）",
+    "meaningEn": "that (near the listener)",
+    "meaningZh": [
+      "那個"
+    ],
+    "example": "その本をください。",
+    "exampleMeaning": "請給我那本書。",
+    "exampleFurigana": "その本[ほん]をください。"
+  },
+  "v343": {
+    "meaning": "門；戶",
+    "meaningEn": "door; sliding door",
+    "meaningZh": [
+      "門",
+      "戶"
+    ],
+    "example": "戸を開けます。",
+    "exampleMeaning": "開門。",
+    "exampleFurigana": "戸[と]を開[あ]けます。"
+  },
+  "v697": {
+    "meaning": "六日；六號；六天",
+    "meaningEn": "6th day of the month; six days",
+    "meaningZh": [
+      "六日",
+      "六號",
+      "六天"
+    ],
+    "example": "六日に会います。",
+    "exampleMeaning": "六號見面。",
+    "exampleFurigana": "六日[むいか]に会[あ]います。"
+  },
+  "v786": {
+    "meaning": "務必；一定要",
+    "meaningEn": "by all means; definitely",
+    "meaningZh": [
+      "務必",
+      "一定要"
+    ],
+    "example": "ぜひ来てください。",
+    "exampleMeaning": "請務必來。",
+    "exampleFurigana": "ぜひ来[き]てください。"
+  },
+  "v074": {
+    "meaning": "洗手間；廁所",
+    "meaningEn": "toilet; restroom",
+    "meaningZh": [
+      "洗手間",
+      "廁所"
+    ],
+    "example": "お手洗いはどこですか。",
+    "exampleMeaning": "洗手間在哪裡？",
+    "exampleFurigana": "お手洗[てあら]いはどこですか。"
+  },
+  "v195": {
+    "meaning": "郵筒；郵箱",
+    "meaningEn": "mailbox; postbox",
+    "meaningZh": [
+      "郵筒",
+      "郵箱"
+    ],
+    "example": "ポストに入れます。",
+    "exampleMeaning": "投進郵筒。",
+    "exampleFurigana": "ポストに入[い]れます。"
+  },
+  "v459": {
+    "meaning": "擅長；做得好",
+    "meaningEn": "skillful; good at",
+    "meaningZh": [
+      "擅長",
+      "做得好"
+    ],
+    "example": "日本語が上手です。",
+    "exampleMeaning": "日語很好。",
+    "exampleFurigana": "日本語[にほんご]が上手[じょうず]です。"
+  },
+  "v579": {
+    "meaning": "二十歲",
+    "meaningEn": "20 years old",
+    "meaningZh": [
+      "二十歲"
+    ],
+    "example": "二十歳です。",
+    "exampleMeaning": "二十歲。",
+    "exampleFurigana": "二十歳[はたち]です。"
+  },
+  "v524": {
+    "meaning": "誰",
+    "meaningEn": "who",
+    "meaningZh": [
+      "誰"
+    ],
+    "example": "誰ですか。",
+    "exampleMeaning": "是誰？",
+    "exampleFurigana": "誰[だれ]ですか。"
+  },
+  "v1227": {
+    "meaning": "燒開；加熱",
+    "meaningEn": "to boil; to heat",
+    "meaningZh": [
+      "燒開",
+      "加熱"
+    ],
+    "example": "お湯を沸かします。",
+    "exampleMeaning": "燒開水。",
+    "exampleFurigana": "お湯[ゆ]を沸[わ]かします。"
+  },
+  "v539": {
+    "meaning": "穿（衣服）",
+    "meaningEn": "to wear (clothes above the waist)",
+    "meaningZh": [
+      "穿（衣服）"
+    ],
+    "example": "服を着ます。",
+    "exampleMeaning": "穿衣服。",
+    "exampleFurigana": "服[ふく]を着[き]ます。"
+  },
+  "v1292": {
+    "meaning": "變冷；涼下來",
+    "meaningEn": "to grow cold; to cool down",
+    "meaningZh": [
+      "變冷",
+      "涼下來"
+    ],
+    "example": "部屋が冷えます。",
+    "exampleMeaning": "房間變冷了。",
+    "exampleFurigana": "部屋[へや]が冷[ひ]えます。"
+  },
+  "v125": {
+    "meaning": "然後；於是",
+    "meaningEn": "and; and then; thus",
+    "meaningZh": [
+      "然後",
+      "於是"
+    ],
+    "example": "勉強して、そうして寝ます。",
+    "exampleMeaning": "念書，然後睡覺。",
+    "exampleFurigana": "勉強[べんきょう]して、そうして寝[ね]ます。"
+  },
+  "v965": {
+    "meaning": "故障；損壞",
+    "meaningEn": "breakdown; malfunction",
+    "meaningZh": [
+      "故障",
+      "損壞"
+    ],
+    "example": "電車が故障しました。",
+    "exampleMeaning": "電車故障了。",
+    "exampleFurigana": "電車[でんしゃ]が故障[こしょう]しました。"
+  },
+  "v592": {
+    "meaning": "身高；背部",
+    "meaningEn": "height; stature; back",
+    "meaningZh": [
+      "身高",
+      "背部"
+    ],
+    "example": "背が高いです。",
+    "exampleMeaning": "個子高。",
+    "exampleFurigana": "背[せ]が高[たか]いです。"
+  },
+  "v716": {
+    "meaning": "拜訪；請教（謙讓語）",
+    "meaningEn": "to visit; to ask (humble)",
+    "meaningZh": [
+      "拜訪",
+      "請教（謙讓語）"
+    ],
+    "kanji": "伺う",
+    "word": "うかがう",
+    "reading": "うかがう",
+    "example": "先生に伺います。",
+    "exampleMeaning": "向老師請教。",
+    "exampleFurigana": "先生[せんせい]に伺[うかが]います。"
+  },
+  "v398": {
+    "meaning": "四日；四號；四天",
+    "meaningEn": "4th day of the month; four days",
+    "meaningZh": [
+      "四日",
+      "四號",
+      "四天"
+    ],
+    "example": "四日に行きます。",
+    "exampleMeaning": "四號要去。",
+    "exampleFurigana": "四日[よっか]に行[い]きます。"
+  },
+  "v777": {
+    "meaning": "空；餓",
+    "meaningEn": "to become empty; to get hungry",
+    "meaningZh": [
+      "空",
+      "餓"
+    ],
+    "kanji": "空く",
+    "example": "お腹が空きました。",
+    "exampleMeaning": "肚子餓了。",
+    "exampleFurigana": "お腹[なか]が空[す]きました。"
+  },
+  "v233": {
+    "meaning": "一個人；一人",
+    "meaningEn": "one person; alone",
+    "meaningZh": [
+      "一個人",
+      "一人"
+    ],
+    "example": "一人で行きます。",
+    "exampleMeaning": "一個人去。",
+    "exampleFurigana": "一人[ひとり]で行[い]きます。"
   }
 }

@@ -3,6 +3,8 @@ import { useLocalStorage } from './useLocalStorage'
 const DEFAULT_SETTINGS = {
   showFurigana: true,
   showExampleMeaning: true,
+  /** auto = card.word; kanji/kana = force that script on the front for writing practice */
+  promptScript: 'auto', // auto | kanji | kana
   ttsEngine: 'auto', // auto | system
   ttsRate: 0.88,
   loopPlayWord: true,
@@ -20,10 +22,15 @@ export function useSettings() {
 
   const merged = { ...DEFAULT_SETTINGS, ...settings }
 
+  const promptScript = ['auto', 'kanji', 'kana'].includes(settings.promptScript)
+    ? settings.promptScript
+    : 'auto'
+
   return {
     settings: merged,
     showFurigana: settings.showFurigana !== false,
     showExampleMeaning: settings.showExampleMeaning !== false,
+    promptScript,
     ttsEngine: settings.ttsEngine || 'auto',
     ttsRate: typeof settings.ttsRate === 'number' ? settings.ttsRate : 0.88,
     loopPlayWord: merged.loopPlayWord !== false,
@@ -32,6 +39,7 @@ export function useSettings() {
     loopPlayExampleMeaning: merged.loopPlayExampleMeaning === true,
     setShowFurigana: (v) => updateSetting('showFurigana', v),
     setShowExampleMeaning: (v) => updateSetting('showExampleMeaning', v),
+    setPromptScript: (v) => updateSetting('promptScript', v),
     setTtsEngine: (v) => updateSetting('ttsEngine', v),
     setTtsRate: (v) => updateSetting('ttsRate', v),
     setLoopPlayWord: (v) => updateSetting('loopPlayWord', v),

@@ -31,6 +31,7 @@ import {
   loadJlptExtraExamples,
   primaryWriting,
 } from './example-frames.mjs'
+import { resolveScriptForms } from './script-forms.mjs'
 
 const require = createRequire(import.meta.url)
 const Kuroshiro = require('kuroshiro').default || require('kuroshiro')
@@ -356,6 +357,11 @@ async function main() {
         c.reviewFlags = (c.reviewFlags || []).filter((f) => f !== 'needs_example_zh')
       }
     }
+
+    // Sense-safe script forms: never invent kanji from reading alone.
+    const forms = resolveScriptForms(c, patch?.kanji)
+    if (forms.kanji) c.kanji = forms.kanji
+    else delete c.kanji
 
     // Chinese gloss for example sentence — prefer JA→zh cache; never keep lazy/bad glosses.
     // Manual overrides win: do not overwrite curated exampleMeaning.

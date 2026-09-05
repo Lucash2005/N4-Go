@@ -35,6 +35,7 @@ import {
 } from '../utils/playlistPlayer'
 import { getFilterStatus, GRADE_LABELS, normalizeEntry } from '../utils/srs'
 import { speakJapanese, speechTextForCard, audioClipForCard, stopSpeaking } from '../utils/tts'
+import { frontPromptForCard, scriptFormsForCard } from '../utils/scriptForms'
 
 function allBrowseCards() {
   return [...getVocabulary(), ...grammar, ...FORM_CARDS]
@@ -87,6 +88,8 @@ export default function Flashcards() {
     setShowFurigana,
     showExampleMeaning,
     setShowExampleMeaning,
+    promptScript,
+    setPromptScript,
     ttsEngine,
     setTtsEngine,
     ttsRate,
@@ -498,6 +501,20 @@ export default function Flashcards() {
             {showExampleMeaning ? '中文解釋：顯示中' : '中文解釋：已隱藏'}
           </FilterChip>
           <FilterChip
+            active={promptScript !== 'auto'}
+            onClick={() =>
+              setPromptScript(
+                promptScript === 'auto' ? 'kana' : promptScript === 'kana' ? 'kanji' : 'auto',
+              )
+            }
+          >
+            {promptScript === 'kana'
+              ? '正面：平假名（練漢字）'
+              : promptScript === 'kanji'
+                ? '正面：漢字（練假名）'
+                : '正面：預設寫法'}
+          </FilterChip>
+          <FilterChip
             active={ttsEngine === 'auto'}
             onClick={() => setTtsEngine(ttsEngine === 'auto' ? 'system' : 'auto')}
           >
@@ -762,7 +779,9 @@ export default function Flashcards() {
                   {card.type === 'vocab' ? '單字' : card.type === 'form' ? '活用' : '文法'}
                 </Badge>
                 <p className="mt-6 font-display text-4xl font-bold text-ink sm:text-5xl">
-                  {card.word}
+                  {card.type === 'vocab'
+                    ? frontPromptForCard(card, promptScript)
+                    : card.word}
                 </p>
                 {hideReadingOnFront ? (
                   card.type === 'form' ? (
@@ -775,12 +794,20 @@ export default function Flashcards() {
                       <li>2. 對照：和哪條最容易混？</li>
                       <li>3. 造句：自己先想一句</li>
                     </ol>
+                  ) : promptScript === 'kana' ? (
+                    <p className="mt-3 text-base text-ink-soft">先想漢字寫法與意思，再翻面</p>
+                  ) : promptScript === 'kanji' ? (
+                    <p className="mt-3 text-base text-ink-soft">先想平假名讀音與意思，再翻面</p>
                   ) : (
                     <p className="mt-3 text-base text-ink-soft">先想讀音與意思，再翻面</p>
                   )
-                ) : showFurigana ? (
+                ) : showFurigana &&
+                  card.type === 'vocab' &&
+                  frontPromptForCard(card, promptScript) !== card.reading ? (
                   <p className="mt-3 text-xl text-sea-deep">{card.reading}</p>
-                ) : hasKanji(card.word) ? (
+                ) : showFurigana && card.type !== 'vocab' ? (
+                  <p className="mt-3 text-xl text-sea-deep">{card.reading}</p>
+                ) : !showFurigana && hasKanji(frontPromptForCard(card, promptScript)) ? (
                   <p className="mt-3 text-base text-ink-soft">音標已隱藏</p>
                 ) : null}
                 <p className="mt-8 text-base text-ink-soft">點擊查看釋義與例句</p>
@@ -812,6 +839,7 @@ export default function Flashcards() {
                     showZhMeaning={showZhMeaning}
                     showFurigana={showFurigana}
                     hideReadingOnFront={hideReadingOnFront}
+                    promptScript={promptScript}
                     showMoreSenses={showMoreSenses}
                     setShowMoreSenses={setShowMoreSenses}
                     showMoreDetail={showMoreDetail}
@@ -1041,6 +1069,7 @@ function VocabCardBack({
   showZhMeaning,
   showFurigana,
   hideReadingOnFront,
+  promptScript = 'auto',
   showMoreSenses,
   setShowMoreSenses,
   showMoreDetail,
@@ -1065,13 +1094,42 @@ function VocabCardBack({
     card.pos ||
     (card.senses || []).some((s) => !isChineseGloss(s.meaning)) ||
     (card.senses || []).some((s) => s.example || s.exampleZh)
+  const forms = scriptFormsForCard(card)
+  const frontPrompt = frontPromptForCard(card, promptScript)
+  const showKanjiLine = Boolean(forms.kanji)
+  const showKanaLine = Boolean(forms.kana)
+  const highlightKanji = frontPrompt === forms.kana && forms.kanji
+  const highlightKana = forms.kanji && frontPrompt === forms.kanji
 
   return (
     <div className="w-full text-left">
       <p className="mt-1 text-2xl font-bold leading-snug text-ink sm:text-3xl">
         {isChineseGloss(card.meaning) ? card.meaning.split(/[；;]/)[0].trim() : card.meaning}
       </p>
-      {(showFurigana || hideReadingOnFront) && card.reading ? (
+
+      {(showKanjiLine || showKanaLine) && (forms.kanji !== forms.kana || showKanaLine) ? (
+        <div className="mt-2 rounded-xl bg-sand/60 px-3 py-2 ring-1 ring-line/50">
+          <p className="text-[11px] font-medium text-sea-deep">寫法練習（與此字義／例句一致）</p>
+          <div className="mt-1 flex flex-wrap gap-x-4 gap-y-1 text-sm text-ink">
+            {showKanjiLine ? (
+              <p>
+                <span className="text-ink-soft">漢字：</span>
+                <span className={highlightKanji ? 'text-lg font-bold text-coral' : 'font-semibold'}>
+                  {forms.kanji}
+                </span>
+              </p>
+            ) : null}
+            {showKanaLine ? (
+              <p>
+                <span className="text-ink-soft">平假名：</span>
+                <span className={highlightKana ? 'text-lg font-bold text-coral' : 'font-semibold'}>
+                  {forms.kana}
+                </span>
+              </p>
+            ) : null}
+          </div>
+        </div>
+      ) : (showFurigana || hideReadingOnFront) && card.reading ? (
         <p className="mt-0.5 text-sm text-sea-deep">{card.reading}</p>
       ) : null}
 
