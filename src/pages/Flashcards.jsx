@@ -36,6 +36,7 @@ import {
 import { getFilterStatus, GRADE_LABELS, normalizeEntry } from '../utils/srs'
 import { speakJapanese, speechTextForCard, audioClipForCard, stopSpeaking } from '../utils/tts'
 import { frontPromptForCard, scriptFormsForCard } from '../utils/scriptForms'
+import { reviewCardWithGemini } from '../utils/geminiReview'
 
 function allBrowseCards() {
   return [...getVocabulary(), ...grammar, ...FORM_CARDS]
@@ -90,6 +91,8 @@ export default function Flashcards() {
     setShowExampleMeaning,
     promptScript,
     setPromptScript,
+    geminiApiKey,
+    setGeminiApiKey,
     ttsEngine,
     setTtsEngine,
     ttsRate,
@@ -125,6 +128,10 @@ export default function Flashcards() {
   const [reportReasonsSelected, setReportReasonsSelected] = useState(() => ['meaning'])
   const [reportNote, setReportNote] = useState('')
   const [reportToast, setReportToast] = useState('')
+  const [geminiChecking, setGeminiChecking] = useState(false)
+  const [geminiError, setGeminiError] = useState('')
+  const [geminiAnalysis, setGeminiAnalysis] = useState('')
+  const [geminiKeyDraft, setGeminiKeyDraft] = useState('')
 
   const todayMode = mode in MODE_META
   const srsMode = mode === 'today-vocab' || mode === 'today-grammar' || mode === 'today-review'
@@ -285,10 +292,50 @@ export default function Flashcards() {
     })
   }
 
+  async function runGeminiReview(targetCard = card, keyOverride = '') {
+    if (!targetCard) return
+    const key = String(keyOverride || geminiApiKey || '').trim()
+    if (!key) {
+      setGeminiError('missing_key')
+      setGeminiChecking(false)
+      setReportNote(
+        '尚未設定 Gemini API Key。請在下方貼上金鑰後按「重新檢查」，系統會把字卡（含例句）送去檢查語意用法，結果會填入此欄供回報與後續修正參考。',
+      )
+      return
+    }
+    setGeminiChecking(true)
+    setGeminiError('')
+    setReportNote('正在請 Gemini 檢查字義與例句用法…')
+    const result = await reviewCardWithGemini(targetCard, key)
+    setGeminiChecking(false)
+    if (!result.ok) {
+      setGeminiError(result.error || 'failed')
+      setGeminiAnalysis('')
+      setReportNote(
+        `Gemini 檢查失敗（${result.error || 'unknown'}）。仍可手動填寫補充說明後回報。`,
+      )
+      return
+    }
+    setGeminiAnalysis(result.text)
+    setReportNote(result.text)
+  }
+
+  function openReportPanel() {
+    setShowReport(true)
+    setShowNotes(false)
+    setReportReasonsSelected(['meaning'])
+    setGeminiAnalysis('')
+    setGeminiError('')
+    setGeminiKeyDraft(geminiApiKey || '')
+    void runGeminiReview(card, geminiApiKey)
+  }
+
   function submitReport() {
     if (!card || !reportCardIssue) return
     if (!reportReasonsSelected.length) return
-    reportCardIssue(card, reportReasonsSelected, reportNote)
+    reportCardIssue(card, reportReasonsSelected, reportNote, {
+      geminiAnalysis: geminiAnalysis || reportNote,
+    })
     setShowReport(false)
     setReportToast('已回報並隱藏，下次內容更新後再一併處理')
     window.setTimeout(() => setReportToast(''), 2800)
@@ -927,8 +974,7 @@ export default function Flashcards() {
                 type="button"
                 onClick={(e) => {
                   e.stopPropagation()
-                  setShowReport(true)
-                  setShowNotes(false)
+                  openReportPanel()
                 }}
                 className="w-full rounded-2xl bg-white/80 px-4 py-2.5 text-sm text-ink-soft ring-1 ring-line hover:bg-foam"
               >
@@ -951,7 +997,7 @@ export default function Flashcards() {
                   </button>
                 </div>
                 <p className="mb-3 text-xs leading-relaxed text-ink-soft">
-                  可多選問題類型。確認後此卡不會再出現，等內容更新後再一併處理。
+                  只選問題類型。開啟時會把本卡字義＋例句送 Gemini 檢查，結果寫入下方補充說明，方便之後修正參考。
                 </p>
                 <div className="flex flex-wrap gap-2">
                   {(reportReasons || []).map((reason) => {
@@ -964,7 +1010,7 @@ export default function Flashcards() {
                         className={`rounded-full px-3 py-1.5 text-xs transition ${
                           active
                             ? 'bg-coral/15 font-medium text-coral ring-1 ring-coral/40'
-                            : 'bg-foam text-ink-soft ring-1 ring-line hover:bg-white'
+                            : 'bg-foam text-ink-soft ring-1 ring-line hover:bg-foam'
                         }`}
                       >
                         {active ? '✓ ' : ''}
@@ -973,17 +1019,72 @@ export default function Flashcards() {
                     )
                   })}
                 </div>
+
+                {!geminiApiKey || geminiError === 'missing_key' ? (
+                  <div className="mt-3 rounded-2xl bg-foam/80 px-3 py-2.5 ring-1 ring-line">
+                    <p className="text-xs text-ink-soft">
+                      請貼上 Gemini API Key（只存在本機設定，用來自動檢查語意）。可到{' '}
+                      <a
+                        href="https://aistudio.google.com/apikey"
+                        target="_blank"
+                        rel="noreferrer"
+                        className="text-sea-deep underline-offset-2 hover:underline"
+                      >
+                        Google AI Studio
+                      </a>{' '}
+                      免費建立。
+                    </p>
+                    <div className="mt-2 flex flex-col gap-2 sm:flex-row">
+                      <input
+                        type="password"
+                        value={geminiKeyDraft}
+                        onChange={(e) => setGeminiKeyDraft(e.target.value)}
+                        placeholder="AIza…"
+                        className="w-full flex-1 rounded-xl border border-line bg-white/90 px-3 py-2 text-sm text-ink outline-none ring-sea/30 focus:ring-2"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const key = geminiKeyDraft.trim()
+                          setGeminiApiKey(key)
+                          void runGeminiReview(card, key)
+                        }}
+                        className="rounded-xl bg-sea px-3 py-2 text-xs font-medium text-white hover:bg-sea-deep"
+                      >
+                        儲存並檢查
+                      </button>
+                    </div>
+                  </div>
+                ) : null}
+
+                <div className="mt-3 flex items-center justify-between gap-2">
+                  <p className="text-xs font-medium text-sea-deep">
+                    補充說明（Gemini 語意檢查）
+                    {geminiChecking ? ' · 檢查中…' : geminiAnalysis ? ' · 已填入' : ''}
+                  </p>
+                  <button
+                    type="button"
+                    disabled={geminiChecking}
+                    onClick={() => void runGeminiReview(card)}
+                    className="text-xs text-sea-deep underline-offset-2 hover:underline disabled:opacity-50"
+                  >
+                    重新檢查
+                  </button>
+                </div>
                 <textarea
                   value={reportNote}
                   onChange={(e) => setReportNote(e.target.value)}
-                  rows={2}
-                  placeholder="補充說明（選填）…"
-                  className="mt-3 w-full resize-y rounded-2xl border border-line bg-white/80 px-3 py-2.5 text-sm text-ink outline-none ring-sea/30 placeholder:text-ink-soft/70 focus:ring-2"
+                  rows={7}
+                  placeholder="Gemini 檢查結果會顯示在這裡，也可自行修改…"
+                  className="mt-1.5 w-full resize-y rounded-2xl border border-line bg-white/80 px-3 py-2.5 text-sm leading-relaxed text-ink outline-none ring-sea/30 placeholder:text-ink-soft/70 focus:ring-2"
                 />
+                {geminiError && geminiError !== 'missing_key' ? (
+                  <p className="mt-1 text-xs text-coral">檢查失敗：{geminiError}</p>
+                ) : null}
                 <button
                   type="button"
                   onClick={submitReport}
-                  disabled={!reportReasonsSelected.length}
+                  disabled={!reportReasonsSelected.length || geminiChecking}
                   className="mt-3 w-full rounded-2xl bg-coral px-4 py-2.5 text-sm font-medium text-white hover:bg-coral/90 disabled:opacity-50"
                 >
                   確認回報並隱藏

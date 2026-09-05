@@ -400,7 +400,13 @@ export default function Dashboard() {
                     {(item.reasonLabels || [item.reasonLabel]).filter(Boolean).join('、')}
                   </span>
                   {item.note ? (
-                    <p className="mt-0.5 text-xs text-ink-soft">{item.note}</p>
+                    <p className="mt-0.5 whitespace-pre-wrap text-xs text-ink-soft line-clamp-6">
+                      {item.note}
+                    </p>
+                  ) : item.geminiAnalysis ? (
+                    <p className="mt-0.5 whitespace-pre-wrap text-xs text-ink-soft line-clamp-6">
+                      {item.geminiAnalysis}
+                    </p>
                   ) : null}
                 </div>
                 <button

@@ -4,15 +4,19 @@ import { loadJSON, saveJSON } from './storage'
 const STORAGE_KEY = 'reported-cards'
 
 export const REPORT_REASONS = [
-  { id: 'audio', label: '音檔不一致' },
   { id: 'meaning', label: '字義有誤／疑慮' },
-  { id: 'translation', label: '翻譯問題' },
-  { id: 'example', label: '例句有問題' },
-  { id: 'furigana', label: '振り仮名有誤' },
-  { id: 'reading', label: '讀音有誤' },
-  { id: 'ui', label: '畫面／排版問題' },
-  { id: 'other', label: '其他錯誤' },
+  { id: 'audio_reading', label: '音檔與音標問題' },
 ]
+
+const LEGACY_REASON_MAP = {
+  audio: 'audio_reading',
+  furigana: 'audio_reading',
+  reading: 'audio_reading',
+  translation: 'meaning',
+  example: 'meaning',
+  ui: 'meaning',
+  other: 'meaning',
+}
 
 const REASON_MAP = new Map(REPORT_REASONS.map((r) => [r.id, r]))
 
@@ -29,15 +33,31 @@ function normalizeReasonIds(reasonIds) {
   const seen = new Set()
   const out = []
   for (const id of list) {
-    if (!REASON_MAP.has(id) || seen.has(id)) continue
-    seen.add(id)
-    out.push(id)
+    const mapped = REASON_MAP.has(id) ? id : LEGACY_REASON_MAP[id]
+    if (!mapped || !REASON_MAP.has(mapped) || seen.has(mapped)) continue
+    seen.add(mapped)
+    out.push(mapped)
   }
-  return out.length ? out : ['other']
+  return out.length ? out : ['meaning']
 }
 
 function labelsFor(reasonIds) {
   return reasonIds.map((id) => REASON_MAP.get(id)?.label || id)
+}
+
+function cardSnapshot(card = {}) {
+  return {
+    word: card.word || '',
+    reading: card.reading || '',
+    kanji: card.kanji || '',
+    meaning: card.meaning || '',
+    meaningEn: card.meaningEn || '',
+    example: card.example || '',
+    exampleMeaning: card.exampleMeaning || '',
+    exampleFurigana: card.exampleFurigana || '',
+    level: card.level || '',
+    pos: card.pos || '',
+  }
 }
 
 /** Load reported cards — persists across content updates until user manually clears. */
@@ -71,11 +91,13 @@ export function isCardReported(id, store = loadReportedCards()) {
  * @param {string|string[]} reasonIds - one or more reason ids (multi-select)
  * @param {string} note
  * @param {object} store
+ * @param {{ geminiAnalysis?: string }} [extra]
  */
-export function reportCard(card, reasonIds, note = '', store = loadReportedCards()) {
+export function reportCard(card, reasonIds, note = '', store = loadReportedCards(), extra = {}) {
   if (!card?.id) return store
   const reasons = normalizeReasonIds(reasonIds)
   const reasonLabels = labelsFor(reasons)
+  const geminiAnalysis = String(extra.geminiAnalysis || '').trim().slice(0, 1200)
   const next = {
     contentVersion: CONTENT_VERSION,
     items: {
@@ -89,7 +111,9 @@ export function reportCard(card, reasonIds, note = '', store = loadReportedCards
         reasonLabel: reasonLabels.join('、'),
         reasons,
         reasonLabels,
-        note: String(note || '').trim().slice(0, 200),
+        note: String(note || '').trim().slice(0, 1200),
+        geminiAnalysis,
+        snapshot: cardSnapshot(card),
         at: new Date().toISOString(),
         contentVersion: CONTENT_VERSION,
       },

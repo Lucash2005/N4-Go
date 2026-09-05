@@ -5,6 +5,8 @@ const DEFAULT_SETTINGS = {
   showExampleMeaning: true,
   /** auto = card.word; kanji/kana = force that script on the front for writing practice */
   promptScript: 'auto', // auto | kanji | kana
+  /** Device-local Gemini API key for report-time meaning checks */
+  geminiApiKey: '',
   ttsEngine: 'auto', // auto | system
   ttsRate: 0.88,
   loopPlayWord: true,
@@ -25,12 +27,14 @@ export function useSettings() {
   const promptScript = ['auto', 'kanji', 'kana'].includes(settings.promptScript)
     ? settings.promptScript
     : 'auto'
+  const geminiApiKey = String(settings.geminiApiKey || '').trim()
 
   return {
     settings: merged,
     showFurigana: settings.showFurigana !== false,
     showExampleMeaning: settings.showExampleMeaning !== false,
     promptScript,
+    geminiApiKey,
     ttsEngine: settings.ttsEngine || 'auto',
     ttsRate: typeof settings.ttsRate === 'number' ? settings.ttsRate : 0.88,
     loopPlayWord: merged.loopPlayWord !== false,
@@ -40,6 +44,7 @@ export function useSettings() {
     setShowFurigana: (v) => updateSetting('showFurigana', v),
     setShowExampleMeaning: (v) => updateSetting('showExampleMeaning', v),
     setPromptScript: (v) => updateSetting('promptScript', v),
+    setGeminiApiKey: (v) => updateSetting('geminiApiKey', String(v || '').trim()),
     setTtsEngine: (v) => updateSetting('ttsEngine', v),
     setTtsRate: (v) => updateSetting('ttsRate', v),
     setLoopPlayWord: (v) => updateSetting('loopPlayWord', v),
