@@ -25,3 +25,7 @@ data/gemini-batch-results.json
 *.njsproj
 *.sln
 *.sw?
+
+# local secrets
+.env
+.env.*

@@ -32,8 +32,8 @@ const VOCAB_OVERRIDES_PATH = join(ROOT, 'scripts/vocab-overrides.json')
 const GRAMMAR_OVERRIDES_PATH = join(ROOT, 'data/grammar-overrides.json')
 
 const MODEL_CANDIDATES = [
-  'gemini-2.5-flash-lite',
-  'gemini-2.5-flash',
+  'gemini-3.5-flash-lite',
+  'gemini-3.6-flash',
   'gemini-flash-latest',
 ]
 const API_BASE = 'https://generativelanguage.googleapis.com/v1beta/models'
@@ -173,7 +173,6 @@ async function callModel(model, prompt) {
       temperature: 0.15,
       maxOutputTokens: 2048,
       responseMimeType: 'application/json',
-      thinkingConfig: { thinkingBudget: 0 },
     },
   }
   let res = await fetch(url, {
@@ -182,8 +181,8 @@ async function callModel(model, prompt) {
     body: JSON.stringify(payload),
   })
   let body = await res.text()
-  if (!res.ok && /thinkingConfig|responseMimeType|Unknown name/i.test(body)) {
-    delete payload.generationConfig.thinkingConfig
+  // Some models reject responseMimeType; retry plain text JSON.
+  if (!res.ok && /responseMimeType|Unknown name|INVALID_ARGUMENT/i.test(body)) {
     delete payload.generationConfig.responseMimeType
     res = await fetch(url, {
       method: 'POST',

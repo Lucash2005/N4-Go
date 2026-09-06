@@ -5,8 +5,8 @@
 
 /** Prefer Flash models; include lite / latest for 503 failover. */
 const GEMINI_MODELS = [
-  'gemini-2.5-flash-lite',
-  'gemini-2.5-flash',
+  'gemini-3.5-flash-lite',
+  'gemini-3.6-flash',
   'gemini-flash-latest',
 ]
 
@@ -224,7 +224,7 @@ function extractText(data) {
     .trim()
 }
 
-async function callGeminiModel(model, key, prompt, signal, { useThinkingConfig = true } = {}) {
+async function callGeminiModel(model, key, prompt, signal, { useThinkingConfig = false } = {}) {
   const url = `${API_BASE}/${model}:generateContent?key=${encodeURIComponent(key)}`
   const generationConfig = {
     temperature: 0.2,
