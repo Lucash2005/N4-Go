@@ -92,6 +92,10 @@ export default function Flashcards() {
     reportCardIssue,
     reportReasons,
     isCardReported,
+    toggleCardManuallyChecked,
+    isCardManuallyChecked,
+    getManualCheckStatus,
+    manualCheckedCount,
   } = useProgress()
   const {
     showFurigana,
@@ -123,7 +127,7 @@ export default function Flashcards() {
   const [levelFilter, setLevelFilter] = useState('core') // core = N5+N4
   const [statusFilter, setStatusFilter] = useState(() => {
     const s = searchParams.get('status')
-    return s === 'updated' || s === 'learned' || s === 'review' ? s : 'all'
+    return s === 'updated' || s === 'learned' || s === 'review' || s === 'checked' ? s : 'all'
   })
   const [index, setIndex] = useState(0)
   const [flipped, setFlipped] = useState(false)
@@ -190,6 +194,8 @@ export default function Flashcards() {
       }
       if (statusFilter === 'updated') {
         if (!isCardContentUpdated(card.id, contentManifest)) return false
+      } else if (statusFilter === 'checked') {
+        if (!isCardManuallyChecked?.(card.id)) return false
       } else {
         const status = getFilterStatus(cardProgress, card.id)
         if (statusFilter !== 'all' && status !== statusFilter) return false
@@ -223,6 +229,7 @@ export default function Flashcards() {
     browseSeed,
     isCardReported,
     contentManifest,
+    isCardManuallyChecked,
   ])
 
   const deck = sessionLeft ?? filtered
@@ -280,6 +287,9 @@ export default function Flashcards() {
   const entry = card ? getEntry?.(card.id) || normalizeEntry(cardProgress[card.id]) : null
 
   const cardIsUpdated = Boolean(card && isCardContentUpdated(card.id, contentManifest))
+  const manualCheck = card ? getManualCheckStatus?.(card) : null
+  const cardIsChecked = Boolean(manualCheck)
+  const cardCheckStale = Boolean(manualCheck?.stale)
   const geminiDayUsage = getGeminiDayUsage()
 
   // Keep note draft in sync with the current card; avoid leaking previous card's text
@@ -898,6 +908,14 @@ export default function Flashcards() {
             >
               只看已更新
             </FilterChip>
+            <FilterChip
+              active={statusFilter === 'checked'}
+              onClick={() =>
+                onFilterChange(setStatusFilter, statusFilter === 'checked' ? 'all' : 'checked')
+              }
+            >
+              只看已手動確認{manualCheckedCount ? `（${manualCheckedCount}）` : ''}
+            </FilterChip>
           </div>
           <p className="text-xs text-ink-soft">預設只顯示 N5／N4；延伸詞庫錯誤較多，需手動開啟。</p>
         </section>
@@ -991,6 +1009,17 @@ export default function Flashcards() {
                     已更新
                   </span>
                 ) : null}
+                {cardIsChecked ? (
+                  <span
+                    className={`ml-2 rounded-full px-2 py-0.5 text-xs font-medium ${
+                      cardCheckStale
+                        ? 'bg-sand text-ink ring-1 ring-line'
+                        : 'bg-sea/15 text-sea-deep'
+                    }`}
+                  >
+                    {cardCheckStale ? '已確認·內容有變' : '已手動確認'}
+                  </span>
+                ) : null}
                 <p className="mt-6 font-display text-4xl font-bold text-ink sm:text-5xl">
                   {card.type === 'vocab'
                     ? frontPromptForCard(card, promptScript)
@@ -1034,6 +1063,17 @@ export default function Flashcards() {
                 {cardIsUpdated ? (
                   <span className="ml-2 rounded-full bg-sea/15 px-2 py-0.5 text-xs font-medium text-sea-deep">
                     已更新
+                  </span>
+                ) : null}
+                {cardIsChecked ? (
+                  <span
+                    className={`ml-2 rounded-full px-2 py-0.5 text-xs font-medium ${
+                      cardCheckStale
+                        ? 'bg-sand text-ink ring-1 ring-line'
+                        : 'bg-sea/15 text-sea-deep'
+                    }`}
+                  >
+                    {cardCheckStale ? '已確認·內容有變' : '已手動確認'}
                   </span>
                 ) : null}
                 {card.level ? (
@@ -1105,7 +1145,8 @@ export default function Flashcards() {
               <p className="text-center text-sm text-ink-soft">翻面後評分，才會進入下一張</p>
             )
           ) : (
-            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+            <>
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
               <StatusButton
                 active={getFilterStatus(cardProgress, card.id) === 'learned'}
                 onClick={() =>
@@ -1131,12 +1172,24 @@ export default function Flashcards() {
                 需要複習
               </StatusButton>
               <StatusButton
-                className="col-span-2 sm:col-span-1"
+                active={cardIsChecked && !cardCheckStale}
+                onClick={() => toggleCardManuallyChecked?.(card)}
+                tone="sea"
+              >
+                {cardCheckStale ? '再確認內容' : cardIsChecked ? '取消手動確認' : '標記已手動確認'}
+              </StatusButton>
+              <StatusButton
                 onClick={() => setCardStatus(card.id, null)}
               >
                 清除標記
               </StatusButton>
             </div>
+            {cardCheckStale ? (
+              <p className="mt-2 text-center text-xs text-ink-soft">
+                你曾手動確認過這張卡，但內容已更新——請再核對後按「再確認內容」。確認紀錄不會因更新被清除。
+              </p>
+            ) : null}
+            </>
           )}
 
           <div className="mt-1">

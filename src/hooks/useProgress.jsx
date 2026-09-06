@@ -30,6 +30,13 @@ import {
   unreportCard as removeReport,
 } from '../utils/cardReports'
 import {
+  loadManualChecks,
+  markManuallyChecked,
+  unmarkManuallyChecked,
+  manualCheckStatus,
+  manualCheckedCount,
+} from '../utils/manualChecks'
+import {
   applyGrade,
   entryFromManualStatus,
   isLearned,
@@ -131,6 +138,7 @@ export function ProgressProvider({ children }) {
   })
   const [dailyPlan, setDailyPlan] = useLocalStorage('daily-plan', emptyDailyPlan(todayKey()))
   const [reportedStore, setReportedStore] = useState(() => loadReportedCards())
+  const [manualCheckStore, setManualCheckStore] = useState(() => loadManualChecks())
   const [quizStats, setQuizStats] = useLocalStorage('quiz-stats', {
     attempted: 0,
     correct: 0,
@@ -461,6 +469,25 @@ export function ProgressProvider({ children }) {
       setReportedStore(removeReport(id, reportedStore))
     }
 
+    function markCardManuallyChecked(card) {
+      if (!card?.id) return
+      setManualCheckStore(markManuallyChecked(card, manualCheckStore))
+    }
+
+    function unmarkCardManuallyChecked(id) {
+      if (!id) return
+      setManualCheckStore(unmarkManuallyChecked(id, manualCheckStore))
+    }
+
+    function toggleCardManuallyChecked(card) {
+      if (!card?.id) return
+      if (manualCheckStore.items?.[card.id]) {
+        setManualCheckStore(unmarkManuallyChecked(card.id, manualCheckStore))
+      } else {
+        setManualCheckStore(markManuallyChecked(card, manualCheckStore))
+      }
+    }
+
     function clearCardReports() {
       setReportedStore(clearAllReports())
     }
@@ -554,6 +581,12 @@ export function ProgressProvider({ children }) {
       reportedCount,
       reportReasons: REPORT_REASONS,
       isCardReported: (id) => Boolean(id && reportedStore.items?.[id]),
+      markCardManuallyChecked,
+      unmarkCardManuallyChecked,
+      toggleCardManuallyChecked,
+      isCardManuallyChecked: (id) => Boolean(id && manualCheckStore.items?.[id]),
+      getManualCheckStatus: (card) => manualCheckStatus(card, manualCheckStore),
+      manualCheckedCount: manualCheckedCount(manualCheckStore),
       grammarPath: getGrammarPath(plan.date || today),
       monthGrammarProgress: { ...monthPath, next: nextGrammar },
     }
@@ -568,6 +601,7 @@ export function ProgressProvider({ children }) {
     vocabReady,
     vocabUpdatePending,
     reportedStore,
+    manualCheckStore,
     setCardProgress,
     setDailyTasks,
     setDailyPlan,
