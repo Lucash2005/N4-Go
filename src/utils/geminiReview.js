@@ -36,34 +36,60 @@ function shortError(status, body = '') {
 }
 
 function cardSnapshot(card = {}) {
+  const word = String(card.word || '').trim()
+  const reading = String(card.reading || '').trim()
+  const kanji = String(card.kanji || '').trim()
+  // Prefer explicit kanji field; else word when it contains kanji.
+  const displayKanji = kanji || (/[\u4e00-\u9fff]/.test(word) ? word : '')
   return {
     id: card.id || '',
     type: card.type || 'vocab',
-    word: card.word || '',
-    reading: card.reading || '',
-    kanji: card.kanji || '',
+    word,
+    reading,
+    kanji: displayKanji,
     meaning: card.meaning || '',
     meaningEn: card.meaningEn || '',
-    example: card.example || '',
-    exampleMeaning: card.exampleMeaning || '',
-    exampleFurigana: card.exampleFurigana || '',
+    // Plain Japanese only — never bracket furigana (avoids 漢字音標黏在一起／重複).
+    example: String(card.example || '').trim(),
+    exampleMeaning: String(card.exampleMeaning || '').trim(),
     level: card.level || '',
     pos: card.pos || '',
+    pattern: card.pattern || '',
   }
 }
 
+/**
+ * Shared review instructions (API + copy-to-chat).
+ * Kanji and reading are always on separate lines.
+ */
 export function buildGeminiReviewPrompt(card = {}) {
   const snap = cardSnapshot(card)
-  return `你是日語教師。用繁體中文檢查這張 JLPT N5/N4 字卡：字義是否貼切、例句是否自然、中文翻譯是否正確。不要寫長文。
+  const levelHint =
+    snap.type === 'grammar'
+      ? '此為文法卡，請一併檢查接續／用法是否適合 JLPT N5～N4。'
+      : '此為單字卡，請確認字義與例句是否適合 JLPT N5～N4（常用、自然、好記）。'
+
+  const headLines = [
+    snap.kanji ? `漢字：${snap.kanji}` : null,
+    snap.reading ? `讀音（假名）：${snap.reading}` : null,
+    snap.word && snap.word !== snap.kanji ? `詞頭顯示：${snap.word}` : null,
+  ]
+    .filter(Boolean)
+    .join('\n')
+
+  return `你是日語教師。用繁體中文檢查這張 JLPT N5/N4 學習字卡。
+重點：① 中文／字義是否正確貼切 ② 例句是否自然、語意正確 ③ 是否適合 N5～N4（勿過難或過偏）④ 例句中文翻譯是否正確。
+${levelHint}
+不要寫長文。漢字與讀音已分行，請勿自行把注音黏在漢字後面。
 
 【字卡】
-詞頭：${snap.word}
-讀音：${snap.reading}
-漢字：${snap.kanji || snap.word}
-中文意思：${snap.meaning}
+編號：${snap.id || '（無）'}
+類型：${snap.type === 'grammar' ? '文法' : '單字'}
+${headLines}
+中文意思：${snap.meaning || '（無）'}
 英文意思：${snap.meaningEn || '（無）'}
-例句：${snap.example}
-例句中文：${snap.exampleMeaning}
+${snap.pattern ? `接續／句型：${snap.pattern}\n` : ''}例句（日文）：${snap.example || '（無）'}
+例句中文：${snap.exampleMeaning || '（無）'}
 
 請嚴格依下列格式完整輸出（每項一行，總長約 150～250 字，必須寫完所有欄位）：
 結論：OK 或 需修正
@@ -72,6 +98,11 @@ export function buildGeminiReviewPrompt(card = {}) {
 建議例句：…
 建議譯文：…
 同音注意：無 或 …`
+}
+
+/** Same prompt text for pasting into Gemini / ChatGPT web chat (no API). */
+export function buildChatCopyPrompt(card = {}) {
+  return buildGeminiReviewPrompt(card)
 }
 
 function extractText(data) {

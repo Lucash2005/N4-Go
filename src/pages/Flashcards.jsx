@@ -36,7 +36,7 @@ import {
 import { getFilterStatus, GRADE_LABELS, normalizeEntry } from '../utils/srs'
 import { speakJapanese, speechTextForCard, audioClipForCard, stopSpeaking } from '../utils/tts'
 import { frontPromptForCard, scriptFormsForCard } from '../utils/scriptForms'
-import { reviewCardWithGemini } from '../utils/geminiReview'
+import { buildChatCopyPrompt, reviewCardWithGemini } from '../utils/geminiReview'
 import {
   bumpGeminiDayUsage,
   checkContentUpdates,
@@ -148,6 +148,7 @@ export default function Flashcards() {
   const [updateCheckMsg, setUpdateCheckMsg] = useState('')
   const [updateChecking, setUpdateChecking] = useState(false)
   const [geminiSkipReason, setGeminiSkipReason] = useState('')
+  const [copyPromptMsg, setCopyPromptMsg] = useState('')
 
 
   useEffect(() => {
@@ -370,8 +371,9 @@ export default function Flashcards() {
     setGeminiError('')
     setReportNote('正在請 Gemini 檢查字義與例句用法…')
     let result = await reviewCardWithGemini(targetCard, key)
-    // One extra full pass if the fleet is busy — often recovers without tapping 重新檢查.
-    if (!result.ok && /503|429|忙碌|頻繁|high demand|unavailable/i.test(String(result.error || ''))) {
+    // Only auto-retry once on temporary overload (503), not on 429 quota —
+    // a second full model sweep would burn the free daily allowance faster.
+    if (!result.ok && /503|忙碌|high demand|unavailable/i.test(String(result.error || ''))) {
       setReportNote('伺服器忙碌，正在自動再試一次…')
       await new Promise((r) => setTimeout(r, 1200))
       result = await reviewCardWithGemini(targetCard, key)
@@ -394,6 +396,36 @@ export default function Flashcards() {
     setReportNote(result.text)
   }
 
+  async function copyPromptForSelfAsk(targetCard = card) {
+    if (!targetCard) return
+    const text = buildChatCopyPrompt(targetCard)
+    try {
+      if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(text)
+      } else {
+        const ta = document.createElement('textarea')
+        ta.value = text
+        ta.setAttribute('readonly', '')
+        ta.style.position = 'fixed'
+        ta.style.left = '-9999px'
+        document.body.appendChild(ta)
+        ta.select()
+        document.execCommand('copy')
+        document.body.removeChild(ta)
+      }
+      setCopyPromptMsg('已複製！可貼到 Gemini 網頁版詢問')
+      setReportNote((prev) =>
+        prev?.trim()
+          ? prev
+          : '（已複製檢查用提示到剪貼簿。也可在此手動寫問題後直接回報。）',
+      )
+    } catch {
+      setCopyPromptMsg('複製失敗，請長按文字手動複製')
+      setReportNote(text)
+    }
+    window.setTimeout(() => setCopyPromptMsg(''), 2800)
+  }
+
   function openReportPanel() {
     setShowReport(true)
     setShowNotes(false)
@@ -402,7 +434,22 @@ export default function Flashcards() {
     setGeminiError('')
     setGeminiSkipReason('')
     setGeminiKeyDraft(geminiApiKey || '')
-    void runGeminiReview(card, geminiApiKey, { force: false })
+    setCopyPromptMsg('')
+    // Do NOT auto-call the API on open — free-tier retries burn quota fast.
+    // Reuse local cache if present; otherwise wait for 「複製給自己問」or 「用 API 檢查」.
+    const cached = getCachedGeminiReview(card?.id)
+    if (cached?.text) {
+      setGeminiAnalysis(cached.text)
+      setReportNote(cached.text)
+      setGeminiSkipReason('cache')
+    } else if (isCardContentUpdated(card?.id, contentManifest)) {
+      setReportNote(
+        '此卡已在內容更新中修正過。若仍有錯請直接回報；或按「複製給自己問」貼到 Gemini 網頁檢查。',
+      )
+      setGeminiSkipReason('updated')
+    } else {
+      setReportNote('')
+    }
   }
 
   async function handleCheckContentUpdates() {
@@ -1121,8 +1168,28 @@ export default function Flashcards() {
                   </button>
                 </div>
                 <p className="mb-3 text-xs leading-relaxed text-ink-soft">
-                  只選問題類型。若此卡尚未更新／尚未檢查過，會自動送 Gemini；已更新或本版已檢查過會略過，避免重複耗額度。更新後若仍有錯再回報即可。
+                  只選問題類型即可回報。建議先按「複製給自己問」（不耗 API 額度），貼到 Gemini 網頁檢查；需要時再按「用 API 檢查」。
                 </p>
+                <div className="mb-3 flex flex-wrap gap-2">
+                  <button
+                    type="button"
+                    onClick={() => void copyPromptForSelfAsk(card)}
+                    className="rounded-full bg-sea/15 px-3 py-1.5 text-xs font-medium text-sea-deep ring-1 ring-sea/30 hover:bg-sea/25"
+                  >
+                    複製給自己問
+                  </button>
+                  <button
+                    type="button"
+                    disabled={geminiChecking}
+                    onClick={() => void runGeminiReview(card, geminiApiKey, { force: true })}
+                    className="rounded-full bg-foam px-3 py-1.5 text-xs font-medium text-ink-soft ring-1 ring-line hover:bg-foam/80 disabled:opacity-50"
+                  >
+                    {geminiChecking ? 'API 檢查中…' : '用 API 檢查'}
+                  </button>
+                  {copyPromptMsg ? (
+                    <span className="self-center text-xs text-sea-deep">{copyPromptMsg}</span>
+                  ) : null}
+                </div>
                 {geminiSkipReason === 'updated' ? (
                   <p className="mb-2 rounded-2xl bg-sea/10 px-3 py-2 text-xs text-sea-deep">
                     已略過 API：此卡在內容更新清單中。請先核對修正後內容；仍有錯再回報。
@@ -1202,7 +1269,7 @@ export default function Flashcards() {
                     onClick={() => void runGeminiReview(card, geminiApiKey, { force: true })}
                     className="text-xs text-sea-deep underline-offset-2 hover:underline disabled:opacity-50"
                   >
-                    重新檢查
+                    用 API 再查
                   </button>
                 </div>
                 <textarea
