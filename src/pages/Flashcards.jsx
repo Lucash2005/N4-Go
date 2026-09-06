@@ -369,13 +369,22 @@ export default function Flashcards() {
     setGeminiChecking(true)
     setGeminiError('')
     setReportNote('正在請 Gemini 檢查字義與例句用法…')
-    const result = await reviewCardWithGemini(targetCard, key)
+    let result = await reviewCardWithGemini(targetCard, key)
+    // One extra full pass if the fleet is busy — often recovers without tapping 重新檢查.
+    if (!result.ok && /503|429|忙碌|頻繁|high demand|unavailable/i.test(String(result.error || ''))) {
+      setReportNote('伺服器忙碌，正在自動再試一次…')
+      await new Promise((r) => setTimeout(r, 1200))
+      result = await reviewCardWithGemini(targetCard, key)
+    }
     setGeminiChecking(false)
     if (!result.ok) {
-      setGeminiError(result.error || 'failed')
+      const err = result.error || 'failed'
+      setGeminiError(err)
       setGeminiAnalysis('')
       setReportNote(
-        `Gemini 檢查失敗（${result.error || 'unknown'}）。仍可手動填寫補充說明後回報。`,
+        err === 'missing_key'
+          ? '尚未設定 Gemini API Key。請貼上金鑰後按「重新檢查」。'
+          : `Gemini 暫時無法檢查（${err}）。可直接手動填寫問題後回報，或稍後再按「重新檢查」。`,
       )
       return
     }

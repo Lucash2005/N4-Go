@@ -1717,5 +1717,15 @@
     "example": "一人で行きます。",
     "exampleMeaning": "一個人去。",
     "exampleFurigana": "一人[ひとり]で行[い]きます。"
+  },
+  "v563": {
+    "example": "冬は寒いです。",
+    "exampleMeaning": "冬天很冷。",
+    "exampleFurigana": "冬[ふゆ]は寒[さむ]いです。"
+  },
+  "v613": {
+    "example": "今日はとても疲れました。",
+    "exampleMeaning": "今天非常累。",
+    "exampleFurigana": "今日[きょう]はとても疲[つか]れました。"
   }
 }

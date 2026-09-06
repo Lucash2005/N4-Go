@@ -113,7 +113,7 @@ export default function Dashboard() {
           <div>
             <h2 className="font-display text-lg font-bold text-ink">檢查今日內容更新</h2>
             <p className="mt-1 text-sm text-ink-soft">
-              確認今天用的字卡／文法是否已修正。已更新的卡片會標「已更新」，回報時不會重複送 Gemini，省免費額度。
+              確認今天發佈的修正清單（不是重跑全庫檢查）。已列入的卡片會標「已更新」；回報時可略過重複送 Gemini。若例句仍怪，請回報後匯出給我修。
             </p>
           </div>
           <button
