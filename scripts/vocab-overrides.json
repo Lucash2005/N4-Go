@@ -23,7 +23,10 @@
   },
   "v023": {
     "meaning": "突然",
-    "meaningEn": "suddenly"
+    "meaningEn": "suddenly",
+    "example": "急に雨が降ってきた。",
+    "exampleFurigana": "",
+    "exampleMeaning": "突然下起雨來了。"
   },
   "v030": {
     "meaning": "拜見（敬語）",
@@ -302,9 +305,10 @@
     "exampleFurigana": "このパンは堅[かた]いです。"
   },
   "v141": {
-    "example": "お茶をちゃわんに入れてください。",
-    "exampleMeaning": "請把茶倒進碗裡。",
-    "exampleFurigana": "お茶[ちゃ]をちゃわんに入[い]れてください。"
+    "example": "ごみをちゃわんに入れてください。",
+    "exampleMeaning": "請把飯盛在碗裡。",
+    "exampleFurigana": "",
+    "kanji": "茶碗"
   },
   "v496": {
     "word": "川",
@@ -1643,9 +1647,9 @@
       "然後",
       "於是"
     ],
-    "example": "勉強して、そうして寝ます。",
-    "exampleMeaning": "念書，然後睡覺。",
-    "exampleFurigana": "勉強[べんきょう]して、そうして寝[ね]ます。"
+    "example": "ご飯を食べます。そして、宿題をします。",
+    "exampleMeaning": "吃飯。然後，寫作業。",
+    "exampleFurigana": ""
   },
   "v965": {
     "meaning": "故障；損壞",
@@ -1708,7 +1712,7 @@
     "exampleFurigana": "お腹[なか]が空[す]きました。"
   },
   "v233": {
-    "meaning": "一個人；一人",
+    "meaning": "一個人",
     "meaningEn": "one person; alone",
     "meaningZh": [
       "一個人",
@@ -1727,5 +1731,439 @@
     "example": "今日はとても疲れました。",
     "exampleMeaning": "今天非常累。",
     "exampleFurigana": "今日[きょう]はとても疲[つか]れました。"
+  },
+  "v029": {
+    "meaning": "說、講（謙讓語）",
+    "example": "社長に予定を申し上げます。",
+    "exampleFurigana": "",
+    "exampleMeaning": "向社長報告預定行程。"
+  },
+  "v038": {
+    "example": "彼はとても真面目な学生です。",
+    "exampleFurigana": "",
+    "exampleMeaning": "他是個非常認真的學生。"
+  },
+  "v041": {
+    "exampleMeaning": "請後天來。"
+  },
+  "v046": {
+    "meaning": "那個",
+    "example": "あの人は田中さんです。",
+    "exampleFurigana": "",
+    "exampleMeaning": "那個人是田中先生。"
+  },
+  "v050": {
+    "meaning": "有；存在（用於無生命物體）",
+    "example": "机の上に本がある。",
+    "exampleFurigana": "",
+    "exampleMeaning": "桌上有書。"
+  },
+  "v058": {
+    "meaning": "最；第一；最好的",
+    "example": "これがいちばん美味しいです。",
+    "exampleFurigana": "",
+    "exampleMeaning": "這個最好吃。"
+  },
+  "v065": {
+    "meaning": "肚子",
+    "example": "おなかが空きました。",
+    "exampleFurigana": "",
+    "exampleMeaning": "我肚子餓了。",
+    "kanji": "お腹"
+  },
+  "v069": {
+    "meaning": "點心、零食",
+    "example": "お菓子を食べてください。",
+    "exampleFurigana": "",
+    "exampleMeaning": "請吃點心。"
+  },
+  "v078": {
+    "example": "お風呂に入ります。",
+    "exampleFurigana": "",
+    "exampleMeaning": "我要洗澡。"
+  },
+  "v098": {
+    "example": "コーヒーを淹れます。",
+    "exampleFurigana": "",
+    "exampleMeaning": "我要泡咖啡。"
+  },
+  "v101": {
+    "meaning": "這邊、這裏（或我們這邊）",
+    "example": "こっちに来てください。",
+    "exampleFurigana": "",
+    "exampleMeaning": "請來這邊。"
+  },
+  "v102": {
+    "meaning": "杯子"
+  },
+  "v105": {
+    "meaning": "這個、這",
+    "example": "これは本です。",
+    "exampleFurigana": "",
+    "exampleMeaning": "這是書。"
+  },
+  "v106": {
+    "example": "こんな所に傘を忘れた。",
+    "exampleFurigana": "",
+    "exampleMeaning": "把傘忘在這種地方了。"
+  },
+  "v107": {
+    "meaning": "來吧、喂（表示催促或打氣）",
+    "example": "さあ、行こう。",
+    "exampleFurigana": "",
+    "exampleMeaning": "來吧，我們走吧。"
+  },
+  "v108": {
+    "meaning": "大後年",
+    "exampleMeaning": "大後年我將到日本留學。"
+  },
+  "v123": {
+    "meaning": "肥皂",
+    "kanji": "石鹸"
+  },
+  "v132": {
+    "meaning": "然後、而且、在那之後"
+  },
+  "v138": {
+    "example": "たばこを吸いますか。",
+    "exampleFurigana": "",
+    "exampleMeaning": "你會抽菸嗎？"
+  },
+  "v149": {
+    "meaning": "能夠、會",
+    "example": "日本語が少しできます。",
+    "exampleFurigana": "",
+    "exampleMeaning": "我會一點日語。",
+    "kanji": "出来る"
+  },
+  "v151": {
+    "meaning": "那麼",
+    "example": "では、はじめましょう。",
+    "exampleFurigana": "",
+    "exampleMeaning": "那麼，我們開始吧。"
+  },
+  "v155": {
+    "meaning": "門",
+    "example": "ドアを閉めてください。",
+    "exampleFurigana": "",
+    "exampleMeaning": "請把門關上。"
+  },
+  "v156": {
+    "example": "トイレはどこですか。",
+    "exampleFurigana": "",
+    "exampleMeaning": "請問洗手間在哪裡？"
+  },
+  "v159": {
+    "meaning": "請、請便",
+    "example": "どうぞお召し上がりください。",
+    "exampleFurigana": "",
+    "exampleMeaning": "請慢用。"
+  },
+  "v160": {
+    "meaning": "謝謝、實在是、總覺得",
+    "example": "どうもありがとうございます。",
+    "exampleFurigana": "",
+    "exampleMeaning": "非常謝謝您。"
+  },
+  "v165": {
+    "meaning": "哪位、誰（「だれ」的敬語）",
+    "example": "あの方（かた）はどなたですか。",
+    "exampleFurigana": "",
+    "exampleMeaning": "那個人是誰呢？"
+  },
+  "v173": {
+    "meaning": "新聞、報導",
+    "example": "テレビでニュースを見ます。",
+    "exampleFurigana": "",
+    "exampleMeaning": "看電視新聞。"
+  },
+  "v175": {
+    "meaning": "筆記本；筆記",
+    "example": "ノートをしまって。",
+    "exampleFurigana": "",
+    "exampleMeaning": "把筆記本收起來。"
+  },
+  "v178": {
+    "meaning": "穿（鞋子、褲子、裙子等）",
+    "example": "彼は新しい靴を履いている。",
+    "exampleFurigana": "",
+    "exampleMeaning": "他正穿著新鞋子。",
+    "kanji": "履く"
+  },
+  "v179": {
+    "example": "箸でご飯を食べる。",
+    "exampleFurigana": "",
+    "exampleMeaning": "用筷子吃飯。",
+    "kanji": "箸"
+  },
+  "v189": {
+    "example": "ベッドで寝ます。",
+    "exampleFurigana": "",
+    "exampleMeaning": "我在床上睡覺。"
+  },
+  "v197": {
+    "meaning": "飯店、旅館",
+    "example": "今、ホテルにいます。",
+    "exampleFurigana": "",
+    "exampleMeaning": "我現在在飯店裡。"
+  },
+  "v199": {
+    "meaning": "糟糕、不好吃",
+    "example": "まずいことになった。",
+    "exampleFurigana": "",
+    "exampleMeaning": "事情變得不妙了。",
+    "kanji": "不味い"
+  },
+  "v201": {
+    "meaning": "還；尚且",
+    "exampleMeaning": "你還在害怕嗎？"
+  },
+  "v204": {
+    "meaning": "大家、每個人",
+    "example": "みんな元気です。",
+    "exampleFurigana": "",
+    "exampleMeaning": "大家都很健康。"
+  },
+  "v205": {
+    "meaning": "公尺",
+    "exampleMeaning": "他丟了70公尺。"
+  },
+  "v211": {
+    "meaning": "經常；好好地",
+    "example": "よく見えない。",
+    "exampleFurigana": "",
+    "exampleMeaning": "看不太清楚。"
+  },
+  "v214": {
+    "meaning": "收錄音機",
+    "example": "ラジカセで音楽を聴きます。",
+    "exampleFurigana": ""
+  },
+  "v225": {
+    "meaning": "不同、不一樣、不對",
+    "exampleMeaning": "都說不是了。"
+  },
+  "v229": {
+    "example": "一月ほど日本に滞在します。",
+    "exampleFurigana": "",
+    "exampleMeaning": "在日本停留了大約一個月。"
+  },
+  "v231": {
+    "meaning": "大前年",
+    "example": "一昨年、私は日本へ行きました。",
+    "exampleFurigana": "",
+    "exampleMeaning": "大前年我去了日本。"
+  },
+  "v236": {
+    "meaning": "飲料",
+    "example": "冷たい飲み物が飲みたい。",
+    "exampleFurigana": "",
+    "exampleMeaning": "我想喝冰的飲料。"
+  },
+  "v237": {
+    "example": "水を飲みます。",
+    "exampleFurigana": "",
+    "exampleMeaning": "喝水。"
+  },
+  "v241": {
+    "meaning": "電影院",
+    "example": "週末に映画館へ行きます。",
+    "exampleFurigana": "",
+    "exampleMeaning": "週末要去電影院。"
+  },
+  "v256": {
+    "meaning": "下面、下方",
+    "example": "猫は机の下にいます。",
+    "exampleFurigana": "",
+    "exampleMeaning": "貓在桌子下面。"
+  },
+  "v267": {
+    "example": "私はカラオケで歌う。",
+    "exampleFurigana": "",
+    "exampleMeaning": "我在卡拉OK唱歌。"
+  },
+  "v274": {
+    "exampleMeaning": "他很害怕海。"
+  },
+  "v277": {
+    "meaning": "畫、圖畫",
+    "exampleMeaning": "看看牆上的畫。"
+  },
+  "v289": {
+    "example": "今日はとても寒いです。",
+    "exampleFurigana": "",
+    "exampleMeaning": "今天非常冷。"
+  },
+  "v305": {
+    "meaning": "在；存在（用於人和動物）",
+    "example": "猫が部屋にいる。",
+    "exampleFurigana": "",
+    "exampleMeaning": "房間裡有一隻貓。"
+  },
+  "v309": {
+    "meaning": "教室",
+    "example": "彼は教室にいます。",
+    "exampleFurigana": ""
+  },
+  "v321": {
+    "example": "秋の空は晴れていてきれいだ。",
+    "exampleFurigana": "",
+    "exampleMeaning": "秋天的天空晴朗又美麗。"
+  },
+  "v324": {
+    "meaning": "（自己的）哥哥",
+    "example": "兄が二人います。",
+    "exampleFurigana": "",
+    "exampleMeaning": "我有兩個哥哥。"
+  },
+  "v325": {
+    "meaning": "兄弟姊妹",
+    "example": "兄弟はいますか。",
+    "exampleFurigana": ""
+  },
+  "v328": {
+    "meaning": "相當、頗；不用了",
+    "exampleMeaning": "相當有趣。"
+  },
+  "v331": {
+    "meaning": "討厭的、不愉快的",
+    "example": "そんな嫌なことは言わないで。",
+    "exampleFurigana": "",
+    "exampleMeaning": "請不要說那種討厭的話。"
+  },
+  "v332": {
+    "meaning": "討厭、嫌惡",
+    "example": "納豆が嫌い。",
+    "exampleFurigana": "",
+    "exampleMeaning": "我討厭納豆。"
+  },
+  "v336": {
+    "meaning": "看；觀看",
+    "example": "映画を見る。",
+    "exampleFurigana": "",
+    "exampleMeaning": "看電影。",
+    "kanji": "見る"
+  },
+  "v339": {
+    "example": "彼は何でも言う。",
+    "exampleFurigana": "",
+    "exampleMeaning": "他什麼都說。"
+  },
+  "v347": {
+    "meaning": "下午"
+  },
+  "v349": {
+    "meaning": "之後、然後",
+    "example": "あとで電話します。",
+    "exampleFurigana": "",
+    "exampleMeaning": "待會打電話。"
+  },
+  "v353": {
+    "example": "私は公園へ散歩に行く。",
+    "exampleFurigana": "",
+    "exampleMeaning": "我到公園去散步。"
+  },
+  "v361": {
+    "meaning": "下車；下來",
+    "example": "終点で降ります。",
+    "exampleFurigana": "",
+    "exampleMeaning": "在終點站下車。"
+  },
+  "v362": {
+    "meaning": "下（雨、雪等）",
+    "example": "明日は雨が降りますか？",
+    "exampleFurigana": "",
+    "exampleMeaning": "明天會下雨嗎？"
+  },
+  "v374": {
+    "meaning": "困擾、為難",
+    "example": "お金がなくて困る。",
+    "exampleFurigana": "",
+    "exampleMeaning": "沒錢覺得很傷腦筋。"
+  },
+  "v379": {
+    "meaning": "細的",
+    "example": "この道は細いです。",
+    "exampleFurigana": "",
+    "exampleMeaning": "這條路很細。"
+  },
+  "v380": {
+    "example": "あれ、財布がない。",
+    "exampleFurigana": "",
+    "exampleMeaning": "哎呀，錢包不見了。"
+  },
+  "v397": {
+    "meaning": "四個（用於數四個東西）",
+    "exampleMeaning": "看！四片葉子！"
+  },
+  "v400": {
+    "exampleMeaning": "我沒有姐姐。"
+  },
+  "v403": {
+    "meaning": "死、死亡",
+    "exampleMeaning": "我才不死呢！"
+  },
+  "v408": {
+    "meaning": "擁有；拿著",
+    "exampleMeaning": "我來拿吧。"
+  },
+  "v426": {
+    "meaning": "虛弱的、軟弱的、不擅長的",
+    "example": "私は体が弱いです。",
+    "exampleFurigana": "",
+    "exampleMeaning": "我身體很虛弱。"
+  },
+  "v427": {
+    "meaning": "拿、取",
+    "example": "ペンを取ってください。",
+    "exampleFurigana": "",
+    "exampleMeaning": "請把筆拿給我。"
+  },
+  "v429": {
+    "meaning": "信件、書信",
+    "example": "母から手紙が届きました。",
+    "exampleFurigana": "",
+    "exampleMeaning": "收到了母親寄來的信。"
+  },
+  "v432": {
+    "meaning": "結束",
+    "example": "授業は三時に終わります。",
+    "exampleFurigana": "",
+    "exampleMeaning": "課程三點結束。",
+    "kanji": "終わる"
+  },
+  "v444": {
+    "meaning": "開始、開端",
+    "example": "初めに自己紹介をしてください。",
+    "exampleFurigana": "",
+    "exampleMeaning": "請先做自我介紹。"
+  },
+  "v449": {
+    "meaning": "女人、女生"
+  },
+  "v453": {
+    "meaning": "稍微、有一點"
+  },
+  "v454": {
+    "meaning": "少",
+    "example": "這間店的客人很少。",
+    "exampleFurigana": "",
+    "exampleMeaning": "この店のお客さんは少ないです。"
+  },
+  "v466": {
+    "meaning": "食堂、餐廳",
+    "exampleMeaning": "食堂在哪裡？"
+  },
+  "v471": {
+    "example": "あの人は日本語の先生です。",
+    "exampleFurigana": "",
+    "exampleMeaning": "那個人是日語老師。"
+  },
+  "v479": {
+    "meaning": "學生"
+  },
+  "v483": {
+    "meaning": "藍色的、青色的",
+    "exampleMeaning": "你的臉色發青呢。"
   }
 }

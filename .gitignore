@@ -12,8 +12,8 @@ dist
 dist-ssr
 *.local
 
-# Gemini batch checkpoints (regenerable; may be large)
-data/gemini-batch-results.json
+# Keep Gemini batch results in repo so multi-day --resume works across agents.
+# (file is ~0.2–2MB; do not put API keys here)
 
 # Editor directories and files
 .vscode/*
