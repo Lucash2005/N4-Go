@@ -1,7 +1,15 @@
 {
-  "contentVersion": 26,
-  "updatedAt": "2026-09-05T00:00:00.000Z",
-  "days": {},
-  "ids": [],
-  "note": "Populated by scripts/build-content-updates.mjs after Gemini/apply batches."
+  "contentVersion": 27,
+  "updatedAt": "2026-09-06T01:45:17.755Z",
+  "days": {
+    "2026-09-06": [
+      "v563",
+      "v613"
+    ]
+  },
+  "ids": [
+    "v563",
+    "v613"
+  ],
+  "note": "Cards fixed in this content version; client marks them and skips duplicate Gemini checks."
 }
