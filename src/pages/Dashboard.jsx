@@ -183,9 +183,7 @@ export default function Dashboard() {
 
       <section className="rounded-3xl border border-line bg-foam/60 p-4 sm:p-5">
         <h2 className="font-display text-lg font-bold text-ink">Gemini 全庫掃描進度</h2>
-        <p className="mt-1 text-sm text-ink-soft">
-          免費額度約每天 800～1000 張（Flash-Lite）。掃完會標剩餘張數；每天只把「當天掃到並修正」的卡放進今日更新。
-        </p>
+        <p className="mt-1 text-sm text-ink-soft">免費額度約每天 800～1000 張（Flash-Lite）。全庫掃完前，每日排程與瀏覽只會出現 Gemini 已審核的卡片；未掃到的先不出現。</p>
         {scanProgress ? (
           <div className="mt-3 space-y-2">
             <p className="text-sm text-ink">
@@ -200,7 +198,8 @@ export default function Dashboard() {
             </div>
             <p className="text-xs text-ink-soft">
               今日已掃 {scanProgress.todayScanned || 0}（OK {scanProgress.todayOk || 0} / 需修正{' '}
-              {scanProgress.todayFix || 0}）· 預估還約 {scanProgress.estimatedDaysLeft ?? '—'} 天
+              {scanProgress.todayFix || 0}）· 預估還約 {scanProgress.estimatedDaysLeft ?? '—'} 天 · 目前可供練習{' '}
+              {scanProgress.done} 張
             </p>
           </div>
         ) : (
@@ -291,7 +290,7 @@ export default function Dashboard() {
           <div>
             <h2 className="font-display text-xl font-bold text-ink">今日自動排程</h2>
             <p className="mt-1 text-sm text-ink-soft">
-              文法依 8→12 月路線解鎖；今日單字優先抽本月文法例句裡的詞
+              文法依 8→12 月路線解鎖；今日單字優先抽本月文法例句裡的詞。目前只從 Gemini 已審核卡池抽題（未掃完的先不出現）。
             </p>
           </div>
           <button

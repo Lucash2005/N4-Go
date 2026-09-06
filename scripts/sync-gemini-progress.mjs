@@ -92,4 +92,24 @@ const out = {
 
 mkdirSync(dirname(OUT), { recursive: true })
 writeFileSync(OUT, JSON.stringify(out, null, 2) + '\n', 'utf8')
+
+/** Allowlist for daily plan / browse: only cards Gemini has finished reviewing. */
+const APPROVED_OUT = join(ROOT, 'public/data/gemini-approved-ids.json')
+const approvedIds = doneRows
+  .map((x) => String(x.id || ''))
+  .filter(Boolean)
+  .sort((a, b) => a.localeCompare(b, 'en', { numeric: true }))
+const approved = {
+  updatedAt: out.updatedAt,
+  count: approvedIds.length,
+  done: done,
+  total,
+  remaining,
+  complete: remaining === 0,
+  ids: approvedIds,
+  note: 'Only these card ids may appear in daily study until complete=true.',
+}
+writeFileSync(APPROVED_OUT, JSON.stringify(approved, null, 2) + '\n', 'utf8')
+
 console.log(JSON.stringify(out, null, 2))
+console.log(JSON.stringify({ approvedCount: approved.count, complete: approved.complete, approvedOut: APPROVED_OUT }, null, 2))

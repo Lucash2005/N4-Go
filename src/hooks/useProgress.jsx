@@ -20,6 +20,11 @@ import {
   vocabLevelCounts,
 } from '../utils/dailyPlan'
 import {
+  approvedIdSet,
+  fetchGeminiApprovedIds,
+  shouldRestrictToApproved,
+} from '../utils/geminiApproved'
+import {
   clearAllReports,
   exportReportsJson,
   filterOutReported,
@@ -86,19 +91,25 @@ function catchUpPlanOptions(cardProgress) {
   }
 }
 
-function ensurePlan(plan, cardProgress) {
+function ensurePlan(plan, cardProgress, allowedIds = null) {
   const today = todayKey()
   const hiddenIds = reportedIdSet()
+  const approvedCount = allowedIds instanceof Set ? allowedIds.size : null
   if (
     plan?.date === today &&
     Array.isArray(plan.vocabIds) &&
     Array.isArray(plan.formIds) &&
-    plan.grammarPathVersion === GRAMMAR_PATH_VERSION
+    plan.grammarPathVersion === GRAMMAR_PATH_VERSION &&
+    (approvedCount == null || plan.geminiApprovedCount === approvedCount)
   ) {
     return plan
   }
   const catchUp = catchUpPlanOptions(cardProgress)
-  return buildDailyPlan(today, cardProgress, '', { ...catchUp, hiddenIds })
+  return buildDailyPlan(today, cardProgress, '', {
+    ...catchUp,
+    hiddenIds,
+    allowedIds: allowedIds instanceof Set ? allowedIds : undefined,
+  })
 }
 
 function withTaskDone(tasks, id, done) {
@@ -139,6 +150,7 @@ export function ProgressProvider({ children }) {
   const [dailyPlan, setDailyPlan] = useLocalStorage('daily-plan', emptyDailyPlan(todayKey()))
   const [reportedStore, setReportedStore] = useState(() => loadReportedCards())
   const [manualCheckStore, setManualCheckStore] = useState(() => loadManualChecks())
+  const [geminiApproved, setGeminiApproved] = useState(null)
   const [quizStats, setQuizStats] = useLocalStorage('quiz-stats', {
     attempted: 0,
     correct: 0,
@@ -160,14 +172,28 @@ export function ProgressProvider({ children }) {
       .catch((err) => {
         if (!cancelled) setVocabError(err?.message || '詞彙載入失敗')
       })
+    fetchGeminiApprovedIds()
+      .then((manifest) => {
+        if (!cancelled) setGeminiApproved(manifest)
+      })
+      .catch(() => {
+        if (!cancelled) setGeminiApproved(null)
+      })
     return () => {
       cancelled = true
     }
   }, [])
 
-  // Reset / create today's plan & tasks (after vocab loaded)
+  const geminiAllowedIds = useMemo(() => {
+    if (!shouldRestrictToApproved(geminiApproved)) return null
+    return approvedIdSet(geminiApproved)
+  }, [geminiApproved])
+
+  // Reset / create today's plan & tasks (after vocab + Gemini allowlist loaded)
   useEffect(() => {
     if (!vocabReady) return
+    // Wait for allowlist fetch so we don't briefly build an unrestricted plan.
+    if (geminiApproved == null) return
     const today = todayKey()
     if (dailyTasks.date !== today) {
       setDailyTasks({
@@ -176,18 +202,35 @@ export function ProgressProvider({ children }) {
       })
     }
     const catchUp = catchUpPlanOptions(cardProgress)
+    const allowed = geminiAllowedIds
     const needsRebuild =
       dailyPlan.date !== today ||
-      dailyPlan.grammarPathVersion !== GRAMMAR_PATH_VERSION
+      dailyPlan.grammarPathVersion !== GRAMMAR_PATH_VERSION ||
+      (allowed instanceof Set && dailyPlan.geminiApprovedCount !== allowed.size)
     if (needsRebuild) {
       setDailyPlan(
         buildDailyPlan(today, cardProgress, '', {
           ...catchUp,
           hiddenIds: reportedIdSet(reportedStore),
+          allowedIds: allowed instanceof Set ? allowed : undefined,
         }),
       )
     }
-  }, [vocabReady, dailyTasks.date, dailyPlan.date, dailyPlan.grammarPathVersion, dailyPlan.vocabIds, dailyPlan.vocabQuota, cardProgress, reportedStore, setDailyTasks, setDailyPlan])
+  }, [
+    vocabReady,
+    geminiApproved,
+    geminiAllowedIds,
+    dailyTasks.date,
+    dailyPlan.date,
+    dailyPlan.grammarPathVersion,
+    dailyPlan.geminiApprovedCount,
+    dailyPlan.vocabIds,
+    dailyPlan.vocabQuota,
+    cardProgress,
+    reportedStore,
+    setDailyTasks,
+    setDailyPlan,
+  ])
 
   // Drop reported cards from today's plan slots (quota may shrink until reshuffle)
   useEffect(() => {
@@ -225,7 +268,7 @@ export function ProgressProvider({ children }) {
   // Keep review queue in sync with due SRS cards
   useEffect(() => {
     if (!vocabReady || dailyPlan.date !== todayKey()) return
-    const liveReviewIds = getLiveReviewIds(cardProgress, DAILY_QUOTA.review)
+    const liveReviewIds = getLiveReviewIds(cardProgress, DAILY_QUOTA.review, todayKey(), { allowedIds: geminiAllowedIds || undefined })
     setDailyPlan((prev) => {
       if (prev.date !== todayKey()) return prev
       if (sameIds(prev.reviewIds, liveReviewIds)) return prev
@@ -252,7 +295,7 @@ export function ProgressProvider({ children }) {
 
     const studied = new Set(plan.studiedIds || [])
     const listened = new Set(plan.listenedIds || [])
-    const liveReviewIds = getLiveReviewIds(cardProgress, DAILY_QUOTA.review)
+    const liveReviewIds = getLiveReviewIds(cardProgress, DAILY_QUOTA.review, todayKey(), { allowedIds: geminiAllowedIds || undefined })
 
     const vocabDone =
       plan.vocabIds.length > 0 && plan.vocabIds.every((id) => studied.has(id))
@@ -304,7 +347,7 @@ export function ProgressProvider({ children }) {
     const plan = ensurePlan(dailyPlan, cardProgress)
     const studied = new Set(plan.studiedIds || [])
     const listened = new Set(plan.listenedIds || [])
-    const liveReviewIds = getLiveReviewIds(cardProgress, DAILY_QUOTA.review)
+    const liveReviewIds = getLiveReviewIds(cardProgress, DAILY_QUOTA.review, todayKey(), { allowedIds: geminiAllowedIds || undefined })
     const today = todayKey()
 
     const learnedVocab = vocabulary.filter((v) => isLearned(cardProgress[v.id], today)).length
@@ -327,7 +370,7 @@ export function ProgressProvider({ children }) {
       today,
     )
     const reviewCount = liveReviewIds.length
-    const dueCount = getLiveReviewIds(cardProgress, 0).length
+    const dueCount = getLiveReviewIds(cardProgress, 0, todayKey(), { allowedIds: geminiAllowedIds || undefined }).length
 
     function markStudied(id) {
       setDailyPlan((prev) => {
@@ -433,6 +476,7 @@ export function ProgressProvider({ children }) {
         buildDailyPlan(day, cardProgress, `reshuffle:${Date.now()}`, {
           ...catchUp,
           hiddenIds: reportedIdSet(reportedStore),
+          allowedIds: geminiAllowedIds || undefined,
         }),
       )
       setDailyTasks({
@@ -454,6 +498,7 @@ export function ProgressProvider({ children }) {
         buildDailyPlan(day, cardProgress, `catch-up:${Date.now()}`, {
           ...catchUp,
           hiddenIds: reportedIdSet(reportedStore),
+          allowedIds: geminiAllowedIds || undefined,
         }),
       )
     }
@@ -559,6 +604,9 @@ export function ProgressProvider({ children }) {
       totalGrammarInApp: grammar.length,
       dailyPlan: { ...plan, reviewIds: liveReviewIds },
       todayVocab: vocabCards,
+      geminiApproved,
+      geminiRestrictToApproved: shouldRestrictToApproved(geminiApproved),
+      geminiAllowedCount: geminiAllowedIds instanceof Set ? geminiAllowedIds.size : null,
       todayGrammar: grammarCards,
       todayReview: reviewCards,
       vocabStudied,

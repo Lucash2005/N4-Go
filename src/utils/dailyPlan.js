@@ -32,8 +32,11 @@ export function isCoreVocab(card) {
 
 export function vocabStudyPool(options = {}) {
   const vocabulary = getVocabulary()
-  if (options.includeExtension) return vocabulary
-  return vocabulary.filter(isCoreVocab)
+  let pool = options.includeExtension ? vocabulary : vocabulary.filter(isCoreVocab)
+  if (options.allowedIds instanceof Set) {
+    pool = pool.filter((c) => options.allowedIds.has(c.id))
+  }
+  return pool
 }
 
 export function vocabLevelCounts() {
@@ -84,7 +87,11 @@ function pickByPriority(cards, count, seedStr, cardProgress, date = todayKey(), 
 
   const { excludeLearned = false } = options
   const hidden = options.hiddenIds || reportedIdSet()
-  const visible = hidden.size ? cards.filter((c) => !hidden.has(c.id)) : cards
+  const allowed = options.allowedIds
+  let visible = hidden.size ? cards.filter((c) => !hidden.has(c.id)) : cards
+  if (allowed instanceof Set) {
+    visible = visible.filter((c) => allowed.has(c.id))
+  }
   const pool = excludeLearned
     ? visible.filter((c) => !isLearned(cardProgress[c.id], date))
     : visible
@@ -127,17 +134,24 @@ function pickByPriority(cards, count, seedStr, cardProgress, date = todayKey(), 
 function pickGrammarByPath(count, seedStr, cardProgress, date = todayKey(), options = {}) {
   const { excludeLearned = false } = options
   const hidden = options.hiddenIds || reportedIdSet()
+  const allowed = options.allowedIds
   const path = getGrammarPath(date)
   const unlocked = new Set(path.unlockedIds)
   let pool = grammar.filter((g) => unlocked.has(g.id) && !hidden.has(g.id))
+  if (allowed instanceof Set) {
+    pool = pool.filter((c) => allowed.has(c.id))
+  }
   if (excludeLearned) {
     pool = pool.filter((c) => !isLearned(cardProgress[c.id], date))
   }
   if (!pool.length) {
-    const fallback = (excludeLearned
+    let fallback = (excludeLearned
       ? grammar.filter((c) => !isLearned(cardProgress[c.id], date))
       : grammar
     ).filter((c) => !hidden.has(c.id))
+    if (allowed instanceof Set) {
+      fallback = fallback.filter((c) => allowed.has(c.id))
+    }
     return pickByPriority(fallback, count, seedStr, cardProgress, date, options)
   }
 
@@ -269,6 +283,7 @@ export function buildDailyPlan(date, cardProgress = {}, seedExtra = '', options 
     excludeLearned: options.excludeLearned ?? true,
     includeExtension: options.includeExtension ?? false,
     hiddenIds: options.hiddenIds || reportedIdSet(),
+    allowedIds: options.allowedIds,
   }
   const vocabQuota = Math.max(
     DAILY_QUOTA.vocab,
@@ -294,9 +309,15 @@ export function buildDailyPlan(date, cardProgress = {}, seedExtra = '', options 
 
   const vocabulary = getVocabulary()
   const hidden = pickOpts.hiddenIds
-  const allIds = [...vocabulary, ...grammar, ...FORM_CARDS]
+  const allowed = pickOpts.allowedIds
+  let allIds = [...vocabulary, ...grammar, ...FORM_CARDS]
     .map((c) => c.id)
     .filter((id) => !hidden.has(id))
+  // Review queue: only Gemini-approved corpus cards (+ forms always allowed).
+  if (allowed instanceof Set) {
+    const formIdSet = new Set(FORM_CARDS.map((c) => c.id))
+    allIds = allIds.filter((id) => allowed.has(id) || formIdSet.has(id))
+  }
   const reviewIds = getDueIds(cardProgress, allIds, DAILY_QUOTA.review, date)
 
   return {
@@ -309,6 +330,7 @@ export function buildDailyPlan(date, cardProgress = {}, seedExtra = '', options 
     listenedIds: [],
     grammarPathVersion: GRAMMAR_PATH_VERSION,
     vocabQuota,
+    geminiApprovedCount: allowed instanceof Set ? allowed.size : null,
   }
 }
 
@@ -319,12 +341,22 @@ export function resolveCards(ids) {
 }
 
 /** Live due review queue from SRS schedule. */
-export function getLiveReviewIds(cardProgress = {}, limit = DAILY_QUOTA.review, date = todayKey()) {
+export function getLiveReviewIds(
+  cardProgress = {},
+  limit = DAILY_QUOTA.review,
+  date = todayKey(),
+  options = {},
+) {
   const vocabulary = getVocabulary()
-  const hidden = reportedIdSet()
-  const allIds = [...vocabulary, ...grammar, ...FORM_CARDS]
+  const hidden = options.hiddenIds || reportedIdSet()
+  const allowed = options.allowedIds
+  let allIds = [...vocabulary, ...grammar, ...FORM_CARDS]
     .map((c) => c.id)
     .filter((id) => !hidden.has(id))
+  if (allowed instanceof Set) {
+    const formIdSet = new Set(FORM_CARDS.map((c) => c.id))
+    allIds = allIds.filter((id) => allowed.has(id) || formIdSet.has(id))
+  }
   return getDueIds(cardProgress, allIds, limit > 0 ? limit : 0, date)
 }
 
@@ -339,6 +371,7 @@ export function emptyDailyPlan(date = '') {
     listenedIds: [],
     grammarPathVersion: GRAMMAR_PATH_VERSION,
     vocabQuota: DAILY_QUOTA.vocab,
+    geminiApprovedCount: null,
   }
 }
 

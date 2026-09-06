@@ -53,9 +53,13 @@ import {
   isCardContentUpdated,
   setCachedGeminiReview,
 } from '../utils/contentUpdates'
+import { approvedIdSet } from '../utils/geminiApproved'
 
-function allBrowseCards() {
-  return [...getVocabulary(), ...getGrammar(), ...FORM_CARDS]
+function allBrowseCards(allowedIds = null) {
+  const cards = [...getVocabulary(), ...getGrammar(), ...FORM_CARDS]
+  if (!(allowedIds instanceof Set)) return cards
+  const formIds = new Set(FORM_CARDS.map((c) => c.id))
+  return cards.filter((c) => allowedIds.has(c.id) || formIds.has(c.id))
 }
 
 const MODE_META = {
@@ -103,6 +107,9 @@ export default function Flashcards() {
     isCardManuallyChecked,
     getManualCheckStatus,
     manualCheckedCount,
+    geminiApproved,
+    geminiRestrictToApproved,
+    geminiAllowedCount,
   } = useProgress()
   const {
     showFurigana,
@@ -193,7 +200,11 @@ export default function Flashcards() {
     if (mode === 'today-listening') return todayVocab
 
     const q = query.trim().toLowerCase()
-    const list = allBrowseCards().filter((card) => {
+    const allowed =
+      geminiRestrictToApproved && geminiApproved
+        ? approvedIdSet(geminiApproved)
+        : null
+    const list = allBrowseCards(allowed).filter((card) => {
       if (isCardReported?.(card.id)) return false
       if (typeFilter !== 'all' && card.type !== typeFilter) return false
       if (card.type === 'vocab') {
@@ -241,7 +252,9 @@ export default function Flashcards() {
     isCardReported,
     contentManifest,
     isCardManuallyChecked,
-    localFixTick,
+    localFixTick,,
+    geminiApproved,
+    geminiRestrictToApproved,
   ])
 
   const deck = sessionLeft ?? filtered
@@ -1032,7 +1045,7 @@ export default function Flashcards() {
               只看已手動確認{manualCheckedCount ? `（${manualCheckedCount}）` : ''}
             </FilterChip>
           </div>
-          <p className="text-xs text-ink-soft">預設只顯示 N5／N4；延伸詞庫錯誤較多，需手動開啟。</p>
+          <p className="text-xs text-ink-soft">預設只顯示 N5／N4；全庫掃完前僅顯示 Gemini 已審核卡片。延伸詞庫需手動開啟。</p>
         </section>
       ) : null}
 
