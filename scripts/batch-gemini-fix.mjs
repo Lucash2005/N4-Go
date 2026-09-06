@@ -32,11 +32,12 @@ const VOCAB_OVERRIDES_PATH = join(ROOT, 'scripts/vocab-overrides.json')
 const GRAMMAR_OVERRIDES_PATH = join(ROOT, 'data/grammar-overrides.json')
 
 const MODEL_CANDIDATES = [
-  'gemini-2.5-flash',
   'gemini-2.5-flash-lite',
+  'gemini-2.5-flash',
   'gemini-flash-latest',
 ]
 const API_BASE = 'https://generativelanguage.googleapis.com/v1beta/models'
+const PROGRESS_PATH = join(ROOT, 'public/data/gemini-scan-progress.json')
 
 const args = process.argv.slice(2)
 function flag(name, fallback = null) {
@@ -72,6 +73,52 @@ function loadJson(path, fallback) {
 function saveJson(path, data) {
   mkdirSync(dirname(path), { recursive: true })
   writeFileSync(path, JSON.stringify(data, null, 2) + '\n', 'utf8')
+}
+
+function dayKey(iso = new Date().toISOString()) {
+  return String(iso).slice(0, 10)
+}
+
+function writeScanProgress(items, queueTotal) {
+  const rows = Object.values(items || {})
+  const doneRows = rows.filter((x) => x.status === 'done')
+  const errorRows = rows.filter((x) => x.status === 'error')
+  const ok = doneRows.filter((x) => x.verdict === 'OK').length
+  const fix = doneRows.filter((x) => x.verdict === 'FIX').length
+  const done = doneRows.length
+  const total = queueTotal || 1580
+  const remaining = Math.max(0, total - done)
+  const dailyQuota = 800
+  const days = {}
+  for (const row of rows) {
+    const day = dayKey(row.at || '') || 'unknown'
+    if (!days[day]) days[day] = { scanned: 0, ok: 0, fix: 0, error: 0 }
+    days[day].scanned += 1
+    if (row.status === 'error') days[day].error += 1
+    else if (row.verdict === 'OK') days[day].ok += 1
+    else if (row.verdict === 'FIX') days[day].fix += 1
+  }
+  const today = dayKey()
+  const out = {
+    total,
+    done,
+    remaining,
+    ok,
+    fix,
+    error: errorRows.length,
+    percent: total ? Math.round((done / total) * 1000) / 10 : 0,
+    dailyQuotaHint: dailyQuota,
+    estimatedDaysLeft: remaining === 0 ? 0 : Math.ceil(remaining / dailyQuota),
+    today,
+    todayScanned: days[today]?.scanned || 0,
+    todayFix: days[today]?.fix || 0,
+    todayOk: days[today]?.ok || 0,
+    updatedAt: new Date().toISOString(),
+    days,
+    note: 'Gemini 全庫掃描進度。首頁會顯示剩餘張數；每日額度用完後等太平洋時間午夜重置。',
+  }
+  saveJson(PROGRESS_PATH, out)
+  return out
 }
 
 function vocabPrompt(card) {
@@ -365,6 +412,7 @@ async function main() {
         },
         items,
       })
+      writeScanProgress(items, queue.length)
     }
 
     if (i < work.length - 1) await sleep(DELAY_MS)
@@ -380,11 +428,18 @@ async function main() {
     },
     items,
   })
+  const progress = writeScanProgress(items, queue.length)
 
   if (APPLY) applyResults(items)
 
   const elapsedMin = ((Date.now() - started) / 60000).toFixed(1)
-  console.log(JSON.stringify({ ok, fix, err, elapsedMin, results: RESULTS_PATH }, null, 2))
+  console.log(
+    JSON.stringify(
+      { ok, fix, err, elapsedMin, remaining: progress.remaining, results: RESULTS_PATH },
+      null,
+      2,
+    ),
+  )
 }
 
 main().catch((e) => {

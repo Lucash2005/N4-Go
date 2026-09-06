@@ -55,12 +55,16 @@ function main() {
 
   const ids = new Set()
 
-  if (flag('from-batch', false)) {
+  if (flag('from-batch-today', false) || flag('from-batch', false)) {
     const batch = loadJson(BATCH, { items: {} })
+    const onlyToday = Boolean(flag('from-batch-today', false))
     for (const row of Object.values(batch.items || {})) {
-      if (row?.status === 'done' && row?.verdict === 'FIX' && row?.id) {
-        ids.add(String(row.id))
+      if (row?.status !== 'done' || row?.verdict !== 'FIX' || !row?.id) continue
+      if (onlyToday) {
+        const at = String(row.at || '').slice(0, 10)
+        if (at !== day) continue
       }
+      ids.add(String(row.id))
     }
   } else {
     const vocab = loadJson(VOCAB_OVERRIDES, {})

@@ -2,8 +2,8 @@
  * Device-local card fixes from Gemini suggestions.
  * Survive CONTENT_VERSION bumps; official deploys do not wipe these.
  */
-import { CONTENT_VERSION } from '../data/config'
-import { loadJSON, saveJSON } from './storage'
+import { CONTENT_VERSION } from '../data/config.js'
+import { loadJSON, saveJSON } from './storage.js'
 
 const STORAGE_KEY = 'local-card-fixes'
 

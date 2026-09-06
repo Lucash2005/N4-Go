@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { CONTENT_VERSION } from '../data/config'
 import Countdown from '../components/Countdown'
 import ProgressBar from '../components/ProgressBar'
@@ -52,6 +52,27 @@ export default function Dashboard() {
   const [contentCheckMsg, setContentCheckMsg] = useState('')
   const [contentChecking, setContentChecking] = useState(false)
   const [todayUpdateCount, setTodayUpdateCount] = useState(0)
+  const [scanProgress, setScanProgress] = useState(null)
+
+  useEffect(() => {
+    let cancelled = false
+    ;(async () => {
+      try {
+        const base = import.meta.env.BASE_URL || './'
+        const res = await fetch(`${base}data/gemini-scan-progress.json?v=${CONTENT_VERSION}`, {
+          cache: 'no-store',
+        })
+        if (!res.ok) return
+        const data = await res.json()
+        if (!cancelled) setScanProgress(data)
+      } catch {
+        /* ignore */
+      }
+    })()
+    return () => {
+      cancelled = true
+    }
+  }, [])
 
   const doneCount = dailyTasks.filter((t) => t.done).length
   const quizRate =
@@ -158,6 +179,33 @@ export default function Dashboard() {
             </Link>
           </p>
         ) : null}
+      </section>
+
+      <section className="rounded-3xl border border-line bg-foam/60 p-4 sm:p-5">
+        <h2 className="font-display text-lg font-bold text-ink">Gemini 全庫掃描進度</h2>
+        <p className="mt-1 text-sm text-ink-soft">
+          免費額度約每天 800～1000 張（Flash-Lite）。掃完會標剩餘張數；每天只把「當天掃到並修正」的卡放進今日更新。
+        </p>
+        {scanProgress ? (
+          <div className="mt-3 space-y-2">
+            <p className="text-sm text-ink">
+              已掃描 {scanProgress.done}/{scanProgress.total}（{scanProgress.percent}%）· 剩餘{' '}
+              <span className="font-semibold text-sea-deep">{scanProgress.remaining}</span> 張
+            </p>
+            <div className="h-2 overflow-hidden rounded-full bg-line/60">
+              <div
+                className="h-full rounded-full bg-sea transition-all"
+                style={{ width: `${Math.min(100, Number(scanProgress.percent) || 0)}%` }}
+              />
+            </div>
+            <p className="text-xs text-ink-soft">
+              今日已掃 {scanProgress.todayScanned || 0}（OK {scanProgress.todayOk || 0} / 需修正{' '}
+              {scanProgress.todayFix || 0}）· 預估還約 {scanProgress.estimatedDaysLeft ?? '—'} 天
+            </p>
+          </div>
+        ) : (
+          <p className="mt-2 text-xs text-ink-soft">尚未開始全庫掃描（需要 API Key 後才能每天自動跑一段）。</p>
+        )}
       </section>
 
 
