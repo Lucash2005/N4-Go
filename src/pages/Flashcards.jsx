@@ -312,6 +312,12 @@ export default function Flashcards() {
   const entry = card ? getEntry?.(card.id) || normalizeEntry(cardProgress[card.id]) : null
 
   const cardIsUpdated = Boolean(card && isCardContentUpdated(card.id, contentManifest))
+  const cardIsApproved = Boolean(
+    card &&
+    geminiRestrictToApproved &&
+    geminiApproved &&
+    approvedIdSet(geminiApproved).has(card.id),
+  )
   const manualCheck = card ? getManualCheckStatus?.(card) : null
   const cardIsChecked = Boolean(manualCheck)
   const cardCheckStale = Boolean(manualCheck?.stale)
@@ -1145,6 +1151,10 @@ export default function Flashcards() {
                   <span className="ml-2 rounded-full bg-sea/15 px-2 py-0.5 text-xs font-medium text-sea-deep">
                     已更新
                   </span>
+                ) : cardIsApproved ? (
+                  <span className="ml-2 rounded-full bg-foam px-2 py-0.5 text-xs font-medium text-ink-soft ring-1 ring-line">
+                    已審核
+                  </span>
                 ) : null}
                 {cardIsChecked ? (
                   <span
@@ -1205,6 +1215,10 @@ export default function Flashcards() {
                 {cardIsUpdated ? (
                   <span className="ml-2 rounded-full bg-sea/15 px-2 py-0.5 text-xs font-medium text-sea-deep">
                     已更新
+                  </span>
+                ) : cardIsApproved ? (
+                  <span className="ml-2 rounded-full bg-foam px-2 py-0.5 text-xs font-medium text-ink-soft ring-1 ring-line">
+                    已審核
                   </span>
                 ) : null}
                 {cardIsChecked ? (
