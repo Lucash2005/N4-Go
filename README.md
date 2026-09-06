@@ -4,15 +4,13 @@
 
 ## iPhone 直接使用（不需電腦）
 
-靜態站台會發佈到 `gh-pages` 分支。用 Safari 打開：
+靜態站台會發佈到 `gh-pages` 分支。用 **Safari** 打開這個網址（不要用 jsDelivr 開 HTML，會變成純文字）：
 
-**https://cdn.jsdelivr.net/gh/Lucash2005/N4-Go@gh-pages/index.html**
+**https://lucash2005.github.io/N4-Go/**
 
 然後：分享 → **加入主畫面**。
 
-若要正式網域（較穩、較好看），可用手機 Safari 把此 repo 連到 [Vercel](https://vercel.com) 一鍵部署。
-
-也可啟用 GitHub Pages：Repo → Settings → Pages → Source 選 **GitHub Actions**（合併到 `main` 後會自動部署）。
+若畫面還是舊的：Safari 重新整理一次，或清掉該網站資料後再開。
 
 ## 本機開發（有電腦時）
 
