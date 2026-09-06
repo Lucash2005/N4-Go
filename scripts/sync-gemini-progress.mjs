@@ -17,6 +17,9 @@ const GRAMMAR_PATH = join(ROOT, 'src/data/grammar.js')
 const RESULTS_PATH = join(ROOT, 'data/gemini-batch-results.json')
 const OUT = join(ROOT, 'public/data/gemini-scan-progress.json')
 
+/** Keep in sync with scripts/batch-gemini-fix.mjs GEMINI_PROMPT_VERSION. */
+const GEMINI_PROMPT_VERSION = 2
+
 function countGrammarCards() {
   const src = readFileSync(GRAMMAR_PATH, 'utf8')
   return [...src.matchAll(/\bid:\s*["']g\d+["']/g)].length
@@ -44,6 +47,10 @@ function todayKey() {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
 }
 
+function isCurrentPrompt(row) {
+  return Number(row?.promptVersion) === GEMINI_PROMPT_VERSION
+}
+
 const vocab = loadJson(VOCAB_PATH, [])
 const total = (Array.isArray(vocab) ? vocab.length : 0) + countGrammarCards()
 const batch = loadJson(RESULTS_PATH, { items: {} })
@@ -54,6 +61,9 @@ const ok = doneRows.filter((x) => x.verdict === 'OK').length
 const fix = doneRows.filter((x) => x.verdict === 'FIX').length
 const done = doneRows.length
 const remaining = Math.max(0, total - done)
+const needsRecheck = doneRows.filter((x) => !isCurrentPrompt(x)).length
+const currentPromptDone = doneRows.filter((x) => isCurrentPrompt(x)).length
+const remainingWork = remaining + needsRecheck
 
 const days = {}
 for (const row of items) {
@@ -67,13 +77,17 @@ for (const row of items) {
 
 /** Free-tier Flash-Lite is often ~1000 RPD; keep a conservative daily target. */
 const dailyQuota = Math.max(50, Number(flag('daily-quota', 800)) || 800)
-const estimatedDaysLeft = remaining === 0 ? 0 : Math.ceil(remaining / dailyQuota)
+const estimatedDaysLeft = remainingWork === 0 ? 0 : Math.ceil(remainingWork / dailyQuota)
 const today = todayKey()
 
 const out = {
   total,
   done,
   remaining,
+  needsRecheck,
+  remainingWork,
+  currentPromptDone,
+  promptVersion: GEMINI_PROMPT_VERSION,
   ok,
   fix,
   error: errorRows.length,
@@ -87,7 +101,7 @@ const out = {
   updatedAt: new Date().toISOString(),
   days,
   note:
-    'Gemini 全庫掃描進度。remaining = 尚未檢查張數。每日免費額度用完後需等到太平洋時間午夜重置。',
+    'Gemini 全庫掃描進度。remaining = 尚未檢查；needsRecheck = 舊版 prompt 已審核、待用現行標準重審；remainingWork = 兩者合計。每日免費額度用完後需等到太平洋時間午夜重置。',
 }
 
 mkdirSync(dirname(OUT), { recursive: true })
@@ -102,14 +116,24 @@ const approvedIds = doneRows
 const approved = {
   updatedAt: out.updatedAt,
   count: approvedIds.length,
-  done: done,
+  done,
   total,
   remaining,
-  complete: remaining === 0,
+  needsRecheck,
+  remainingWork,
+  promptVersion: GEMINI_PROMPT_VERSION,
+  complete: remainingWork === 0,
   ids: approvedIds,
-  note: 'Only these card ids may appear in daily study until complete=true.',
+  note:
+    'Only these card ids may appear in daily study until complete=true (unscanned + outdated-prompt recheck both finished).',
 }
 writeFileSync(APPROVED_OUT, JSON.stringify(approved, null, 2) + '\n', 'utf8')
 
 console.log(JSON.stringify(out, null, 2))
-console.log(JSON.stringify({ approvedCount: approved.count, complete: approved.complete, approvedOut: APPROVED_OUT }, null, 2))
+console.log(
+  JSON.stringify(
+    { approvedCount: approved.count, complete: approved.complete, approvedOut: APPROVED_OUT },
+    null,
+    2,
+  ),
+)

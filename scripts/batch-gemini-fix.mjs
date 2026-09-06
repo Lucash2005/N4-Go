@@ -9,6 +9,9 @@
  *   GEMINI_API_KEY=... node scripts/batch-gemini-fix.mjs --only=grammar
  *   GEMINI_API_KEY=... node scripts/batch-gemini-fix.mjs --ids=v1140,g001
  *   GEMINI_API_KEY=... node scripts/batch-gemini-fix.mjs --resume
+ *   GEMINI_API_KEY=... node scripts/batch-gemini-fix.mjs --resume --recheck
+ *     (--recheck: re-run cards whose promptVersion != CURRENT, then never-scanned;
+ *      prefer outdated done cards first so old-prompt results get refreshed)
  *
  * Default pace ~12 RPM (safe for free tier). Override with --rpm=30
  * Results → data/gemini-batch-results.json
@@ -24,6 +27,9 @@ import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { grammarBase } from '../src/data/grammar.js'
+
+/** Bump when the review prompt criteria change; --recheck refreshes outdated rows. */
+const GEMINI_PROMPT_VERSION = 2
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..')
 const VOCAB_PATH = join(ROOT, 'public/data/vocabulary.json')
@@ -50,6 +56,7 @@ function flag(name, fallback = null) {
 const APPLY = Boolean(flag('apply', false))
 const APPLY_ONLY = Boolean(flag('apply-only', false))
 const RESUME = Boolean(flag('resume', false))
+const RECHECK = Boolean(flag('recheck', false))
 const ONLY = String(flag('only', 'all'))
 const LIMIT = Number(flag('limit', 0)) || 0
 const RPM = Math.max(1, Number(flag('rpm', 12)) || 12)
@@ -79,6 +86,10 @@ function dayKey(iso = new Date().toISOString()) {
   return String(iso).slice(0, 10)
 }
 
+function isCurrentPrompt(row) {
+  return Number(row?.promptVersion) === GEMINI_PROMPT_VERSION
+}
+
 function writeScanProgress(items, queueTotal) {
   const rows = Object.values(items || {})
   const doneRows = rows.filter((x) => x.status === 'done')
@@ -88,6 +99,9 @@ function writeScanProgress(items, queueTotal) {
   const done = doneRows.length
   const total = queueTotal || 1580
   const remaining = Math.max(0, total - done)
+  const needsRecheck = doneRows.filter((x) => !isCurrentPrompt(x)).length
+  const currentPromptDone = doneRows.filter((x) => isCurrentPrompt(x)).length
+  const remainingWork = remaining + needsRecheck
   const dailyQuota = 800
   const days = {}
   for (const row of rows) {
@@ -103,53 +117,52 @@ function writeScanProgress(items, queueTotal) {
     total,
     done,
     remaining,
+    needsRecheck,
+    remainingWork,
+    currentPromptDone,
+    promptVersion: GEMINI_PROMPT_VERSION,
     ok,
     fix,
     error: errorRows.length,
     percent: total ? Math.round((done / total) * 1000) / 10 : 0,
     dailyQuotaHint: dailyQuota,
-    estimatedDaysLeft: remaining === 0 ? 0 : Math.ceil(remaining / dailyQuota),
+    estimatedDaysLeft: remainingWork === 0 ? 0 : Math.ceil(remainingWork / dailyQuota),
     today,
     todayScanned: days[today]?.scanned || 0,
     todayFix: days[today]?.fix || 0,
     todayOk: days[today]?.ok || 0,
     updatedAt: new Date().toISOString(),
     days,
-    note: 'Gemini 全庫掃描進度。首頁會顯示剩餘張數；每日額度用完後等太平洋時間午夜重置。',
+    note:
+      'Gemini 全庫掃描進度。remaining = 尚未檢查；needsRecheck = 舊版 prompt 已審核、待用現行標準重審；remainingWork = 兩者合計。每日額度用完後等太平洋時間午夜重置。',
   }
   saveJson(PROGRESS_PATH, out)
   return out
 }
 
 function vocabPrompt(card) {
-  return `你是日語教師。檢查這張 JLPT 字卡（繁體中文學習者）。只回傳 JSON，不要 markdown。
+  return `你是日語教師。用繁體中文檢查這張 JLPT N5/N4 學習字卡。只回傳 JSON，不要 markdown。
+重點：① 中文／字義是否正確貼切 ② 例句是否自然、語意正確 ③ 是否適合 N5～N4（勿過難或過偏）④ 例句中文翻譯是否正確。
+此為單字卡，請確認字義與例句是否適合 JLPT N5～N4（常用、自然、好記）。
 
 字卡：
 {"id":"${card.id}","word":${JSON.stringify(card.word)},"reading":${JSON.stringify(card.reading)},"kanji":${JSON.stringify(card.kanji || '')},"meaning":${JSON.stringify(card.meaning)},"example":${JSON.stringify(card.example)},"exampleMeaning":${JSON.stringify(card.exampleMeaning)}}
 
-規則：
-- 字義要貼切常用義（N5/N4），不要過窄或機器翻譯腔
-- 例句要短、自然、好背（約 8～18 字），必須正確使用該詞
-- 例句中文翻譯要正確
-- 若詞頭是假名且有對應漢字，填 kanji（必須符合此字義，勿用同音別字）
-- 若整體沒問題 verdict=OK；否則 FIX 並給修正欄位
+若詞頭是假名且有對應漢字，FIX 時填 kanji（必須符合此字義，勿用同音別字）。沒問題 verdict=OK；否則 FIX 並給完整替換欄位（不要只寫說明）。
 
 回傳 JSON：
 {"verdict":"OK"|"FIX","issues":["..."],"meaning":"...","example":"...","exampleMeaning":"...","kanji":"..."}`
 }
 
 function grammarPrompt(card) {
-  return `你是日語教師。檢查這張 JLPT 文法卡（繁體中文學習者）。只回傳 JSON，不要 markdown。
+  return `你是日語教師。用繁體中文檢查這張 JLPT N5/N4 學習字卡。只回傳 JSON，不要 markdown。
+重點：① 中文／字義是否正確貼切 ② 例句是否自然、語意正確 ③ 是否適合 N5～N4（勿過難或過偏）④ 例句中文翻譯是否正確。
+此為文法卡，請一併確認接續／句型是否正確，例句是否清楚示範此文法。
 
 文法卡：
 {"id":"${card.id}","word":${JSON.stringify(card.word)},"reading":${JSON.stringify(card.reading)},"meaning":${JSON.stringify(card.meaning)},"pattern":${JSON.stringify(card.pattern || '')},"example":${JSON.stringify(card.example)},"exampleMeaning":${JSON.stringify(card.exampleMeaning)}}
 
-規則：
-- 中文意思要正確清楚
-- 接續 pattern 要正確
-- 例句要短、自然，正確示範此文法
-- 例句中文翻譯要正確
-- 沒問題 verdict=OK；否則 FIX
+沒問題 verdict=OK；否則 FIX 並給完整替換欄位（meaning / pattern / example / exampleMeaning）。
 
 回傳 JSON：
 {"verdict":"OK"|"FIX","issues":["..."],"meaning":"...","pattern":"...","example":"...","exampleMeaning":"..."}`
@@ -323,21 +336,41 @@ async function main() {
   }
 
   const queue = buildQueue()
-  const prev = RESUME ? loadJson(RESULTS_PATH, { items: {} }) : { items: {} }
+  const prev = RESUME || RECHECK ? loadJson(RESULTS_PATH, { items: {} }) : { items: {} }
   const items = { ...(prev.items || {}) }
-  const pending = queue.filter((c) => {
-    if (!RESUME) return true
+  let pending = queue.filter((c) => {
     const hit = items[c.id]
-    return !hit || hit.status === 'error'
+    if (!hit || hit.status === 'error') return true
+    if (hit.status === 'done') {
+      // Recheck only rows stamped with an older / missing prompt version.
+      if (RECHECK && !isCurrentPrompt(hit)) return true
+      return false
+    }
+    if (!RESUME && !RECHECK) return true
+    return false
   })
+  // Prefer outdated done cards first, then never-scanned / errors.
+  if (RECHECK) {
+    pending = [...pending].sort((a, b) => {
+      const da = items[a.id]?.status === 'done' && !isCurrentPrompt(items[a.id]) ? 0 : 1
+      const db = items[b.id]?.status === 'done' && !isCurrentPrompt(items[b.id]) ? 0 : 1
+      return da - db
+    })
+  }
   const work = LIMIT > 0 ? pending.slice(0, LIMIT) : pending
+  const needsRecheck = Object.values(items).filter(
+    (x) => x.status === 'done' && !isCurrentPrompt(x),
+  ).length
 
   console.log(
     JSON.stringify(
       {
         total: queue.length,
-        alreadyDone: queue.length - pending.length,
+        alreadyDone: Object.values(items).filter((x) => x.status === 'done').length,
+        needsRecheck,
+        promptVersion: GEMINI_PROMPT_VERSION,
         todo: work.length,
+        recheck: RECHECK,
         rpm: RPM,
         delayMs: DELAY_MS,
         apply: APPLY,
@@ -364,6 +397,7 @@ async function main() {
         type: card.type,
         word: card.word,
         status: 'done',
+        promptVersion: GEMINI_PROMPT_VERSION,
         verdict,
         issues: Array.isArray(review.issues) ? review.issues : [],
         review: {
@@ -404,11 +438,15 @@ async function main() {
     if (n % 10 === 0 || n === work.length) {
       saveJson(RESULTS_PATH, {
         updatedAt: new Date().toISOString(),
+        promptVersion: GEMINI_PROMPT_VERSION,
         counts: {
           done: Object.values(items).filter((x) => x.status === 'done').length,
           fix: Object.values(items).filter((x) => x.verdict === 'FIX').length,
           ok: Object.values(items).filter((x) => x.verdict === 'OK').length,
           error: Object.values(items).filter((x) => x.status === 'error').length,
+          needsRecheck: Object.values(items).filter(
+            (x) => x.status === 'done' && !isCurrentPrompt(x),
+          ).length,
         },
         items,
       })
@@ -420,11 +458,15 @@ async function main() {
 
   saveJson(RESULTS_PATH, {
     updatedAt: new Date().toISOString(),
+    promptVersion: GEMINI_PROMPT_VERSION,
     counts: {
       done: Object.values(items).filter((x) => x.status === 'done').length,
       fix: Object.values(items).filter((x) => x.verdict === 'FIX').length,
       ok: Object.values(items).filter((x) => x.verdict === 'OK').length,
       error: Object.values(items).filter((x) => x.status === 'error').length,
+      needsRecheck: Object.values(items).filter(
+        (x) => x.status === 'done' && !isCurrentPrompt(x),
+      ).length,
     },
     items,
   })

@@ -4,8 +4,10 @@
  *
  *   GEMINI_API_KEY=... node scripts/run-daily-gemini-slice.mjs
  *   GEMINI_API_KEY=... node scripts/run-daily-gemini-slice.mjs --limit=800
+ *   GEMINI_API_KEY=... node scripts/run-daily-gemini-slice.mjs --recheck
  *
  * Free tier: prefer flash-lite (~800–1000/day). Stops early on hard 429 RPD.
+ * With --recheck: refresh cards stamped with an older promptVersion first, then never-scanned.
  */
 
 import { spawnSync } from 'node:child_process'
@@ -23,6 +25,7 @@ function flag(name, fallback = null) {
 
 const LIMIT = Number(flag('limit', 800)) || 800
 const RPM = Number(flag('rpm', 12)) || 12
+const RECHECK = Boolean(flag('recheck', false))
 const KEY = String(process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY || '').trim()
 
 if (!KEY) {
@@ -42,13 +45,16 @@ function run(cmd, cmdArgs) {
   if (r.status !== 0) process.exit(r.status || 1)
 }
 
-run('node', [
+const batchArgs = [
   'scripts/batch-gemini-fix.mjs',
   '--resume',
   `--limit=${LIMIT}`,
   `--rpm=${RPM}`,
   '--apply',
-])
+]
+if (RECHECK) batchArgs.push('--recheck')
+
+run('node', batchArgs)
 run('npm', ['run', 'postprocess:vocab'])
 run('npm', ['run', 'apply:grammar-overrides'])
 run('node', ['scripts/build-content-updates.mjs', '--from-batch-today', '--only-new'])

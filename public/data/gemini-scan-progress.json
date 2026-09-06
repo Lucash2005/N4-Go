@@ -2,6 +2,10 @@
   "total": 1580,
   "done": 483,
   "remaining": 1097,
+  "needsRecheck": 483,
+  "remainingWork": 1580,
+  "currentPromptDone": 0,
+  "promptVersion": 2,
   "ok": 396,
   "fix": 87,
   "error": 0,
@@ -12,7 +16,7 @@
   "todayScanned": 483,
   "todayFix": 87,
   "todayOk": 396,
-  "updatedAt": "2026-09-06T12:17:48.844Z",
+  "updatedAt": "2026-09-06T15:45:57.485Z",
   "days": {
     "2026-09-06": {
       "scanned": 483,
@@ -21,5 +25,5 @@
       "error": 0
     }
   },
-  "note": "Gemini 全庫掃描進度。remaining = 尚未檢查張數。每日免費額度用完後需等到太平洋時間午夜重置。"
+  "note": "Gemini 全庫掃描進度。remaining = 尚未檢查；needsRecheck = 舊版 prompt 已審核、待用現行標準重審；remainingWork = 兩者合計。每日免費額度用完後需等到太平洋時間午夜重置。"
 }

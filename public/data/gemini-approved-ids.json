@@ -1,9 +1,12 @@
 {
-  "updatedAt": "2026-09-06T12:17:48.844Z",
+  "updatedAt": "2026-09-06T15:45:57.485Z",
   "count": 483,
   "done": 483,
   "total": 1580,
   "remaining": 1097,
+  "needsRecheck": 483,
+  "remainingWork": 1580,
+  "promptVersion": 2,
   "complete": false,
   "ids": [
     "v001",
@@ -490,5 +493,5 @@
     "v482",
     "v483"
   ],
-  "note": "Only these card ids may appear in daily study until complete=true."
+  "note": "Only these card ids may appear in daily study until complete=true (unscanned + outdated-prompt recheck both finished)."
 }

@@ -183,12 +183,22 @@ export default function Dashboard() {
 
       <section className="rounded-3xl border border-line bg-foam/60 p-4 sm:p-5">
         <h2 className="font-display text-lg font-bold text-ink">Gemini 全庫掃描進度</h2>
-        <p className="mt-1 text-sm text-ink-soft">免費額度約每天 800～1000 張（Flash-Lite）。全庫掃完前，每日排程與瀏覽只會出現 Gemini 已審核的卡片；未掃到的先不出現。</p>
+        <p className="mt-1 text-sm text-ink-soft">
+          免費額度約每天 800～1000 張（Flash-Lite）。全庫掃完前，每日排程與瀏覽只會出現 Gemini
+          已審核的卡片；未掃到的先不出現。額度恢復後會優先用現行 prompt 重審「已審核／已更新」舊結果，再繼續未掃卡。
+        </p>
         {scanProgress ? (
           <div className="mt-3 space-y-2">
             <p className="text-sm text-ink">
-              已掃描 {scanProgress.done}/{scanProgress.total}（{scanProgress.percent}%）· 剩餘{' '}
+              已掃描 {scanProgress.done}/{scanProgress.total}（{scanProgress.percent}%）· 尚未檢查{' '}
               <span className="font-semibold text-sea-deep">{scanProgress.remaining}</span> 張
+              {Number(scanProgress.needsRecheck) > 0 ? (
+                <>
+                  {' '}
+                  · 待重審（舊 prompt）{' '}
+                  <span className="font-semibold text-sea-deep">{scanProgress.needsRecheck}</span> 張
+                </>
+              ) : null}
             </p>
             <div className="h-2 overflow-hidden rounded-full bg-line/60">
               <div
@@ -198,8 +208,11 @@ export default function Dashboard() {
             </div>
             <p className="text-xs text-ink-soft">
               今日已掃 {scanProgress.todayScanned || 0}（OK {scanProgress.todayOk || 0} / 需修正{' '}
-              {scanProgress.todayFix || 0}）· 預估還約 {scanProgress.estimatedDaysLeft ?? '—'} 天 · 目前可供練習{' '}
-              {scanProgress.done} 張
+              {scanProgress.todayFix || 0}）· 待處理合計 {scanProgress.remainingWork ?? scanProgress.remaining}{' '}
+              · 預估還約 {scanProgress.estimatedDaysLeft ?? '—'} 天 · 目前可供練習 {scanProgress.done} 張
+              {Number(scanProgress.currentPromptDone) > 0
+                ? `（現行標準 ${scanProgress.currentPromptDone}）`
+                : ''}
             </p>
           </div>
         ) : (

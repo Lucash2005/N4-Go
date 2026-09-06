@@ -100,6 +100,9 @@ ${snap.pattern ? `接續／句型：${snap.pattern}\n` : ''}例句（日文）�
 同音注意：無 或 …`
 }
 
+/** Prompt criteria version — keep in sync with scripts/batch-gemini-fix.mjs GEMINI_PROMPT_VERSION. */
+export const GEMINI_PROMPT_VERSION = 2
+
 /** Same prompt text for pasting into Gemini / ChatGPT web chat (no API). */
 export function buildChatCopyPrompt(card = {}) {
   return buildGeminiReviewPrompt(card)
