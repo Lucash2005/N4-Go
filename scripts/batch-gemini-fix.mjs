@@ -229,7 +229,8 @@ function toVocabOverride(card, review) {
   if (review.meaning && review.meaning !== card.meaning) patch.meaning = String(review.meaning).trim()
   if (review.example && review.example !== card.example) {
     patch.example = String(review.example).trim()
-    patch.exampleFurigana = ''
+    // Do NOT blank exampleFurigana here — postprocess regenerates it after apply.
+    // Leaving an empty string in overrides would wipe furigana on every postprocess pass.
   }
   if (review.exampleMeaning && review.exampleMeaning !== card.exampleMeaning) {
     patch.exampleMeaning = String(review.exampleMeaning).trim()
@@ -247,7 +248,7 @@ function toGrammarOverride(card, review) {
   if (review.pattern && review.pattern !== card.pattern) patch.pattern = String(review.pattern).trim()
   if (review.example && review.example !== card.example) {
     patch.example = String(review.example).trim()
-    patch.exampleFurigana = ''
+    // Furigana is regenerated in postprocess — do not persist blank override.
   }
   if (review.exampleMeaning && review.exampleMeaning !== card.exampleMeaning) {
     patch.exampleMeaning = String(review.exampleMeaning).trim()

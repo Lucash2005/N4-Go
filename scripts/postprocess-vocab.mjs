@@ -331,6 +331,22 @@ async function main() {
       c.reviewFlags = (c.reviewFlags || []).filter((f) => f !== 'needs_example')
     }
 
+    if (patch) {
+      // Empty-string furigana in overrides means "regenerate", not "wipe forever".
+      const nextPatch = { ...patch }
+      if (nextPatch.exampleFurigana === '') delete nextPatch.exampleFurigana
+      const exampleChanged =
+        Boolean(nextPatch.example) && String(nextPatch.example) !== String(c.example || '')
+      c = { ...c, ...nextPatch }
+      if (exampleChanged) c.exampleFurigana = ''
+      if (patch.example) c.exampleSource = 'override'
+      else if (patch.exampleMeaning && c.exampleSource === 'openjlpt') c.exampleSource = 'override'
+      if (patch.exampleMeaning && !isBadExampleZh(patch.exampleMeaning, c.example || patch.example || '')) {
+        c.reviewFlags = (c.reviewFlags || []).filter((f) => f !== 'needs_example_zh')
+      }
+    }
+
+    // Furigana AFTER overrides so Gemini example replacements get readings.
     if (needsFurigana(c)) {
       c.exampleFurigana = fixHeadwordFurigana(
         await annotateExample(kuroshiro, c.example),
@@ -347,15 +363,6 @@ async function main() {
         )
     } else if (c.exampleFurigana) {
       c.exampleFurigana = fixHeadwordFurigana(c.exampleFurigana, c.word, c.reading)
-    }
-
-    if (patch) {
-      c = { ...c, ...patch }
-      if (patch.example) c.exampleSource = 'override'
-      else if (patch.exampleMeaning && c.exampleSource === 'openjlpt') c.exampleSource = 'override'
-      if (patch.exampleMeaning && !isBadExampleZh(patch.exampleMeaning, c.example || patch.example || '')) {
-        c.reviewFlags = (c.reviewFlags || []).filter((f) => f !== 'needs_example_zh')
-      }
     }
 
     // Sense-safe script forms: never invent kanji from reading alone.
