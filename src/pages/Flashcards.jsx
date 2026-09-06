@@ -1123,23 +1123,45 @@ export default function Flashcards() {
 
           {srsMode ? (
             flipped ? (
-              <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
-                {GRADES.map((grade) => {
-                  const metaG = GRADE_LABELS[grade]
-                  return (
-                    <button
-                      key={grade}
-                      type="button"
-                      onClick={() => onGrade(grade)}
-                      className={`touch-target rounded-2xl px-3 py-3 text-sm font-medium transition ${gradeButtonClass(grade)}`}
-                    >
-                      <span className="block">{metaG.label}</span>
-                      <span className="mt-0.5 block text-[11px] font-normal opacity-80">
-                        {metaG.hint}
-                      </span>
-                    </button>
-                  )
-                })}
+              <div className="space-y-2">
+                <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+                  {GRADES.map((grade) => {
+                    const metaG = GRADE_LABELS[grade]
+                    return (
+                      <button
+                        key={grade}
+                        type="button"
+                        onClick={() => onGrade(grade)}
+                        className={`touch-target rounded-2xl px-3 py-3 text-sm font-medium transition ${gradeButtonClass(grade)}`}
+                      >
+                        <span className="block">{metaG.label}</span>
+                        <span className="mt-0.5 block text-[11px] font-normal opacity-80">
+                          {metaG.hint}
+                        </span>
+                      </button>
+                    )
+                  })}
+                </div>
+                <button
+                  type="button"
+                  onClick={() => toggleCardManuallyChecked?.(card)}
+                  className={`w-full rounded-2xl px-4 py-2.5 text-sm font-medium ring-1 transition ${
+                    cardIsChecked && !cardCheckStale
+                      ? 'bg-sea text-white ring-sea'
+                      : 'bg-white text-ink ring-line hover:bg-foam'
+                  }`}
+                >
+                  {cardCheckStale
+                    ? '再確認內容（內容有變）'
+                    : cardIsChecked
+                      ? '取消手動確認'
+                      : '標記已手動確認'}
+                </button>
+                {cardCheckStale ? (
+                  <p className="text-center text-xs text-ink-soft">
+                    你曾手動確認過，但內容已更新——請再核對後按上方按鈕。確認紀錄不會因更新被清除。
+                  </p>
+                ) : null}
               </div>
             ) : (
               <p className="text-center text-sm text-ink-soft">翻面後評分，才會進入下一張</p>
