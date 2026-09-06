@@ -3,13 +3,20 @@
  */
 import { CONTENT_VERSION } from './config'
 import { loadJSON, saveJSON } from '../utils/storage'
+import { loadLocalCardFixes, mapCardsWithLocalFixes } from '../utils/localCardFixes'
 
 const VOCAB_VERSION_KEY = 'vocab-loaded-version'
 
 let vocabulary = []
 
-export function getVocabulary() {
+/** Raw list without device-local Gemini fixes. */
+export function getRawVocabulary() {
   return vocabulary
+}
+
+/** Study list with device-local fixes merged in. */
+export function getVocabulary() {
+  return mapCardsWithLocalFixes(vocabulary, loadLocalCardFixes())
 }
 
 export function isVocabularyLoaded() {

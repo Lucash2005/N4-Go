@@ -1,4 +1,4 @@
-import { grammar } from '../data/grammar'
+import { getGrammar, grammar } from '../data/grammar'
 import { GRAMMAR_PATH_VERSION, getGrammarPath, grammarUnlockRank } from '../data/grammarPath'
 import { FORM_CARDS } from '../data/verbForms'
 import { getVocabulary } from '../data/vocabulary'
@@ -314,7 +314,7 @@ export function buildDailyPlan(date, cardProgress = {}, seedExtra = '', options 
 
 export function resolveCards(ids) {
   const vocabulary = getVocabulary()
-  const map = new Map([...vocabulary, ...grammar, ...FORM_CARDS].map((c) => [c.id, c]))
+  const map = new Map([...vocabulary, ...getGrammar(), ...FORM_CARDS].map((c) => [c.id, c]))
   return ids.map((id) => map.get(id)).filter(Boolean)
 }
 

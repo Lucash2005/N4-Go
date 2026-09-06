@@ -22,6 +22,7 @@
     "gemini:batch": "node scripts/batch-gemini-fix.mjs",
     "gemini:batch:resume": "node scripts/batch-gemini-fix.mjs --resume",
     "gemini:batch:apply": "node scripts/batch-gemini-fix.mjs --apply-only",
+    "merge:local-fixes": "node scripts/merge-local-card-fixes.mjs",
     "audit:vocab": "node scripts/audit-vocab.mjs",
     "audit:quality": "node scripts/audit-quality.mjs",
     "build:example-zh": "node scripts/build-example-zh-cache.mjs",

@@ -94,15 +94,120 @@ ${snap.pattern ? `接續／句型：${snap.pattern}\n` : ''}例句（日文）�
 請嚴格依下列格式完整輸出（每項一行，總長約 150～250 字，必須寫完所有欄位）：
 結論：OK 或 需修正
 問題：無 或 1. … 2. …
-建議字義：…
-建議例句：…
-建議譯文：…
+建議字義：…（若無需改寫「同原文」；若需修正請寫完整替換文字，不要只寫說明）
+建議例句：…（同上，寫完整日文例句）
+建議譯文：…（同上，寫完整中文翻譯）
+建議接續：…（僅文法卡；單字卡寫「無」）
 同音注意：無 或 …`
 }
 
 /** Same prompt text for pasting into Gemini / ChatGPT web chat (no API). */
 export function buildChatCopyPrompt(card = {}) {
   return buildGeminiReviewPrompt(card)
+}
+
+/**
+ * Parse the structured Gemini review reply into a patch.
+ * @returns {{
+ *   verdict: 'OK'|'FIX'|'UNKNOWN',
+ *   issues: string,
+ *   meaning: string,
+ *   example: string,
+ *   exampleMeaning: string,
+ *   pattern: string,
+ *   note: string,
+ *   hasPatch: boolean,
+ * }}
+ */
+export function parseGeminiReviewText(text = '') {
+  const raw = String(text || '').trim()
+  // Prefer embedded JSON if the model returned batch-style output.
+  const jsonHit = raw.match(/\{[\s\S]*"verdict"\s*:\s*"(OK|FIX)"[\s\S]*\}/i)
+  if (jsonHit) {
+    try {
+      const obj = JSON.parse(jsonHit[0])
+      const useless = (v) =>
+        v == null ||
+        !String(v).trim() ||
+        /^(…|\.\.\.|無|同原文|不變|維持原樣|N\/A)$/i.test(String(v).trim())
+      const patch = {}
+      if (!useless(obj.meaning)) patch.meaning = String(obj.meaning).trim()
+      if (!useless(obj.example)) patch.example = String(obj.example).trim()
+      if (!useless(obj.exampleMeaning)) patch.exampleMeaning = String(obj.exampleMeaning).trim()
+      if (!useless(obj.pattern)) patch.pattern = String(obj.pattern).trim()
+      if (!useless(obj.kanji)) patch.kanji = String(obj.kanji).trim()
+      const verdictRaw = String(obj.verdict || '')
+      let verdict = 'UNKNOWN'
+      if (/FIX|需修正|NG/i.test(verdictRaw)) verdict = 'FIX'
+      else if (/OK/i.test(verdictRaw)) verdict = 'OK'
+      const issues = Array.isArray(obj.issues)
+        ? obj.issues.filter(Boolean).join('；')
+        : String(obj.issues || '').trim()
+      return {
+        verdict,
+        issues: useless(issues) ? '' : issues,
+        meaning: patch.meaning || '',
+        example: patch.example || '',
+        exampleMeaning: patch.exampleMeaning || '',
+        pattern: patch.pattern || '',
+        note: raw.slice(0, 800),
+        hasPatch: Object.keys(patch).length > 0,
+        patch,
+      }
+    } catch {
+      /* fall through to line parser */
+    }
+  }
+
+  const normalized = raw
+    .replace(/\*\*/g, '')
+    .replace(/`/g, '')
+    .replace(/\r\n/g, '\n')
+
+  const lineOf = (label) => {
+    const re = new RegExp(`^\\s*${label}\\s*[：:]\\s*(.*)$`, 'im')
+    const m = normalized.match(re)
+    return m ? String(m[1] || '').trim() : ''
+  }
+  const verdictRaw = lineOf('結論')
+  let verdict = 'UNKNOWN'
+  if (/需修正|要修正|FIX|NG|錯誤/i.test(verdictRaw)) verdict = 'FIX'
+  else if (/^OK|通過|正確|無誤/i.test(verdictRaw) || /結論\s*[：:]\s*OK/i.test(normalized))
+    verdict = 'OK'
+
+  const meaning = lineOf('建議字義') || lineOf('建議中文') || lineOf('建議意思')
+  const example = lineOf('建議例句') || lineOf('建議日文例句')
+  const exampleMeaning = lineOf('建議譯文') || lineOf('建議翻譯') || lineOf('建議例句中文')
+  const pattern = lineOf('建議接續') || lineOf('建議句型')
+  const issues = lineOf('問題')
+
+  const useless = (v) =>
+    !v ||
+    v === '…' ||
+    v === '...' ||
+    v === '無' ||
+    v === '同原文' ||
+    v === '不變' ||
+    v === '維持原樣' ||
+    /^（?無）?$/.test(v)
+
+  const patch = {}
+  if (!useless(meaning)) patch.meaning = meaning
+  if (!useless(example)) patch.example = example
+  if (!useless(exampleMeaning)) patch.exampleMeaning = exampleMeaning
+  if (!useless(pattern)) patch.pattern = pattern
+
+  return {
+    verdict,
+    issues: useless(issues) ? '' : issues,
+    meaning: patch.meaning || '',
+    example: patch.example || '',
+    exampleMeaning: patch.exampleMeaning || '',
+    pattern: patch.pattern || '',
+    note: raw.slice(0, 800),
+    hasPatch: Object.keys(patch).length > 0,
+    patch,
+  }
 }
 
 function extractText(data) {

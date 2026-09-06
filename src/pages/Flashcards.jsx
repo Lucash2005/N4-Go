@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import FuriganaText from '../components/FuriganaText'
-import { grammar } from '../data/grammar'
+import { getGrammar } from '../data/grammar'
 import { withMemory } from '../data/memory'
 import { FORM_CARDS, formRule } from '../data/verbForms'
 import { getVocabulary } from '../data/vocabulary'
@@ -36,7 +36,14 @@ import {
 import { getFilterStatus, GRADE_LABELS, normalizeEntry } from '../utils/srs'
 import { speakJapanese, speechTextForCard, audioClipForCard, stopSpeaking } from '../utils/tts'
 import { frontPromptForCard, scriptFormsForCard } from '../utils/scriptForms'
-import { buildChatCopyPrompt, reviewCardWithGemini } from '../utils/geminiReview'
+import { buildChatCopyPrompt, parseGeminiReviewText, reviewCardWithGemini } from '../utils/geminiReview'
+import {
+  applyLocalCardFix,
+  clearLocalCardFix,
+  exportLocalCardFixesJson,
+  localFixCount,
+  withLocalCardFix,
+} from '../utils/localCardFixes'
 import {
   bumpGeminiDayUsage,
   checkContentUpdates,
@@ -48,7 +55,7 @@ import {
 } from '../utils/contentUpdates'
 
 function allBrowseCards() {
-  return [...getVocabulary(), ...grammar, ...FORM_CARDS]
+  return [...getVocabulary(), ...getGrammar(), ...FORM_CARDS]
 }
 
 const MODE_META = {
@@ -153,6 +160,10 @@ export default function Flashcards() {
   const [updateChecking, setUpdateChecking] = useState(false)
   const [geminiSkipReason, setGeminiSkipReason] = useState('')
   const [copyPromptMsg, setCopyPromptMsg] = useState('')
+  const [geminiParsed, setGeminiParsed] = useState(null)
+  const [localFixTick, setLocalFixTick] = useState(0)
+  const [autoFixMsg, setAutoFixMsg] = useState('')
+  const [autoApplyGemini, setAutoApplyGemini] = useLocalStorage('auto-apply-gemini-fix', true)
 
 
   useEffect(() => {
@@ -230,6 +241,7 @@ export default function Flashcards() {
     isCardReported,
     contentManifest,
     isCardManuallyChecked,
+    localFixTick,
   ])
 
   const deck = sessionLeft ?? filtered
@@ -283,7 +295,7 @@ export default function Flashcards() {
   }, [playlist.track?.id, playlist.playing])
 
   const safeIndex = deck.length ? Math.min(index, deck.length - 1) : 0
-  const card = withMemory(deck[safeIndex])
+  const card = withLocalCardFix(withMemory(deck[safeIndex]))
   const entry = card ? getEntry?.(card.id) || normalizeEntry(cardProgress[card.id]) : null
 
   const cardIsUpdated = Boolean(card && isCardContentUpdated(card.id, contentManifest))
@@ -404,6 +416,106 @@ export default function Flashcards() {
     bumpGeminiDayUsage()
     setGeminiAnalysis(result.text)
     setReportNote(result.text)
+
+    const parsed = parseGeminiReviewText(result.text)
+    setGeminiParsed(parsed)
+    if (autoApplyGemini && parsed.verdict === 'FIX' && parsed.hasPatch) {
+      applyLocalCardFix(targetCard, parsed.patch, {
+        source: 'gemini',
+        note: parsed.issues || parsed.note,
+      })
+      setLocalFixTick((n) => n + 1)
+      setAutoFixMsg('已自動套用 Gemini 建議到本機字卡（可匯出給開發者合併正式版）')
+      window.setTimeout(() => setAutoFixMsg(''), 4000)
+      setReportNote(
+        `${result.text}\n\n——\n已自動套用建議字義／例句到本機。若不滿意可按「還原本卡修正」。`,
+      )
+    } else if (parsed.verdict === 'OK') {
+      setAutoFixMsg('Gemini 判定 OK，無需修正')
+      window.setTimeout(() => setAutoFixMsg(''), 2500)
+    } else if (parsed.verdict === 'FIX' && !parsed.hasPatch) {
+      setAutoFixMsg('判定需修正，但未解析到可套用欄位——請用「複製給自己問」或手動改')
+      window.setTimeout(() => setAutoFixMsg(''), 4000)
+    }
+  }
+
+  function applyGeminiSuggestionNow(targetCard = card) {
+    const parsed = geminiParsed || parseGeminiReviewText(geminiAnalysis || reportNote)
+    setGeminiParsed(parsed)
+    if (!targetCard || !parsed?.hasPatch) {
+      setAutoFixMsg('沒有可套用的建議欄位（請先貼上含「建議字義／例句／譯文」的回覆）')
+      window.setTimeout(() => setAutoFixMsg(''), 3500)
+      return
+    }
+    applyLocalCardFix(targetCard, parsed.patch, {
+      source: 'gemini',
+      note: parsed.issues || parsed.note,
+    })
+    setLocalFixTick((n) => n + 1)
+    setAutoFixMsg('已套用建議到本機字卡（翻面即可看到新內容）')
+    window.setTimeout(() => setAutoFixMsg(''), 3000)
+  }
+
+  /** Parse whatever is in the report textarea (e.g. pasted Gemini web reply) and optionally apply. */
+  function applyFromReportNote(targetCard = card, { forceApply = true } = {}) {
+    const text = String(reportNote || '').trim()
+    if (!text) {
+      setAutoFixMsg('請先把 Gemini 回覆貼到下方文字框')
+      window.setTimeout(() => setAutoFixMsg(''), 2500)
+      return
+    }
+    const parsed = parseGeminiReviewText(text)
+    setGeminiParsed(parsed)
+    setGeminiAnalysis(text)
+    if (parsed.verdict === 'OK' && !parsed.hasPatch) {
+      setAutoFixMsg('回覆判定 OK，無需套用')
+      window.setTimeout(() => setAutoFixMsg(''), 2500)
+      return
+    }
+    if (!parsed.hasPatch) {
+      setAutoFixMsg('解析不到建議欄位——請確認回覆含「建議字義／建議例句／建議譯文」')
+      window.setTimeout(() => setAutoFixMsg(''), 4000)
+      return
+    }
+    if (forceApply || autoApplyGemini) {
+      applyLocalCardFix(targetCard, parsed.patch, {
+        source: 'gemini-paste',
+        note: parsed.issues || parsed.note,
+      })
+      setLocalFixTick((n) => n + 1)
+      setAutoFixMsg('已從貼上的回覆套用到本機字卡')
+      window.setTimeout(() => setAutoFixMsg(''), 3000)
+    } else {
+      setAutoFixMsg('已解析建議（自動套用已關）— 按「套用建議」寫入本機')
+      window.setTimeout(() => setAutoFixMsg(''), 3500)
+    }
+  }
+
+  function undoLocalFixOnCard(targetCard = card) {
+    if (!targetCard?.id) return
+    clearLocalCardFix(targetCard.id)
+    setLocalFixTick((n) => n + 1)
+    setAutoFixMsg('已還原本卡的本機修正')
+    window.setTimeout(() => setAutoFixMsg(''), 2500)
+  }
+
+  async function copyLocalFixesExport() {
+    const text = exportLocalCardFixesJson()
+    try {
+      if (navigator.clipboard?.writeText) await navigator.clipboard.writeText(text)
+      else {
+        const ta = document.createElement('textarea')
+        ta.value = text
+        document.body.appendChild(ta)
+        ta.select()
+        document.execCommand('copy')
+        document.body.removeChild(ta)
+      }
+      setAutoFixMsg(`已複製 ${localFixCount()} 筆本機修正，可貼給開發者合併`)
+    } catch {
+      setAutoFixMsg('複製失敗')
+    }
+    window.setTimeout(() => setAutoFixMsg(''), 3500)
   }
 
   async function copyPromptForSelfAsk(targetCard = card) {
@@ -445,12 +557,15 @@ export default function Flashcards() {
     setGeminiSkipReason('')
     setGeminiKeyDraft(geminiApiKey || '')
     setCopyPromptMsg('')
+    setGeminiParsed(null)
+    setAutoFixMsg('')
     // Do NOT auto-call the API on open — free-tier retries burn quota fast.
     // Reuse local cache if present; otherwise wait for 「複製給自己問」or 「用 API 檢查」.
     const cached = getCachedGeminiReview(card?.id)
     if (cached?.text) {
       setGeminiAnalysis(cached.text)
       setReportNote(cached.text)
+      setGeminiParsed(parseGeminiReviewText(cached.text))
       setGeminiSkipReason('cache')
     } else if (isCardContentUpdated(card?.id, contentManifest)) {
       setReportNote(
@@ -930,8 +1045,17 @@ export default function Flashcards() {
         >
           {updateChecking ? '檢查中…' : '檢查今日內容更新'}
         </button>
+        <button
+          type="button"
+          onClick={() => void copyLocalFixesExport()}
+          className="rounded-full bg-foam px-3 py-1.5 text-xs font-medium text-ink-soft ring-1 ring-line hover:bg-sea/10"
+        >
+          匯出本機修正（{localFixCount()}）
+        </button>
         {updateCheckMsg ? (
           <span className="text-xs text-ink-soft">{updateCheckMsg}</span>
+        ) : autoFixMsg ? (
+          <span className="text-xs text-sea-deep">{autoFixMsg}</span>
         ) : (
           <span className="text-xs text-ink-soft">
             今日 Gemini 已用 {geminiDayUsage.count} 次（本機計數）
@@ -1020,6 +1144,11 @@ export default function Flashcards() {
                     {cardCheckStale ? '已確認·內容有變' : '已手動確認'}
                   </span>
                 ) : null}
+                {card.localFix ? (
+                  <span className="ml-2 rounded-full bg-sand px-2 py-0.5 text-xs font-medium text-ink ring-1 ring-line">
+                    本機已修正
+                  </span>
+                ) : null}
                 <p className="mt-6 font-display text-4xl font-bold text-ink sm:text-5xl">
                   {card.type === 'vocab'
                     ? frontPromptForCard(card, promptScript)
@@ -1074,6 +1203,11 @@ export default function Flashcards() {
                     }`}
                   >
                     {cardCheckStale ? '已確認·內容有變' : '已手動確認'}
+                  </span>
+                ) : null}
+                {card.localFix ? (
+                  <span className="ml-2 rounded-full bg-sand px-2 py-0.5 text-xs font-medium text-ink ring-1 ring-line">
+                    本機已修正
                   </span>
                 ) : null}
                 {card.level ? (
@@ -1243,8 +1377,17 @@ export default function Flashcards() {
                   </button>
                 </div>
                 <p className="mb-3 text-xs leading-relaxed text-ink-soft">
-                  只選問題類型即可回報。建議先按「複製給自己問」（不耗 API 額度），貼到 Gemini 網頁檢查；需要時再按「用 API 檢查」。
+                  建議流程：①「複製給自己問」→ 貼到 Gemini 網頁 → ② 把回覆貼回下方 → ③「從回覆套用」。開啟自動套用時，用 API 檢查若判定需修正會直接改本機字卡。
                 </p>
+                <label className="mb-3 flex cursor-pointer items-center gap-2 text-xs text-ink">
+                  <input
+                    type="checkbox"
+                    checked={Boolean(autoApplyGemini)}
+                    onChange={(e) => setAutoApplyGemini(e.target.checked)}
+                    className="rounded border-line"
+                  />
+                  自動套用 Gemini 建議到本機（預設開）
+                </label>
                 <div className="mb-3 flex flex-wrap gap-2">
                   <button
                     type="button"
@@ -1261,10 +1404,49 @@ export default function Flashcards() {
                   >
                     {geminiChecking ? 'API 檢查中…' : '用 API 檢查'}
                   </button>
+                  <button
+                    type="button"
+                    onClick={() => applyFromReportNote(card)}
+                    className="rounded-full bg-sea px-3 py-1.5 text-xs font-medium text-white hover:bg-sea-deep"
+                  >
+                    從回覆套用
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => applyGeminiSuggestionNow(card)}
+                    className="rounded-full bg-foam px-3 py-1.5 text-xs font-medium text-ink-soft ring-1 ring-line hover:bg-foam/80"
+                  >
+                    套用建議
+                  </button>
+                  {card?.localFix ? (
+                    <button
+                      type="button"
+                      onClick={() => undoLocalFixOnCard(card)}
+                      className="rounded-full bg-white px-3 py-1.5 text-xs font-medium text-coral ring-1 ring-coral/30 hover:bg-coral/10"
+                    >
+                      還原本卡修正
+                    </button>
+                  ) : null}
                   {copyPromptMsg ? (
                     <span className="self-center text-xs text-sea-deep">{copyPromptMsg}</span>
                   ) : null}
+                  {autoFixMsg ? (
+                    <span className="self-center text-xs text-sea-deep">{autoFixMsg}</span>
+                  ) : null}
                 </div>
+                {geminiParsed?.hasPatch ? (
+                  <p className="mb-2 rounded-2xl bg-sea/10 px-3 py-2 text-xs text-sea-deep">
+                    可套用：
+                    {[
+                      geminiParsed.meaning && `字義「${geminiParsed.meaning}」`,
+                      geminiParsed.example && `例句「${geminiParsed.example}」`,
+                      geminiParsed.exampleMeaning && `譯文「${geminiParsed.exampleMeaning}」`,
+                      geminiParsed.pattern && `接續「${geminiParsed.pattern}」`,
+                    ]
+                      .filter(Boolean)
+                      .join(' · ') || '（已解析）'}
+                  </p>
+                ) : null}
                 {geminiSkipReason === 'updated' ? (
                   <p className="mb-2 rounded-2xl bg-sea/10 px-3 py-2 text-xs text-sea-deep">
                     已略過 API：此卡在內容更新清單中。請先核對修正後內容；仍有錯再回報。

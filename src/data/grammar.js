@@ -1,4 +1,5 @@
 import { grammarOverrides } from './grammarOverrides.js'
+import { mapCardsWithLocalFixes } from '../utils/localCardFixes.js'
 
 /** @typedef {{ id: string, type: 'grammar', word: string, reading: string, meaning: string, example: string, exampleFurigana?: string, exampleMeaning: string, category: string, pattern: string }} GrammarCard */
 
@@ -992,5 +993,17 @@ const grammarBase = [
 ]
 
 export { grammarBase }
-/** @type {GrammarCard[]} */
-export const grammar = withGrammarOverrides(grammarBase)
+
+/** Official grammar list (repo overrides only; no device-local Gemini fixes). */
+export const grammarOfficial = withGrammarOverrides(grammarBase)
+
+/**
+ * Study/display list — merges device-local Gemini auto-fixes when present.
+ * Prefer this (or getGrammar) in UI paths so auto-applied suggestions show up.
+ */
+export function getGrammar() {
+  return mapCardsWithLocalFixes(grammarOfficial)
+}
+
+/** @type {GrammarCard[]} — same as getGrammar() at module load; call getGrammar() for live fixes. */
+export const grammar = grammarOfficial
