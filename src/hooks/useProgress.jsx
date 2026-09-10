@@ -1,8 +1,9 @@
 import { createContext, useContext, useEffect, useMemo, useState } from 'react'
-import { DEFAULT_TASKS, TARGETS } from '../data/config'
+import { TARGETS } from '../data/config'
 import { grammar } from '../data/grammar'
 import { GRAMMAR_PATH_VERSION, getGrammarPath, monthGrammarProgress } from '../data/grammarPath'
 import { FORM_CARDS } from '../data/verbForms'
+import { getPhaseDailyQuota, getPhaseDailyTasks } from '../data/studyPhases'
 import {
   clearVocabularyCache,
   getVocabulary,
@@ -12,11 +13,11 @@ import {
 import {
   ALLOWLIST_POLICY,
   buildDailyPlan,
-  DAILY_QUOTA,
   emptyDailyPlan,
   getLiveReviewIds,
   grammarQueueIds,
   resolveCards,
+  resolveDailyQuota,
   seededShuffle,
   vocabLevelCounts,
 } from '../utils/dailyPlan'
@@ -83,9 +84,12 @@ function catchUpPlanOptions(cardProgress) {
   const vocabQuota = plan.behind.vocab
     ? Math.min(
         40,
-        Math.max(20, Math.ceil(plan.month.vocabRemaining / Math.max(7, plan.month.daysLeft))),
+        Math.max(
+          getPhaseDailyQuota().vocab,
+          Math.ceil(plan.month.vocabRemaining / Math.max(7, plan.month.daysLeft)),
+        ),
       )
-    : DAILY_QUOTA.vocab
+    : getPhaseDailyQuota().vocab
   return {
     vocabQuota,
     // Prefer N5/N4 only for now — 延伸 cards have more data quality issues
@@ -148,7 +152,7 @@ export function ProgressProvider({ children }) {
   const [cardProgress, setCardProgress] = useLocalStorage('card-progress', {})
   const [dailyTasks, setDailyTasks] = useLocalStorage('daily-tasks', {
     date: todayKey(),
-    tasks: DEFAULT_TASKS,
+    tasks: getPhaseDailyTasks(),
   })
   const [dailyPlan, setDailyPlan] = useLocalStorage('daily-plan', emptyDailyPlan(todayKey()))
   const [reportedStore, setReportedStore] = useState(() => loadReportedCards())
@@ -201,7 +205,7 @@ export function ProgressProvider({ children }) {
     if (dailyTasks.date !== today) {
       setDailyTasks({
         date: today,
-        tasks: DEFAULT_TASKS.map((t) => ({ ...t, done: false })),
+        tasks: getPhaseDailyTasks().map((t) => ({ ...t, done: false })),
       })
     }
     const catchUp = catchUpPlanOptions(cardProgress)
@@ -273,7 +277,10 @@ export function ProgressProvider({ children }) {
   // Keep review queue in sync with due SRS cards
   useEffect(() => {
     if (!vocabReady || dailyPlan.date !== todayKey()) return
-    const liveReviewIds = getLiveReviewIds(cardProgress, DAILY_QUOTA.review, todayKey(), { allowedIds: geminiAllowedIds || undefined })
+    const reviewLimit = resolveDailyQuota({ reviewQuota: dailyPlan.reviewQuota }).review
+    const liveReviewIds = getLiveReviewIds(cardProgress, reviewLimit, todayKey(), {
+      allowedIds: geminiAllowedIds || undefined,
+    })
     setDailyPlan((prev) => {
       if (prev.date !== todayKey()) return prev
       if (sameIds(prev.reviewIds, liveReviewIds)) return prev
@@ -290,7 +297,7 @@ export function ProgressProvider({ children }) {
         ),
       }
     })
-  }, [cardProgress, dailyPlan.date, reportedStore, setDailyPlan])
+  }, [cardProgress, dailyPlan.date, dailyPlan.reviewQuota, reportedStore, setDailyPlan, geminiAllowedIds])
 
   // Auto-complete checklist from plan progress
   useEffect(() => {
@@ -300,7 +307,10 @@ export function ProgressProvider({ children }) {
 
     const studied = new Set(plan.studiedIds || [])
     const listened = new Set(plan.listenedIds || [])
-    const liveReviewIds = getLiveReviewIds(cardProgress, DAILY_QUOTA.review, todayKey(), { allowedIds: geminiAllowedIds || undefined })
+    const reviewLimit = resolveDailyQuota().review
+    const liveReviewIds = getLiveReviewIds(cardProgress, reviewLimit, todayKey(), {
+      allowedIds: geminiAllowedIds || undefined,
+    })
 
     const vocabDone =
       plan.vocabIds.length > 0 && plan.vocabIds.every((id) => studied.has(id))
@@ -312,7 +322,7 @@ export function ProgressProvider({ children }) {
     const listeningDone =
       plan.vocabIds.length > 0 &&
       plan.vocabIds.filter((id) => listened.has(id)).length >=
-        Math.min(10, plan.vocabIds.length)
+        Math.min(Math.max(1, plan.listeningQuota || 1) * 3, plan.vocabIds.length)
 
     setDailyTasks((prev) => {
       if (prev.date !== todayKey()) return prev
@@ -352,7 +362,10 @@ export function ProgressProvider({ children }) {
     const plan = ensurePlan(dailyPlan, cardProgress)
     const studied = new Set(plan.studiedIds || [])
     const listened = new Set(plan.listenedIds || [])
-    const liveReviewIds = getLiveReviewIds(cardProgress, DAILY_QUOTA.review, todayKey(), { allowedIds: geminiAllowedIds || undefined })
+    const reviewLimit = resolveDailyQuota().review
+    const liveReviewIds = getLiveReviewIds(cardProgress, reviewLimit, todayKey(), {
+      allowedIds: geminiAllowedIds || undefined,
+    })
     const today = todayKey()
 
     const learnedVocab = vocabulary.filter((v) => isLearned(cardProgress[v.id], today)).length
@@ -494,7 +507,7 @@ export function ProgressProvider({ children }) {
       )
       setDailyTasks({
         date: day,
-        tasks: DEFAULT_TASKS.map((t) => ({ ...t, done: false })),
+        tasks: getPhaseDailyTasks().map((t) => ({ ...t, done: false })),
       })
     }
 

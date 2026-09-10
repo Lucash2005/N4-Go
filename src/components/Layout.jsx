@@ -3,7 +3,7 @@ import { NavLink, Outlet } from 'react-router-dom'
 const links = [
   { to: '/', label: '首頁', icon: HomeIcon },
   { to: '/flashcards', label: '卡片', icon: CardIcon },
-  { to: '/reading', label: '讀聽', icon: SkillsIcon },
+  { to: '/skills', label: '讀聽', icon: SkillsIcon },
   { to: '/schedule', label: '計畫', icon: CalendarIcon },
 ]
 

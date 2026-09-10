@@ -6,9 +6,11 @@ import Flashcards from './pages/Flashcards'
 import Quiz from './pages/Quiz'
 import Drill from './pages/Drill'
 import Schedule from './pages/Schedule'
+import SkillsHub from './pages/SkillsHub'
 import ReadingPractice from './pages/ReadingPractice'
 import ListeningPractice from './pages/ListeningPractice'
 import WrongBankPage from './pages/WrongBankPage'
+import MockExam from './pages/MockExam'
 
 export default function App() {
   return (
@@ -19,9 +21,11 @@ export default function App() {
             <Route index element={<Dashboard />} />
             <Route path="flashcards" element={<Flashcards />} />
             <Route path="quiz" element={<Quiz />} />
+            <Route path="skills" element={<SkillsHub />} />
             <Route path="reading" element={<ReadingPractice />} />
             <Route path="listening" element={<ListeningPractice />} />
             <Route path="wrong-bank" element={<WrongBankPage />} />
+            <Route path="mock" element={<MockExam />} />
             <Route path="drill" element={<Drill />} />
             <Route path="schedule" element={<Schedule />} />
             <Route path="*" element={<Navigate to="/" replace />} />

@@ -1,16 +1,31 @@
 import { getGrammar, grammar } from '../data/grammar'
 import { GRAMMAR_PATH_VERSION, getGrammarPath, grammarUnlockRank } from '../data/grammarPath'
 import { FORM_CARDS } from '../data/verbForms'
+import { getPhaseDailyQuota } from '../data/studyPhases'
 import { getVocabulary } from '../data/vocabulary'
 import { reportedIdSet } from './cardReports'
 import { getDueIds, isLearned, normalizeEntry } from './srs'
 import { todayKey } from './storage'
 
+/** Fallback quotas (phase 1 baseline). Prefer `getPhaseDailyQuota()`. */
 export const DAILY_QUOTA = {
   vocab: 15,
   grammar: 2,
   forms: 2,
   review: 15,
+}
+
+export function resolveDailyQuota(options = {}) {
+  const phaseQ = getPhaseDailyQuota()
+  return {
+    vocab: Math.max(1, Number(options.vocabQuota) || phaseQ.vocab || DAILY_QUOTA.vocab),
+    grammar: Math.max(1, Number(options.grammarQuota) || phaseQ.grammar || DAILY_QUOTA.grammar),
+    forms: Math.max(0, Number(options.formsQuota) || phaseQ.forms || DAILY_QUOTA.forms),
+    review: Math.max(0, Number(options.reviewQuota) || phaseQ.review || DAILY_QUOTA.review),
+    reading: Math.max(0, Number(options.readingQuota) || phaseQ.reading || 0),
+    listening: Math.max(0, Number(options.listeningQuota) || phaseQ.listening || 0),
+    phaseId: phaseQ.phaseId,
+  }
 }
 
 /**
@@ -294,19 +309,18 @@ export function buildDailyPlan(date, cardProgress = {}, seedExtra = '', options 
     hiddenIds: options.hiddenIds || reportedIdSet(),
     allowedIds: options.allowedIds,
   }
-  const vocabQuota = Math.max(
-    DAILY_QUOTA.vocab,
-    Math.min(40, Number(options.vocabQuota) || DAILY_QUOTA.vocab),
-  )
+  const quota = resolveDailyQuota(options)
+  // Catch-up may raise vocab above phase baseline (capped at 40).
+  const vocabQuota = Math.min(40, Math.max(quota.vocab, Number(options.vocabQuota) || quota.vocab))
 
   const grammarIds = pickGrammarByPath(
-    DAILY_QUOTA.grammar,
+    quota.grammar,
     `${seed}:grammar`,
     cardProgress,
     date,
     pickOpts,
   )
-  const formIds = pickFormIds(DAILY_QUOTA.forms, `${seed}:forms`, cardProgress, date, pickOpts)
+  const formIds = pickFormIds(quota.forms, `${seed}:forms`, cardProgress, date, pickOpts)
   const vocabIds = pickVocabThemed(
     vocabQuota,
     `${seed}:vocab`,
@@ -326,7 +340,7 @@ export function buildDailyPlan(date, cardProgress = {}, seedExtra = '', options 
   if (allowed instanceof Set) {
     allIds = allIds.filter((id) => allowed.has(id) || alwaysAllowedDuringScan(id))
   }
-  const reviewIds = getDueIds(cardProgress, allIds, DAILY_QUOTA.review, date)
+  const reviewIds = getDueIds(cardProgress, allIds, quota.review, date)
 
   return {
     date,
@@ -339,6 +353,10 @@ export function buildDailyPlan(date, cardProgress = {}, seedExtra = '', options 
     grammarPathVersion: GRAMMAR_PATH_VERSION,
     allowlistPolicy: ALLOWLIST_POLICY,
     vocabQuota,
+    phaseId: quota.phaseId,
+    readingQuota: quota.reading,
+    listeningQuota: quota.listening,
+    reviewQuota: quota.review,
     geminiApprovedCount: allowed instanceof Set ? allowed.size : null,
   }
 }
@@ -369,6 +387,7 @@ export function getLiveReviewIds(
 }
 
 export function emptyDailyPlan(date = '') {
+  const quota = resolveDailyQuota()
   return {
     date,
     vocabIds: [],
@@ -379,7 +398,11 @@ export function emptyDailyPlan(date = '') {
     listenedIds: [],
     grammarPathVersion: GRAMMAR_PATH_VERSION,
     allowlistPolicy: ALLOWLIST_POLICY,
-    vocabQuota: DAILY_QUOTA.vocab,
+    vocabQuota: quota.vocab,
+    phaseId: quota.phaseId,
+    readingQuota: quota.reading,
+    listeningQuota: quota.listening,
+    reviewQuota: quota.review,
     geminiApprovedCount: null,
   }
 }

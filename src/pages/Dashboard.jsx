@@ -155,6 +155,12 @@ export default function Dashboard() {
         </p>
         <div className="mt-3 flex flex-wrap gap-2">
           <Link
+            to="/skills"
+            className="rounded-full bg-white px-3 py-1.5 text-xs text-ink ring-1 ring-line hover:bg-foam"
+          >
+            讀聽選單
+          </Link>
+          <Link
             to="/reading"
             className="rounded-full bg-white px-3 py-1.5 text-xs text-ink ring-1 ring-line hover:bg-foam"
           >
@@ -171,6 +177,12 @@ export default function Dashboard() {
             className="rounded-full bg-white px-3 py-1.5 text-xs text-ink ring-1 ring-line hover:bg-foam"
           >
             錯題本{wrongCount ? `（${wrongCount}）` : ''}
+          </Link>
+          <Link
+            to="/mock"
+            className="rounded-full bg-sea/10 px-3 py-1.5 text-xs text-sea-deep ring-1 ring-line"
+          >
+            計時模考
           </Link>
           <Link
             to="/quiz"

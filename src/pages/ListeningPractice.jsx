@@ -110,7 +110,8 @@ export default function ListeningPractice() {
     setRevealed(true)
     setShowScript(true)
     stopAudio()
-    const ok = i === item.answer
+    const answer = item.answerIndex ?? item.answer
+    const ok = i === answer
     setStats(markListeningDone(item.id, ok))
     if (ok) recordWrongCorrect(item.id)
     else recordWrong(item.id, { source: 'listening', prompt: item.question })
@@ -244,7 +245,8 @@ export default function ListeningPractice() {
 
         <div className="mt-4 space-y-2">
           {item.options.map((opt, i) => {
-            const isAnswer = i === item.answer
+            const answer = item.answerIndex ?? item.answer
+            const isAnswer = i === answer
             const isPick = i === selected
             let cls = 'w-full rounded-2xl border px-4 py-3 text-left text-sm transition '
             if (!revealed) cls += 'border-line bg-white hover:bg-foam'

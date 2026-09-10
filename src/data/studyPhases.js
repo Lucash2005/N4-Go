@@ -79,6 +79,57 @@ export function getStudyPhaseById(id) {
 }
 
 /**
+ * Phase-aware daily study quotas (feeds dailyPlan / checklist).
+ * @param {Date|string} [now]
+ */
+export function getPhaseDailyQuota(now = new Date()) {
+  const phase = getStudyPhase(now)
+  const d = phase.daily
+  const reviewBase = Math.max(8, Math.round((d.vocab + d.grammar) * (d.reviewShare || 0.4) * 2))
+  return {
+    phaseId: phase.id,
+    vocab: Math.max(1, d.vocab),
+    grammar: Math.max(1, d.grammar),
+    forms: phase.id === 'foundation' ? 2 : 1,
+    review: Math.min(25, Math.max(8, reviewBase)),
+    reading: Math.max(0, d.reading || 0),
+    listening: Math.max(0, d.listening || 0),
+  }
+}
+
+/** Checklist rows for today, filtered by unlocked modules. */
+export function getPhaseDailyTasks(now = new Date()) {
+  const phase = getStudyPhase(now)
+  const q = getPhaseDailyQuota(now)
+  const tasks = [
+    { id: 'vocab-15', label: `每日單字 ${q.vocab} 張`, done: false },
+    { id: 'grammar-2', label: `活用＋文法 ${q.grammar + q.forms}（本月路線）`, done: false },
+    { id: 'review-10', label: `SRS 到期複習（約 ${q.review}）`, done: false },
+  ]
+  if (q.reading > 0 || phase.modules.includes('reading')) {
+    tasks.push({
+      id: 'reading-1',
+      label: q.reading > 0 ? `讀解練習 ${q.reading} 篇` : '讀解練習（可選）',
+      done: false,
+    })
+  }
+  if (q.listening > 0 || phase.modules.includes('listening')) {
+    tasks.push({
+      id: 'listening-15',
+      label: q.listening > 0 ? `聽解練習 ${q.listening} 題` : '聽解／聽力 15 分鐘',
+      done: false,
+    })
+  }
+  if (phase.modules.includes('wrong-bank') || phase.id !== 'foundation') {
+    tasks.push({ id: 'wrong-bank', label: '錯題本回顧', done: false })
+  }
+  if (phase.modules.includes('mock')) {
+    tasks.push({ id: 'mock-exam', label: '計時模考（語彙／讀解／聽解）', done: false })
+  }
+  return tasks
+}
+
+/**
  * Exam readiness 0–100 from coverage across vocab / grammar / reading / listening.
  * @param {{
  *   learnedVocab: number,
