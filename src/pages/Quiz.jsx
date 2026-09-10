@@ -34,6 +34,8 @@ export default function Quiz() {
       : `文法只出已解鎖路線（${grammarPath?.title || '本月'}），不會跳到後面的使役受身`
   }, [todayVocab, todayGrammar, todayReview, grammarPath])
 
+  const missedMetaRef = useRef([])
+
   function start() {
     const qs = pickAdaptiveQuiz({
       count: 10,
@@ -50,6 +52,7 @@ export default function Quiz() {
     setCorrectCount(0)
     correctRef.current = 0
     missedRef.current = []
+    missedMetaRef.current = []
     setFinished(false)
     setStarted(true)
   }
@@ -67,12 +70,17 @@ export default function Quiz() {
       if (question.formId) missedRef.current.push(question.formId)
       const correctText = question.options[question.answer]
       if (correctText) missedRef.current.push(correctText)
+      missedMetaRef.current.push({
+        id: question.id,
+        source: question.type === 'reading' ? 'reading' : 'quiz',
+        prompt: question.prompt || '',
+      })
     }
   }
 
   function next() {
     if (current + 1 >= questions.length) {
-      recordQuiz(correctRef.current, questions.length, missedRef.current)
+      recordQuiz(correctRef.current, questions.length, missedRef.current, missedMetaRef.current)
       setFinished(true)
       return
     }
@@ -95,7 +103,7 @@ export default function Quiz() {
           <section className="surface soft-shadow animate-fade-up stagger-1 flex flex-col rounded-3xl p-5 sm:p-6">
             <h3 className="font-display text-lg font-bold text-ink">N4 模擬測驗</h3>
             <p className="mt-2 flex-1 text-sm leading-relaxed text-ink-soft">
-              依今日計畫與 SRS 動態出題。錯題會影響對應單字／文法卡的複習排程。
+              依今日計畫與 SRS 動態出題。錯題會進錯題本，並影響對應卡片複習。
             </p>
             <p className="mt-2 text-xs text-sea-deep">{focusHint}</p>
             <button
@@ -108,13 +116,37 @@ export default function Quiz() {
           </section>
 
           <section className="surface soft-shadow animate-fade-up stagger-2 flex flex-col rounded-3xl p-5 sm:p-6">
+            <h3 className="font-display text-lg font-bold text-ink">讀解／聽解</h3>
+            <p className="mt-2 flex-1 text-sm leading-relaxed text-ink-soft">
+              短文・情報検索・課題理解。答錯自動進錯題本。
+            </p>
+            <div className="mt-5 grid grid-cols-2 gap-2">
+              <Link
+                to="/reading"
+                className="rounded-2xl bg-sea px-3 py-3 text-center text-sm font-medium text-white"
+              >
+                讀解
+              </Link>
+              <Link
+                to="/listening"
+                className="rounded-2xl bg-coral px-3 py-3 text-center text-sm font-medium text-white"
+              >
+                聽解
+              </Link>
+            </div>
+            <Link to="/wrong-bank" className="mt-2 text-center text-xs text-sea-deep underline">
+              打開錯題本
+            </Link>
+          </section>
+
+          <section className="surface soft-shadow animate-fade-up stagger-2 flex flex-col rounded-3xl p-5 sm:p-6 sm:col-span-2">
             <h3 className="font-display text-lg font-bold text-ink">基礎加強</h3>
             <p className="mt-2 flex-1 text-sm leading-relaxed text-ink-soft">
               てから／から、に／へ、讀解型短文填空。錯題走獨立佇列，不扣掌握進度。
             </p>
             <Link
               to="/drill"
-              className="mt-5 block w-full rounded-2xl bg-coral px-4 py-3.5 text-center text-base font-medium text-white transition hover:bg-coral/90"
+              className="mt-5 block w-full rounded-2xl bg-white px-4 py-3.5 text-center text-base font-medium text-ink ring-1 ring-line transition hover:bg-foam"
             >
               開始加強練習
             </Link>

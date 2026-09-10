@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import ProgressBar from '../components/ProgressBar'
 import { monthlyMilestones, schedulePhases } from '../data/schedule'
+import { STUDY_PHASES, getStudyPhase } from '../data/studyPhases'
 import { GRAMMAR_MONTH_PATH } from '../data/grammarPath'
 import { useProgress } from '../hooks/useProgress'
 import { getPlanProgress } from '../utils/planProgress'
@@ -49,8 +50,40 @@ export default function Schedule() {
       <section className="animate-fade-up">
         <h2 className="font-display text-2xl font-bold text-ink">學習計畫總覽</h2>
         <p className="mt-1 text-sm text-ink-soft">
-          文法按月解鎖（先補上個月，再開本月新句型）；每日文法含て形／ない形活用，單字量目標不變
+          三階段衝刺至 12 月考試；文法仍按月解鎖，讀聽模組自技能期起加重。
         </p>
+      </section>
+
+      <section className="surface soft-shadow animate-fade-up rounded-3xl p-5 sm:p-6">
+        <h3 className="font-display text-lg font-bold text-ink">三階段備考</h3>
+        <div className="mt-4 space-y-3">
+          {STUDY_PHASES.map((phase) => {
+            const active = getStudyPhase().id === phase.id
+            return (
+              <div
+                key={phase.id}
+                className={[
+                  'rounded-2xl px-4 py-3',
+                  active ? 'bg-sea/10 ring-1 ring-sea/30' : 'bg-foam/70',
+                ].join(' ')}
+              >
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <p className="font-medium text-ink">
+                    {phase.title}
+                    {active ? <span className="ml-2 text-xs text-sea-deep">進行中</span> : null}
+                  </p>
+                  <span className="text-xs text-ink-soft">{phase.period}</span>
+                </div>
+                <p className="mt-1 text-sm text-ink-soft">{phase.goal}</p>
+                <p className="mt-1 text-xs text-ink-soft">
+                  每日：單字 {phase.daily.vocab} · 文法 {phase.daily.grammar}
+                  {phase.daily.reading ? ` · 讀解 ${phase.daily.reading}` : ''}
+                  {phase.daily.listening ? ` · 聽解 ${phase.daily.listening}` : ''}
+                </p>
+              </div>
+            )
+          })}
+        </div>
       </section>
 
       <section className="surface soft-shadow animate-fade-up stagger-1 rounded-3xl p-5 sm:p-6">

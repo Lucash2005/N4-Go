@@ -35,6 +35,7 @@ import {
   reportedIdSet,
   unreportCard as removeReport,
 } from '../utils/cardReports'
+import { loadWrongBank, recordWrong, wrongBankCount } from '../utils/wrongBank'
 import {
   loadManualChecks,
   markManuallyChecked,
@@ -426,7 +427,7 @@ export function ProgressProvider({ children }) {
       }))
     }
 
-    function recordQuiz(correct, total, missedAnswers = []) {
+    function recordQuiz(correct, total, missedAnswers = [], missedMeta = []) {
       setQuizStats((prev) => ({
         attempted: prev.attempted + total,
         correct: prev.correct + correct,
@@ -443,6 +444,14 @@ export function ProgressProvider({ children }) {
           }
           return next
         })
+      }
+
+      if (Array.isArray(missedMeta) && missedMeta.length) {
+        let store = loadWrongBank()
+        for (const m of missedMeta) {
+          if (!m?.id) continue
+          store = recordWrong(m.id, { source: m.source || 'quiz', prompt: m.prompt || '' }, store)
+        }
       }
     }
 
@@ -629,6 +638,7 @@ export function ProgressProvider({ children }) {
       unreportCardIssue,
       clearCardReports,
       copyReportsExport,
+      wrongBankCount: wrongBankCount(),
       reportedItems,
       reportedCount,
       reportReasons: REPORT_REASONS,

@@ -225,4 +225,55 @@ export const readingQuestions = [
     answer: 2,
     explanation: "下雨則中止改上課。",
   },
+  {
+    id: "reading_info_01",
+    type: 'reading',
+    readingKind: 'info_retrieval',
+    title: '図書館の利用案内',
+    prompt: '館内の開館時間はいつですか。',
+    passage: "【図書館からのお知らせ】\n平日の開館時間は10:00から18:00です。\n土曜日は10:00から17:00です。日曜日と祝日は休みです。\n本は2週間借りられます。",
+    options: ["9:00〜17:00", "10:00〜18:00", "終日開館", "月曜のみ休み"],
+    answer: 1,
+    explanation: "平日は10:00から18:00。",
+    keySentences: ["平日の開館時間は10:00から18:00です。"],
+  },
+  {
+    id: "reading_info_02",
+    type: 'reading',
+    readingKind: 'info_retrieval',
+    title: 'スーパーのチラシ',
+    prompt: '卵はいつまで特価ですか。',
+    passage: "週末特価のお知らせ\n・卵 1パック 98円（土曜日・日曜日のみ）\n・牛乳 1本 120円（毎日）\n・りんご 3個 200円（金曜日まで）\nご来店お待ちしています。",
+    options: ["毎日", "金曜日まで", "土日のみ", "月曜日だけ"],
+    answer: 2,
+    explanation: "卵は土曜日・日曜日のみ特価。",
+    keySentences: ["卵 1パック 98円（土曜日・日曜日のみ）"],
+  },
+  {
+    id: "reading_med_01",
+    type: 'reading',
+    readingKind: 'medium',
+    title: 'アルバイトの経験',
+    prompt: '筆者が一番大変だったことは何ですか。',
+    passage: "私は大学一年生のとき、カフェでアルバイトを始めました。最初は注文を間違えたり、お皿を落としたりして、毎日失敗ばかりでした。でも店長はいつも優しく教えてくれました。半年間働いて、忙しい時間でも落ち着いて仕事ができるようになりました。一番大変だったのは、朝早く起きて店を開けることでした。今は朝が少し得意になりました。",
+    options: ["注文を覚えること", "朝早く起きること", "店長に怒られること", "半年間働くこと"],
+    answer: 1,
+    explanation: "一番大変だったのは朝早く起きて開店すること。",
+    keySentences: ["一番大変だったのは、朝早く起きて店を開けることでした。"],
+  },
 ]
+
+/** @param {{ passage?: string, readingKind?: string }} item */
+export function inferReadingKind(item) {
+  if (item?.readingKind) return item.readingKind
+  const len = String(item?.passage || '').replace(/\s/g, '').length
+  if (len >= 220) return 'medium'
+  if (/お知らせ|案内|募集|チラシ|利用|開館|特価/.test(item?.passage || '')) return 'info_retrieval'
+  return 'short'
+}
+
+export const READING_KIND_LABELS = {
+  short: '短文',
+  medium: '中文',
+  info_retrieval: '情報検索',
+}

@@ -7,6 +7,10 @@ import { DRILL_BANK_SIZE } from '../data/drill'
 import { useProgress } from '../hooks/useProgress'
 import { getPlanProgress } from '../utils/planProgress'
 import { checkContentUpdates, getTodayKey } from '../utils/contentUpdates'
+import { computeReadiness, getStudyPhase } from '../data/studyPhases'
+import { getReadingStats } from '../pages/ReadingPractice'
+import { getListeningStats } from '../pages/ListeningPractice'
+import { wrongBankCount } from '../utils/wrongBank'
 
 export default function Dashboard() {
   const {
@@ -97,9 +101,90 @@ export default function Dashboard() {
         ? 'bg-sand text-ink'
         : 'bg-coral/15 text-coral'
 
+  const studyPhase = getStudyPhase()
+  const readingStats = getReadingStats()
+  const listeningStats = getListeningStats()
+  const readiness = computeReadiness({
+    learnedVocab,
+    learnedGrammar,
+    vocabTarget: targets.vocabulary,
+    grammarTarget: targets.grammar,
+    readingDone: readingStats.doneCount,
+    readingTotal: readingStats.total,
+    listeningDone: listeningStats.doneCount,
+    listeningTotal: listeningStats.total,
+    quizRate,
+  })
+  const wrongCount = wrongBankCount()
+  const dailyGoal = studyPhase.daily
+
   return (
     <div className="space-y-5">
       <Countdown />
+
+      <section className="surface soft-shadow animate-fade-up rounded-3xl p-5 sm:p-6">
+        <div className="flex flex-wrap items-start justify-between gap-3">
+          <div>
+            <p className="text-xs font-medium tracking-wide text-sea">3-PHASE PLAN</p>
+            <h2 className="font-display text-xl font-bold text-ink">
+              {studyPhase.title}
+              <span className="ml-2 text-sm font-normal text-ink-soft">{studyPhase.period}</span>
+            </h2>
+            <p className="mt-1 text-sm text-ink-soft">{studyPhase.goal}</p>
+          </div>
+          <Link to="/schedule" className="text-xs text-sea-deep underline-offset-2 hover:underline">
+            看完整計畫
+          </Link>
+        </div>
+        <div className="mt-4">
+          <div className="mb-1 flex items-end justify-between text-sm">
+            <span className="text-ink-soft">考試準備度</span>
+            <span className="font-semibold text-sea-deep">{readiness.percent}%</span>
+          </div>
+          <ProgressBar value={readiness.percent} />
+          <p className="mt-2 text-xs text-ink-soft">
+            單字 {readiness.parts.vocab}% · 文法 {readiness.parts.grammar}% · 讀解{' '}
+            {readiness.parts.reading}% · 聽解 {readiness.parts.listening}% · 測驗正確率{' '}
+            {readiness.parts.quiz}%
+          </p>
+        </div>
+        <p className="mt-4 rounded-2xl bg-foam/80 px-3 py-2 text-sm text-ink">
+          今日目標：單字 {dailyGoal.vocab} · 文法 {dailyGoal.grammar}
+          {dailyGoal.reading ? ` · 讀解 ${dailyGoal.reading}` : ''}
+          {dailyGoal.listening ? ` · 聽解 ${dailyGoal.listening}` : ''}
+        </p>
+        <div className="mt-3 flex flex-wrap gap-2">
+          <Link
+            to="/reading"
+            className="rounded-full bg-white px-3 py-1.5 text-xs text-ink ring-1 ring-line hover:bg-foam"
+          >
+            讀解練習
+          </Link>
+          <Link
+            to="/listening"
+            className="rounded-full bg-white px-3 py-1.5 text-xs text-ink ring-1 ring-line hover:bg-foam"
+          >
+            聽解練習
+          </Link>
+          <Link
+            to="/wrong-bank"
+            className="rounded-full bg-white px-3 py-1.5 text-xs text-ink ring-1 ring-line hover:bg-foam"
+          >
+            錯題本{wrongCount ? `（${wrongCount}）` : ''}
+          </Link>
+          <Link
+            to="/quiz"
+            className="rounded-full bg-sea/10 px-3 py-1.5 text-xs text-sea-deep ring-1 ring-line"
+          >
+            綜合測驗
+          </Link>
+        </div>
+        {studyPhase.id === 'foundation' ? (
+          <p className="mt-3 text-xs text-ink-soft">
+            目前為知識加速期：優先清完單字／文法；10/21 起解鎖每日讀聽配額。
+          </p>
+        ) : null}
+      </section>
 
       {vocabUpdatePending ? (
         <section className="rounded-3xl border border-sea/30 bg-sea/10 p-4 sm:p-5">

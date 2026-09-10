@@ -3,7 +3,7 @@ import { NavLink, Outlet } from 'react-router-dom'
 const links = [
   { to: '/', label: '首頁', icon: HomeIcon },
   { to: '/flashcards', label: '卡片', icon: CardIcon },
-  { to: '/quiz', label: '測驗', icon: QuizIcon },
+  { to: '/reading', label: '讀聽', icon: SkillsIcon },
   { to: '/schedule', label: '計畫', icon: CalendarIcon },
 ]
 
@@ -79,17 +79,16 @@ function CardIcon() {
   )
 }
 
-function QuizIcon() {
+function SkillsIcon() {
   return (
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <circle cx="12" cy="12" r="8.2" stroke="currentColor" strokeWidth="1.8" />
       <path
-        d="M9.2 9.4a2.8 2.8 0 1 1 4.3 2.4c-.8.5-1.5 1.1-1.5 2.2"
+        d="M4 7h10M4 12h16M4 17h8"
         stroke="currentColor"
         strokeWidth="1.8"
         strokeLinecap="round"
       />
-      <circle cx="12" cy="16.8" r="1" fill="currentColor" />
+      <circle cx="18" cy="17" r="3.2" stroke="currentColor" strokeWidth="1.8" />
     </svg>
   )
 }
