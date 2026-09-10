@@ -75,8 +75,8 @@ for (const row of items) {
   else if (row.verdict === 'FIX') days[day].fix += 1
 }
 
-/** Free-tier Flash-Lite is often ~1000 RPD; keep a conservative daily target. */
-const dailyQuota = Math.max(50, Number(flag('daily-quota', 800)) || 800)
+/** Free-tier Flash-Lite can do more, but we pace by study-days (default ~75 = 5×15). */
+const dailyQuota = Math.max(15, Number(flag('daily-quota', 75)) || 75)
 const estimatedDaysLeft = remainingWork === 0 ? 0 : Math.ceil(remainingWork / dailyQuota)
 const today = todayKey()
 

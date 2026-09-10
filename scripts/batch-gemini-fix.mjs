@@ -102,7 +102,7 @@ function writeScanProgress(items, queueTotal) {
   const needsRecheck = doneRows.filter((x) => !isCurrentPrompt(x)).length
   const currentPromptDone = doneRows.filter((x) => isCurrentPrompt(x)).length
   const remainingWork = remaining + needsRecheck
-  const dailyQuota = 800
+  const dailyQuota = 75
   const days = {}
   for (const row of rows) {
     const day = dayKey(row.at || '') || 'unknown'

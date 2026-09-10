@@ -28,8 +28,10 @@
     "exampleMeaning": "突然下起雨來了。"
   },
   "v030": {
-    "meaning": "拜見（敬語）",
-    "meaningEn": "to see (humble)"
+    "meaning": "拜看、看（「見る」的謙讓語）",
+    "meaningEn": "to see (humble)",
+    "example": "明日、その資料を拝見します。",
+    "exampleMeaning": "我明天會看那份資料。"
   },
   "v1386": {
     "meaning": "結束；完了（感嘆）",
@@ -304,7 +306,7 @@
     "exampleFurigana": "このパンは堅[かた]いです。"
   },
   "v141": {
-    "example": "ごみをちゃわんに入れてください。",
+    "example": "ご飯を茶碗に入れてください。",
     "exampleMeaning": "請把飯盛在碗裡。",
     "kanji": "茶碗"
   },
@@ -1986,7 +1988,8 @@
   },
   "v309": {
     "meaning": "教室",
-    "example": "彼は教室にいます。"
+    "example": "彼は教室にいます。",
+    "exampleMeaning": "他在教室裡。"
   },
   "v321": {
     "example": "秋の空は晴れていてきれいだ。",
@@ -1999,7 +2002,8 @@
   },
   "v325": {
     "meaning": "兄弟姊妹",
-    "example": "兄弟はいますか。"
+    "example": "兄弟はいますか。",
+    "exampleMeaning": "你有兄弟姊妹嗎？"
   },
   "v328": {
     "meaning": "相當、頗；不用了",
@@ -2284,7 +2288,8 @@
     "meaningEn": "usually; mostly; generally",
     "example": "休みの日はたいてい家で本を読みます。",
     "exampleMeaning": "放假的日子大部分都在家裡看書。",
-    "exampleFurigana": ""
+    "exampleFurigana": "",
+    "kanji": "大抵"
   },
   "v416": {
     "meaning": "自己、親自",
@@ -2419,6 +2424,124 @@
     "example": "この紙のたてとよこを測ってください。",
     "exampleMeaning": "請測量這張紙的縱向與橫向。",
     "kanji": "縦",
+    "exampleFurigana": ""
+  },
+  "v006": {
+    "example": "毎日日本語を練習します。",
+    "exampleMeaning": "每天練習日語。"
+  },
+  "v016": {
+    "example": "テストに失敗しました。",
+    "exampleMeaning": "考試失敗了。"
+  },
+  "v025": {
+    "example": "雨が降り続けています。",
+    "exampleMeaning": "雨一直在下。"
+  },
+  "v044": {
+    "example": "トイレはあっちです。",
+    "exampleMeaning": "洗手間在那邊。"
+  },
+  "v054": {
+    "meaning": "如何、怎麼樣",
+    "example": "コーヒーはいかがですか。",
+    "exampleMeaning": "要來杯咖啡嗎？"
+  },
+  "v060": {
+    "example": "山はいつも緑だ。"
+  },
+  "v066": {
+    "meaning": "祖母；老奶奶",
+    "exampleMeaning": "老奶奶下了車。"
+  },
+  "v067": {
+    "meaning": "警察先生、警察伯伯（對警察的親切稱呼）",
+    "example": "おまわりさんに道を聞きました。",
+    "exampleMeaning": "向警察問路。"
+  },
+  "v070": {
+    "example": "お金がありません。",
+    "exampleMeaning": "我沒有錢。"
+  },
+  "v072": {
+    "example": "お皿を洗ってください。請洗盤子。",
+    "exampleMeaning": "請洗盤子。"
+  },
+  "v081": {
+    "example": "東京まで新幹線で2時間かかる。",
+    "exampleMeaning": "到東京搭新幹線要花兩個小時。"
+  },
+  "v085": {
+    "example": "かばんの中に財布が入っています。",
+    "exampleMeaning": "包包裡放著錢包。"
+  },
+  "v087": {
+    "exampleMeaning": "今天也是咖哩喔。"
+  },
+  "v094": {
+    "example": "塩を少しください。"
+  },
+  "v095": {
+    "example": "クラスに友達がいますか。"
+  },
+  "v103": {
+    "meaning": "這、這個",
+    "example": "これは本です。",
+    "exampleMeaning": "這是書。"
+  },
+  "v104": {
+    "example": "書類をコピーしてください。",
+    "exampleMeaning": "請影印文件。"
+  },
+  "v116": {
+    "meaning": "暖氣機",
+    "example": "ストーブを消しましたか？",
+    "exampleMeaning": "你把暖氣機關掉了嗎？"
+  },
+  "v122": {
+    "example": "セーターが前後ろだよ。",
+    "exampleMeaning": "毛衣穿反了。"
+  },
+  "v124": {
+    "example": "きょうの気温はゼロ度です。",
+    "exampleMeaning": "今天的氣溫是零度。"
+  },
+  "v131": {
+    "meaning": "那、那個",
+    "example": "それを消して。",
+    "exampleMeaning": "把那個刪掉。"
+  },
+  "v133": {
+    "meaning": "那麼、在那種情況下",
+    "example": "それでは、また明日。",
+    "exampleMeaning": "那麼，明天見。"
+  },
+  "v136": {
+    "example": "タクシーに乗ります。",
+    "exampleMeaning": "我要搭計程車。"
+  },
+  "v142": {
+    "meaning": "剛好、正好",
+    "exampleMeaning": "正好五點。"
+  },
+  "v146": {
+    "meaning": "膠帶",
+    "example": "箱をテープで止めます。",
+    "exampleMeaning": "用膠帶把箱子封起來。"
+  },
+  "v148": {
+    "example": "テープレコーダーで日本語の音声を聴きます。",
+    "exampleMeaning": "用錄音機聽日語語音。"
+  },
+  "v166": {
+    "example": "どの犬ですか。",
+    "exampleMeaning": "哪一隻是狗？"
+  },
+  "v174": {
+    "meaning": "領帶",
+    "meaningEn": "necktie; tie",
+    "example": "新しいネクタイを買いました。",
+    "exampleMeaning": "我買了一條新領帶。",
     "exampleFurigana": ""
   }
 }

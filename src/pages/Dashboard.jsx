@@ -184,8 +184,9 @@ export default function Dashboard() {
       <section className="rounded-3xl border border-line bg-foam/60 p-4 sm:p-5">
         <h2 className="font-display text-lg font-bold text-ink">Gemini 全庫掃描進度</h2>
         <p className="mt-1 text-sm text-ink-soft">
-          免費額度約每天 800～1000 張（Flash-Lite）。全庫掃完前，每日排程與瀏覽只會出現 Gemini
-          已審核的卡片；未掃到的先不出現。額度恢復後會優先用現行 prompt 重審「已審核／已更新」舊結果，再繼續未掃卡。
+          每日自動檢查約 3～7 天可學的量（預設約 75 張＝5 天×每日 15
+          單字），方便抽查品質；不夠再加大。全庫掃完前，每日排程與瀏覽只會出現 Gemini
+          已審核的卡片。會優先用現行 prompt 重審舊結果，再繼續未掃卡。
         </p>
         {scanProgress ? (
           <div className="mt-3 space-y-2">
