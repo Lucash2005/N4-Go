@@ -60,6 +60,22 @@ function cardSnapshot(card = {}) {
   }
 }
 
+/** Pull only actionable Gemini suggestion lines for compact export. */
+export function compactFixHint(text = '') {
+  const raw = String(text || '').trim()
+  if (!raw) return ''
+  const lines = raw
+    .replace(/\*\*/g, '')
+    .split('\n')
+    .map((l) => l.trim())
+    .filter(Boolean)
+  const keep = lines.filter((l) =>
+    /^(建議字義|建議例句|建議譯文|建議接續|建議中文|問題)\s*[：:]/.test(l),
+  )
+  const picked = (keep.length ? keep : lines).slice(0, 4).join('｜')
+  return picked.slice(0, 280)
+}
+
 /** Load reported cards — persists across content updates until user manually clears. */
 export function loadReportedCards() {
   const store = normalizeStore(loadJSON(STORAGE_KEY, null))
@@ -144,19 +160,41 @@ export function filterOutReported(cards, store = loadReportedCards()) {
   return cards.filter((c) => !hidden.has(c.id))
 }
 
-/** Serialize reports for copy/export (device-local). */
-export function exportReportsJson(store = loadReportedCards()) {
+/**
+ * Compact export for pasting to the coding agent — ids + reasons + short fix hint only.
+ * Agent should load full card text from the repo by id (saves tokens).
+ */
+export function exportReportsCompact(store = loadReportedCards()) {
   const items = Object.values(store.items || {})
+    .sort((a, b) => (a.at || '').localeCompare(b.at || ''))
+    .map((item) => {
+      const fix = compactFixHint(item.note) || compactFixHint(item.geminiAnalysis)
+      const row = {
+        id: item.id,
+        word: item.word || '',
+        type: item.type || 'vocab',
+        reasons: Array.isArray(item.reasons) ? item.reasons : [item.reason || 'meaning'],
+      }
+      if (fix) row.fix = fix
+      return row
+    })
   return JSON.stringify(
     {
-      exportedAt: new Date().toISOString(),
-      contentVersion: store.contentVersion,
+      format: 'n4-go-reports-v2',
+      contentVersion: store.contentVersion || CONTENT_VERSION,
       count: items.length,
-      items: items.sort((a, b) => (a.at || '').localeCompare(b.at || '')),
+      forAgent:
+        'Load each id from public/data/vocabulary.json or grammar.js; apply meaning/example/exampleMeaning/kanji fixes. Ignore missing fields. Prefer row.fix suggestions when present.',
+      items,
     },
     null,
     2,
   )
+}
+
+/** @deprecated Prefer exportReportsCompact for agent handoff. */
+export function exportReportsJson(store = loadReportedCards()) {
+  return exportReportsCompact(store)
 }
 
 export function importReportsJson(jsonText, store = loadReportedCards()) {

@@ -475,7 +475,8 @@ export default function Dashboard() {
             <div>
               <h2 className="font-display text-xl font-bold text-ink">已回報隱藏</h2>
               <p className="mt-1 text-sm text-ink-soft">
-                本機暫存 {reportedCount} 張，不會再出現於練習／瀏覽；確認修正後請手動按「解除隱藏」。
+                本機暫存 {reportedCount} 張，不會再出現於練習／瀏覽。請用「複製精簡回報」貼給開發者（只含
+                id／原因／短建議，節省 token）；確認修正後按「解除隱藏」。
               </p>
             </div>
             <div className="flex flex-wrap gap-2">
@@ -484,7 +485,7 @@ export default function Dashboard() {
                 onClick={async () => {
                   try {
                     await copyReportsExport()
-                    setExportMsg('已複製回報清單到剪貼簿，可貼給開發者')
+                    setExportMsg('已複製精簡回報（只含 id／原因／短建議），可貼給開發者')
                   } catch {
                     setExportMsg('複製失敗，請改用瀏覽器允許剪貼簿權限')
                   }
@@ -492,7 +493,7 @@ export default function Dashboard() {
                 }}
                 className="rounded-full bg-white px-3 py-1.5 text-xs text-ink-soft ring-1 ring-line hover:bg-foam"
               >
-                複製回報清單
+                複製精簡回報
               </button>
               <button
                 type="button"

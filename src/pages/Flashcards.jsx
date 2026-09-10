@@ -143,7 +143,9 @@ export default function Flashcards() {
   const [levelFilter, setLevelFilter] = useState('core') // core = N5+N4
   const [statusFilter, setStatusFilter] = useState(() => {
     const s = searchParams.get('status')
-    return s === 'updated' || s === 'learned' || s === 'review' || s === 'checked' ? s : 'all'
+    return s === 'updated' || s === 'learned' || s === 'review' || s === 'checked' || s === 'approved'
+      ? s
+      : 'all'
   })
   const [index, setIndex] = useState(0)
   const [flipped, setFlipped] = useState(false)
@@ -218,6 +220,8 @@ export default function Flashcards() {
       }
       if (statusFilter === 'updated') {
         if (!isCardContentUpdated(card.id, contentManifest)) return false
+      } else if (statusFilter === 'approved') {
+        if (!geminiApproved || !approvedIdSet(geminiApproved).has(card.id)) return false
       } else if (statusFilter === 'checked') {
         if (!isCardManuallyChecked?.(card.id)) return false
       } else {
@@ -254,9 +258,8 @@ export default function Flashcards() {
     isCardReported,
     contentManifest,
     isCardManuallyChecked,
-    localFixTick,,
+    localFixTick,
     geminiApproved,
-    geminiRestrictToApproved,
   ])
 
   const deck = sessionLeft ?? filtered
@@ -314,12 +317,8 @@ export default function Flashcards() {
   const entry = card ? getEntry?.(card.id) || normalizeEntry(cardProgress[card.id]) : null
 
   const cardIsUpdated = Boolean(card && isCardContentUpdated(card.id, contentManifest))
-  const cardIsApproved = Boolean(
-    card &&
-    geminiRestrictToApproved &&
-    geminiApproved &&
-    approvedIdSet(geminiApproved).has(card.id),
-  )
+  // Show for any Gemini-approved card (not only while allowlist restriction is on).
+  const cardIsApproved = Boolean(card && geminiApproved && approvedIdSet(geminiApproved).has(card.id))
   const manualCheck = card ? getManualCheckStatus?.(card) : null
   const cardIsChecked = Boolean(manualCheck)
   const cardCheckStale = Boolean(manualCheck?.stale)
@@ -1045,6 +1044,14 @@ export default function Flashcards() {
               只看已更新
             </FilterChip>
             <FilterChip
+              active={statusFilter === 'approved'}
+              onClick={() =>
+                onFilterChange(setStatusFilter, statusFilter === 'approved' ? 'all' : 'approved')
+              }
+            >
+              只看Gemini已審
+            </FilterChip>
+            <FilterChip
               active={statusFilter === 'checked'}
               onClick={() =>
                 onFilterChange(setStatusFilter, statusFilter === 'checked' ? 'all' : 'checked')
@@ -1053,7 +1060,7 @@ export default function Flashcards() {
               只看已手動確認{manualCheckedCount ? `（${manualCheckedCount}）` : ''}
             </FilterChip>
           </div>
-          <p className="text-xs text-ink-soft">預設只顯示 N5／N4；全庫掃完前僅顯示 Gemini 已審核卡片。延伸詞庫需手動開啟。</p>
+          <p className="text-xs text-ink-soft">預設只顯示 N5／N4；全庫掃完前單字僅顯示 Gemini 已審核卡片（文法／活用仍依路線）。延伸詞庫需手動開啟。</p>
         </section>
       ) : null}
 
@@ -1149,13 +1156,20 @@ export default function Flashcards() {
                 <Badge>
                   {card.type === 'vocab' ? '單字' : card.type === 'form' ? '活用' : '文法'}
                 </Badge>
-                {cardIsUpdated ? (
-                  <span className="ml-2 rounded-full bg-sea/15 px-2 py-0.5 text-xs font-medium text-sea-deep">
-                    已更新
+                {cardIsApproved ? (
+                  <span
+                    className="ml-2 rounded-full bg-foam px-2 py-0.5 text-xs font-medium text-ink-soft ring-1 ring-line"
+                    title="已由 Gemini 全庫掃描檢查過（上線版本）"
+                  >
+                    Gemini已審
                   </span>
-                ) : cardIsApproved ? (
-                  <span className="ml-2 rounded-full bg-foam px-2 py-0.5 text-xs font-medium text-ink-soft ring-1 ring-line">
-                    已審核
+                ) : null}
+                {cardIsUpdated ? (
+                  <span
+                    className="ml-2 rounded-full bg-sea/15 px-2 py-0.5 text-xs font-medium text-sea-deep"
+                    title="內容已依檢查結果修正並上線"
+                  >
+                    已更新
                   </span>
                 ) : null}
                 {cardIsChecked ? (
@@ -1214,13 +1228,20 @@ export default function Flashcards() {
                 className="[grid-area:stack] [backface-visibility:hidden] [transform:rotateY(180deg)] overflow-y-auto overscroll-contain"
               >
                 <Badge>{card.category}</Badge>
-                {cardIsUpdated ? (
-                  <span className="ml-2 rounded-full bg-sea/15 px-2 py-0.5 text-xs font-medium text-sea-deep">
-                    已更新
+                {cardIsApproved ? (
+                  <span
+                    className="ml-2 rounded-full bg-foam px-2 py-0.5 text-xs font-medium text-ink-soft ring-1 ring-line"
+                    title="已由 Gemini 全庫掃描檢查過（上線版本）"
+                  >
+                    Gemini已審
                   </span>
-                ) : cardIsApproved ? (
-                  <span className="ml-2 rounded-full bg-foam px-2 py-0.5 text-xs font-medium text-ink-soft ring-1 ring-line">
-                    已審核
+                ) : null}
+                {cardIsUpdated ? (
+                  <span
+                    className="ml-2 rounded-full bg-sea/15 px-2 py-0.5 text-xs font-medium text-sea-deep"
+                    title="內容已依檢查結果修正並上線"
+                  >
+                    已更新
                   </span>
                 ) : null}
                 {cardIsChecked ? (
