@@ -1,0 +1,415 @@
+{
+  "exportedAt": "2026-09-10T11:07:43.411Z",
+  "note": "Manual + Gemini-suggested patches for user-reported cards; bad Gemini suggestions corrected.",
+  "items": [
+    {
+      "id": "v757",
+      "meaning": "垃圾",
+      "example": "ごみを捨ててください。",
+      "exampleMeaning": "請把垃圾丟掉。",
+      "meaningEn": "garbage; trash; refuse"
+    },
+    {
+      "id": "v269",
+      "meaning": "花",
+      "example": "きれいな花ですね。",
+      "exampleMeaning": "好漂亮的花啊。",
+      "meaningEn": "flower"
+    },
+    {
+      "id": "v1090",
+      "meaning": "人口",
+      "example": "この町の人口は多いです。",
+      "exampleMeaning": "這個城鎮的人口很多。",
+      "meaningEn": "population"
+    },
+    {
+      "id": "v011",
+      "meaning": "回覆；回答",
+      "example": "早く返事をください。",
+      "exampleMeaning": "請快點回覆。",
+      "meaningEn": "reply; answer"
+    },
+    {
+      "id": "v1253",
+      "meaning": "味道；滋味",
+      "example": "このスープの味はどうですか。",
+      "exampleMeaning": "這湯的味道怎麼樣？",
+      "meaningEn": "taste; flavor"
+    },
+    {
+      "id": "v629",
+      "meaning": "排隊；並列、陳列",
+      "example": "店の前にたくさんの人が並んでいます。",
+      "exampleMeaning": "店門口排了很多人。",
+      "meaningEn": "to line up; to stand in a row"
+    },
+    {
+      "id": "v1046",
+      "meaning": "小船、扁舟",
+      "example": "川に小さな舟が浮かんでいます。",
+      "exampleMeaning": "河上有艘小船漂浮著。",
+      "meaningEn": "small boat; skiff"
+    },
+    {
+      "id": "v619",
+      "meaning": "生病、疾病",
+      "example": "病気で学校を休みました。",
+      "exampleMeaning": "因為生病，學校請假了。",
+      "meaningEn": "illness; disease; sickness"
+    },
+    {
+      "id": "v1140",
+      "meaning": "架子、置物架",
+      "example": "棚は空っぽです。",
+      "exampleMeaning": "架子上空空的。",
+      "meaningEn": "shelf; rack"
+    },
+    {
+      "id": "v1132",
+      "meaning": "打、敲、擊",
+      "example": "彼はボールを強く打ちました。",
+      "exampleMeaning": "他用力把球打了出去。",
+      "meaningEn": "to hit; to strike"
+    },
+    {
+      "id": "v613",
+      "meaning": "累、疲倦、疲勞",
+      "example": "今日はたくさん歩いたので、疲れました。",
+      "exampleMeaning": "今天走了很多路，所以很累。",
+      "meaningEn": "to get tired; to become fatigued"
+    },
+    {
+      "id": "v701",
+      "kanji": "挨拶する",
+      "meaning": "打招呼、問候、致詞",
+      "example": "毎朝、先生に大きな声で挨拶します。",
+      "exampleMeaning": "每天早上我都用宏亮的聲音向老師打招呼。",
+      "meaningEn": "to greet; greeting"
+    },
+    {
+      "id": "v728",
+      "meaning": "（找回的）零錢、找頭",
+      "example": "はい、おつりです。",
+      "exampleMeaning": "好的，這是找您的零錢。",
+      "meaningEn": "change (for a purchase)"
+    },
+    {
+      "id": "v1286",
+      "meaning": "不在家、出門在外",
+      "example": "母は今、留守にしています。",
+      "exampleMeaning": "我媽媽現在不在家。",
+      "meaningEn": "absence; being away from home"
+    },
+    {
+      "id": "v840",
+      "meaning": "如果；萬一",
+      "example": "もし雨が降ったら、行きません。",
+      "exampleMeaning": "如果下雨的話，我就不去。",
+      "meaningEn": "if; in case"
+    },
+    {
+      "id": "v538",
+      "meaning": "到達、抵達",
+      "example": "いつ着きますか。",
+      "exampleMeaning": "你什麼時候會到？",
+      "meaningEn": "to arrive; to reach"
+    },
+    {
+      "id": "v807",
+      "meaning": "網球",
+      "example": "テニスが得意ですか。",
+      "exampleMeaning": "你擅長打網球嗎？",
+      "meaningEn": "tennis"
+    },
+    {
+      "id": "v1261",
+      "meaning": "毛、毛髮、毛皮",
+      "example": "猫の毛がたくさん服につきました。",
+      "exampleMeaning": "衣服上沾了很多貓毛。",
+      "meaningEn": "hair; fur"
+    },
+    {
+      "id": "v794",
+      "meaning": "那麼、那麼地",
+      "example": "そんなに難しくないです。",
+      "exampleMeaning": "沒那麼難。",
+      "meaningEn": "so much; like that; that much"
+    },
+    {
+      "id": "v1098",
+      "meaning": "政治",
+      "example": "政治のニュースを見ます。",
+      "exampleMeaning": "我看政治新聞。",
+      "meaningEn": "politics"
+    },
+    {
+      "id": "v896",
+      "meaning": "壞掉；故障；損壞",
+      "example": "パソコンが壊れました。",
+      "exampleMeaning": "電腦壞掉了。",
+      "meaningEn": "to break; to stop working; to be damaged"
+    },
+    {
+      "id": "v763",
+      "meaning": "剛才；剛才不久前",
+      "example": "さっき田中さんと話しました。",
+      "exampleMeaning": "剛才和田中先生說過話了。",
+      "meaningEn": "a short while ago; just now"
+    },
+    {
+      "id": "v507",
+      "meaning": "村莊；村落",
+      "example": "この村は人が少ないです。",
+      "exampleMeaning": "這個村莊人很少。",
+      "meaningEn": "village"
+    },
+    {
+      "id": "v075",
+      "meaning": "酒；酒精飲料",
+      "example": "いっしょにお酒を飲みましょう。",
+      "exampleMeaning": "我們一起喝酒吧。",
+      "meaningEn": "alcohol; sake; alcoholic drink"
+    },
+    {
+      "id": "v1145",
+      "meaning": "地震",
+      "example": "昨日、大きな地震がありました。",
+      "exampleMeaning": "昨天發生了大地震。",
+      "meaningEn": "earthquake"
+    },
+    {
+      "id": "v795",
+      "meaning": "通常、大概、大部分",
+      "example": "休みの日はたいてい家で本を読みます。",
+      "exampleMeaning": "放假的日子大部分都在家裡看書。",
+      "meaningEn": "usually; mostly; generally"
+    },
+    {
+      "id": "v416",
+      "meaning": "自己、親自",
+      "example": "自分の部屋は自分で掃除します。",
+      "exampleMeaning": "自己的房間自己打掃。",
+      "meaningEn": "oneself"
+    },
+    {
+      "id": "v1257",
+      "meaning": "夢、夢想",
+      "example": "私の夢は日本へ行くことです。",
+      "exampleMeaning": "我的夢想是去日本。",
+      "meaningEn": "dream; aspiration"
+    },
+    {
+      "id": "v563",
+      "meaning": "冬天",
+      "example": "冬は寒いです。",
+      "exampleMeaning": "冬天很冷。"
+    },
+    {
+      "id": "v877",
+      "meaning": "聲音（物體、自然發出的聲音）",
+      "example": "大きな音が聞こえました。",
+      "exampleMeaning": "聽到了很大的聲音。",
+      "meaningEn": "sound; noise"
+    },
+    {
+      "id": "v183",
+      "meaning": "手帕",
+      "example": "ポケットからハンカチを出しました。",
+      "exampleMeaning": "我從口袋裡拿出了手帕。",
+      "meaningEn": "handkerchief"
+    },
+    {
+      "id": "v079",
+      "meaning": "便當",
+      "example": "昼休みに毎日お弁当を食べます。",
+      "exampleMeaning": "我每天午休時都會吃便當。",
+      "meaningEn": "bento; boxed lunch"
+    },
+    {
+      "id": "v211",
+      "meaning": "經常；好好地、清楚地",
+      "example": "よく見えません。",
+      "exampleMeaning": "看不清楚。",
+      "meaningEn": "often; well; clearly"
+    },
+    {
+      "id": "v132",
+      "meaning": "然後、而且、在那之後",
+      "example": "晩ご飯を食べました。それから、勉強しました。",
+      "exampleMeaning": "我吃了晚飯。然後，我複習了功課。",
+      "meaningEn": "and then; after that"
+    },
+    {
+      "id": "v479",
+      "meaning": "學生（特指國中生、高中生）",
+      "example": "トムは生徒です。",
+      "exampleMeaning": "湯姆是一名學生（國／高中）。",
+      "meaningEn": "pupil; student (junior/senior high)"
+    },
+    {
+      "id": "v005",
+      "meaning": "準備",
+      "example": "もう準備はできましたか。",
+      "exampleMeaning": "已經準備好了嗎？",
+      "meaningEn": "preparation"
+    },
+    {
+      "id": "v088",
+      "meaning": "日曆",
+      "example": "カレンダーはどこにありますか。",
+      "exampleMeaning": "日曆在哪裡呢？",
+      "meaningEn": "calendar"
+    },
+    {
+      "id": "v353",
+      "meaning": "公園",
+      "example": "私は公園へ散歩に行きます。",
+      "exampleMeaning": "我到公園去散步。",
+      "meaningEn": "park"
+    },
+    {
+      "id": "v458",
+      "meaning": "抬起、舉起、提高；給予",
+      "example": "手を上げてください。",
+      "exampleMeaning": "請舉手。",
+      "meaningEn": "to raise; to lift; to give"
+    },
+    {
+      "id": "v339",
+      "meaning": "說",
+      "example": "彼は何でも言います。",
+      "exampleMeaning": "他什麼都說。",
+      "meaningEn": "to say"
+    },
+    {
+      "id": "v098",
+      "meaning": "咖啡",
+      "example": "コーヒーを飲みます。",
+      "exampleMeaning": "我喝咖啡。",
+      "meaningEn": "coffee"
+    },
+    {
+      "id": "v323",
+      "meaning": "襪子",
+      "example": "新しい靴下を買いました。",
+      "exampleMeaning": "買了新的襪子。",
+      "meaningEn": "socks"
+    },
+    {
+      "id": "v481",
+      "meaning": "西；西方",
+      "example": "太陽は西に沈みます。",
+      "exampleMeaning": "太陽從西邊下山。",
+      "meaningEn": "west"
+    },
+    {
+      "id": "v187",
+      "kanji": "風呂",
+      "meaning": "澡堂；浴缸；洗澡",
+      "example": "毎日お風呂に入ります。",
+      "exampleMeaning": "我每天洗澡。",
+      "meaningEn": "bath; bathtub; bathroom"
+    },
+    {
+      "id": "v163",
+      "meaning": "哪個",
+      "example": "りんごとみかん、どっちが好きですか。",
+      "exampleMeaning": "蘋果和橘子，你比較喜歡哪一個？",
+      "meaningEn": "which (of two)"
+    },
+    {
+      "id": "v010",
+      "meaning": "聯絡",
+      "example": "後で連絡してください。",
+      "exampleMeaning": "請待會兒跟我聯絡。",
+      "meaningEn": "contact; getting in touch"
+    },
+    {
+      "id": "v322",
+      "meaning": "鞋子",
+      "example": "ここで靴を脱いでください。",
+      "exampleMeaning": "請在這裡脫鞋。",
+      "meaningEn": "shoes"
+    },
+    {
+      "id": "v316",
+      "meaning": "星期五",
+      "example": "金曜日にテストがあります。",
+      "exampleMeaning": "星期五有考試。",
+      "meaningEn": "Friday"
+    },
+    {
+      "id": "v314",
+      "meaning": "近的；靠近",
+      "example": "駅が近いです。",
+      "exampleMeaning": "車站很近。",
+      "meaningEn": "near; close"
+    },
+    {
+      "id": "v210",
+      "meaning": "慢慢地",
+      "example": "ゆっくりと歩いてください。",
+      "exampleMeaning": "請慢慢走。",
+      "meaningEn": "slowly; leisurely"
+    },
+    {
+      "id": "v093",
+      "meaning": "公里",
+      "example": "ここから三キロです。",
+      "exampleMeaning": "從這裡算起有三公里。",
+      "meaningEn": "kilometer; km"
+    },
+    {
+      "id": "v092",
+      "meaning": "公斤",
+      "example": "りんごを一キロください。",
+      "exampleMeaning": "請給我一公斤蘋果。",
+      "meaningEn": "kilogram; kg"
+    },
+    {
+      "id": "v470",
+      "meaning": "辣的",
+      "example": "このカレーは辛いです。",
+      "exampleMeaning": "這道咖哩很辣。",
+      "meaningEn": "spicy; hot (taste)"
+    },
+    {
+      "id": "v341",
+      "meaning": "舊的、古老的（用於物品，不用於年紀）",
+      "example": "この靴は古いです。",
+      "exampleMeaning": "這雙鞋子很舊。",
+      "meaningEn": "old (of things, not people)"
+    },
+    {
+      "id": "v179",
+      "kanji": "箸",
+      "meaning": "筷子",
+      "example": "箸でご飯を食べます。",
+      "exampleMeaning": "用筷子吃飯。",
+      "meaningEn": "chopsticks"
+    },
+    {
+      "id": "v462",
+      "meaning": "上（車、船、飛機）；騎（馬、腳踏車）",
+      "example": "毎日電車に乗って学校へ行きます。",
+      "exampleMeaning": "每天搭電車去學校。",
+      "meaningEn": "to board; to get on; to ride"
+    },
+    {
+      "id": "v130",
+      "meaning": "身邊；旁邊",
+      "example": "母のそばにいます。",
+      "exampleMeaning": "我在媽媽身邊。",
+      "meaningEn": "near; beside; close to (someone)"
+    },
+    {
+      "id": "v137",
+      "kanji": "縦",
+      "meaning": "縱；直；高（與「橫（よこ）」相對）",
+      "example": "この紙のたてとよこを測ってください。",
+      "exampleMeaning": "請測量這張紙的縱向與橫向。",
+      "meaningEn": "the vertical; height; length (vs よこ)"
+    }
+  ]
+}

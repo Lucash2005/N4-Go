@@ -222,14 +222,14 @@
   },
   "v314": {
     "meaning": "近的；靠近",
-    "meaningEn": "near; close; short (distance)",
+    "meaningEn": "near; close",
     "meaningZh": [
       "近",
       "靠近"
     ],
     "example": "駅が近いです。",
     "exampleMeaning": "車站很近。",
-    "exampleFurigana": "駅[えき]が近[ちか]いです。",
+    "exampleFurigana": "",
     "senses": [
       {
         "senseIndex": 0,
@@ -322,9 +322,11 @@
     "exampleFurigana": "大[おお]きな川[かわ]があります。"
   },
   "v619": {
-    "example": "病気と闘う。",
-    "exampleMeaning": "與疾病搏鬥。",
-    "exampleFurigana": "病気[びょうき]と闘[たたか]う。"
+    "example": "病気で学校を休みました。",
+    "exampleMeaning": "因為生病，學校請假了。",
+    "exampleFurigana": "",
+    "meaning": "生病、疾病",
+    "meaningEn": "illness; disease; sickness"
   },
   "v435": {
     "reading": "じゅう/とお",
@@ -350,9 +352,11 @@
     "exampleFurigana": "一[ひと]つください。"
   },
   "v011": {
-    "example": "返事を待っています。",
-    "exampleMeaning": "在等回覆。",
-    "exampleFurigana": "返事[へんじ]を待[ま]っています。"
+    "example": "早く返事をください。",
+    "exampleMeaning": "請快點回覆。",
+    "exampleFurigana": "",
+    "meaning": "回覆；回答",
+    "meaningEn": "reply; answer"
   },
   "v1104": {
     "meaning": "踴躍；興盛；盛行",
@@ -524,7 +528,11 @@
     "exampleMeaning": "請看一下這件衣服。"
   },
   "v1253": {
-    "exampleMeaning": "這湯的味道很好。"
+    "exampleMeaning": "這湯的味道怎麼樣？",
+    "meaning": "味道；滋味",
+    "meaningEn": "taste; flavor",
+    "example": "このスープの味はどうですか。",
+    "exampleFurigana": ""
   },
   "v805": {
     "exampleMeaning": "你用的是哪一本課本？"
@@ -697,14 +705,14 @@
     "exampleFurigana": "マッチありますか。"
   },
   "v877": {
-    "meaning": "聲音",
+    "meaning": "聲音（物體、自然發出的聲音）",
     "meaningEn": "sound; noise",
     "meaningZh": [
       "聲音"
     ],
-    "example": "今の何の音？",
-    "exampleMeaning": "剛才是什麼聲音？",
-    "exampleFurigana": "今[いま]の何[なん]の音[おと]？"
+    "example": "大きな音が聞こえました。",
+    "exampleMeaning": "聽到了很大的聲音。",
+    "exampleFurigana": ""
   },
   "v354": {
     "meaning": "厚的",
@@ -783,12 +791,16 @@
   "v092": {
     "example": "りんごを一キロください。",
     "exampleMeaning": "請給我一公斤蘋果。",
-    "exampleFurigana": "りんごを一[いち]キロください。"
+    "exampleFurigana": "",
+    "meaning": "公斤",
+    "meaningEn": "kilogram; kg"
   },
   "v093": {
     "example": "ここから三キロです。",
     "exampleMeaning": "從這裡算起有三公里。",
-    "exampleFurigana": "ここから三[さん]キロです。"
+    "exampleFurigana": "",
+    "meaning": "公里",
+    "meaningEn": "kilometer; km"
   },
   "v096": {
     "example": "お砂糖を百グラムください。",
@@ -1013,15 +1025,15 @@
     "exampleFurigana": "和室[わしつ]に畳[たたみ]が敷[し]いてあります。"
   },
   "v470": {
-    "meaning": "辣的；鹹的",
-    "meaningEn": "spicy; hot; salty",
+    "meaning": "辣的",
+    "meaningEn": "spicy; hot (taste)",
     "meaningZh": [
       "辣的",
       "鹹的"
     ],
     "example": "このカレーは辛いです。",
     "exampleMeaning": "這道咖哩很辣。",
-    "exampleFurigana": "このカレーは辛[から]いです。"
+    "exampleFurigana": ""
   },
   "v555": {
     "meaning": "貼；黏上",
@@ -1505,9 +1517,9 @@
       "如果",
       "萬一"
     ],
-    "example": "もし雨なら行きません。",
-    "exampleMeaning": "如果下雨就不去。",
-    "exampleFurigana": "もし雨[あめ]なら行[い]きません。"
+    "example": "もし雨が降ったら、行きません。",
+    "exampleMeaning": "如果下雨的話，我就不去。",
+    "exampleFurigana": ""
   },
   "v129": {
     "meaning": "那個（離聽話人近）",
@@ -1722,12 +1734,15 @@
   "v563": {
     "example": "冬は寒いです。",
     "exampleMeaning": "冬天很冷。",
-    "exampleFurigana": "冬[ふゆ]は寒[さむ]いです。"
+    "exampleFurigana": "",
+    "meaning": "冬天"
   },
   "v613": {
-    "example": "今日はとても疲れました。",
-    "exampleMeaning": "今天非常累。",
-    "exampleFurigana": "今日[きょう]はとても疲[つか]れました。"
+    "example": "今日はたくさん歩いたので、疲れました。",
+    "exampleMeaning": "今天走了很多路，所以很累。",
+    "exampleFurigana": "",
+    "meaning": "累、疲倦、疲勞",
+    "meaningEn": "to get tired; to become fatigued"
   },
   "v029": {
     "meaning": "說、講（謙讓語）",
@@ -1772,8 +1787,11 @@
     "exampleMeaning": "我要洗澡。"
   },
   "v098": {
-    "example": "コーヒーを淹れます。",
-    "exampleMeaning": "我要泡咖啡。"
+    "example": "コーヒーを飲みます。",
+    "exampleMeaning": "我喝咖啡。",
+    "meaning": "咖啡",
+    "meaningEn": "coffee",
+    "exampleFurigana": ""
   },
   "v101": {
     "meaning": "這邊、這裏（或我們這邊）",
@@ -1806,7 +1824,11 @@
     "kanji": "石鹸"
   },
   "v132": {
-    "meaning": "然後、而且、在那之後"
+    "meaning": "然後、而且、在那之後",
+    "meaningEn": "and then; after that",
+    "example": "晩ご飯を食べました。それから、勉強しました。",
+    "exampleMeaning": "我吃了晚飯。然後，我複習了功課。",
+    "exampleFurigana": ""
   },
   "v138": {
     "example": "たばこを吸いますか。",
@@ -1864,9 +1886,12 @@
     "kanji": "履く"
   },
   "v179": {
-    "example": "箸でご飯を食べる。",
+    "example": "箸でご飯を食べます。",
     "exampleMeaning": "用筷子吃飯。",
-    "kanji": "箸"
+    "kanji": "箸",
+    "meaning": "筷子",
+    "meaningEn": "chopsticks",
+    "exampleFurigana": ""
   },
   "v189": {
     "example": "ベッドで寝ます。",
@@ -1897,9 +1922,11 @@
     "exampleMeaning": "他丟了70公尺。"
   },
   "v211": {
-    "meaning": "經常；好好地",
-    "example": "よく見えない。",
-    "exampleMeaning": "看不太清楚。"
+    "meaning": "經常；好好地、清楚地",
+    "example": "よく見えません。",
+    "exampleMeaning": "看不清楚。",
+    "meaningEn": "often; well; clearly",
+    "exampleFurigana": ""
   },
   "v214": {
     "meaning": "收錄音機",
@@ -1995,8 +2022,11 @@
     "kanji": "見る"
   },
   "v339": {
-    "example": "彼は何でも言う。",
-    "exampleMeaning": "他什麼都說。"
+    "example": "彼は何でも言います。",
+    "exampleMeaning": "他什麼都說。",
+    "meaning": "說",
+    "meaningEn": "to say",
+    "exampleFurigana": ""
   },
   "v347": {
     "meaning": "下午"
@@ -2007,8 +2037,11 @@
     "exampleMeaning": "待會打電話。"
   },
   "v353": {
-    "example": "私は公園へ散歩に行く。",
-    "exampleMeaning": "我到公園去散步。"
+    "example": "私は公園へ散歩に行きます。",
+    "exampleMeaning": "我到公園去散步。",
+    "meaning": "公園",
+    "meaningEn": "park",
+    "exampleFurigana": ""
   },
   "v361": {
     "meaning": "下車；下來",
@@ -2095,10 +2128,297 @@
     "exampleMeaning": "那個人是日語老師。"
   },
   "v479": {
-    "meaning": "學生"
+    "meaning": "學生（特指國中生、高中生）",
+    "meaningEn": "pupil; student (junior/senior high)",
+    "example": "トムは生徒です。",
+    "exampleMeaning": "湯姆是一名學生（國／高中）。",
+    "exampleFurigana": ""
   },
   "v483": {
     "meaning": "藍色的、青色的",
     "exampleMeaning": "你的臉色發青呢。"
+  },
+  "v757": {
+    "meaning": "垃圾",
+    "meaningEn": "garbage; trash; refuse",
+    "example": "ごみを捨ててください。",
+    "exampleMeaning": "請把垃圾丟掉。",
+    "exampleFurigana": ""
+  },
+  "v269": {
+    "meaning": "花",
+    "meaningEn": "flower",
+    "example": "きれいな花ですね。",
+    "exampleMeaning": "好漂亮的花啊。",
+    "exampleFurigana": ""
+  },
+  "v1090": {
+    "meaning": "人口",
+    "meaningEn": "population",
+    "example": "この町の人口は多いです。",
+    "exampleMeaning": "這個城鎮的人口很多。",
+    "exampleFurigana": ""
+  },
+  "v629": {
+    "meaning": "排隊；並列、陳列",
+    "meaningEn": "to line up; to stand in a row",
+    "example": "店の前にたくさんの人が並んでいます。",
+    "exampleMeaning": "店門口排了很多人。",
+    "exampleFurigana": ""
+  },
+  "v1046": {
+    "meaning": "小船、扁舟",
+    "meaningEn": "small boat; skiff",
+    "example": "川に小さな舟が浮かんでいます。",
+    "exampleMeaning": "河上有艘小船漂浮著。",
+    "exampleFurigana": ""
+  },
+  "v1140": {
+    "meaning": "架子、置物架",
+    "meaningEn": "shelf; rack",
+    "example": "棚は空っぽです。",
+    "exampleMeaning": "架子上空空的。",
+    "exampleFurigana": ""
+  },
+  "v1132": {
+    "meaning": "打、敲、擊",
+    "meaningEn": "to hit; to strike",
+    "example": "彼はボールを強く打ちました。",
+    "exampleMeaning": "他用力把球打了出去。",
+    "exampleFurigana": ""
+  },
+  "v701": {
+    "meaning": "打招呼、問候、致詞",
+    "meaningEn": "to greet; greeting",
+    "example": "毎朝、先生に大きな声で挨拶します。",
+    "exampleMeaning": "每天早上我都用宏亮的聲音向老師打招呼。",
+    "kanji": "挨拶する",
+    "exampleFurigana": ""
+  },
+  "v728": {
+    "meaning": "（找回的）零錢、找頭",
+    "meaningEn": "change (for a purchase)",
+    "example": "はい、おつりです。",
+    "exampleMeaning": "好的，這是找您的零錢。",
+    "exampleFurigana": ""
+  },
+  "v1286": {
+    "meaning": "不在家、出門在外",
+    "meaningEn": "absence; being away from home",
+    "example": "母は今、留守にしています。",
+    "exampleMeaning": "我媽媽現在不在家。",
+    "exampleFurigana": ""
+  },
+  "v538": {
+    "meaning": "到達、抵達",
+    "meaningEn": "to arrive; to reach",
+    "example": "いつ着きますか。",
+    "exampleMeaning": "你什麼時候會到？",
+    "exampleFurigana": ""
+  },
+  "v807": {
+    "meaning": "網球",
+    "meaningEn": "tennis",
+    "example": "テニスが得意ですか。",
+    "exampleMeaning": "你擅長打網球嗎？",
+    "exampleFurigana": ""
+  },
+  "v1261": {
+    "meaning": "毛、毛髮、毛皮",
+    "meaningEn": "hair; fur",
+    "example": "猫の毛がたくさん服につきました。",
+    "exampleMeaning": "衣服上沾了很多貓毛。",
+    "exampleFurigana": ""
+  },
+  "v794": {
+    "meaning": "那麼、那麼地",
+    "meaningEn": "so much; like that; that much",
+    "example": "そんなに難しくないです。",
+    "exampleMeaning": "沒那麼難。",
+    "exampleFurigana": ""
+  },
+  "v1098": {
+    "meaning": "政治",
+    "meaningEn": "politics",
+    "example": "政治のニュースを見ます。",
+    "exampleMeaning": "我看政治新聞。",
+    "exampleFurigana": ""
+  },
+  "v896": {
+    "meaning": "壞掉；故障；損壞",
+    "meaningEn": "to break; to stop working; to be damaged",
+    "example": "パソコンが壊れました。",
+    "exampleMeaning": "電腦壞掉了。",
+    "exampleFurigana": ""
+  },
+  "v763": {
+    "meaning": "剛才；剛才不久前",
+    "meaningEn": "a short while ago; just now",
+    "example": "さっき田中さんと話しました。",
+    "exampleMeaning": "剛才和田中先生說過話了。",
+    "exampleFurigana": ""
+  },
+  "v507": {
+    "meaning": "村莊；村落",
+    "meaningEn": "village",
+    "example": "この村は人が少ないです。",
+    "exampleMeaning": "這個村莊人很少。",
+    "exampleFurigana": ""
+  },
+  "v075": {
+    "meaning": "酒；酒精飲料",
+    "meaningEn": "alcohol; sake; alcoholic drink",
+    "example": "いっしょにお酒を飲みましょう。",
+    "exampleMeaning": "我們一起喝酒吧。",
+    "exampleFurigana": ""
+  },
+  "v1145": {
+    "meaning": "地震",
+    "meaningEn": "earthquake",
+    "example": "昨日、大きな地震がありました。",
+    "exampleMeaning": "昨天發生了大地震。",
+    "exampleFurigana": ""
+  },
+  "v795": {
+    "meaning": "通常、大概、大部分",
+    "meaningEn": "usually; mostly; generally",
+    "example": "休みの日はたいてい家で本を読みます。",
+    "exampleMeaning": "放假的日子大部分都在家裡看書。",
+    "exampleFurigana": ""
+  },
+  "v416": {
+    "meaning": "自己、親自",
+    "meaningEn": "oneself",
+    "example": "自分の部屋は自分で掃除します。",
+    "exampleMeaning": "自己的房間自己打掃。",
+    "exampleFurigana": ""
+  },
+  "v1257": {
+    "meaning": "夢、夢想",
+    "meaningEn": "dream; aspiration",
+    "example": "私の夢は日本へ行くことです。",
+    "exampleMeaning": "我的夢想是去日本。",
+    "exampleFurigana": ""
+  },
+  "v183": {
+    "meaning": "手帕",
+    "meaningEn": "handkerchief",
+    "example": "ポケットからハンカチを出しました。",
+    "exampleMeaning": "我從口袋裡拿出了手帕。",
+    "exampleFurigana": ""
+  },
+  "v079": {
+    "meaning": "便當",
+    "meaningEn": "bento; boxed lunch",
+    "example": "昼休みに毎日お弁当を食べます。",
+    "exampleMeaning": "我每天午休時都會吃便當。",
+    "exampleFurigana": ""
+  },
+  "v005": {
+    "meaning": "準備",
+    "meaningEn": "preparation",
+    "example": "もう準備はできましたか。",
+    "exampleMeaning": "已經準備好了嗎？",
+    "exampleFurigana": ""
+  },
+  "v088": {
+    "meaning": "日曆",
+    "meaningEn": "calendar",
+    "example": "カレンダーはどこにありますか。",
+    "exampleMeaning": "日曆在哪裡呢？",
+    "exampleFurigana": ""
+  },
+  "v458": {
+    "meaning": "抬起、舉起、提高；給予",
+    "meaningEn": "to raise; to lift; to give",
+    "example": "手を上げてください。",
+    "exampleMeaning": "請舉手。",
+    "exampleFurigana": ""
+  },
+  "v323": {
+    "meaning": "襪子",
+    "meaningEn": "socks",
+    "example": "新しい靴下を買いました。",
+    "exampleMeaning": "買了新的襪子。",
+    "exampleFurigana": ""
+  },
+  "v481": {
+    "meaning": "西；西方",
+    "meaningEn": "west",
+    "example": "太陽は西に沈みます。",
+    "exampleMeaning": "太陽從西邊下山。",
+    "exampleFurigana": ""
+  },
+  "v187": {
+    "meaning": "澡堂；浴缸；洗澡",
+    "meaningEn": "bath; bathtub; bathroom",
+    "example": "毎日お風呂に入ります。",
+    "exampleMeaning": "我每天洗澡。",
+    "kanji": "風呂",
+    "exampleFurigana": ""
+  },
+  "v163": {
+    "meaning": "哪個",
+    "meaningEn": "which (of two)",
+    "example": "りんごとみかん、どっちが好きですか。",
+    "exampleMeaning": "蘋果和橘子，你比較喜歡哪一個？",
+    "exampleFurigana": ""
+  },
+  "v010": {
+    "meaning": "聯絡",
+    "meaningEn": "contact; getting in touch",
+    "example": "後で連絡してください。",
+    "exampleMeaning": "請待會兒跟我聯絡。",
+    "exampleFurigana": ""
+  },
+  "v322": {
+    "meaning": "鞋子",
+    "meaningEn": "shoes",
+    "example": "ここで靴を脱いでください。",
+    "exampleMeaning": "請在這裡脫鞋。",
+    "exampleFurigana": ""
+  },
+  "v316": {
+    "meaning": "星期五",
+    "meaningEn": "Friday",
+    "example": "金曜日にテストがあります。",
+    "exampleMeaning": "星期五有考試。",
+    "exampleFurigana": ""
+  },
+  "v210": {
+    "meaning": "慢慢地",
+    "meaningEn": "slowly; leisurely",
+    "example": "ゆっくりと歩いてください。",
+    "exampleMeaning": "請慢慢走。",
+    "exampleFurigana": ""
+  },
+  "v341": {
+    "meaning": "舊的、古老的（用於物品，不用於年紀）",
+    "meaningEn": "old (of things, not people)",
+    "example": "この靴は古いです。",
+    "exampleMeaning": "這雙鞋子很舊。",
+    "exampleFurigana": ""
+  },
+  "v462": {
+    "meaning": "上（車、船、飛機）；騎（馬、腳踏車）",
+    "meaningEn": "to board; to get on; to ride",
+    "example": "毎日電車に乗って学校へ行きます。",
+    "exampleMeaning": "每天搭電車去學校。",
+    "exampleFurigana": ""
+  },
+  "v130": {
+    "meaning": "身邊；旁邊",
+    "meaningEn": "near; beside; close to (someone)",
+    "example": "母のそばにいます。",
+    "exampleMeaning": "我在媽媽身邊。",
+    "exampleFurigana": ""
+  },
+  "v137": {
+    "meaning": "縱；直；高（與「橫（よこ）」相對）",
+    "meaningEn": "the vertical; height; length (vs よこ)",
+    "example": "この紙のたてとよこを測ってください。",
+    "exampleMeaning": "請測量這張紙的縱向與橫向。",
+    "kanji": "縦",
+    "exampleFurigana": ""
   }
 }

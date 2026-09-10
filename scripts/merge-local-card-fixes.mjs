@@ -50,7 +50,7 @@ async function readInput() {
   return text
 }
 
-const ALLOWED = ['meaning', 'example', 'exampleMeaning', 'pattern', 'kanji', 'exampleFurigana']
+const ALLOWED = ['meaning', 'meaningEn', 'example', 'exampleMeaning', 'pattern', 'kanji', 'exampleFurigana']
 
 const raw = await readInput()
 const data = JSON.parse(raw)
