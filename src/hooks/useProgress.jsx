@@ -10,6 +10,7 @@ import {
   loadVocabulary,
 } from '../data/vocabulary'
 import {
+  ALLOWLIST_POLICY,
   buildDailyPlan,
   DAILY_QUOTA,
   emptyDailyPlan,
@@ -100,6 +101,7 @@ function ensurePlan(plan, cardProgress, allowedIds = null) {
     Array.isArray(plan.vocabIds) &&
     Array.isArray(plan.formIds) &&
     plan.grammarPathVersion === GRAMMAR_PATH_VERSION &&
+    plan.allowlistPolicy === ALLOWLIST_POLICY &&
     (approvedCount == null || plan.geminiApprovedCount === approvedCount)
   ) {
     return plan
@@ -206,6 +208,7 @@ export function ProgressProvider({ children }) {
     const needsRebuild =
       dailyPlan.date !== today ||
       dailyPlan.grammarPathVersion !== GRAMMAR_PATH_VERSION ||
+      dailyPlan.allowlistPolicy !== ALLOWLIST_POLICY ||
       (allowed instanceof Set && dailyPlan.geminiApprovedCount !== allowed.size)
     if (needsRebuild) {
       setDailyPlan(
@@ -223,6 +226,7 @@ export function ProgressProvider({ children }) {
     dailyTasks.date,
     dailyPlan.date,
     dailyPlan.grammarPathVersion,
+    dailyPlan.allowlistPolicy,
     dailyPlan.geminiApprovedCount,
     dailyPlan.vocabIds,
     dailyPlan.vocabQuota,

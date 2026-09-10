@@ -13,6 +13,18 @@ export const DAILY_QUOTA = {
   review: 15,
 }
 
+/**
+ * While Gemini vocab scan is incomplete, grammar + 活用 still follow the monthly
+ * path (same idea as forms). Only vocabulary is limited to the allowlist.
+ * Bump when this policy changes so cached daily plans rebuild.
+ */
+export const ALLOWLIST_POLICY = 2
+
+function alwaysAllowedDuringScan(id) {
+  const s = String(id || '')
+  return s.startsWith('g') || s.startsWith('f')
+}
+
 const GENERIC_VOCAB = new Set([
   'する',
   'なる',
@@ -134,13 +146,10 @@ function pickByPriority(cards, count, seedStr, cardProgress, date = todayKey(), 
 function pickGrammarByPath(count, seedStr, cardProgress, date = todayKey(), options = {}) {
   const { excludeLearned = false } = options
   const hidden = options.hiddenIds || reportedIdSet()
-  const allowed = options.allowedIds
   const path = getGrammarPath(date)
   const unlocked = new Set(path.unlockedIds)
+  // Grammar is not gated by Gemini vocab allowlist — monthly path only.
   let pool = grammar.filter((g) => unlocked.has(g.id) && !hidden.has(g.id))
-  if (allowed instanceof Set) {
-    pool = pool.filter((c) => allowed.has(c.id))
-  }
   if (excludeLearned) {
     pool = pool.filter((c) => !isLearned(cardProgress[c.id], date))
   }
@@ -149,10 +158,10 @@ function pickGrammarByPath(count, seedStr, cardProgress, date = todayKey(), opti
       ? grammar.filter((c) => !isLearned(cardProgress[c.id], date))
       : grammar
     ).filter((c) => !hidden.has(c.id))
-    if (allowed instanceof Set) {
-      fallback = fallback.filter((c) => allowed.has(c.id))
-    }
-    return pickByPriority(fallback, count, seedStr, cardProgress, date, options)
+    return pickByPriority(fallback, count, seedStr, cardProgress, date, {
+      ...options,
+      allowedIds: null,
+    })
   }
 
   const newOnes = pool.filter((c) => !normalizeEntry(cardProgress[c.id], date))
@@ -313,10 +322,9 @@ export function buildDailyPlan(date, cardProgress = {}, seedExtra = '', options 
   let allIds = [...vocabulary, ...grammar, ...FORM_CARDS]
     .map((c) => c.id)
     .filter((id) => !hidden.has(id))
-  // Review queue: only Gemini-approved corpus cards (+ forms always allowed).
+  // Review queue: only Gemini-approved vocab (+ grammar/forms always allowed).
   if (allowed instanceof Set) {
-    const formIdSet = new Set(FORM_CARDS.map((c) => c.id))
-    allIds = allIds.filter((id) => allowed.has(id) || formIdSet.has(id))
+    allIds = allIds.filter((id) => allowed.has(id) || alwaysAllowedDuringScan(id))
   }
   const reviewIds = getDueIds(cardProgress, allIds, DAILY_QUOTA.review, date)
 
@@ -329,6 +337,7 @@ export function buildDailyPlan(date, cardProgress = {}, seedExtra = '', options 
     studiedIds: [],
     listenedIds: [],
     grammarPathVersion: GRAMMAR_PATH_VERSION,
+    allowlistPolicy: ALLOWLIST_POLICY,
     vocabQuota,
     geminiApprovedCount: allowed instanceof Set ? allowed.size : null,
   }
@@ -354,8 +363,7 @@ export function getLiveReviewIds(
     .map((c) => c.id)
     .filter((id) => !hidden.has(id))
   if (allowed instanceof Set) {
-    const formIdSet = new Set(FORM_CARDS.map((c) => c.id))
-    allIds = allIds.filter((id) => allowed.has(id) || formIdSet.has(id))
+    allIds = allIds.filter((id) => allowed.has(id) || alwaysAllowedDuringScan(id))
   }
   return getDueIds(cardProgress, allIds, limit > 0 ? limit : 0, date)
 }
@@ -370,6 +378,7 @@ export function emptyDailyPlan(date = '') {
     studiedIds: [],
     listenedIds: [],
     grammarPathVersion: GRAMMAR_PATH_VERSION,
+    allowlistPolicy: ALLOWLIST_POLICY,
     vocabQuota: DAILY_QUOTA.vocab,
     geminiApprovedCount: null,
   }

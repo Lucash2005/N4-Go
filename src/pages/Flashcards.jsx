@@ -58,8 +58,10 @@ import { approvedIdSet } from '../utils/geminiApproved'
 function allBrowseCards(allowedIds = null) {
   const cards = [...getVocabulary(), ...getGrammar(), ...FORM_CARDS]
   if (!(allowedIds instanceof Set)) return cards
-  const formIds = new Set(FORM_CARDS.map((c) => c.id))
-  return cards.filter((c) => allowedIds.has(c.id) || formIds.has(c.id))
+  // Vocab gated by Gemini allowlist; grammar + 活用 follow unlock path / always available.
+  return cards.filter(
+    (c) => allowedIds.has(c.id) || c.type === 'grammar' || c.type === 'form' || String(c.id).startsWith('f'),
+  )
 }
 
 const MODE_META = {

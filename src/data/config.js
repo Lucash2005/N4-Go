@@ -12,7 +12,7 @@ export const AUDIO_CACHE_VERSION = 26
  * Bump when vocab/grammar content is fixed.
  * Reported-card hides persist until manually cleared; use Dashboard to load new vocab.
  */
-export const CONTENT_VERSION = 36
+export const CONTENT_VERSION = 37
 
 export const DEFAULT_TASKS = [
   { id: 'vocab-15', label: '每日單字（落後時可手動加量）', done: false },
