@@ -5,6 +5,12 @@ const DEFAULT_SETTINGS = {
   showExampleMeaning: true,
   /** auto = card.word; kanji/kana = force that script on the front for writing practice */
   promptScript: 'auto', // auto | kanji | kana
+  /**
+   * Flashcard quiz direction:
+   * - ja-zh: front Japanese → flip for Chinese (default)
+   * - zh-ja: front Chinese meaning → flip for Japanese word/reading
+   */
+  quizDirection: 'ja-zh', // ja-zh | zh-ja
   /** Device-local Gemini API key for report-time meaning checks */
   geminiApiKey: '',
   ttsEngine: 'auto', // auto | system
@@ -27,6 +33,7 @@ export function useSettings() {
   const promptScript = ['auto', 'kanji', 'kana'].includes(settings.promptScript)
     ? settings.promptScript
     : 'auto'
+  const quizDirection = settings.quizDirection === 'zh-ja' ? 'zh-ja' : 'ja-zh'
   const geminiApiKey = String(settings.geminiApiKey || '').trim()
 
   return {
@@ -34,6 +41,7 @@ export function useSettings() {
     showFurigana: settings.showFurigana !== false,
     showExampleMeaning: settings.showExampleMeaning !== false,
     promptScript,
+    quizDirection,
     geminiApiKey,
     ttsEngine: settings.ttsEngine || 'auto',
     ttsRate: typeof settings.ttsRate === 'number' ? settings.ttsRate : 0.88,
@@ -44,6 +52,7 @@ export function useSettings() {
     setShowFurigana: (v) => updateSetting('showFurigana', v),
     setShowExampleMeaning: (v) => updateSetting('showExampleMeaning', v),
     setPromptScript: (v) => updateSetting('promptScript', v),
+    setQuizDirection: (v) => updateSetting('quizDirection', v === 'zh-ja' ? 'zh-ja' : 'ja-zh'),
     setGeminiApiKey: (v) => updateSetting('geminiApiKey', String(v || '').trim()),
     setTtsEngine: (v) => updateSetting('ttsEngine', v),
     setTtsRate: (v) => updateSetting('ttsRate', v),

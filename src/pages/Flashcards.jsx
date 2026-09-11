@@ -120,6 +120,8 @@ export default function Flashcards() {
     setShowExampleMeaning,
     promptScript,
     setPromptScript,
+    quizDirection,
+    setQuizDirection,
     geminiApiKey,
     setGeminiApiKey,
     ttsEngine,
@@ -195,7 +197,8 @@ export default function Flashcards() {
   const todayMode = mode in MODE_META
   const srsMode = mode === 'today-vocab' || mode === 'today-grammar' || mode === 'today-review'
   const hideReadingOnFront = srsMode
-  const showZhMeaning = showExampleMeaning || mode === 'today-grammar'
+  const meaningFirst = quizDirection === 'zh-ja'
+  const showZhMeaning = showExampleMeaning || mode === 'today-grammar' || meaningFirst
 
   const filtered = useMemo(() => {
     if (mode === 'today-vocab') return todayVocab
@@ -842,6 +845,12 @@ export default function Flashcards() {
                 : '正面：預設寫法'}
           </FilterChip>
           <FilterChip
+            active={meaningFirst}
+            onClick={() => setQuizDirection(meaningFirst ? 'ja-zh' : 'zh-ja')}
+          >
+            {meaningFirst ? '測驗：中文→日文' : '測驗：日文→中文'}
+          </FilterChip>
+          <FilterChip
             active={ttsEngine === 'auto'}
             onClick={() => setTtsEngine(ttsEngine === 'auto' ? 'system' : 'auto')}
           >
@@ -1164,7 +1173,7 @@ export default function Flashcards() {
                     Gemini已審
                   </span>
                 ) : null}
-                {cardIsUpdated ? (
+                {!cardIsApproved && cardIsUpdated ? (
                   <span
                     className="ml-2 rounded-full bg-sea/15 px-2 py-0.5 text-xs font-medium text-sea-deep"
                     title="內容已依檢查結果修正並上線"
@@ -1172,7 +1181,7 @@ export default function Flashcards() {
                     已更新
                   </span>
                 ) : null}
-                {cardIsChecked ? (
+                {!cardIsApproved && cardIsChecked ? (
                   <span
                     className={`ml-2 rounded-full px-2 py-0.5 text-xs font-medium ${
                       cardCheckStale
@@ -1183,44 +1192,57 @@ export default function Flashcards() {
                     {cardCheckStale ? '已確認·內容有變' : '已手動確認'}
                   </span>
                 ) : null}
-                {card.localFix ? (
+                {!cardIsApproved && card.localFix ? (
                   <span className="ml-2 rounded-full bg-sand px-2 py-0.5 text-xs font-medium text-ink ring-1 ring-line">
                     本機已修正
                   </span>
                 ) : null}
-                <p className="mt-6 font-display text-4xl font-bold text-ink sm:text-5xl">
-                  {card.type === 'vocab'
-                    ? frontPromptForCard(card, promptScript)
-                    : card.word}
-                </p>
-                {hideReadingOnFront ? (
-                  card.type === 'form' ? (
-                    <p className="mt-3 text-base text-ink-soft">
-                      先改成{card.formDrill?.target || card.category}，再翻面核對
+                {meaningFirst && card.type === 'vocab' ? (
+                  <>
+                    <p className="mt-6 font-display text-3xl font-bold leading-snug text-ink sm:text-4xl">
+                      {primaryZhMeaning(card)}
                     </p>
-                  ) : card.type === 'grammar' ? (
-                    <ol className="mt-4 w-full space-y-1.5 text-left text-sm leading-relaxed text-ink-soft sm:text-base">
-                      <li>1. 接續：接什麼形？</li>
-                      <li>2. 對照：和哪條最容易混？</li>
-                      <li>3. 造句：自己先想一句</li>
-                    </ol>
-                  ) : promptScript === 'kana' ? (
-                    <p className="mt-3 text-base text-ink-soft">先想漢字寫法與意思，再翻面</p>
-                  ) : promptScript === 'kanji' ? (
-                    <p className="mt-3 text-base text-ink-soft">先想平假名讀音與意思，再翻面</p>
-                  ) : (
-                    <p className="mt-3 text-base text-ink-soft">先想讀音與意思，再翻面</p>
-                  )
-                ) : showFurigana &&
-                  card.type === 'vocab' &&
-                  frontPromptForCard(card, promptScript) !== card.reading ? (
-                  <p className="mt-3 text-xl text-sea-deep">{card.reading}</p>
-                ) : showFurigana && card.type !== 'vocab' ? (
-                  <p className="mt-3 text-xl text-sea-deep">{card.reading}</p>
-                ) : !showFurigana && hasKanji(frontPromptForCard(card, promptScript)) ? (
-                  <p className="mt-3 text-base text-ink-soft">音標已隱藏</p>
-                ) : null}
-                <p className="mt-8 text-base text-ink-soft">點擊查看釋義與例句</p>
+                    <p className="mt-3 text-base text-ink-soft">先想日文怎麼說／怎麼寫，再翻面</p>
+                  </>
+                ) : (
+                  <>
+                    <p className="mt-6 font-display text-4xl font-bold text-ink sm:text-5xl">
+                      {card.type === 'vocab'
+                        ? frontPromptForCard(card, promptScript)
+                        : card.word}
+                    </p>
+                    {hideReadingOnFront ? (
+                      card.type === 'form' ? (
+                        <p className="mt-3 text-base text-ink-soft">
+                          先改成{card.formDrill?.target || card.category}，再翻面核對
+                        </p>
+                      ) : card.type === 'grammar' ? (
+                        <ol className="mt-4 w-full space-y-1.5 text-left text-sm leading-relaxed text-ink-soft sm:text-base">
+                          <li>1. 接續：接什麼形？</li>
+                          <li>2. 對照：和哪條最容易混？</li>
+                          <li>3. 造句：自己先想一句</li>
+                        </ol>
+                      ) : promptScript === 'kana' ? (
+                        <p className="mt-3 text-base text-ink-soft">先想漢字寫法與意思，再翻面</p>
+                      ) : promptScript === 'kanji' ? (
+                        <p className="mt-3 text-base text-ink-soft">先想平假名讀音與意思，再翻面</p>
+                      ) : (
+                        <p className="mt-3 text-base text-ink-soft">先想讀音與意思，再翻面</p>
+                      )
+                    ) : showFurigana &&
+                      card.type === 'vocab' &&
+                      frontPromptForCard(card, promptScript) !== card.reading ? (
+                      <p className="mt-3 text-xl text-sea-deep">{card.reading}</p>
+                    ) : showFurigana && card.type !== 'vocab' ? (
+                      <p className="mt-3 text-xl text-sea-deep">{card.reading}</p>
+                    ) : !showFurigana && hasKanji(frontPromptForCard(card, promptScript)) ? (
+                      <p className="mt-3 text-base text-ink-soft">音標已隱藏</p>
+                    ) : null}
+                  </>
+                )}
+                <p className="mt-8 text-base text-ink-soft">
+                  {meaningFirst ? '點擊核對日文寫法與例句' : '點擊查看釋義與例句'}
+                </p>
               </CardFace>
 
               <CardFace
@@ -1236,7 +1258,7 @@ export default function Flashcards() {
                     Gemini已審
                   </span>
                 ) : null}
-                {cardIsUpdated ? (
+                {!cardIsApproved && cardIsUpdated ? (
                   <span
                     className="ml-2 rounded-full bg-sea/15 px-2 py-0.5 text-xs font-medium text-sea-deep"
                     title="內容已依檢查結果修正並上線"
@@ -1244,7 +1266,7 @@ export default function Flashcards() {
                     已更新
                   </span>
                 ) : null}
-                {cardIsChecked ? (
+                {!cardIsApproved && cardIsChecked ? (
                   <span
                     className={`ml-2 rounded-full px-2 py-0.5 text-xs font-medium ${
                       cardCheckStale
@@ -1255,7 +1277,7 @@ export default function Flashcards() {
                     {cardCheckStale ? '已確認·內容有變' : '已手動確認'}
                   </span>
                 ) : null}
-                {card.localFix ? (
+                {!cardIsApproved && card.localFix ? (
                   <span className="ml-2 rounded-full bg-sand px-2 py-0.5 text-xs font-medium text-ink ring-1 ring-line">
                     本機已修正
                   </span>
@@ -1282,6 +1304,7 @@ export default function Flashcards() {
                     showFurigana={showFurigana}
                     hideReadingOnFront={hideReadingOnFront}
                     promptScript={promptScript}
+                    meaningFirst={meaningFirst}
                     showMoreSenses={showMoreSenses}
                     setShowMoreSenses={setShowMoreSenses}
                     showMoreDetail={showMoreDetail}
@@ -1679,6 +1702,7 @@ function VocabCardBack({
   showFurigana,
   hideReadingOnFront,
   promptScript = 'auto',
+  meaningFirst = false,
   showMoreSenses,
   setShowMoreSenses,
   showMoreDetail,
@@ -1710,11 +1734,21 @@ function VocabCardBack({
   const highlightKanji = frontPrompt === forms.kana && forms.kanji
   const highlightKana = forms.kanji && frontPrompt === forms.kanji
 
+  const zhPrimary = primaryZhMeaning(card)
+
   return (
     <div className="w-full text-left">
-      <p className="mt-1 text-2xl font-bold leading-snug text-ink sm:text-3xl">
-        {isChineseGloss(card.meaning) ? card.meaning.split(/[；;]/)[0].trim() : card.meaning}
-      </p>
+      {meaningFirst ? (
+        <>
+          <p className="mt-1 font-display text-3xl font-bold text-ink sm:text-4xl">{frontPrompt}</p>
+          {card.reading && frontPrompt !== card.reading ? (
+            <p className="mt-1 text-lg text-sea-deep">{card.reading}</p>
+          ) : null}
+          <p className="mt-2 text-base text-ink-soft">{zhPrimary}</p>
+        </>
+      ) : (
+        <p className="mt-1 text-2xl font-bold leading-snug text-ink sm:text-3xl">{zhPrimary}</p>
+      )}
 
       {(showKanjiLine || showKanaLine) && (forms.kanji !== forms.kana || showKanaLine) ? (
         <div className="mt-2 rounded-xl bg-sand/60 px-3 py-2 ring-1 ring-line/50">
@@ -1998,6 +2032,20 @@ function CardFace({ className = '', align = 'center', children }) {
       {children}
     </div>
   )
+}
+
+
+function primaryZhMeaning(card) {
+  if (!card) return ''
+  if (isChineseGloss(card.meaning)) {
+    return card.meaning.split(/[；;]/)[0].trim()
+  }
+  const fromSenses = compactSenseGlosses(
+    (card.senses || []).filter((s) => isChineseGloss(s.meaning)),
+    1,
+  )
+  if (fromSenses.length) return fromSenses[0]
+  return String(card.meaning || '').split(/[；;]/)[0].trim()
 }
 
 function Badge({ children }) {
