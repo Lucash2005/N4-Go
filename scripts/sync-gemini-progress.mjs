@@ -101,22 +101,29 @@ const out = {
   updatedAt: new Date().toISOString(),
   days,
   note:
-    'Gemini 全庫掃描進度。remaining = 尚未檢查；needsRecheck = 舊版 prompt 已審核、待用現行標準重審；remainingWork = 兩者合計。每日免費額度用完後需等到太平洋時間午夜重置。',
+    'Gemini 全庫掃描進度。線上可學 = 僅 prompt v' +
+    GEMINI_PROMPT_VERSION +
+    '（currentPromptDone）。needsRecheck = 舊版已審、排入每日 --recheck；remaining = 未掃過；remainingWork = 兩者合計。每日約 75 張；完成後停止每日審查。',
 }
 
 mkdirSync(dirname(OUT), { recursive: true })
 writeFileSync(OUT, JSON.stringify(out, null, 2) + '\n', 'utf8')
 
-/** Allowlist for daily plan / browse: only cards Gemini has finished reviewing. */
+/**
+ * Allowlist for daily plan / browse: ONLY cards reviewed with the CURRENT prompt.
+ * Outdated-prompt (needsRecheck) cards stay out of study until the daily --recheck
+ * queue refreshes them to promptVersion === GEMINI_PROMPT_VERSION.
+ */
 const APPROVED_OUT = join(ROOT, 'public/data/gemini-approved-ids.json')
 const approvedIds = doneRows
+  .filter((x) => isCurrentPrompt(x))
   .map((x) => String(x.id || ''))
   .filter(Boolean)
   .sort((a, b) => a.localeCompare(b, 'en', { numeric: true }))
 const approved = {
   updatedAt: out.updatedAt,
   count: approvedIds.length,
-  done,
+  done: currentPromptDone,
   total,
   remaining,
   needsRecheck,
@@ -125,7 +132,9 @@ const approved = {
   complete: remainingWork === 0,
   ids: approvedIds,
   note:
-    'Only these card ids may appear in daily study until complete=true (unscanned + outdated-prompt recheck both finished).',
+    'Live study/browse only includes prompt-v' +
+    GEMINI_PROMPT_VERSION +
+    ' cards. Outdated reviews go through daily --recheck first; unscanned cards stay hidden until reviewed. complete=true when remainingWork hits 0.',
 }
 writeFileSync(APPROVED_OUT, JSON.stringify(approved, null, 2) + '\n', 'utf8')
 

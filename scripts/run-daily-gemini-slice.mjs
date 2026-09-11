@@ -16,10 +16,12 @@
  */
 
 import { spawnSync } from 'node:child_process'
+import { existsSync, readFileSync } from 'node:fs'
 import { join, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..')
+const PROGRESS_PATH = join(ROOT, 'public/data/gemini-scan-progress.json')
 const STUDY_DAY_CARDS = 15
 const DEFAULT_DAYS = 5
 
@@ -37,6 +39,31 @@ const LIMIT = Number(flag('limit', DAYS * STUDY_DAY_CARDS)) || DAYS * STUDY_DAY_
 const RPM = Number(flag('rpm', 12)) || 12
 const RECHECK = Boolean(flag('recheck', true))
 const KEY = String(process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY || '').trim()
+
+function readProgress() {
+  if (!existsSync(PROGRESS_PATH)) return null
+  try {
+    return JSON.parse(readFileSync(PROGRESS_PATH, 'utf8'))
+  } catch {
+    return null
+  }
+}
+
+const progressBefore = readProgress()
+if (progressBefore && Number(progressBefore.remainingWork) === 0) {
+  console.log(
+    JSON.stringify(
+      {
+        complete: true,
+        remainingWork: 0,
+        message: 'Gemini corpus scan already complete — skip daily slice and stop the timer.',
+      },
+      null,
+      2,
+    ),
+  )
+  process.exit(0)
+}
 
 if (!KEY) {
   console.error('Missing GEMINI_API_KEY — cannot run daily slice.')
@@ -85,6 +112,26 @@ run('npm', ['run', 'apply:grammar-overrides'])
 run('node', ['scripts/build-content-updates.mjs', '--from-batch-today', '--only-new'])
 run('node', ['scripts/sync-gemini-progress.mjs', `--daily-quota=${LIMIT}`])
 
+const progressAfter = readProgress()
+const remainingWork = Number(progressAfter?.remainingWork)
+const estimatedDaysLeft = Number(progressAfter?.estimatedDaysLeft)
 console.log(
-  `Daily slice complete (~${DAYS} study-days / ${LIMIT} cards). Bump CONTENT_VERSION, regen audio for FIX, build & deploy.`,
+  JSON.stringify(
+    {
+      sliceDays: DAYS,
+      sliceLimit: LIMIT,
+      remainingWork,
+      needsRecheck: progressAfter?.needsRecheck,
+      remaining: progressAfter?.remaining,
+      currentPromptDone: progressAfter?.currentPromptDone,
+      estimatedDaysLeft,
+      complete: remainingWork === 0,
+      next:
+        remainingWork === 0
+          ? 'STOP daily Gemini timer (unsubscribe gemini-daily-small-slice).'
+          : 'Bump CONTENT_VERSION, regen audio for FIX, build & deploy; keep daily timer.',
+    },
+    null,
+    2,
+  ),
 )

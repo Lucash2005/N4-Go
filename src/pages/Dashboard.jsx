@@ -282,8 +282,8 @@ export default function Dashboard() {
         <h2 className="font-display text-lg font-bold text-ink">Gemini 全庫掃描進度</h2>
         <p className="mt-1 text-sm text-ink-soft">
           每日自動檢查約 3～7 天可學的量（預設約 75 張＝5 天×每日 15
-          單字），方便抽查品質；不夠再加大。全庫掃完前，每日排程單字只會出現 Gemini
-          已審核的卡片；文法與活用仍依本月路線解鎖，不受單字掃描進度擋住。
+          單字）。全庫完成前，線上單字只顯示現行 prompt（v2）已審過的卡；舊版待
+          recheck 與未掃過的卡會進每日排程，審完才解鎖。文法與活用仍依本月路線，不受單字掃描擋住。
         </p>
         {scanProgress ? (
           <div className="mt-3 space-y-2">
@@ -401,7 +401,7 @@ export default function Dashboard() {
           <div>
             <h2 className="font-display text-xl font-bold text-ink">今日自動排程</h2>
             <p className="mt-1 text-sm text-ink-soft">
-              文法依 8→12 月路線解鎖；今日單字優先抽本月文法例句裡的詞。目前只從 Gemini 已審核卡池抽題（未掃完的先不出現）。
+              文法依 8→12 月路線解鎖；今日單字優先抽本月文法例句裡的詞。目前只從 Gemini prompt v2 已審卡池抽題（舊版／未掃的先進每日審查）。
             </p>
           </div>
           <button
