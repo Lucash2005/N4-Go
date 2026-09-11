@@ -2543,5 +2543,39 @@
     "example": "新しいネクタイを買いました。",
     "exampleMeaning": "我買了一條新領帶。",
     "exampleFurigana": ""
+  },
+  "v194": {
+    "example": "ポケットにスマホが入っています。",
+    "exampleMeaning": "口袋裡放著智慧型手機。"
+  },
+  "v198": {
+    "meaning": "真的、真實",
+    "example": "ほんとうに美味しかったです。",
+    "exampleMeaning": "真的非常好吃。",
+    "kanji": "本当"
+  },
+  "v202": {
+    "meaning": "筆直；直接；一直",
+    "example": "まっすぐ行ってください。",
+    "exampleMeaning": "請直走。"
+  },
+  "v209": {
+    "meaning": "做、幹",
+    "example": "宿題をやります。",
+    "exampleMeaning": "我做作業。"
+  },
+  "v222": {
+    "meaning": "暗、黑暗",
+    "example": "外は暗いですね。",
+    "exampleMeaning": "外面很暗呢。"
+  },
+  "v248": {
+    "example": "部屋が汚いです。",
+    "exampleMeaning": "房間很髒。"
+  },
+  "v254": {
+    "meaning": "微溫、溫涼",
+    "example": "お風呂のお湯がちょっとぬるいです。",
+    "exampleMeaning": "洗澡水有點微溫。"
   }
 }
