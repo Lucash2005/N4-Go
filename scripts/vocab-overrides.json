@@ -1967,8 +1967,8 @@
     "exampleMeaning": "貓在桌子下面。"
   },
   "v267": {
-    "example": "私はカラオケで歌う。",
-    "exampleMeaning": "我在卡拉OK唱歌。"
+    "example": "私はよくカラオケで歌います。",
+    "exampleMeaning": "我常在卡拉OK唱歌。"
   },
   "v274": {
     "exampleMeaning": "他很害怕海。"
@@ -2577,5 +2577,55 @@
     "meaning": "微溫、溫涼",
     "example": "お風呂のお湯がちょっとぬるいです。",
     "exampleMeaning": "洗澡水有點微溫。"
+  },
+  "v270": {
+    "meaning": "花瓶",
+    "example": "花瓶を割ったのは誰ですか。",
+    "exampleMeaning": "打破花瓶的是誰？"
+  },
+  "v271": {
+    "example": "荷物を見ていてね。",
+    "exampleMeaning": "幫我看一下行李喔。"
+  },
+  "v276": {
+    "meaning": "各位、大家",
+    "example": "皆さんはお元気ですか。",
+    "exampleMeaning": "大家身體都好嗎？"
+  },
+  "v278": {
+    "meaning": "開；（門窗等）開著",
+    "example": "窓が開いています。",
+    "exampleMeaning": "窗戶開著。"
+  },
+  "v282": {
+    "example": "来年、外国に行きます。",
+    "exampleMeaning": "我明年要去外國。"
+  },
+  "v291": {
+    "example": "このケーキは甘くて美味しいです。",
+    "exampleMeaning": "這個蛋糕又甜又好吃。"
+  },
+  "v294": {
+    "example": "危ないですから、気をつけてください。",
+    "exampleMeaning": "很危險，請小心。"
+  },
+  "v301": {
+    "meaning": "抽煙；吸（氣）；吸吮",
+    "example": "彼は毎朝タバコを吸います。",
+    "exampleMeaning": "他每天早上抽菸。"
+  },
+  "v307": {
+    "meaning": "強大的、堅強的",
+    "example": "今日は風が強いです。",
+    "exampleMeaning": "今天風很大。"
+  },
+  "v310": {
+    "example": "川に白い橋があります。",
+    "exampleMeaning": "河上有座白色的橋。"
+  },
+  "v319": {
+    "meaning": "九個（用於計算 1~9 的物品）",
+    "example": "りんごを九つ買いました。",
+    "exampleMeaning": "買了九個蘋果。"
   }
 }

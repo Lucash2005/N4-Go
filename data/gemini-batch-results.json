@@ -1,12 +1,12 @@
 {
-  "updatedAt": "2026-09-11T08:07:39.746Z",
+  "updatedAt": "2026-09-12T08:07:45.390Z",
   "promptVersion": 2,
   "counts": {
     "done": 508,
-    "fix": 131,
-    "ok": 377,
+    "fix": 130,
+    "ok": 378,
     "error": 1,
-    "needsRecheck": 215
+    "needsRecheck": 140
   },
   "items": {
     "v001": {
@@ -4691,6 +4691,7 @@
       "type": "vocab",
       "word": "音楽",
       "status": "done",
+      "promptVersion": 2,
       "verdict": "OK",
       "issues": [],
       "review": {
@@ -4701,17 +4702,16 @@
         "kanji": "音楽"
       },
       "model": "gemini-3.5-flash-lite",
-      "at": "2026-09-06T08:01:39.119Z"
+      "at": "2026-09-12T08:00:41.936Z"
     },
     "v256": {
       "id": "v256",
       "type": "vocab",
       "word": "下",
       "status": "done",
-      "verdict": "FIX",
-      "issues": [
-        "「下」常用於表示下方、下面，原本的意思寫作「以下」過於狹隘且不準確。原例句「来て下さい」也沒有用到「下」這個字。"
-      ],
+      "promptVersion": 2,
+      "verdict": "OK",
+      "issues": [],
       "review": {
         "meaning": "下面、下方",
         "pattern": "",
@@ -4720,30 +4720,32 @@
         "kanji": "下"
       },
       "model": "gemini-3.5-flash-lite",
-      "at": "2026-09-06T08:01:43.797Z"
+      "at": "2026-09-12T08:00:47.490Z"
     },
     "v257": {
       "id": "v257",
       "type": "vocab",
       "word": "下手",
       "status": "done",
+      "promptVersion": 2,
       "verdict": "OK",
       "issues": [],
       "review": {
-        "meaning": "不拿手、不擅長",
+        "meaning": "不熟練的",
         "pattern": "",
         "example": "彼は字が下手だ。",
         "exampleMeaning": "他的字寫得不好。",
         "kanji": "下手"
       },
       "model": "gemini-3.5-flash-lite",
-      "at": "2026-09-06T08:01:48.486Z"
+      "at": "2026-09-12T08:00:53.110Z"
     },
     "v258": {
       "id": "v258",
       "type": "vocab",
       "word": "何",
       "status": "done",
+      "promptVersion": 2,
       "verdict": "OK",
       "issues": [],
       "review": {
@@ -4754,13 +4756,14 @@
         "kanji": "何"
       },
       "model": "gemini-3.5-flash-lite",
-      "at": "2026-09-06T08:01:53.030Z"
+      "at": "2026-09-12T08:00:58.686Z"
     },
     "v259": {
       "id": "v259",
       "type": "vocab",
       "word": "夏",
       "status": "done",
+      "promptVersion": 2,
       "verdict": "OK",
       "issues": [],
       "review": {
@@ -4771,13 +4774,14 @@
         "kanji": "夏"
       },
       "model": "gemini-3.5-flash-lite",
-      "at": "2026-09-06T08:01:57.671Z"
+      "at": "2026-09-12T08:01:04.146Z"
     },
     "v260": {
       "id": "v260",
       "type": "vocab",
       "word": "夏休み",
       "status": "done",
+      "promptVersion": 2,
       "verdict": "OK",
       "issues": [],
       "review": {
@@ -4788,30 +4792,32 @@
         "kanji": "夏休み"
       },
       "model": "gemini-3.5-flash-lite",
-      "at": "2026-09-06T08:02:02.209Z"
+      "at": "2026-09-12T08:01:09.690Z"
     },
     "v261": {
       "id": "v261",
       "type": "vocab",
       "word": "家",
       "status": "done",
+      "promptVersion": 2,
       "verdict": "OK",
       "issues": [],
       "review": {
-        "meaning": "房子、家",
+        "meaning": "房子",
         "pattern": "",
         "example": "家に帰るよ。",
         "exampleMeaning": "我要回家了。",
         "kanji": "家"
       },
       "model": "gemini-3.5-flash-lite",
-      "at": "2026-09-06T08:02:06.798Z"
+      "at": "2026-09-12T08:01:15.202Z"
     },
     "v262": {
       "id": "v262",
       "type": "vocab",
       "word": "家族",
       "status": "done",
+      "promptVersion": 2,
       "verdict": "OK",
       "issues": [],
       "review": {
@@ -4822,13 +4828,14 @@
         "kanji": "家族"
       },
       "model": "gemini-3.5-flash-lite",
-      "at": "2026-09-06T08:02:11.418Z"
+      "at": "2026-09-12T08:01:20.838Z"
     },
     "v263": {
       "id": "v263",
       "type": "vocab",
       "word": "家庭",
       "status": "done",
+      "promptVersion": 2,
       "verdict": "OK",
       "issues": [],
       "review": {
@@ -4839,30 +4846,32 @@
         "kanji": "家庭"
       },
       "model": "gemini-3.5-flash-lite",
-      "at": "2026-09-06T08:02:15.946Z"
+      "at": "2026-09-12T08:01:26.499Z"
     },
     "v264": {
       "id": "v264",
       "type": "vocab",
       "word": "暇",
       "status": "done",
+      "promptVersion": 2,
       "verdict": "OK",
       "issues": [],
       "review": {
-        "meaning": "空閒時間、得閒",
+        "meaning": "空閒時間",
         "pattern": "",
         "example": "週末は暇ですか。",
         "exampleMeaning": "週末你有空嗎？",
         "kanji": "暇"
       },
       "model": "gemini-3.5-flash-lite",
-      "at": "2026-09-06T08:02:20.508Z"
+      "at": "2026-09-12T08:01:32.098Z"
     },
     "v265": {
       "id": "v265",
       "type": "vocab",
       "word": "果物",
       "status": "done",
+      "promptVersion": 2,
       "verdict": "OK",
       "issues": [],
       "review": {
@@ -4873,13 +4882,14 @@
         "kanji": "果物"
       },
       "model": "gemini-3.5-flash-lite",
-      "at": "2026-09-06T08:02:25.075Z"
+      "at": "2026-09-12T08:01:37.682Z"
     },
     "v266": {
       "id": "v266",
       "type": "vocab",
       "word": "歌",
       "status": "done",
+      "promptVersion": 2,
       "verdict": "OK",
       "issues": [],
       "review": {
@@ -4890,32 +4900,35 @@
         "kanji": "歌"
       },
       "model": "gemini-3.5-flash-lite",
-      "at": "2026-09-06T08:02:29.593Z"
+      "at": "2026-09-12T08:01:43.270Z"
     },
     "v267": {
       "id": "v267",
       "type": "vocab",
       "word": "歌う",
       "status": "done",
+      "promptVersion": 2,
       "verdict": "FIX",
       "issues": [
-        "例句『私は今歌う。』略顯生硬，建議使用更有日常感的例句，例如『カラオケで歌う。』或『歌を歌う。』。"
+        "例句稍微生硬，N5/N4程度通常會加上助詞或更具體的表達，例如「よく歌う」或「歌を歌う」。",
+        "人工微調：去除模型說明文字，改為丁寧体例句"
       ],
       "review": {
         "meaning": "唱歌",
         "pattern": "",
-        "example": "私はカラオケで歌う。",
-        "exampleMeaning": "我在卡拉OK唱歌。",
+        "example": "私はよくカラオケで歌います。",
+        "exampleMeaning": "我常在卡拉OK唱歌。",
         "kanji": "歌う"
       },
       "model": "gemini-3.5-flash-lite",
-      "at": "2026-09-06T08:02:34.394Z"
+      "at": "2026-09-12T08:01:49.230Z"
     },
     "v268": {
       "id": "v268",
       "type": "vocab",
       "word": "火曜日",
       "status": "done",
+      "promptVersion": 2,
       "verdict": "OK",
       "issues": [],
       "review": {
@@ -4926,7 +4939,7 @@
         "kanji": "火曜日"
       },
       "model": "gemini-3.5-flash-lite",
-      "at": "2026-09-06T08:02:38.983Z"
+      "at": "2026-09-12T08:01:54.813Z"
     },
     "v269": {
       "id": "v269",
@@ -4953,57 +4966,66 @@
       "type": "vocab",
       "word": "花瓶",
       "status": "done",
-      "verdict": "OK",
-      "issues": [],
+      "promptVersion": 2,
+      "verdict": "FIX",
+      "issues": [
+        "「 meaning 」應改為更精確的名詞解釋，例如「花瓶」，不需要加上「一個」。",
+        "例句「花瓶割ったの誰？」略顯口語粗魯（省略了助詞），對於 N5-N4 學習者，建議使用更標準、有禮貌或自然的句型，例如「花瓶を割ったのは誰ですか。」"
+      ],
       "review": {
         "meaning": "花瓶",
         "pattern": "",
-        "example": "花瓶に花を活けた。",
-        "exampleMeaning": "我在花瓶裡插了花。",
+        "example": "花瓶を割ったのは誰ですか。",
+        "exampleMeaning": "打破花瓶的是誰？",
         "kanji": "花瓶"
       },
       "model": "gemini-3.5-flash-lite",
-      "at": "2026-09-06T08:02:48.091Z"
+      "at": "2026-09-12T08:02:00.818Z"
     },
     "v271": {
       "id": "v271",
       "type": "vocab",
       "word": "荷物",
       "status": "done",
-      "verdict": "OK",
-      "issues": [],
+      "promptVersion": 2,
+      "verdict": "FIX",
+      "issues": [
+        "例句「荷物見ててね。」的中文翻譯「看看你的行李。」不夠精確，省略了『幫忙看著、照看』的意思，建議修正為『幫我看一下行李。』或『幫我看著行李喔。』"
+      ],
       "review": {
         "meaning": "行李",
         "pattern": "",
-        "example": "荷物を見ていてください。",
-        "exampleMeaning": "請幫我看著行李。",
+        "example": "荷物を見ていてね。",
+        "exampleMeaning": "幫我看一下行李喔。",
         "kanji": "荷物"
       },
       "model": "gemini-3.5-flash-lite",
-      "at": "2026-09-06T08:02:52.635Z"
+      "at": "2026-09-12T08:02:06.755Z"
     },
     "v272": {
       "id": "v272",
       "type": "vocab",
       "word": "会う",
       "status": "done",
+      "promptVersion": 2,
       "verdict": "OK",
       "issues": [],
       "review": {
-        "meaning": "見面、會面",
+        "meaning": "見面",
         "pattern": "",
-        "example": "友達に会う。",
-        "exampleMeaning": "和朋友見面。",
+        "example": "よく彼に会う。",
+        "exampleMeaning": "我常常見到他。",
         "kanji": "会う"
       },
       "model": "gemini-3.5-flash-lite",
-      "at": "2026-09-06T08:02:57.250Z"
+      "at": "2026-09-12T08:02:12.354Z"
     },
     "v273": {
       "id": "v273",
       "type": "vocab",
       "word": "会社",
       "status": "done",
+      "promptVersion": 2,
       "verdict": "OK",
       "issues": [],
       "review": {
@@ -5014,17 +5036,16 @@
         "kanji": "会社"
       },
       "model": "gemini-3.5-flash-lite",
-      "at": "2026-09-06T08:03:01.763Z"
+      "at": "2026-09-12T08:02:18.125Z"
     },
     "v274": {
       "id": "v274",
       "type": "vocab",
       "word": "海",
       "status": "done",
-      "verdict": "FIX",
-      "issues": [
-        "例句中文翻譯與日文例句意思不符（日文為「他很害怕海」，中文卻寫「水桶裏的一滴水」）"
-      ],
+      "promptVersion": 2,
+      "verdict": "OK",
+      "issues": [],
       "review": {
         "meaning": "海",
         "pattern": "",
@@ -5033,13 +5054,14 @@
         "kanji": "海"
       },
       "model": "gemini-3.5-flash-lite",
-      "at": "2026-09-06T08:03:06.387Z"
+      "at": "2026-09-12T08:02:23.791Z"
     },
     "v275": {
       "id": "v275",
       "type": "vocab",
       "word": "灰皿",
       "status": "done",
+      "promptVersion": 2,
       "verdict": "OK",
       "issues": [],
       "review": {
@@ -5050,34 +5072,36 @@
         "kanji": "灰皿"
       },
       "model": "gemini-3.5-flash-lite",
-      "at": "2026-09-06T08:03:10.903Z"
+      "at": "2026-09-12T08:02:29.402Z"
     },
     "v276": {
       "id": "v276",
       "type": "vocab",
       "word": "皆さん",
       "status": "done",
-      "verdict": "OK",
-      "issues": [],
+      "promptVersion": 2,
+      "verdict": "FIX",
+      "issues": [
+        "例句「皆さんはお元気？」使用半敬體（普通形），對於 N5-N4 初學者，建議使用更標準、禮貌的「皆さんはお元気ですか。」（Minasan wa ogenki desu ka）會更自然且符合教材規範。"
+      ],
       "review": {
-        "meaning": "大家、各位",
+        "meaning": "各位、大家",
         "pattern": "",
-        "example": "皆さん、こんにちは。",
-        "exampleMeaning": "大家好。",
+        "example": "皆さんはお元気ですか。",
+        "exampleMeaning": "大家身體都好嗎？",
         "kanji": "皆さん"
       },
       "model": "gemini-3.5-flash-lite",
-      "at": "2026-09-06T08:03:15.462Z"
+      "at": "2026-09-12T08:02:35.285Z"
     },
     "v277": {
       "id": "v277",
       "type": "vocab",
       "word": "絵",
       "status": "done",
-      "verdict": "FIX",
-      "issues": [
-        "「絵」的最常見翻譯為「畫」或「圖畫」，比「圖片」更貼切。例句中文翻譯中的「照片」應修正為「畫」或「圖畫」以對應日文的「絵」。"
-      ],
+      "promptVersion": 2,
+      "verdict": "OK",
+      "issues": [],
       "review": {
         "meaning": "畫、圖畫",
         "pattern": "",
@@ -5086,47 +5110,53 @@
         "kanji": "絵"
       },
       "model": "gemini-3.5-flash-lite",
-      "at": "2026-09-06T08:03:20.251Z"
+      "at": "2026-09-12T08:02:41.059Z"
     },
     "v278": {
       "id": "v278",
       "type": "vocab",
       "word": "開く",
       "status": "done",
-      "verdict": "OK",
-      "issues": [],
+      "promptVersion": 2,
+      "verdict": "FIX",
+      "issues": [
+        "「開く」讀音為「あく」時，通常為自動詞（意為「門、窗等打開」），而例句「本を開くな」中的「開く」讀音應為「ひらく」，且為他動詞。為了符合 N5/N4 程度且避免自動詞與他動詞混淆，建議將字卡調整為標準的他動詞「開ける（あける）」或修正讀音與字義。",
+        "人工微調：維持自動詞「開く（あく）」，不用開ける"
+      ],
       "review": {
-        "meaning": "打開；開",
+        "meaning": "開；（門窗等）開著",
         "pattern": "",
-        "example": "ドアが開く。",
-        "exampleMeaning": "門打開了。",
-        "kanji": "開く"
+        "example": "窓が開いています。",
+        "exampleMeaning": "窗戶開著。",
+        "kanji": ""
       },
       "model": "gemini-3.5-flash-lite",
-      "at": "2026-09-06T08:03:24.841Z"
+      "at": "2026-09-12T08:02:49.858Z"
     },
     "v279": {
       "id": "v279",
       "type": "vocab",
       "word": "開ける",
       "status": "done",
+      "promptVersion": 2,
       "verdict": "OK",
       "issues": [],
       "review": {
         "meaning": "打開",
         "pattern": "",
-        "example": "窓を開ける。",
-        "exampleMeaning": "打開窗戶。",
+        "example": "窓を開けるな。",
+        "exampleMeaning": "不要打開窗戶。",
         "kanji": "開ける"
       },
       "model": "gemini-3.5-flash-lite",
-      "at": "2026-09-06T08:03:29.390Z"
+      "at": "2026-09-12T08:02:55.413Z"
     },
     "v280": {
       "id": "v280",
       "type": "vocab",
       "word": "階段",
       "status": "done",
+      "promptVersion": 2,
       "verdict": "OK",
       "issues": [],
       "review": {
@@ -5137,47 +5167,52 @@
         "kanji": "階段"
       },
       "model": "gemini-3.5-flash-lite",
-      "at": "2026-09-06T08:03:33.918Z"
+      "at": "2026-09-12T08:03:01.201Z"
     },
     "v281": {
       "id": "v281",
       "type": "vocab",
       "word": "外",
       "status": "done",
+      "promptVersion": 2,
       "verdict": "OK",
       "issues": [],
       "review": {
-        "meaning": "外部",
+        "meaning": "外部、外面",
         "pattern": "",
         "example": "外へ出たい。",
         "exampleMeaning": "我想去外面。",
         "kanji": "外"
       },
       "model": "gemini-3.5-flash-lite",
-      "at": "2026-09-06T08:03:38.411Z"
+      "at": "2026-09-12T08:03:06.813Z"
     },
     "v282": {
       "id": "v282",
       "type": "vocab",
       "word": "外国",
       "status": "done",
-      "verdict": "OK",
-      "issues": [],
+      "promptVersion": 2,
+      "verdict": "FIX",
+      "issues": [
+        "原例句「行く気？」語氣較為隨意粗魯，不太適合 N5-N4 階段的標準禮貌學習，建議替換為更自然且常用的例句。"
+      ],
       "review": {
         "meaning": "外國",
         "pattern": "",
-        "example": "外国に行く気？",
-        "exampleMeaning": "您打算出國嗎？",
+        "example": "来年、外国に行きます。",
+        "exampleMeaning": "我明年要去外國。",
         "kanji": "外国"
       },
       "model": "gemini-3.5-flash-lite",
-      "at": "2026-09-06T08:03:43.022Z"
+      "at": "2026-09-12T08:03:12.678Z"
     },
     "v283": {
       "id": "v283",
       "type": "vocab",
       "word": "外国人",
       "status": "done",
+      "promptVersion": 2,
       "verdict": "OK",
       "issues": [],
       "review": {
@@ -5188,13 +5223,14 @@
         "kanji": "外国人"
       },
       "model": "gemini-3.5-flash-lite",
-      "at": "2026-09-06T08:03:47.595Z"
+      "at": "2026-09-12T08:03:18.319Z"
     },
     "v284": {
       "id": "v284",
       "type": "vocab",
       "word": "覚える",
       "status": "done",
+      "promptVersion": 2,
       "verdict": "OK",
       "issues": [],
       "review": {
@@ -5205,30 +5241,32 @@
         "kanji": "覚える"
       },
       "model": "gemini-3.5-flash-lite",
-      "at": "2026-09-06T08:03:52.136Z"
+      "at": "2026-09-12T08:03:24.001Z"
     },
     "v285": {
       "id": "v285",
       "type": "vocab",
       "word": "角",
       "status": "done",
+      "promptVersion": 2,
       "verdict": "OK",
       "issues": [],
       "review": {
-        "meaning": "角落、轉角",
+        "meaning": "一個角落",
         "pattern": "",
-        "example": "そこの角を右に曲がってください。",
-        "exampleMeaning": "請在那個轉角向右轉。",
+        "example": "そこの角ですよ。",
+        "exampleMeaning": "就在那個角落。",
         "kanji": "角"
       },
       "model": "gemini-3.5-flash-lite",
-      "at": "2026-09-06T08:03:56.802Z"
+      "at": "2026-09-12T08:03:29.544Z"
     },
     "v286": {
       "id": "v286",
       "type": "vocab",
       "word": "学校",
       "status": "done",
+      "promptVersion": 2,
       "verdict": "OK",
       "issues": [],
       "review": {
@@ -5239,13 +5277,14 @@
         "kanji": "学校"
       },
       "model": "gemini-3.5-flash-lite",
-      "at": "2026-09-06T08:04:01.363Z"
+      "at": "2026-09-12T08:03:35.090Z"
     },
     "v287": {
       "id": "v287",
       "type": "vocab",
       "word": "学生",
       "status": "done",
+      "promptVersion": 2,
       "verdict": "OK",
       "issues": [],
       "review": {
@@ -5256,34 +5295,34 @@
         "kanji": "学生"
       },
       "model": "gemini-3.5-flash-lite",
-      "at": "2026-09-06T08:04:05.955Z"
+      "at": "2026-09-12T08:03:40.698Z"
     },
     "v288": {
       "id": "v288",
       "type": "vocab",
       "word": "楽しい",
       "status": "done",
+      "promptVersion": 2,
       "verdict": "OK",
       "issues": [],
       "review": {
-        "meaning": "令人愉快的、快樂的",
+        "meaning": "令人愉快的",
         "pattern": "",
         "example": "楽しい旅を。",
         "exampleMeaning": "祝你旅途愉快。",
         "kanji": "楽しい"
       },
       "model": "gemini-3.5-flash-lite",
-      "at": "2026-09-06T08:04:10.575Z"
+      "at": "2026-09-12T08:03:46.306Z"
     },
     "v289": {
       "id": "v289",
       "type": "vocab",
       "word": "寒い",
       "status": "done",
-      "verdict": "FIX",
-      "issues": [
-        "例句翻譯「肌寒いです」不準確，肌寒意思是「微涼/有點冷」，與主詞「寒い（寒冷的）」語意不完全對應，建議改為標準的「寒い」例句。"
-      ],
+      "promptVersion": 2,
+      "verdict": "OK",
+      "issues": [],
       "review": {
         "meaning": "寒冷的",
         "pattern": "",
@@ -5292,13 +5331,14 @@
         "kanji": "寒い"
       },
       "model": "gemini-3.5-flash-lite",
-      "at": "2026-09-06T08:04:15.327Z"
+      "at": "2026-09-12T08:03:51.998Z"
     },
     "v290": {
       "id": "v290",
       "type": "vocab",
       "word": "漢字",
       "status": "done",
+      "promptVersion": 2,
       "verdict": "OK",
       "issues": [],
       "review": {
@@ -5309,30 +5349,34 @@
         "kanji": "漢字"
       },
       "model": "gemini-3.5-flash-lite",
-      "at": "2026-09-06T08:04:19.886Z"
+      "at": "2026-09-12T08:03:57.476Z"
     },
     "v291": {
       "id": "v291",
       "type": "vocab",
       "word": "甘い",
       "status": "done",
-      "verdict": "OK",
-      "issues": [],
+      "promptVersion": 2,
+      "verdict": "FIX",
+      "issues": [
+        "例句中的「甘いの」作為疑問句不夠自然，口語中通常直接用「甘い？」或「甘いですか？」；另外「甘い」的 N5/N4 常見用法除了「甜的」，也常考「縱容、天真」的引申義，但保留「甜的」作為基礎義並優化例句最適合學習。"
+      ],
       "review": {
         "meaning": "甜的",
         "pattern": "",
-        "example": "それは甘いの？",
-        "exampleMeaning": "那是甜的嗎？",
+        "example": "このケーキは甘くて美味しいです。",
+        "exampleMeaning": "這個蛋糕又甜又好吃。",
         "kanji": "甘い"
       },
       "model": "gemini-3.5-flash-lite",
-      "at": "2026-09-06T08:04:24.435Z"
+      "at": "2026-09-12T08:04:03.498Z"
     },
     "v292": {
       "id": "v292",
       "type": "vocab",
       "word": "丸い",
       "status": "done",
+      "promptVersion": 2,
       "verdict": "OK",
       "issues": [],
       "review": {
@@ -5343,13 +5387,14 @@
         "kanji": "丸い"
       },
       "model": "gemini-3.5-flash-lite",
-      "at": "2026-09-06T08:04:29.047Z"
+      "at": "2026-09-12T08:04:09.122Z"
     },
     "v293": {
       "id": "v293",
       "type": "vocab",
       "word": "眼鏡",
       "status": "done",
+      "promptVersion": 2,
       "verdict": "OK",
       "issues": [],
       "review": {
@@ -5360,30 +5405,34 @@
         "kanji": "眼鏡"
       },
       "model": "gemini-3.5-flash-lite",
-      "at": "2026-09-06T08:04:33.647Z"
+      "at": "2026-09-12T08:04:14.718Z"
     },
     "v294": {
       "id": "v294",
       "type": "vocab",
       "word": "危ない",
       "status": "done",
-      "verdict": "OK",
-      "issues": [],
+      "promptVersion": 2,
+      "verdict": "FIX",
+      "issues": [
+        "「危ない空模様だ」という例文はN4レベルの学習者にはやや難しく、一般的ではありません。もっと日常的で簡単なN5～N4レベルの例文（例：「道が危ないです」や「危ないから、入らないでください」など）に変更する方が適切です。"
+      ],
       "review": {
         "meaning": "危險的",
         "pattern": "",
-        "example": "危ない空模様だ。",
-        "exampleMeaning": "天空看起來快要下雨了。",
+        "example": "危ないですから、気をつけてください。",
+        "exampleMeaning": "很危險，請小心。",
         "kanji": "危ない"
       },
       "model": "gemini-3.5-flash-lite",
-      "at": "2026-09-06T08:04:38.259Z"
+      "at": "2026-09-12T08:04:20.531Z"
     },
     "v295": {
       "id": "v295",
       "type": "vocab",
       "word": "机",
       "status": "done",
+      "promptVersion": 2,
       "verdict": "OK",
       "issues": [],
       "review": {
@@ -5394,47 +5443,50 @@
         "kanji": "机"
       },
       "model": "gemini-3.5-flash-lite",
-      "at": "2026-09-06T08:04:42.806Z"
+      "at": "2026-09-12T08:04:26.202Z"
     },
     "v296": {
       "id": "v296",
       "type": "vocab",
       "word": "帰る",
       "status": "done",
+      "promptVersion": 2,
       "verdict": "OK",
       "issues": [],
       "review": {
-        "meaning": "回去、返回",
+        "meaning": "回去",
         "pattern": "",
-        "example": "そろそろ家に帰ります。",
-        "exampleMeaning": "差不多要回家了。",
+        "example": "家に帰るよ。",
+        "exampleMeaning": "我要回家了。",
         "kanji": "帰る"
       },
       "model": "gemini-3.5-flash-lite",
-      "at": "2026-09-06T08:04:47.386Z"
+      "at": "2026-09-12T08:04:31.716Z"
     },
     "v297": {
       "id": "v297",
       "type": "vocab",
       "word": "起きる",
       "status": "done",
+      "promptVersion": 2,
       "verdict": "OK",
       "issues": [],
       "review": {
-        "meaning": "起床、醒來",
+        "meaning": "起床",
         "pattern": "",
-        "example": "朝七時に起きる。",
-        "exampleMeaning": "早上七點起床。",
+        "example": "起きる時間よ。",
+        "exampleMeaning": "是時候醒來了。",
         "kanji": "起きる"
       },
       "model": "gemini-3.5-flash-lite",
-      "at": "2026-09-06T08:04:52.034Z"
+      "at": "2026-09-12T08:04:37.233Z"
     },
     "v298": {
       "id": "v298",
       "type": "vocab",
       "word": "喫茶店",
       "status": "done",
+      "promptVersion": 2,
       "verdict": "OK",
       "issues": [],
       "review": {
@@ -5445,13 +5497,14 @@
         "kanji": "喫茶店"
       },
       "model": "gemini-3.5-flash-lite",
-      "at": "2026-09-06T08:04:56.634Z"
+      "at": "2026-09-12T08:04:42.857Z"
     },
     "v299": {
       "id": "v299",
       "type": "vocab",
       "word": "休み",
       "status": "done",
+      "promptVersion": 2,
       "verdict": "OK",
       "issues": [],
       "review": {
@@ -5462,47 +5515,52 @@
         "kanji": "休み"
       },
       "model": "gemini-3.5-flash-lite",
-      "at": "2026-09-06T08:05:01.193Z"
+      "at": "2026-09-12T08:04:48.458Z"
     },
     "v300": {
       "id": "v300",
       "type": "vocab",
       "word": "休む",
       "status": "done",
+      "promptVersion": 2,
       "verdict": "OK",
       "issues": [],
       "review": {
-        "meaning": "休息、請假",
+        "meaning": "休息",
         "pattern": "",
-        "example": "仕事の途中で少し休む。",
-        "exampleMeaning": "工作中稍微休息一下。",
+        "example": "仕事の途中で休む。",
+        "exampleMeaning": "工作期間休息一下。",
         "kanji": "休む"
       },
       "model": "gemini-3.5-flash-lite",
-      "at": "2026-09-06T08:05:05.898Z"
+      "at": "2026-09-12T08:04:54.093Z"
     },
     "v301": {
       "id": "v301",
       "type": "vocab",
       "word": "吸う",
       "status": "done",
-      "verdict": "OK",
-      "issues": [],
+      "promptVersion": 2,
+      "verdict": "FIX",
+      "issues": [
+        "「吸う」雖然有「吸取」的意思，但在 N5-N4 階段，「紙は油を吸うよ」這種物理吸附的用法對初學者來說稍微偏生硬。更常見且符合 N5-N4 程度的例句是「空気を吸う」或「たばこを吸う」。建議更換為最經典的吸菸或呼吸例句。"
+      ],
       "review": {
-        "meaning": "吸；抽（煙）",
+        "meaning": "抽煙；吸（氣）；吸吮",
         "pattern": "",
-        "example": "彼はタバコを吸う。",
-        "exampleMeaning": "他抽煙。",
+        "example": "彼は毎朝タバコを吸います。",
+        "exampleMeaning": "他每天早上抽菸。",
         "kanji": "吸う"
       },
       "model": "gemini-3.5-flash-lite",
-      "at": "2026-09-06T08:05:10.435Z"
+      "at": "2026-09-12T08:05:00.154Z"
     },
     "v302": {
       "id": "v302",
       "type": "vocab",
       "word": "牛肉",
       "status": "done",
+      "promptVersion": 2,
       "verdict": "OK",
       "issues": [],
       "review": {
@@ -5513,13 +5571,14 @@
         "kanji": "牛肉"
       },
       "model": "gemini-3.5-flash-lite",
-      "at": "2026-09-06T08:05:14.935Z"
+      "at": "2026-09-12T08:05:05.833Z"
     },
     "v303": {
       "id": "v303",
       "type": "vocab",
       "word": "牛乳",
       "status": "done",
+      "promptVersion": 2,
       "verdict": "OK",
       "issues": [],
       "review": {
@@ -5530,13 +5589,14 @@
         "kanji": "牛乳"
       },
       "model": "gemini-3.5-flash-lite",
-      "at": "2026-09-06T08:05:19.479Z"
+      "at": "2026-09-12T08:05:11.356Z"
     },
     "v304": {
       "id": "v304",
       "type": "vocab",
       "word": "去年",
       "status": "done",
+      "promptVersion": 2,
       "verdict": "OK",
       "issues": [],
       "review": {
@@ -5547,66 +5607,70 @@
         "kanji": "去年"
       },
       "model": "gemini-3.5-flash-lite",
-      "at": "2026-09-06T08:05:24.007Z"
+      "at": "2026-09-12T08:05:16.934Z"
     },
     "v305": {
       "id": "v305",
       "type": "vocab",
       "word": "居る",
       "status": "done",
-      "verdict": "FIX",
-      "issues": [
-        "「居る」在現代日語中通常寫作平假名「いる」，或用於昆蟲・小動物・人的存在。例句中的「居る」較常寫作「いる」或使用「いる」的標準N5用法。意思「成為」並不準確，應該修正為表示存在的「在（某處）」。"
-      ],
+      "promptVersion": 2,
+      "verdict": "OK",
+      "issues": [],
       "review": {
         "meaning": "在；存在（用於人和動物）",
         "pattern": "",
         "example": "猫が部屋にいる。",
         "exampleMeaning": "房間裡有一隻貓。",
-        "kanji": "いる"
+        "kanji": "居る"
       },
       "model": "gemini-3.5-flash-lite",
-      "at": "2026-09-06T08:05:29.026Z"
+      "at": "2026-09-12T08:05:22.606Z"
     },
     "v306": {
       "id": "v306",
       "type": "vocab",
       "word": "魚",
       "status": "done",
+      "promptVersion": 2,
       "verdict": "OK",
       "issues": [],
       "review": {
         "meaning": "魚",
         "pattern": "",
         "example": "魚を食べる。",
-        "exampleMeaning": "吃魚。",
+        "exampleMeaning": "吃魚",
         "kanji": "魚"
       },
       "model": "gemini-3.5-flash-lite",
-      "at": "2026-09-06T08:05:33.604Z"
+      "at": "2026-09-12T08:05:28.334Z"
     },
     "v307": {
       "id": "v307",
       "type": "vocab",
       "word": "強い",
       "status": "done",
-      "verdict": "OK",
-      "issues": [],
+      "promptVersion": 2,
+      "verdict": "FIX",
+      "issues": [
+        "「悪運が強い」雖然文法正確，但「悪運」指惡運、厄運，搭配「強い」通常指「命大、運氣好（指度過災厄）」，對N5/N4初學者而言較不常見且容易混淆。建議更換為更生活化、更符合N5/N4程度的例句，例如表示風很強或雨很強。"
+      ],
       "review": {
         "meaning": "強大的、堅強的",
         "pattern": "",
-        "example": "彼は意志が強い。",
-        "exampleMeaning": "他的意志很堅強。",
+        "example": "今日は風が強いです。",
+        "exampleMeaning": "今天風很大。",
         "kanji": "強い"
       },
       "model": "gemini-3.5-flash-lite",
-      "at": "2026-09-06T08:05:38.147Z"
+      "at": "2026-09-12T08:05:35.666Z"
     },
     "v308": {
       "id": "v308",
       "type": "vocab",
       "word": "教える",
       "status": "done",
+      "promptVersion": 2,
       "verdict": "OK",
       "issues": [],
       "review": {
@@ -5617,17 +5681,16 @@
         "kanji": "教える"
       },
       "model": "gemini-3.5-flash-lite",
-      "at": "2026-09-06T08:05:42.706Z"
+      "at": "2026-09-12T08:05:41.266Z"
     },
     "v309": {
       "id": "v309",
       "type": "vocab",
       "word": "教室",
       "status": "done",
-      "verdict": "FIX",
-      "issues": [
-        "「教室」的常用義為教室或課堂，但作為實體場所，「教室」最直觀的翻譯是『教室』而非僅限於『課堂』，建議微調字義與例句讓語意更自然。"
-      ],
+      "promptVersion": 2,
+      "verdict": "OK",
+      "issues": [],
       "review": {
         "meaning": "教室",
         "pattern": "",
@@ -5636,30 +5699,34 @@
         "kanji": "教室"
       },
       "model": "gemini-3.5-flash-lite",
-      "at": "2026-09-06T08:05:47.611Z"
+      "at": "2026-09-12T08:05:46.767Z"
     },
     "v310": {
       "id": "v310",
       "type": "vocab",
       "word": "橋",
       "status": "done",
-      "verdict": "OK",
-      "issues": [],
+      "promptVersion": 2,
+      "verdict": "FIX",
+      "issues": [
+        "例句「橋は石造りだ」中的「石造り」對於 N5-N4 學習者來說稍微偏難，且口語中較少作為基礎例句使用。建議替換為更生活化且符合 N5 程度的例句，例如「橋を渡る」或「川に橋がある」等。"
+      ],
       "review": {
         "meaning": "橋",
         "pattern": "",
-        "example": "橋は石造りだ。",
-        "exampleMeaning": "這座橋是用石頭建造的。",
+        "example": "川に白い橋があります。",
+        "exampleMeaning": "河上有座白色的橋。",
         "kanji": "橋"
       },
       "model": "gemini-3.5-flash-lite",
-      "at": "2026-09-06T08:05:52.174Z"
+      "at": "2026-09-12T08:05:52.629Z"
     },
     "v311": {
       "id": "v311",
       "type": "vocab",
       "word": "狭い",
       "status": "done",
+      "promptVersion": 2,
       "verdict": "OK",
       "issues": [],
       "review": {
@@ -5670,13 +5737,14 @@
         "kanji": "狭い"
       },
       "model": "gemini-3.5-flash-lite",
-      "at": "2026-09-06T08:05:56.749Z"
+      "at": "2026-09-12T08:05:58.381Z"
     },
     "v312": {
       "id": "v312",
       "type": "vocab",
       "word": "曲る",
       "status": "done",
+      "promptVersion": 2,
       "verdict": "OK",
       "issues": [],
       "review": {
@@ -5684,27 +5752,28 @@
         "pattern": "",
         "example": "次の角を右へ曲ってください。",
         "exampleMeaning": "請在下一個轉角右轉。",
-        "kanji": "曲がる"
+        "kanji": "曲る"
       },
       "model": "gemini-3.5-flash-lite",
-      "at": "2026-09-06T08:06:01.346Z"
+      "at": "2026-09-12T08:06:03.956Z"
     },
     "v313": {
       "id": "v313",
       "type": "vocab",
       "word": "勤める",
       "status": "done",
+      "promptVersion": 2,
       "verdict": "OK",
       "issues": [],
       "review": {
-        "meaning": "工作、任職於",
+        "meaning": "為某人工作、任職",
         "pattern": "",
-        "example": "彼は銀行に勤めている。",
-        "exampleMeaning": "他在銀行工作。",
+        "example": "彼はコンサルティングファームに勤める。",
+        "exampleMeaning": "他在一家顧問公司工作。",
         "kanji": "勤める"
       },
       "model": "gemini-3.5-flash-lite",
-      "at": "2026-09-06T08:06:05.921Z"
+      "at": "2026-09-12T08:06:09.622Z"
     },
     "v314": {
       "id": "v314",
@@ -5731,17 +5800,18 @@
       "type": "vocab",
       "word": "近く",
       "status": "done",
+      "promptVersion": 2,
       "verdict": "OK",
       "issues": [],
       "review": {
-        "meaning": "附近、靠近、將近",
+        "meaning": "靠近",
         "pattern": "",
-        "example": "7時近くだ。",
-        "exampleMeaning": "快要七點了。",
+        "example": "７時近くだ。",
+        "exampleMeaning": "已經快七點了。",
         "kanji": "近く"
       },
       "model": "gemini-3.5-flash-lite",
-      "at": "2026-09-06T08:06:15.174Z"
+      "at": "2026-09-12T08:06:15.249Z"
     },
     "v316": {
       "id": "v316",
@@ -5768,6 +5838,7 @@
       "type": "vocab",
       "word": "銀行",
       "status": "done",
+      "promptVersion": 2,
       "verdict": "OK",
       "issues": [],
       "review": {
@@ -5778,13 +5849,14 @@
         "kanji": "銀行"
       },
       "model": "gemini-3.5-flash-lite",
-      "at": "2026-09-06T08:06:24.190Z"
+      "at": "2026-09-12T08:06:20.909Z"
     },
     "v318": {
       "id": "v318",
       "type": "vocab",
       "word": "九",
       "status": "done",
+      "promptVersion": 2,
       "verdict": "OK",
       "issues": [],
       "review": {
@@ -5795,30 +5867,34 @@
         "kanji": "九"
       },
       "model": "gemini-3.5-flash-lite",
-      "at": "2026-09-06T08:06:28.786Z"
+      "at": "2026-09-12T08:06:26.518Z"
     },
     "v319": {
       "id": "v319",
       "type": "vocab",
       "word": "九つ",
       "status": "done",
-      "verdict": "OK",
-      "issues": [],
+      "promptVersion": 2,
+      "verdict": "FIX",
+      "issues": [
+        "原例句『新二は九つのココナッツを食べました。』使用了不自然的諧音梗，且『ココナッツ』不符合 N5-N4 的核心實用詞彙，對初學者學習無益。建議更換為更日常、自然的 N4/N5 例句。"
+      ],
       "review": {
-        "meaning": "九個",
+        "meaning": "九個（用於計算 1~9 的物品）",
         "pattern": "",
-        "example": "リンゴが九つあります。",
-        "exampleMeaning": "有九個蘋果。",
+        "example": "りんごを九つ買いました。",
+        "exampleMeaning": "買了九個蘋果。",
         "kanji": "九つ"
       },
       "model": "gemini-3.5-flash-lite",
-      "at": "2026-09-06T08:06:33.386Z"
+      "at": "2026-09-12T08:06:32.471Z"
     },
     "v320": {
       "id": "v320",
       "type": "vocab",
       "word": "九日",
       "status": "done",
+      "promptVersion": 2,
       "verdict": "OK",
       "issues": [],
       "review": {
@@ -5829,17 +5905,16 @@
         "kanji": "九日"
       },
       "model": "gemini-3.5-flash-lite",
-      "at": "2026-09-06T08:06:37.965Z"
+      "at": "2026-09-12T08:06:38.070Z"
     },
     "v321": {
       "id": "v321",
       "type": "vocab",
       "word": "空",
       "status": "done",
-      "verdict": "FIX",
-      "issues": [
-        "例句『空耳ですよ。』的中文翻譯『簡直就是耳朵空的。』不符合『空耳』的常用日語含意（幻聽、聽錯）。常用義為『聽錯了』或『幻聽』。"
-      ],
+      "promptVersion": 2,
+      "verdict": "OK",
+      "issues": [],
       "review": {
         "meaning": "天空",
         "pattern": "",
@@ -5848,7 +5923,7 @@
         "kanji": "空"
       },
       "model": "gemini-3.5-flash-lite",
-      "at": "2026-09-06T08:06:42.782Z"
+      "at": "2026-09-12T08:06:43.705Z"
     },
     "v322": {
       "id": "v322",
@@ -5895,10 +5970,9 @@
       "type": "vocab",
       "word": "兄",
       "status": "done",
-      "verdict": "FIX",
-      "issues": [
-        "「兄」是用於稱呼自己的哥哥（謙稱），例句「兄がいます」正确，但字義解釋應更簡潔自然，避免過度強調「謙卑的」這種略顯生硬的機器翻譯腔。"
-      ],
+      "promptVersion": 2,
+      "verdict": "OK",
+      "issues": [],
       "review": {
         "meaning": "（自己的）哥哥",
         "pattern": "",
@@ -5907,17 +5981,16 @@
         "kanji": "兄"
       },
       "model": "gemini-3.5-flash-lite",
-      "at": "2026-09-06T08:06:56.634Z"
+      "at": "2026-09-12T08:06:49.266Z"
     },
     "v325": {
       "id": "v325",
       "type": "vocab",
       "word": "兄弟",
       "status": "done",
-      "verdict": "FIX",
-      "issues": [
-        "原字義「（卑微的）兄弟姊妹」過於侷限且不自然，應修正為通用的「兄弟姊妹」。"
-      ],
+      "promptVersion": 2,
+      "verdict": "OK",
+      "issues": [],
       "review": {
         "meaning": "兄弟姊妹",
         "pattern": "",
@@ -5926,13 +5999,14 @@
         "kanji": "兄弟"
       },
       "model": "gemini-3.5-flash-lite",
-      "at": "2026-09-06T08:07:01.281Z"
+      "at": "2026-09-12T08:06:54.826Z"
     },
     "v326": {
       "id": "v326",
       "type": "vocab",
       "word": "警官",
       "status": "done",
+      "promptVersion": 2,
       "verdict": "OK",
       "issues": [],
       "review": {
@@ -5943,13 +6017,14 @@
         "kanji": "警官"
       },
       "model": "gemini-3.5-flash-lite",
-      "at": "2026-09-06T08:07:05.877Z"
+      "at": "2026-09-12T08:07:00.422Z"
     },
     "v327": {
       "id": "v327",
       "type": "vocab",
       "word": "軽い",
       "status": "done",
+      "promptVersion": 2,
       "verdict": "OK",
       "issues": [],
       "review": {
@@ -5960,17 +6035,16 @@
         "kanji": "軽い"
       },
       "model": "gemini-3.5-flash-lite",
-      "at": "2026-09-06T08:07:10.416Z"
+      "at": "2026-09-12T08:07:06.002Z"
     },
     "v328": {
       "id": "v328",
       "type": "vocab",
       "word": "結構",
       "status": "done",
-      "verdict": "FIX",
-      "issues": [
-        "「結構」在日語中常用於「相當、滿、很好/不用了」，基本義並非「燦爛；足夠的」，N4常用義為「相當、滿（副詞）」或「不用了（形動）」。例句「結構面白い」意為「相當有趣」，原意思是對的，但中文翻譯與字義需修正更自然。"
-      ],
+      "promptVersion": 2,
+      "verdict": "OK",
+      "issues": [],
       "review": {
         "meaning": "相當、頗；不用了",
         "pattern": "",
@@ -5979,30 +6053,32 @@
         "kanji": "結構"
       },
       "model": "gemini-3.5-flash-lite",
-      "at": "2026-09-06T08:07:15.386Z"
+      "at": "2026-09-12T08:07:11.538Z"
     },
     "v329": {
       "id": "v329",
       "type": "vocab",
       "word": "結婚",
       "status": "done",
+      "promptVersion": 2,
       "verdict": "OK",
       "issues": [],
       "review": {
         "meaning": "結婚、婚姻",
         "pattern": "",
-        "example": "来月、結婚します。",
-        "exampleMeaning": "我下個月要結婚。",
+        "example": "結婚しよう。",
+        "exampleMeaning": "我們結婚吧。",
         "kanji": "結婚"
       },
       "model": "gemini-3.5-flash-lite",
-      "at": "2026-09-06T08:07:19.979Z"
+      "at": "2026-09-12T08:07:17.082Z"
     },
     "v330": {
       "id": "v330",
       "type": "vocab",
       "word": "月曜日",
       "status": "done",
+      "promptVersion": 2,
       "verdict": "OK",
       "issues": [],
       "review": {
@@ -6013,17 +6089,16 @@
         "kanji": "月曜日"
       },
       "model": "gemini-3.5-flash-lite",
-      "at": "2026-09-06T08:07:24.486Z"
+      "at": "2026-09-12T08:07:22.742Z"
     },
     "v331": {
       "id": "v331",
       "type": "vocab",
       "word": "嫌",
       "status": "done",
-      "verdict": "FIX",
-      "issues": [
-        "例句『みんな嫌い。』使用的單字是『嫌い』，而非字卡詞頭『嫌（いや）』，請修正例句以符合詞頭。"
-      ],
+      "promptVersion": 2,
+      "verdict": "OK",
+      "issues": [],
       "review": {
         "meaning": "討厭的、不愉快的",
         "pattern": "",
@@ -6032,17 +6107,16 @@
         "kanji": "嫌"
       },
       "model": "gemini-3.5-flash-lite",
-      "at": "2026-09-06T08:07:29.315Z"
+      "at": "2026-09-12T08:07:28.422Z"
     },
     "v332": {
       "id": "v332",
       "type": "vocab",
       "word": "嫌い",
       "status": "done",
-      "verdict": "FIX",
-      "issues": [
-        "「嫌い」的常見義為「討厭」，「恨」語意過重不貼切。例句略顯生硬，建議調整為更自然的日常用法。"
-      ],
+      "promptVersion": 2,
+      "verdict": "OK",
+      "issues": [],
       "review": {
         "meaning": "討厭、嫌惡",
         "pattern": "",
@@ -6051,30 +6125,32 @@
         "kanji": "嫌い"
       },
       "model": "gemini-3.5-flash-lite",
-      "at": "2026-09-06T08:07:34.026Z"
+      "at": "2026-09-12T08:07:33.982Z"
     },
     "v333": {
       "id": "v333",
       "type": "vocab",
       "word": "建物",
       "status": "done",
+      "promptVersion": 2,
       "verdict": "OK",
       "issues": [],
       "review": {
-        "meaning": "建築物、房屋、大樓",
+        "meaning": "大樓",
         "pattern": "",
         "example": "高い建物ですね。",
-        "exampleMeaning": "是一棟很高的建築物呢。",
+        "exampleMeaning": "這是一棟高樓。",
         "kanji": "建物"
       },
       "model": "gemini-3.5-flash-lite",
-      "at": "2026-09-06T08:07:38.635Z"
+      "at": "2026-09-12T08:07:39.641Z"
     },
     "v334": {
       "id": "v334",
       "type": "vocab",
       "word": "犬",
       "status": "done",
+      "promptVersion": 2,
       "verdict": "OK",
       "issues": [],
       "review": {
@@ -6085,7 +6161,7 @@
         "kanji": "犬"
       },
       "model": "gemini-3.5-flash-lite",
-      "at": "2026-09-06T08:07:43.174Z"
+      "at": "2026-09-12T08:07:45.385Z"
     },
     "v335": {
       "id": "v335",
