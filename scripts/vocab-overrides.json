@@ -2160,10 +2160,10 @@
     "exampleFurigana": ""
   },
   "v1090": {
-    "meaning": "（某地的）人口、居民人數",
+    "meaning": "人口",
     "meaningEn": "population",
-    "example": "この町の人口は約十万人です。",
-    "exampleMeaning": "這個城鎮的人口大約十萬人。",
+    "example": "この町の人口は多いです。",
+    "exampleMeaning": "這個城鎮的人口很多。",
     "exampleFurigana": "",
     "meaningZh": [
       "人口",
@@ -2208,7 +2208,7 @@
     "exampleFurigana": ""
   },
   "v728": {
-    "meaning": "找零、找回來的零錢",
+    "meaning": "（找回的）零錢、找頭",
     "meaningEn": "change (money returned after a purchase)",
     "example": "はい、おつりです。",
     "exampleMeaning": "好的，這是找您的零錢。",
@@ -2657,5 +2657,61 @@
     ],
     "example": "梅の花は3月に咲きます。",
     "exampleMeaning": "梅花在三月盛開。"
+  },
+  "v348": {
+    "meaning": "上午",
+    "exampleMeaning": "現在是上午 8 點。"
+  },
+  "v355": {
+    "meaning": "嘴巴",
+    "example": "口を開けてください。",
+    "exampleMeaning": "請把嘴巴打開。"
+  },
+  "v356": {
+    "meaning": "在那邊、對面",
+    "example": "銀行は向こうにあります。",
+    "exampleMeaning": "銀行在那邊。"
+  },
+  "v359": {
+    "exampleMeaning": "要來杯紅茶嗎？",
+    "example": "紅茶はいかがですか。"
+  },
+  "v366": {
+    "example": "このカバンは黒いです。",
+    "exampleMeaning": "這個包包是黑色的。"
+  },
+  "v368": {
+    "example": "今月は忙しいです。",
+    "exampleMeaning": "這個月很忙。"
+  },
+  "v382": {
+    "meaning": "做、製造",
+    "example": "私は朝ごはんを作ります。",
+    "exampleMeaning": "我做早餐。"
+  },
+  "v383": {
+    "meaning": "作文",
+    "example": "私は週末に日本語の作文を書きました。",
+    "exampleMeaning": "我週末寫了日語作文。"
+  },
+  "v386": {
+    "example": "写真を撮るのが好きです。"
+  },
+  "v387": {
+    "example": "私は毎月雑誌を読みます。",
+    "exampleMeaning": "我每個月讀雜誌。"
+  },
+  "v388": {
+    "example": "三時です。",
+    "exampleMeaning": "現在是三點。"
+  },
+  "v402": {
+    "meaning": "停下來、停止",
+    "example": "バスが止まりました。",
+    "exampleMeaning": "公車停下來了。"
+  },
+  "v407": {
+    "example": "わからない言葉は字引で調べます。",
+    "exampleMeaning": "不懂的詞我會用字典查。"
   }
 }
