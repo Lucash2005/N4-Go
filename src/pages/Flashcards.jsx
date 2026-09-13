@@ -139,6 +139,7 @@ export default function Flashcards() {
   } = useSettings()
   const [searchParams, setSearchParams] = useSearchParams()
   const mode = searchParams.get('mode') || 'all'
+  const focusId = searchParams.get('id') || ''
 
   const [query, setQuery] = useState('')
   const [typeFilter, setTypeFilter] = useState('all')
@@ -294,6 +295,15 @@ export default function Flashcards() {
     setFlipped(false)
     // eslint-disable-next-line react-hooks/exhaustive-deps -- snapshot only on mode enter
   }, [mode])
+
+  // Deep-link: /flashcards?mode=...&id=v477 → jump to that card
+  useEffect(() => {
+    if (!focusId || !deck.length) return
+    const idx = deck.findIndex((c) => c.id === focusId)
+    if (idx < 0) return
+    setIndex(idx)
+    setFlipped(false)
+  }, [focusId, deck])
 
   // Follow the currently playing card during loop playback
   useEffect(() => {

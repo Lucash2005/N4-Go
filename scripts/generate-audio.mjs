@@ -68,7 +68,7 @@ function jobsFor(card) {
   const isForm = card.type === 'form'
   const wordText = isForm
     ? card.formDrill?.reading || card.reading || card.word
-    : readingForSpeech(card.reading, card.word)
+    : String(card.speechReading || '').trim() || readingForSpeech(card.reading, card.word)
   const exampleText = isForm
     ? card.example || card.formDrill?.answerReading
     : card.example

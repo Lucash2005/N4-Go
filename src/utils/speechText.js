@@ -47,5 +47,7 @@ export function speechTextForCard(card, { flipped = false } = {}) {
       sanitizeSurface(card.word)
     )
   }
+  // Optional speechReading forces TTS (e.g. ハれる so は is not voiced as 「わ」)
+  if (card.speechReading) return String(card.speechReading).trim()
   return readingForSpeech(card.reading, card.word) || sanitizeSurface(card.word)
 }

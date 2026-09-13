@@ -698,18 +698,25 @@ function PlanBlock({ title, progress, to, cta, items, isStudied, emptyText, note
         <p className="mt-3 text-sm text-ink-soft">{emptyText || '今日尚無項目'}</p>
       ) : (
         <ul className="mt-3 flex flex-wrap gap-1.5">
-          {items.map((card) => (
-            <li
-              key={card.id}
-              className={`rounded-full px-2.5 py-1 text-xs ${
-                isStudied(card.id)
-                  ? 'bg-sea/15 text-sea-deep line-through'
-                  : 'bg-foam text-ink'
-              }`}
-            >
-              {card.type === 'form' ? `${card.word}（${card.category}）` : card.word}
-            </li>
-          ))}
+          {items.map((card) => {
+            const cardTo = `${to}${to.includes('?') ? '&' : '?'}id=${encodeURIComponent(card.id)}`
+            const label = card.type === 'form' ? `${card.word}（${card.category}）` : card.word
+            return (
+              <li key={card.id}>
+                <Link
+                  to={cardTo}
+                  title={`打開 ${label}`}
+                  className={`inline-block rounded-full px-2.5 py-1 text-xs underline-offset-2 transition hover:underline ${
+                    isStudied(card.id)
+                      ? 'bg-sea/15 text-sea-deep line-through'
+                      : 'bg-foam text-ink hover:bg-sea/10'
+                  }`}
+                >
+                  {label}
+                </Link>
+              </li>
+            )
+          })}
         </ul>
       )}
     </div>

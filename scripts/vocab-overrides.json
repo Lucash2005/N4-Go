@@ -1943,9 +1943,12 @@
     "exampleMeaning": "在日本停留了大約一個月。"
   },
   "v231": {
-    "meaning": "大前年",
+    "meaning": "前年（去年的前一年）",
     "example": "一昨年、私は日本へ行きました。",
-    "exampleMeaning": "大前年我去了日本。"
+    "exampleMeaning": "前年我去了日本。",
+    "meaningZh": [
+      "前年"
+    ]
   },
   "v236": {
     "meaning": "飲料",
@@ -2157,11 +2160,16 @@
     "exampleFurigana": ""
   },
   "v1090": {
-    "meaning": "人口",
+    "meaning": "（某地的）人口、居民人數",
     "meaningEn": "population",
-    "example": "この町の人口は多いです。",
-    "exampleMeaning": "這個城鎮的人口很多。",
-    "exampleFurigana": ""
+    "example": "この町の人口は約十万人です。",
+    "exampleMeaning": "這個城鎮的人口大約十萬人。",
+    "exampleFurigana": "",
+    "meaningZh": [
+      "人口",
+      "居民人數"
+    ],
+    "speechReading": "ジンコー"
   },
   "v629": {
     "meaning": "排隊；並列、陳列",
@@ -2200,11 +2208,15 @@
     "exampleFurigana": ""
   },
   "v728": {
-    "meaning": "（找回的）零錢、找頭",
-    "meaningEn": "change (for a purchase)",
+    "meaning": "找零、找回來的零錢",
+    "meaningEn": "change (money returned after a purchase)",
     "example": "はい、おつりです。",
     "exampleMeaning": "好的，這是找您的零錢。",
-    "exampleFurigana": ""
+    "exampleFurigana": "",
+    "meaningZh": [
+      "找零",
+      "找回來的零錢"
+    ]
   },
   "v1286": {
     "meaning": "不在家、出門在外",
@@ -2627,5 +2639,23 @@
     "meaning": "九個（用於計算 1~9 的物品）",
     "example": "りんごを九つ買いました。",
     "exampleMeaning": "買了九個蘋果。"
+  },
+  "v477": {
+    "meaning": "（天氣）放晴、轉晴",
+    "meaningZh": [
+      "（天氣）放晴、轉晴"
+    ],
+    "example": "明日は晴れるでしょう。",
+    "exampleMeaning": "明天應該會放晴。",
+    "speechReading": "ハれる"
+  },
+  "v381": {
+    "meaning": "（花）開、綻放",
+    "meaningZh": [
+      "（花）開",
+      "綻放"
+    ],
+    "example": "梅の花は3月に咲きます。",
+    "exampleMeaning": "梅花在三月盛開。"
   }
 }
