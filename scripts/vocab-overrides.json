@@ -248,9 +248,13 @@
     ]
   },
   "v446": {
+    "meaning": "地方、處所",
+    "meaningZh": ["地方", "處所"],
+    "meaningEn": "place; spot; scene; site",
     "example": "静かな所が好きです。",
     "exampleMeaning": "我喜歡安靜的地方。",
-    "exampleFurigana": "静[しず]かな所[ところ]が好[す]きです。"
+    "exampleFurigana": "静[しず]かな所[ところ]が好[す]きです。",
+    "speechReading": "ところ"
   },
   "v650": {
     "example": "毎日勉強します。",
@@ -504,7 +508,12 @@
     "exampleMeaning": "去散步了。"
   },
   "v304": {
-    "exampleMeaning": "是去年的新人。"
+    "meaning": "去年",
+    "meaningZh": ["去年"],
+    "example": "去年日本へ行きました。",
+    "exampleMeaning": "去年我去了日本。",
+    "exampleFurigana": "去年[きょねん]日本[にほん]へ行[い]きました。",
+    "speechReading": "キョネン"
   },
   "v1122": {
     "example": "荷物を送ります。",
@@ -1946,9 +1955,11 @@
     "meaning": "前年（去年的前一年）",
     "example": "一昨年、私は日本へ行きました。",
     "exampleMeaning": "前年我去了日本。",
+    "exampleFurigana": "一昨年[おととし]、私[わたし]は日本[にほん]へ行[い]きました。",
     "meaningZh": [
       "前年"
-    ]
+    ],
+    "speechReading": "おととし"
   },
   "v236": {
     "meaning": "飲料",
@@ -2165,10 +2176,9 @@
     "meaningEn": "population",
     "example": "この町の人口は多いです。",
     "exampleMeaning": "這個城鎮的人口很多。",
-    "exampleFurigana": "",
+    "exampleFurigana": "この町[まち]の人口[じんこう]は多[おお]いです。",
     "meaningZh": [
-      "人口",
-      "居民人數"
+      "人口"
     ],
     "speechReading": "ジンコー"
   },
@@ -2648,6 +2658,7 @@
     ],
     "example": "明日は晴れるでしょう。",
     "exampleMeaning": "明天應該會放晴。",
+    "exampleFurigana": "明日[あした]は晴[は]れるでしょう。",
     "speechReading": "ハれる"
   },
   "v381": {
@@ -2759,8 +2770,28 @@
     "exampleMeaning": "明天我要在圖書館讀書。"
   },
   "v478": {
-    "example": "彼女に赤ちゃんが生まれます。",
-    "exampleMeaning": "她會有孩子出生。"
+    "meaning": "出生",
+    "meaningZh": ["出生"],
+    "example": "弟が生まれました。",
+    "exampleMeaning": "弟弟出生了。",
+    "exampleFurigana": "弟[おとうと]が生[う]まれました。"
+  },
+  "v375": {
+    "meaning": "左、左邊",
+    "meaningZh": ["左", "左邊"],
+    "meaningEn": "left; left-hand side",
+    "example": "左に曲がってください。",
+    "exampleMeaning": "請向左轉。",
+    "exampleFurigana": "左[ひだり]に曲[ま]がってください。"
+  },
+  "v436": {
+    "meaning": "十號；十天",
+    "meaningZh": ["十號", "十天"],
+    "meaningEn": "10th day of the month; ten days",
+    "example": "十日に行きます。",
+    "exampleMeaning": "十號要去。",
+    "exampleFurigana": "十日[とおか]に行[い]きます。",
+    "speechReading": "とおか"
   },
   "v485": {
     "example": "赤丸で囲みます。",

@@ -15,6 +15,8 @@ export const FURIGANA_OVERRIDES = [
   { pattern: /出席\[しゅっせきする\]/g, replace: '出席[しゅっせき]' },
   { pattern: /大勢\[たいせい\]/g, replace: '大勢[おおぜい]' },
   { pattern: /一番乗\[いちばんの\]/g, replace: '一番[いちばん]乗[の]り' },
+  // 十日：避免被切成 十[じゅう]日[にち]
+  { pattern: /十\[じゅう\]日\[にち\]/g, replace: '十日[とおか]' },
 ]
 
 export function applyFuriganaOverrides(text) {

@@ -338,7 +338,13 @@ async function main() {
       const exampleChanged =
         Boolean(nextPatch.example) && String(nextPatch.example) !== String(c.example || '')
       c = { ...c, ...nextPatch }
-      if (exampleChanged) c.exampleFurigana = ''
+      if (exampleChanged) {
+        // Keep an explicit override furigana; otherwise regenerate below.
+        c.exampleFurigana =
+          typeof patch.exampleFurigana === 'string' && patch.exampleFurigana !== ''
+            ? patch.exampleFurigana
+            : ''
+      }
       if (patch.example) c.exampleSource = 'override'
       else if (patch.exampleMeaning && c.exampleSource === 'openjlpt') c.exampleSource = 'override'
       if (patch.exampleMeaning && !isBadExampleZh(patch.exampleMeaning, c.example || patch.example || '')) {
