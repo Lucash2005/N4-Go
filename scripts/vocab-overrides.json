@@ -2116,15 +2116,16 @@
     "exampleMeaning": "請先做自我介紹。"
   },
   "v449": {
-    "meaning": "女人、女生"
+    "meaning": "女人、女生",
+    "kanji": "女の人"
   },
   "v453": {
     "meaning": "稍微、有一點"
   },
   "v454": {
     "meaning": "少",
-    "example": "這間店的客人很少。",
-    "exampleMeaning": "この店のお客さんは少ないです。"
+    "example": "この店のお客さんは少ないです。",
+    "exampleMeaning": "這間店的客人很少。"
   },
   "v466": {
     "meaning": "食堂、餐廳",
@@ -2674,7 +2675,7 @@
   },
   "v359": {
     "exampleMeaning": "要來杯紅茶嗎？",
-    "example": "紅茶はいかがですか。"
+    "example": "紅茶はいかが？"
   },
   "v366": {
     "example": "このカバンは黒いです。",
@@ -2686,7 +2687,7 @@
   },
   "v382": {
     "meaning": "做、製造",
-    "example": "私は朝ごはんを作ります。",
+    "example": "私は朝ごはんを作る。",
     "exampleMeaning": "我做早餐。"
   },
   "v383": {
@@ -2711,7 +2712,73 @@
     "exampleMeaning": "公車停下來了。"
   },
   "v407": {
-    "example": "わからない言葉は字引で調べます。",
-    "exampleMeaning": "不懂的詞我會用字典查。"
+    "example": "本棚から字引を取り出して調べます。",
+    "exampleMeaning": "從書架上拿出字典來查。"
+  },
+  "v418": {
+    "example": "七月に日本へ行きます。",
+    "exampleMeaning": "七月要去日本。"
+  },
+  "v419": {
+    "meaning": "七個",
+    "example": "リンゴを七つください。",
+    "exampleMeaning": "請給我七個蘋果。"
+  },
+  "v428": {
+    "example": "手を洗います。",
+    "exampleMeaning": "洗手。"
+  },
+  "v430": {
+    "meaning": "課；上課",
+    "example": "彼らは今授業中です。",
+    "exampleMeaning": "他們現在正在上課。"
+  },
+  "v434": {
+    "example": "私は東京に住んでいます。",
+    "exampleMeaning": "我住在東京。"
+  },
+  "v437": {
+    "example": "このカバンは重いですね。",
+    "exampleMeaning": "這個包包很重呢。"
+  },
+  "v440": {
+    "meaning": "拿出、取出",
+    "example": "カバンから財布を出します。",
+    "exampleMeaning": "從包包裡拿出錢包。"
+  },
+  "v456": {
+    "example": "電気を消してください。",
+    "exampleMeaning": "請關燈。"
+  },
+  "v469": {
+    "example": "新聞を読んでいます。",
+    "exampleMeaning": "正在看報紙。"
+  },
+  "v472": {
+    "example": "明日、図書館で勉強します。",
+    "exampleMeaning": "明天我要在圖書館讀書。"
+  },
+  "v478": {
+    "example": "彼女に赤ちゃんが生まれます。",
+    "exampleMeaning": "她會有孩子出生。"
+  },
+  "v485": {
+    "example": "赤丸で囲みます。",
+    "exampleMeaning": "用紅圈圈起來。"
+  },
+  "v487": {
+    "meaning": "切割、剪",
+    "example": "紙をハサミで切ります。",
+    "exampleMeaning": "用剪刀剪紙。"
+  },
+  "v489": {
+    "meaning": "車票",
+    "example": "切符を二枚買います。",
+    "exampleMeaning": "買兩張車票。"
+  },
+  "v491": {
+    "meaning": "前面；未來",
+    "example": "駅の先を右に曲がってください。",
+    "exampleMeaning": "請在車站的前面往右轉。"
   }
 }
