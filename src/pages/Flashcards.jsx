@@ -1175,6 +1175,11 @@ export default function Flashcards() {
                 <Badge>
                   {card.type === 'vocab' ? '單字' : card.type === 'form' ? '活用' : '文法'}
                 </Badge>
+                {card.type === 'vocab' && card.pos ? (
+                  <span className="ml-2 rounded-full bg-sand/90 px-2.5 py-0.5 text-xs font-medium text-sea-deep ring-1 ring-line/60">
+                    {card.pos}
+                  </span>
+                ) : null}
                 {cardIsApproved ? (
                   <span
                     className="ml-2 rounded-full bg-foam px-2 py-0.5 text-xs font-medium text-ink-soft ring-1 ring-line"
@@ -1212,9 +1217,6 @@ export default function Flashcards() {
                     <p className="mt-6 font-display text-3xl font-bold leading-snug text-ink sm:text-4xl">
                       {primaryZhMeaning(card)}
                     </p>
-                    {card.pos ? (
-                      <p className="mt-2 text-sm font-medium text-sea-deep">詞性：{card.pos}</p>
-                    ) : null}
                     <p className="mt-3 text-base text-ink-soft">先想日文怎麼說／怎麼寫，再翻面</p>
                   </>
                 ) : (
@@ -1224,9 +1226,6 @@ export default function Flashcards() {
                         ? frontPromptForCard(card, promptScript)
                         : card.word}
                     </p>
-                    {card.type === 'vocab' && card.pos ? (
-                      <p className="mt-2 text-sm font-medium text-sea-deep">詞性：{card.pos}</p>
-                    ) : null}
                     {hideReadingOnFront ? (
                       card.type === 'form' ? (
                         <p className="mt-3 text-base text-ink-soft">
@@ -1266,6 +1265,11 @@ export default function Flashcards() {
                 className="[grid-area:stack] [backface-visibility:hidden] [transform:rotateY(180deg)] overflow-y-auto overscroll-contain"
               >
                 <Badge>{card.category}</Badge>
+                {card.type === 'vocab' && card.pos ? (
+                  <span className="ml-2 rounded-full bg-sand/90 px-2.5 py-0.5 text-xs font-medium text-sea-deep ring-1 ring-line/60">
+                    {card.pos}
+                  </span>
+                ) : null}
                 {cardIsApproved ? (
                   <span
                     className="ml-2 rounded-full bg-foam px-2 py-0.5 text-xs font-medium text-ink-soft ring-1 ring-line"
@@ -1761,18 +1765,14 @@ function VocabCardBack({
             <p className="mt-1 text-lg text-sea-deep">{card.reading}</p>
           ) : null}
           <p className="mt-2 text-base text-ink-soft">{zhPrimary}</p>
-          {card.pos ? (
-            <p className="mt-1 text-sm font-medium text-sea-deep">詞性：{card.pos}</p>
-          ) : null}
         </>
       ) : (
-        <>
-          <p className="mt-1 text-2xl font-bold leading-snug text-ink sm:text-3xl">{zhPrimary}</p>
-          {card.pos ? (
-            <p className="mt-1 text-sm font-medium text-sea-deep">詞性：{card.pos}</p>
-          ) : null}
-        </>
+        <p className="mt-1 text-2xl font-bold leading-snug text-ink sm:text-3xl">{zhPrimary}</p>
       )}
+
+      {card.pos ? (
+        <p className="mt-1.5 text-sm font-medium text-sea-deep">詞性：{card.pos}</p>
+      ) : null}
 
       {(showKanjiLine || showKanaLine) && (forms.kanji !== forms.kana || showKanaLine) ? (
         <div className="mt-2 rounded-xl bg-sand/60 px-3 py-2 ring-1 ring-line/50">
