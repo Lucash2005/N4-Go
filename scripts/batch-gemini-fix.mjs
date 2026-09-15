@@ -142,13 +142,15 @@ function writeScanProgress(items, queueTotal) {
 
 function vocabPrompt(card) {
   return `你是日語教師。用繁體中文檢查這張 JLPT N5/N4 學習字卡。只回傳 JSON，不要 markdown。
-重點：① 中文／字義是否正確貼切 ② 例句是否自然、語意正確 ③ 是否適合 N5～N4（勿過難或過偏）④ 例句中文翻譯是否正確。
+重點：① 中文／字義是否正確貼切（勿過窄、過偏或錯譯）② 例句是否自然、語意正確 ③ 是否適合 N5～N4（勿過難或過偏）④ 例句中文翻譯是否正確。
+額外紅線（違反即 FIX）：主例句優先丁寧体；避免命令形／禁止形／過度口語省略；例句須示範本詞常用讀音，勿用會改讀的複合詞當唯一例句（例如用「頭痛」示範「頭／あたま」）；字義與例句須一致。
 此為單字卡，請確認字義與例句是否適合 JLPT N5～N4（常用、自然、好記）。
 
 字卡：
 {"id":"${card.id}","word":${JSON.stringify(card.word)},"reading":${JSON.stringify(card.reading)},"kanji":${JSON.stringify(card.kanji || '')},"meaning":${JSON.stringify(card.meaning)},"example":${JSON.stringify(card.example)},"exampleMeaning":${JSON.stringify(card.exampleMeaning)}}
 
 若詞頭是假名且有對應漢字，FIX 時填 kanji（必須符合此字義，勿用同音別字）。沒問題 verdict=OK；否則 FIX 並給完整替換欄位（不要只寫說明）。
+OK 時仍請把 meaning／example／exampleMeaning 填成你認為應保留的最終內容（可與現況相同）。
 
 回傳 JSON：
 {"verdict":"OK"|"FIX","issues":["..."],"meaning":"...","example":"...","exampleMeaning":"...","kanji":"..."}`

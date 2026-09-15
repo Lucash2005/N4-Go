@@ -624,6 +624,73 @@ function inferPos(card) {
   return '名詞'
 }
 
+/** Map Jisho-style English POS tags → short Traditional Chinese labels for the card face. */
+export function translatePos(enPos = '') {
+  const raw = String(enPos || '').trim()
+  if (!raw) return ''
+  // Already Chinese (memory / previous translate)
+  if (/[\u4e00-\u9fff]/.test(raw) && !/[A-Za-z]{3,}/.test(raw)) return raw
+
+  const parts = raw.split(/[；;]/).map((s) => s.trim()).filter(Boolean)
+  const labels = []
+  const push = (x) => {
+    if (x && !labels.includes(x)) labels.push(x)
+  }
+
+  let verbType = '' // 五段／一段／サ變
+  let trans = '' // 他／自
+  let hasNoun = false
+
+  for (const p of parts) {
+    const s = p.toLowerCase()
+    if (/suru verb/.test(s)) verbType = verbType || 'サ變'
+    else if (/ichidan verb/.test(s)) verbType = verbType || '一段'
+    else if (/godan verb/.test(s)) verbType = verbType || '五段'
+    else if (/intransitive verb/.test(s)) trans = '自'
+    else if (/transitive verb/.test(s)) trans = '他'
+    else if (/^verb\b/.test(s) || s === 'verb') push('動詞')
+    else if (/na-adjective|keiyodoshi/.test(s)) push('ナ形容詞')
+    else if (/i-adjective|keiyoshi/.test(s)) push('い形容詞')
+    else if (/adjective/.test(s)) push('形容詞')
+    else if (/adverb/.test(s) || /fukushi/.test(s)) push('副詞')
+    else if (/pronoun/.test(s)) push('代名詞')
+    else if (/particle/.test(s)) push('助詞')
+    else if (/conjunction/.test(s)) push('接續詞')
+    else if (/interjection/.test(s)) push('感嘆詞')
+    else if (/prefix/.test(s)) push('接頭詞')
+    else if (/suffix/.test(s)) push('接尾詞')
+    else if (/counter/.test(s)) push('助數詞')
+    else if (/expression|phrases?/.test(s)) push('慣用表現')
+    else if (/noun/.test(s)) hasNoun = true
+    else if (/numeric/.test(s)) push('數詞')
+  }
+
+  if (verbType === 'サ變') {
+    push(hasNoun ? '名詞／サ變' : 'サ變')
+  } else if (verbType) {
+    if (trans === '他') push(`他動詞（${verbType}）`)
+    else if (trans === '自') push(`自動詞（${verbType}）`)
+    else push(`${verbType}動詞`)
+  } else if (trans === '他') push('他動詞')
+  else if (trans === '自') push('自動詞')
+
+  if (hasNoun && verbType !== 'サ變') {
+    // Prefer 名詞 first when also used as prefix/suffix
+    labels.unshift('名詞')
+  }
+
+  // Dedupe while preserving order
+  const seen = new Set()
+  const unique = labels.filter((x) => (seen.has(x) ? false : (seen.add(x), true)))
+
+  if (!unique.length) return ''
+  return unique.join('／')
+}
+
+function posForCard(card) {
+  return translatePos(card.pos) || inferPos(card)
+}
+
 function inferMemory(card) {
   const reading = card.reading && card.reading !== card.word ? card.reading : ''
   const bit = reading ? `${reading}＝` : ''
@@ -654,6 +721,6 @@ export function withMemory(card) {
         exampleUsage: extra.exampleUsage || card.exampleUsage,
         senses: extra.senses || card.senses,
       }
-    : { ...card, pos: inferPos(card), memory: inferMemory(card) }
+    : { ...card, pos: posForCard(card), memory: inferMemory(card) }
   return merged
 }

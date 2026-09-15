@@ -1212,6 +1212,9 @@ export default function Flashcards() {
                     <p className="mt-6 font-display text-3xl font-bold leading-snug text-ink sm:text-4xl">
                       {primaryZhMeaning(card)}
                     </p>
+                    {card.pos ? (
+                      <p className="mt-2 text-sm font-medium text-sea-deep">詞性：{card.pos}</p>
+                    ) : null}
                     <p className="mt-3 text-base text-ink-soft">先想日文怎麼說／怎麼寫，再翻面</p>
                   </>
                 ) : (
@@ -1221,6 +1224,9 @@ export default function Flashcards() {
                         ? frontPromptForCard(card, promptScript)
                         : card.word}
                     </p>
+                    {card.type === 'vocab' && card.pos ? (
+                      <p className="mt-2 text-sm font-medium text-sea-deep">詞性：{card.pos}</p>
+                    ) : null}
                     {hideReadingOnFront ? (
                       card.type === 'form' ? (
                         <p className="mt-3 text-base text-ink-soft">
@@ -1755,9 +1761,17 @@ function VocabCardBack({
             <p className="mt-1 text-lg text-sea-deep">{card.reading}</p>
           ) : null}
           <p className="mt-2 text-base text-ink-soft">{zhPrimary}</p>
+          {card.pos ? (
+            <p className="mt-1 text-sm font-medium text-sea-deep">詞性：{card.pos}</p>
+          ) : null}
         </>
       ) : (
-        <p className="mt-1 text-2xl font-bold leading-snug text-ink sm:text-3xl">{zhPrimary}</p>
+        <>
+          <p className="mt-1 text-2xl font-bold leading-snug text-ink sm:text-3xl">{zhPrimary}</p>
+          {card.pos ? (
+            <p className="mt-1 text-sm font-medium text-sea-deep">詞性：{card.pos}</p>
+          ) : null}
+        </>
       )}
 
       {(showKanjiLine || showKanaLine) && (forms.kanji !== forms.kana || showKanaLine) ? (
@@ -1863,7 +1877,6 @@ function VocabCardBack({
             </button>
           ) : (
             <div className="mt-1 space-y-1.5 text-xs leading-relaxed text-ink sm:text-sm">
-              {card.pos ? <p className="font-medium text-sea-deep">{card.pos}</p> : null}
               {card.meaningEn ? <p className="text-ink-soft">EN: {card.meaningEn}</p> : null}
               {card.memory ? (
                 <p className="rounded-lg bg-sand/70 px-2.5 py-1.5">記憶：{card.memory}</p>

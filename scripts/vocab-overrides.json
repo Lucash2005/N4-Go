@@ -1958,9 +1958,9 @@
   },
   "v231": {
     "meaning": "前年（去年的前一年）",
-    "example": "一昨年、私は日本へ行きました。",
+    "example": "おととし、日本へ行きました。",
     "exampleMeaning": "前年我去了日本。",
-    "exampleFurigana": "一昨年[おととし]、私[わたし]は日本[にほん]へ行[い]きました。",
+    "exampleFurigana": "おととし、日本[にほん]へ行[い]きました。",
     "meaningZh": [
       "前年"
     ],
@@ -2922,5 +2922,49 @@
     "meaning": "道路、街道",
     "example": "この道をまっすぐ行くと、駅があります。",
     "exampleMeaning": "沿著這條路直走，就會有車站。"
+  },
+  "v522": {
+    "meaning": "重要的；珍貴的",
+    "meaningZh": ["重要的", "珍貴的"],
+    "example": "時間は大切です。",
+    "exampleMeaning": "時間很重要。"
+  },
+  "v542": {
+    "meaning": "午餐",
+    "meaningZh": ["午餐"],
+    "example": "昼御飯は何を食べますか。",
+    "exampleMeaning": "午餐要吃什麼？",
+    "exampleFurigana": "昼御飯[ひるごはん]は何[なに]を食[た]べますか。",
+    "speechReading": "ひるごはん"
+  },
+  "v566": {
+    "meaning": "頭",
+    "meaningZh": ["頭"],
+    "example": "頭が痛いです。",
+    "exampleMeaning": "我頭痛。",
+    "exampleFurigana": "頭[あたま]が痛[いた]いです。",
+    "speechReading": "あたま"
+  },
+  "v529": {
+    "meaning": "男人",
+    "meaningZh": ["男人"],
+    "example": "あの男の人は先生です。",
+    "exampleMeaning": "那個男人是老師。",
+    "exampleFurigana": "あの男[おとこ]の人[ひと]は先生[せんせい]です。"
+  },
+  "v567": {
+    "meaning": "工作",
+    "meaningZh": ["工作"],
+    "example": "父は会社で働いています。",
+    "exampleMeaning": "爸爸在公司工作。",
+    "exampleFurigana": "父[ちち]は会社[かいしゃ]で働[はたら]いています。"
+  },
+  "v501": {
+    "meaning": "打掃、清掃",
+    "meaningZh": ["打掃", "清掃"],
+    "example": "部屋を掃除します。",
+    "exampleMeaning": "打掃房間。",
+    "exampleFurigana": "部屋[へや]を掃除[そうじ]します。",
+    "speechReading": "そうじ"
   }
 }
