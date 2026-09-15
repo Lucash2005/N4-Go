@@ -249,7 +249,10 @@
   },
   "v446": {
     "meaning": "地方、處所",
-    "meaningZh": ["地方", "處所"],
+    "meaningZh": [
+      "地方",
+      "處所"
+    ],
     "meaningEn": "place; spot; scene; site",
     "example": "静かな所が好きです。",
     "exampleMeaning": "我喜歡安靜的地方。",
@@ -509,7 +512,9 @@
   },
   "v304": {
     "meaning": "去年",
-    "meaningZh": ["去年"],
+    "meaningZh": [
+      "去年"
+    ],
     "example": "去年日本へ行きました。",
     "exampleMeaning": "去年我去了日本。",
     "exampleFurigana": "去年[きょねん]日本[にほん]へ行[い]きました。",
@@ -2771,14 +2776,19 @@
   },
   "v478": {
     "meaning": "出生",
-    "meaningZh": ["出生"],
-    "example": "弟が生まれました。",
-    "exampleMeaning": "弟弟出生了。",
+    "meaningZh": [
+      "出生"
+    ],
+    "example": "彼女に赤ちゃんが生まれる。",
+    "exampleMeaning": "她要生孩子了。",
     "exampleFurigana": "弟[おとうと]が生[う]まれました。"
   },
   "v375": {
     "meaning": "左、左邊",
-    "meaningZh": ["左", "左邊"],
+    "meaningZh": [
+      "左",
+      "左邊"
+    ],
     "meaningEn": "left; left-hand side",
     "example": "左に曲がってください。",
     "exampleMeaning": "請向左轉。",
@@ -2786,7 +2796,10 @@
   },
   "v436": {
     "meaning": "十號；十天",
-    "meaningZh": ["十號", "十天"],
+    "meaningZh": [
+      "十號",
+      "十天"
+    ],
     "meaningEn": "10th day of the month; ten days",
     "example": "十日に行きます。",
     "exampleMeaning": "十號要去。",
@@ -2794,12 +2807,12 @@
     "speechReading": "とおか"
   },
   "v485": {
-    "example": "赤丸で囲みます。",
+    "example": "赤丸で囲む。",
     "exampleMeaning": "用紅圈圈起來。"
   },
   "v487": {
     "meaning": "切割、剪",
-    "example": "紙をハサミで切ります。",
+    "example": "紙をハサミで切る。",
     "exampleMeaning": "用剪刀剪紙。"
   },
   "v489": {
@@ -2811,5 +2824,103 @@
     "meaning": "前面；未來",
     "example": "駅の先を右に曲がってください。",
     "exampleMeaning": "請在車站的前面往右轉。"
+  },
+  "v495": {
+    "example": "千円札を貸してください。",
+    "exampleMeaning": "請借我一張千圓紙鈔。"
+  },
+  "v497": {
+    "example": "毎朝、顔を洗います。",
+    "exampleMeaning": "每天早上洗臉。"
+  },
+  "v502": {
+    "meaning": "早的、早期的",
+    "example": "彼は朝早く起きます。",
+    "exampleMeaning": "他早上很早起床。"
+  },
+  "v504": {
+    "meaning": "跑",
+    "example": "私は毎日走ります。",
+    "exampleMeaning": "我每天跑步。"
+  },
+  "v509": {
+    "meaning": "粗的",
+    "example": "この木は太いです。",
+    "exampleMeaning": "這棵樹很粗。"
+  },
+  "v512": {
+    "example": "友だちにお金を貸しました。",
+    "exampleMeaning": "借錢給朋友了。"
+  },
+  "v517": {
+    "meaning": "非常喜歡",
+    "example": "彼が大好きです。",
+    "exampleMeaning": "我非常喜歡他！"
+  },
+  "v519": {
+    "meaning": "沒問題、沒關係",
+    "example": "大丈夫ですか。",
+    "exampleMeaning": "沒問題嗎？"
+  },
+  "v523": {
+    "example": "暑いので、コートを脱ぎました。",
+    "exampleMeaning": "因為很熱，所以把外套脫了。"
+  },
+  "v526": {
+    "example": "誕生日はいつですか。",
+    "exampleMeaning": "生日是什麼時候？"
+  },
+  "v527": {
+    "meaning": "彈（吉他、鋼琴等樂器）",
+    "example": "彼女はピアノを弾くのが上手です。",
+    "exampleMeaning": "她很擅長彈鋼琴。"
+  },
+  "v531": {
+    "example": "田中さんを知っていますか。",
+    "exampleMeaning": "你知道田中先生嗎？"
+  },
+  "v532": {
+    "meaning": "地鐵",
+    "example": "地下鉄に乗ります。",
+    "exampleMeaning": "搭地鐵。"
+  },
+  "v534": {
+    "example": "池に魚がいます。",
+    "exampleMeaning": "池塘裡有魚。"
+  },
+  "v537": {
+    "meaning": "棕色",
+    "example": "机の上に茶色のバッグがあります。",
+    "exampleMeaning": "桌上有一個棕色的包包。"
+  },
+  "v551": {
+    "example": "私には弟がいます。",
+    "exampleMeaning": "我有弟弟。"
+  },
+  "v556": {
+    "example": "部屋の電気を消してください。",
+    "exampleMeaning": "請關掉房間的燈。"
+  },
+  "v558": {
+    "example": "今、電話中です。",
+    "exampleMeaning": "現在正在通話中。"
+  },
+  "v560": {
+    "meaning": "渡過、走過",
+    "example": "橋を渡ります。",
+    "exampleMeaning": "過橋。"
+  },
+  "v564": {
+    "example": "東の空が明るくなりました。",
+    "exampleMeaning": "東邊的天空變亮了。"
+  },
+  "v565": {
+    "example": "質問に答えてください。",
+    "exampleMeaning": "請回答問題。"
+  },
+  "v570": {
+    "meaning": "道路、街道",
+    "example": "この道をまっすぐ行くと、駅があります。",
+    "exampleMeaning": "沿著這條路直走，就會有車站。"
   }
 }
