@@ -2840,13 +2840,13 @@
   },
   "v504": {
     "meaning": "跑",
-    "example": "私は毎日走ります。",
+    "example": "私は毎日走る。",
     "exampleMeaning": "我每天跑步。"
   },
   "v509": {
     "meaning": "粗的",
-    "example": "この木は太いです。",
-    "exampleMeaning": "這棵樹很粗。"
+    "example": "トムは首が太いんだ。",
+    "exampleMeaning": "湯姆的脖子很粗。"
   },
   "v512": {
     "example": "友だちにお金を貸しました。",
@@ -2859,8 +2859,8 @@
   },
   "v519": {
     "meaning": "沒問題、沒關係",
-    "example": "大丈夫ですか。",
-    "exampleMeaning": "沒問題嗎？"
+    "example": "大丈夫そう？",
+    "exampleMeaning": "看起來沒問題吧？"
   },
   "v523": {
     "example": "暑いので、コートを脱ぎました。",
@@ -2881,12 +2881,12 @@
   },
   "v532": {
     "meaning": "地鐵",
-    "example": "地下鉄に乗ります。",
-    "exampleMeaning": "搭地鐵。"
+    "example": "地下鉄に乗ろう。",
+    "exampleMeaning": "來搭地鐵吧。"
   },
   "v534": {
-    "example": "池に魚がいます。",
-    "exampleMeaning": "池塘裡有魚。"
+    "example": "池の魚が跳ねた。",
+    "exampleMeaning": "池子裡的魚跳了一下。"
   },
   "v537": {
     "meaning": "棕色",
@@ -2894,8 +2894,8 @@
     "exampleMeaning": "桌上有一個棕色的包包。"
   },
   "v551": {
-    "example": "私には弟がいます。",
-    "exampleMeaning": "我有弟弟。"
+    "example": "弟の名前は？",
+    "exampleMeaning": "你弟弟叫什麼名字？"
   },
   "v556": {
     "example": "部屋の電気を消してください。",
@@ -2907,7 +2907,7 @@
   },
   "v560": {
     "meaning": "渡過、走過",
-    "example": "橋を渡ります。",
+    "example": "橋を渡る。",
     "exampleMeaning": "過橋。"
   },
   "v564": {
@@ -2925,13 +2925,18 @@
   },
   "v522": {
     "meaning": "重要的；珍貴的",
-    "meaningZh": ["重要的", "珍貴的"],
+    "meaningZh": [
+      "重要的",
+      "珍貴的"
+    ],
     "example": "時間は大切です。",
     "exampleMeaning": "時間很重要。"
   },
   "v542": {
     "meaning": "午餐",
-    "meaningZh": ["午餐"],
+    "meaningZh": [
+      "午餐"
+    ],
     "example": "昼御飯は何を食べますか。",
     "exampleMeaning": "午餐要吃什麼？",
     "exampleFurigana": "昼御飯[ひるごはん]は何[なに]を食[た]べますか。",
@@ -2939,7 +2944,9 @@
   },
   "v566": {
     "meaning": "頭",
-    "meaningZh": ["頭"],
+    "meaningZh": [
+      "頭"
+    ],
     "example": "頭が痛いです。",
     "exampleMeaning": "我頭痛。",
     "exampleFurigana": "頭[あたま]が痛[いた]いです。",
@@ -2947,24 +2954,222 @@
   },
   "v529": {
     "meaning": "男人",
-    "meaningZh": ["男人"],
+    "meaningZh": [
+      "男人"
+    ],
     "example": "あの男の人は先生です。",
     "exampleMeaning": "那個男人是老師。",
     "exampleFurigana": "あの男[おとこ]の人[ひと]は先生[せんせい]です。"
   },
   "v567": {
     "meaning": "工作",
-    "meaningZh": ["工作"],
+    "meaningZh": [
+      "工作"
+    ],
     "example": "父は会社で働いています。",
     "exampleMeaning": "爸爸在公司工作。",
     "exampleFurigana": "父[ちち]は会社[かいしゃ]で働[はたら]いています。"
   },
   "v501": {
     "meaning": "打掃、清掃",
-    "meaningZh": ["打掃", "清掃"],
+    "meaningZh": [
+      "打掃",
+      "清掃"
+    ],
     "example": "部屋を掃除します。",
     "exampleMeaning": "打掃房間。",
     "exampleFurigana": "部屋[へや]を掃除[そうじ]します。",
     "speechReading": "そうじ"
+  },
+  "v571": {
+    "example": "私は毎朝新聞を読みます。",
+    "exampleMeaning": "我每天早上讀報紙。"
+  },
+  "v576": {
+    "example": "この漢字は難しいです。",
+    "exampleMeaning": "這個漢字很難。"
+  },
+  "v578": {
+    "meaning": "兩個",
+    "example": "りんごを二つください。",
+    "exampleMeaning": "請給我兩個蘋果。"
+  },
+  "v581": {
+    "example": "教室に二人います。",
+    "exampleMeaning": "教室裡有兩個人。"
+  },
+  "v582": {
+    "example": "二日に行きます。",
+    "exampleMeaning": "二號要去。"
+  },
+  "v585": {
+    "example": "日曜日は図書館へ行きます。",
+    "exampleMeaning": "星期日我要去圖書館。"
+  },
+  "v586": {
+    "meaning": "進入；進去",
+    "example": "部屋に入ります。",
+    "exampleMeaning": "進房間。"
+  },
+  "v587": {
+    "example": "コーヒーに砂糖を入れますか。",
+    "exampleMeaning": "咖啡要加糖嗎？"
+  },
+  "v588": {
+    "example": "入口の前に立っています。",
+    "exampleMeaning": "我站在入口前面。"
+  },
+  "v590": {
+    "meaning": "熱的、燙的",
+    "example": "卵がまだ熱いです。"
+  },
+  "v594": {
+    "example": "週末にデパートで買い物をします。",
+    "exampleMeaning": "我週末在百貨公司購物。"
+  },
+  "v595": {
+    "example": "これを買います。",
+    "exampleMeaning": "我要買這個。"
+  },
+  "v597": {
+    "meaning": "伯父；叔父",
+    "example": "私の伯父は医者です。",
+    "exampleMeaning": "我的伯父是醫生。"
+  },
+  "v599": {
+    "meaning": "白色",
+    "example": "あの白い車は私のものです。",
+    "exampleMeaning": "那輛白色的車是我的。"
+  },
+  "v601": {
+    "meaning": "薄的；淡的",
+    "example": "このスープは味が薄いです。",
+    "exampleMeaning": "這個湯味道很淡。"
+  },
+  "v602": {
+    "example": "箱を開けます。"
+  },
+  "v604": {
+    "meaning": "八個",
+    "example": "リンゴを八つ買いました。",
+    "exampleMeaning": "我買了八個蘋果。"
+  },
+  "v607": {
+    "meaning": "半；一半",
+    "example": "一時半です。",
+    "exampleMeaning": "一點半。"
+  },
+  "v608": {
+    "meaning": "一半",
+    "example": "りんごを半分に切ります。",
+    "exampleMeaning": "把蘋果切成一半。"
+  },
+  "v612": {
+    "meaning": "號碼",
+    "example": "私の電話番号は二三四五の六七八九です。",
+    "exampleMeaning": "我的電話號碼是 2345-6789。"
+  },
+  "v614": {
+    "example": "鳥が空を飛んでいます。",
+    "exampleMeaning": "鳥兒正在天空中飛翔。"
+  },
+  "v616": {
+    "example": "鼻が痛いです。",
+    "exampleMeaning": "鼻子痛。"
+  },
+  "v617": {
+    "example": "デパートで百円のペンを買いました。",
+    "exampleMeaning": "在百貨公司買了一支一百圓的筆。"
+  },
+  "v618": {
+    "example": "ここは病院です。",
+    "exampleMeaning": "這裡是醫院。"
+  },
+  "v620": {
+    "example": "部屋に入ります。",
+    "exampleMeaning": "進房間。"
+  },
+  "v621": {
+    "example": "封筒が要ります。",
+    "exampleMeaning": "需要信封。"
+  },
+  "v622": {
+    "example": "強い風が吹いています。",
+    "exampleMeaning": "正在吹強風。"
+  },
+  "v623": {
+    "example": "風邪を引きました。",
+    "exampleMeaning": "感冒了。"
+  },
+  "v625": {
+    "meaning": "事物、東西",
+    "example": "机の上に大切な物があります。",
+    "exampleMeaning": "桌上有重要的東西。"
+  },
+  "v626": {
+    "meaning": "明白、懂得",
+    "example": "先生の言うことが分かりますか。",
+    "exampleMeaning": "聽得懂老師說的話嗎？"
+  },
+  "v628": {
+    "meaning": "聽到、聽",
+    "example": "ラジオを聞きます。",
+    "exampleMeaning": "聽廣播。"
+  },
+  "v630": {
+    "meaning": "排列；擺放",
+    "example": "机の上に本を並べます。",
+    "exampleMeaning": "把書本排列在桌子上。"
+  },
+  "v632": {
+    "meaning": "關閉、合上",
+    "example": "ドアを閉めます。",
+    "exampleMeaning": "我來關門。"
+  },
+  "v633": {
+    "meaning": "附近、周圍",
+    "example": "この辺にコンビニがありますか。",
+    "exampleMeaning": "這附近有便利商店嗎？"
+  },
+  "v634": {
+    "example": "本を図書館に返します。",
+    "exampleMeaning": "把書還給圖書館。"
+  },
+  "v636": {
+    "example": "毎日日本語を勉強します。",
+    "exampleMeaning": "我每天學習日語。"
+  },
+  "v637": {
+    "example": "毎日駅まで歩きます。",
+    "exampleMeaning": "每天走到車站。"
+  },
+  "v638": {
+    "meaning": "人；～的方法",
+    "example": "あの方はどなたですか。",
+    "exampleMeaning": "那個人是誰？"
+  },
+  "v639": {
+    "example": "帽子を返してください。",
+    "exampleMeaning": "請把帽子還給我。"
+  },
+  "v640": {
+    "example": "鍵を忘れないようにしてください。",
+    "exampleMeaning": "請注意不要忘記鑰匙。"
+  },
+  "v641": {
+    "meaning": "忙碌的",
+    "example": "今日は仕事で忙しいです。",
+    "exampleMeaning": "我今天工作很忙。"
+  },
+  "v643": {
+    "example": "本をください。"
+  },
+  "v644": {
+    "example": "部屋に本棚があります。",
+    "exampleMeaning": "房間裡有書架。"
+  },
+  "v648": {
+    "example": "毎週釣りに行きます。",
+    "exampleMeaning": "我每週去釣魚。"
   }
 }

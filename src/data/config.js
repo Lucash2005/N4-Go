@@ -6,13 +6,13 @@ export const TARGETS = {
 }
 
 /** Bump when Neural mp3s are regenerated so browsers don't keep stale clips. */
-export const AUDIO_CACHE_VERSION = 34
+export const AUDIO_CACHE_VERSION = 35
 
 /**
  * Bump when vocab/grammar content is fixed.
  * Reported-card hides persist until manually cleared; use Dashboard to load new vocab.
  */
-export const CONTENT_VERSION = 50
+export const CONTENT_VERSION = 51
 
 export const DEFAULT_TASKS = [
   { id: 'vocab-15', label: '每日單字（依階段目標）', done: false },
