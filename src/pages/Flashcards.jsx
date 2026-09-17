@@ -1163,153 +1163,63 @@ export default function Flashcards() {
             tabIndex={0}
             aria-label="翻轉卡片"
           >
-            {/* Grid stack: height follows the taller face so content never covers play buttons */}
+            {/* Larger study surface: prioritize card readability */}
             <div
-              className={`grid h-[min(46vh,300px)] min-h-[220px] [grid-template-areas:'stack'] [transform-style:preserve-3d] ${
+              className={`grid h-[min(62vh,480px)] min-h-[280px] [grid-template-areas:'stack'] [transform-style:preserve-3d] ${
                 flipped
                   ? 'transition-transform duration-500 [transform:rotateY(180deg)]'
                   : 'transition-transform duration-500'
               }`}
             >
               <CardFace className="[grid-area:stack] [backface-visibility:hidden] overflow-hidden">
-                <Badge>
-                  {card.type === 'vocab' ? '單字' : card.type === 'form' ? '活用' : '文法'}
-                </Badge>
                 {card.type === 'vocab' && card.pos ? (
-                  <span className="ml-2 rounded-full bg-sand/90 px-2.5 py-0.5 text-xs font-medium text-sea-deep ring-1 ring-line/60">
+                  <span className="rounded-full bg-sand/90 px-2.5 py-0.5 text-xs font-medium text-sea-deep ring-1 ring-line/60">
                     {card.pos}
                   </span>
-                ) : null}
-                {cardIsApproved ? (
-                  <span
-                    className="ml-2 rounded-full bg-foam px-2 py-0.5 text-xs font-medium text-ink-soft ring-1 ring-line"
-                    title="已由 Gemini 全庫掃描檢查過（上線版本）"
-                  >
-                    Gemini已審
-                  </span>
-                ) : null}
-                {!cardIsApproved && cardIsUpdated ? (
-                  <span
-                    className="ml-2 rounded-full bg-sea/15 px-2 py-0.5 text-xs font-medium text-sea-deep"
-                    title="內容已依檢查結果修正並上線"
-                  >
-                    已更新
-                  </span>
-                ) : null}
-                {!cardIsApproved && cardIsChecked ? (
-                  <span
-                    className={`ml-2 rounded-full px-2 py-0.5 text-xs font-medium ${
-                      cardCheckStale
-                        ? 'bg-sand text-ink ring-1 ring-line'
-                        : 'bg-sea/15 text-sea-deep'
-                    }`}
-                  >
-                    {cardCheckStale ? '已確認·內容有變' : '已手動確認'}
-                  </span>
-                ) : null}
-                {!cardIsApproved && card.localFix ? (
-                  <span className="ml-2 rounded-full bg-sand px-2 py-0.5 text-xs font-medium text-ink ring-1 ring-line">
-                    本機已修正
-                  </span>
-                ) : null}
+                ) : (
+                  <Badge>
+                    {card.type === 'vocab' ? '單字' : card.type === 'form' ? '活用' : '文法'}
+                  </Badge>
+                )}
                 {meaningFirst && card.type === 'vocab' ? (
                   <>
-                    <p className="mt-6 font-display text-3xl font-bold leading-snug text-ink sm:text-4xl">
+                    <p className="mt-8 font-display text-4xl font-bold leading-snug text-ink sm:text-5xl">
                       {primaryZhMeaning(card)}
                     </p>
-                    <p className="mt-3 text-base text-ink-soft">先想日文怎麼說／怎麼寫，再翻面</p>
                   </>
                 ) : (
                   <>
-                    <p className="mt-6 font-display text-4xl font-bold text-ink sm:text-5xl">
+                    <p className="mt-8 font-display text-5xl font-bold text-ink sm:text-6xl">
                       {card.type === 'vocab'
                         ? frontPromptForCard(card, promptScript)
                         : card.word}
                     </p>
-                    {hideReadingOnFront ? (
-                      card.type === 'form' ? (
-                        <p className="mt-3 text-base text-ink-soft">
-                          先改成{card.formDrill?.target || card.category}，再翻面核對
-                        </p>
-                      ) : card.type === 'grammar' ? (
-                        <ol className="mt-4 w-full space-y-1.5 text-left text-sm leading-relaxed text-ink-soft sm:text-base">
-                          <li>1. 接續：接什麼形？</li>
-                          <li>2. 對照：和哪條最容易混？</li>
-                          <li>3. 造句：自己先想一句</li>
-                        </ol>
-                      ) : promptScript === 'kana' ? (
-                        <p className="mt-3 text-base text-ink-soft">先想漢字寫法與意思，再翻面</p>
-                      ) : promptScript === 'kanji' ? (
-                        <p className="mt-3 text-base text-ink-soft">先想平假名讀音與意思，再翻面</p>
-                      ) : (
-                        <p className="mt-3 text-base text-ink-soft">先想讀音與意思，再翻面</p>
-                      )
-                    ) : showFurigana &&
-                      card.type === 'vocab' &&
-                      frontPromptForCard(card, promptScript) !== card.reading ? (
-                      <p className="mt-3 text-xl text-sea-deep">{card.reading}</p>
-                    ) : showFurigana && card.type !== 'vocab' ? (
-                      <p className="mt-3 text-xl text-sea-deep">{card.reading}</p>
-                    ) : !showFurigana && hasKanji(frontPromptForCard(card, promptScript)) ? (
-                      <p className="mt-3 text-base text-ink-soft">音標已隱藏</p>
+                    {!hideReadingOnFront &&
+                    showFurigana &&
+                    card.type === 'vocab' &&
+                    frontPromptForCard(card, promptScript) !== card.reading ? (
+                      <p className="mt-4 text-2xl text-sea-deep">{card.reading}</p>
+                    ) : !hideReadingOnFront && showFurigana && card.type !== 'vocab' ? (
+                      <p className="mt-4 text-2xl text-sea-deep">{card.reading}</p>
                     ) : null}
                   </>
                 )}
-                <p className="mt-8 text-base text-ink-soft">
-                  {meaningFirst ? '點擊核對日文寫法與例句' : '點擊查看釋義與例句'}
-                </p>
               </CardFace>
 
               <CardFace
                 align="start"
                 className="[grid-area:stack] [backface-visibility:hidden] [transform:rotateY(180deg)] overflow-y-auto overscroll-contain"
               >
-                <Badge>{card.category}</Badge>
                 {card.type === 'vocab' && card.pos ? (
-                  <span className="ml-2 rounded-full bg-sand/90 px-2.5 py-0.5 text-xs font-medium text-sea-deep ring-1 ring-line/60">
+                  <span className="rounded-full bg-sand/90 px-2.5 py-0.5 text-xs font-medium text-sea-deep ring-1 ring-line/60">
                     {card.pos}
                   </span>
-                ) : null}
-                {cardIsApproved ? (
-                  <span
-                    className="ml-2 rounded-full bg-foam px-2 py-0.5 text-xs font-medium text-ink-soft ring-1 ring-line"
-                    title="已由 Gemini 全庫掃描檢查過（上線版本）"
-                  >
-                    Gemini已審
-                  </span>
-                ) : null}
-                {!cardIsApproved && cardIsUpdated ? (
-                  <span
-                    className="ml-2 rounded-full bg-sea/15 px-2 py-0.5 text-xs font-medium text-sea-deep"
-                    title="內容已依檢查結果修正並上線"
-                  >
-                    已更新
-                  </span>
-                ) : null}
-                {!cardIsApproved && cardIsChecked ? (
-                  <span
-                    className={`ml-2 rounded-full px-2 py-0.5 text-xs font-medium ${
-                      cardCheckStale
-                        ? 'bg-sand text-ink ring-1 ring-line'
-                        : 'bg-sea/15 text-sea-deep'
-                    }`}
-                  >
-                    {cardCheckStale ? '已確認·內容有變' : '已手動確認'}
-                  </span>
-                ) : null}
-                {!cardIsApproved && card.localFix ? (
-                  <span className="ml-2 rounded-full bg-sand px-2 py-0.5 text-xs font-medium text-ink ring-1 ring-line">
-                    本機已修正
-                  </span>
-                ) : null}
+                ) : (
+                  <Badge>{card.category}</Badge>
+                )}
                 {card.level ? (
                   <span className="ml-2 rounded-full bg-foam px-2 py-0.5 text-xs text-ink-soft">
                     {card.level}
-                  </span>
-                ) : null}
-                {card.reviewFlags?.length ? (
-                  <span className="ml-2 rounded-full bg-coral/15 px-2 py-0.5 text-xs font-medium text-coral">
-                    建議核對
                   </span>
                 ) : null}
 
@@ -1335,67 +1245,44 @@ export default function Flashcards() {
             </div>
           </article>
 
-          <div className="relative z-10 flex flex-wrap items-center justify-center gap-3 pt-1">
-            {!srsMode ? <ActionButton onClick={() => go(-1)}>上一張</ActionButton> : null}
-            <ActionButton
-              onClick={(e) => {
-                e.stopPropagation()
-                playAudio()
-              }}
-            >
-              🔊 播放
-            </ActionButton>
-            {!srsMode ? <ActionButton onClick={() => go(1)}>下一張</ActionButton> : null}
-          </div>
-
-          {srsMode ? (
-            flipped ? (
-              <div className="space-y-2">
-                <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
-                  {GRADES.map((grade) => {
-                    const metaG = GRADE_LABELS[grade]
-                    return (
-                      <button
-                        key={grade}
-                        type="button"
-                        onClick={() => onGrade(grade)}
-                        className={`touch-target rounded-2xl px-3 py-3 text-sm font-medium transition ${gradeButtonClass(grade)}`}
-                      >
-                        <span className="block">{metaG.label}</span>
-                        <span className="mt-0.5 block text-[11px] font-normal opacity-80">
-                          {metaG.hint}
-                        </span>
-                      </button>
-                    )
-                  })}
-                </div>
-                <button
-                  type="button"
-                  onClick={() => toggleCardManuallyChecked?.(card)}
-                  className={`w-full rounded-2xl px-4 py-2.5 text-sm font-medium ring-1 transition ${
-                    cardIsChecked && !cardCheckStale
-                      ? 'bg-sea text-white ring-sea'
-                      : 'bg-white text-ink ring-line hover:bg-foam'
-                  }`}
-                >
-                  {cardCheckStale
-                    ? '再確認內容（內容有變）'
-                    : cardIsChecked
-                      ? '取消手動確認'
-                      : '標記已手動確認'}
-                </button>
-                {cardCheckStale ? (
-                  <p className="text-center text-xs text-ink-soft">
-                    你曾手動確認過，但內容已更新——請再核對後按上方按鈕。確認紀錄不會因更新被清除。
-                  </p>
-                ) : null}
-              </div>
-            ) : (
-              <p className="text-center text-sm text-ink-soft">翻面後評分，才會進入下一張</p>
-            )
+          {/* Front: play only. Back: four actions + play on one row. */}
+          {!flipped ? (
+            <div className="relative z-10 flex items-center justify-center gap-3 pt-2">
+              <ActionButton
+                onClick={(e) => {
+                  e.stopPropagation()
+                  playAudio()
+                }}
+              >
+                🔊 播放
+              </ActionButton>
+            </div>
+          ) : srsMode ? (
+            <div className="relative z-10 flex flex-wrap items-stretch justify-center gap-2 pt-2">
+              {GRADES.map((grade) => {
+                const metaG = GRADE_LABELS[grade]
+                return (
+                  <button
+                    key={grade}
+                    type="button"
+                    onClick={() => onGrade(grade)}
+                    className={`touch-target min-w-[4.5rem] flex-1 rounded-2xl px-2 py-3 text-sm font-medium transition sm:flex-none sm:px-3 ${gradeButtonClass(grade)}`}
+                  >
+                    <span className="block">{metaG.label}</span>
+                  </button>
+                )
+              })}
+              <ActionButton
+                onClick={(e) => {
+                  e.stopPropagation()
+                  playAudio()
+                }}
+              >
+                🔊 播放
+              </ActionButton>
+            </div>
           ) : (
-            <>
-            <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+            <div className="relative z-10 flex flex-wrap items-stretch justify-center gap-2 pt-2">
               <StatusButton
                 active={getFilterStatus(cardProgress, card.id) === 'learned'}
                 onClick={() =>
@@ -1405,6 +1292,7 @@ export default function Flashcards() {
                   )
                 }
                 tone="sea"
+                className="min-w-[4.5rem] flex-1 sm:flex-none"
               >
                 已學會
               </StatusButton>
@@ -1417,6 +1305,7 @@ export default function Flashcards() {
                   )
                 }
                 tone="coral"
+                className="min-w-[4.5rem] flex-1 sm:flex-none"
               >
                 需要複習
               </StatusButton>
@@ -1424,22 +1313,43 @@ export default function Flashcards() {
                 active={cardIsChecked && !cardCheckStale}
                 onClick={() => toggleCardManuallyChecked?.(card)}
                 tone="sea"
+                className="min-w-[4.5rem] flex-1 sm:flex-none"
               >
-                {cardCheckStale ? '再確認內容' : cardIsChecked ? '取消手動確認' : '標記已手動確認'}
+                {cardCheckStale ? '再確認' : cardIsChecked ? '取消確認' : '手動確認'}
               </StatusButton>
-              <StatusButton
-                onClick={() => setCardStatus(card.id, null)}
+              <StatusButton onClick={() => setCardStatus(card.id, null)} className="min-w-[4.5rem] flex-1 sm:flex-none">
+                清除
+              </StatusButton>
+              <ActionButton
+                onClick={(e) => {
+                  e.stopPropagation()
+                  playAudio()
+                }}
               >
-                清除標記
-              </StatusButton>
+                🔊 播放
+              </ActionButton>
+              <ActionButton onClick={() => go(-1)}>上一張</ActionButton>
+              <ActionButton onClick={() => go(1)}>下一張</ActionButton>
             </div>
-            {cardCheckStale ? (
-              <p className="mt-2 text-center text-xs text-ink-soft">
-                你曾手動確認過這張卡，但內容已更新——請再核對後按「再確認內容」。確認紀錄不會因更新被清除。
-              </p>
-            ) : null}
-            </>
           )}
+
+          {srsMode && flipped ? (
+            <button
+              type="button"
+              onClick={() => toggleCardManuallyChecked?.(card)}
+              className={`mt-2 w-full rounded-2xl px-4 py-2 text-sm font-medium ring-1 transition ${
+                cardIsChecked && !cardCheckStale
+                  ? 'bg-sea text-white ring-sea'
+                  : 'bg-white text-ink ring-line hover:bg-foam'
+              }`}
+            >
+              {cardCheckStale
+                ? '再確認內容（內容有變）'
+                : cardIsChecked
+                  ? '取消手動確認'
+                  : '標記已手動確認'}
+            </button>
+          ) : null}
 
           <div className="mt-1">
             {!showReport ? (
@@ -1760,18 +1670,18 @@ function VocabCardBack({
     <div className="w-full text-left">
       {meaningFirst ? (
         <>
-          <p className="mt-1 font-display text-3xl font-bold text-ink sm:text-4xl">{frontPrompt}</p>
+          <p className="mt-2 font-display text-4xl font-bold text-ink sm:text-5xl">{frontPrompt}</p>
           {card.reading && frontPrompt !== card.reading ? (
-            <p className="mt-1 text-lg text-sea-deep">{card.reading}</p>
+            <p className="mt-1 text-xl text-sea-deep">{card.reading}</p>
           ) : null}
-          <p className="mt-2 text-base text-ink-soft">{zhPrimary}</p>
+          <p className="mt-2 text-lg text-ink-soft sm:text-xl">{zhPrimary}</p>
         </>
       ) : (
-        <p className="mt-1 text-2xl font-bold leading-snug text-ink sm:text-3xl">{zhPrimary}</p>
+        <p className="mt-2 text-3xl font-bold leading-snug text-ink sm:text-4xl">{zhPrimary}</p>
       )}
 
       {card.pos ? (
-        <p className="mt-1.5 text-sm font-medium text-sea-deep">詞性：{card.pos}</p>
+        <p className="mt-2 text-base font-medium text-sea-deep">詞性：{card.pos}</p>
       ) : null}
 
       {(showKanjiLine || showKanaLine) && (forms.kanji !== forms.kana || showKanaLine) ? (
@@ -1848,7 +1758,7 @@ function VocabCardBack({
             </p>
           ) : null}
         </div>
-        <p className="mt-1.5 text-base leading-relaxed text-ink sm:text-lg">
+        <p className="mt-1.5 text-lg leading-relaxed text-ink sm:text-xl">
           <FuriganaText
             text={card.example}
             annotated={card.exampleFurigana || card.example}
@@ -1856,7 +1766,7 @@ function VocabCardBack({
           />
         </p>
         {showZhMeaning ? (
-          <p className="mt-1 text-sm text-ink-soft">{card.exampleMeaning}</p>
+          <p className="mt-1.5 text-base text-ink-soft sm:text-lg">{card.exampleMeaning}</p>
         ) : (
           <p className="mt-1 text-xs text-ink-soft">中文解釋已隱藏</p>
         )}

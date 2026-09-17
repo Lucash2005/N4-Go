@@ -415,15 +415,16 @@
     "exampleFurigana": "あの山[やま]は高[たか]いです。"
   },
   "v584": {
-    "meaning": "肉；肉類",
+    "meaning": "肉、肉類",
     "meaningEn": "meat",
     "meaningZh": [
       "肉",
       "肉類"
     ],
-    "example": "肉はとてもおいしいです。",
-    "exampleMeaning": "肉很好吃。",
-    "exampleFurigana": "肉[にく]はとてもおいしいです。"
+    "example": "肉を食べます。",
+    "exampleMeaning": "我吃肉。",
+    "exampleFurigana": "肉[にく]を食[た]べます。",
+    "speechReading": "にく"
   },
   "v1103": {
     "reading": "せいさん",
@@ -869,15 +870,16 @@
     "exampleFurigana": "このパンは柔[やわ]らかいです。"
   },
   "v545": {
-    "meaning": "城鎮；街",
+    "meaning": "城鎮、街",
     "meaningEn": "town; neighborhood",
     "meaningZh": [
       "城鎮",
       "街"
     ],
-    "example": "町へ行きます。",
-    "exampleMeaning": "去街上。",
-    "exampleFurigana": "町[まち]へ行[い]きます。"
+    "example": "この町に住んでいます。",
+    "exampleMeaning": "我住在這個城鎮。",
+    "exampleFurigana": "この町[まち]に住[す]んでいます。",
+    "speechReading": "まち"
   },
   "v420": {
     "meaning": "七日；七號；七天",
@@ -1386,15 +1388,15 @@
     "exampleFurigana": "特急[とっきゅう]に乗[の]ります。"
   },
   "v699": {
-    "meaning": "說；說話",
+    "meaning": "說、說話",
     "meaningEn": "to speak; to talk",
     "meaningZh": [
       "說",
       "說話"
     ],
-    "example": "日本語を話します。",
-    "exampleMeaning": "說日語。",
-    "exampleFurigana": "日本語[にほんご]を話[はな]します。"
+    "example": "毎日日本語を話します。",
+    "exampleMeaning": "我每天說日語。",
+    "exampleFurigana": "毎日[まいにち]日本語[にほんご]を話[はな]します。"
   },
   "v097": {
     "meaning": "外套；大衣",
@@ -1622,9 +1624,10 @@
     "meaningZh": [
       "二十歲"
     ],
-    "example": "二十歳です。",
-    "exampleMeaning": "二十歲。",
-    "exampleFurigana": "二十歳[はたち]です。"
+    "example": "今年、二十歳になります。",
+    "exampleMeaning": "我今年滿二十歲。",
+    "exampleFurigana": "今年[ことし]、二十歳[はたち]になります。",
+    "speechReading": "はたち"
   },
   "v524": {
     "meaning": "誰",
@@ -1705,14 +1708,14 @@
     "meaningEn": "to visit; to ask (humble)",
     "meaningZh": [
       "拜訪",
-      "請教（謙讓語）"
+      "請教"
     ],
     "kanji": "伺う",
     "word": "うかがう",
     "reading": "うかがう",
-    "example": "先生に伺います。",
-    "exampleMeaning": "向老師請教。",
-    "exampleFurigana": "先生[せんせい]に伺[うかが]います。"
+    "example": "明日、先生のお宅にうかがいます。",
+    "exampleMeaning": "明天我要去拜訪老師府上。",
+    "exampleFurigana": "明日[あした]、先生[せんせい]のお宅[たく]にうかがいます。"
   },
   "v398": {
     "meaning": "四日；四號；四天",
@@ -2998,7 +3001,13 @@
   },
   "v581": {
     "example": "教室に二人います。",
-    "exampleMeaning": "教室裡有兩個人。"
+    "exampleMeaning": "教室裡有兩個人。",
+    "meaning": "兩個人",
+    "meaningZh": [
+      "兩個人"
+    ],
+    "exampleFurigana": "教室[きょうしつ]に二人[ふたり]います。",
+    "speechReading": "ふたり"
   },
   "v582": {
     "example": "旅行は二日間にわたります。",
@@ -3018,8 +3027,14 @@
     "exampleMeaning": "咖啡要加糖嗎？"
   },
   "v588": {
-    "example": "入口の側に立った。",
-    "exampleMeaning": "我站在入口旁邊。"
+    "example": "入口の前に立っています。",
+    "exampleMeaning": "我站在入口前面。",
+    "meaning": "入口",
+    "meaningZh": [
+      "入口"
+    ],
+    "exampleFurigana": "入口[いりぐち]の前[まえ]に立[た]っています。",
+    "speechReading": "いりぐち"
   },
   "v590": {
     "meaning": "熱的、燙的",
@@ -3092,8 +3107,14 @@
     "exampleMeaning": "進房間。"
   },
   "v621": {
-    "example": "封筒がいます。",
-    "exampleMeaning": "需要信封。"
+    "example": "封筒が要ります。",
+    "exampleMeaning": "我需要信封。",
+    "meaning": "信封",
+    "meaningZh": [
+      "信封"
+    ],
+    "exampleFurigana": "封筒[ふうとう]が要[い]ります。",
+    "speechReading": "ふうとう"
   },
   "v622": {
     "example": "強い風が吹いています。",
@@ -3218,8 +3239,15 @@
     "exampleMeaning": "這道題目很難。"
   },
   "v665": {
-    "example": "夜、勉強します。",
-    "exampleMeaning": "晚上學習。"
+    "example": "夜、日本語を勉強します。",
+    "exampleMeaning": "我晚上學習日語。",
+    "meaning": "晚上、夜晚",
+    "meaningZh": [
+      "晚上",
+      "夜晚"
+    ],
+    "exampleFurigana": "夜[よる]、日本語[にほんご]を勉強[べんきょう]します。",
+    "speechReading": "よる"
   },
   "v666": {
     "example": "私は野菜が好きです。",
@@ -3264,9 +3292,13 @@
   },
   "v682": {
     "meaning": "拜託、請求",
-    "meaningZh": ["拜託", "請求"],
+    "meaningZh": [
+      "拜託",
+      "請求"
+    ],
     "example": "友達に頼みます。",
-    "exampleMeaning": "拜託朋友。"
+    "exampleMeaning": "我想拜託朋友一件事。",
+    "exampleFurigana": "友達[ともだち]に頼[たの]みます。"
   },
   "v684": {
     "example": "先生が教室の前に立っています。",
@@ -3292,9 +3324,15 @@
     "exampleMeaning": "買了六個蘋果。"
   },
   "v698": {
-    "meaning": "話；故事；說話",
-    "example": "先生の話は面白かったです。",
-    "exampleMeaning": "老師的故事很有趣。"
+    "meaning": "話、談話；故事",
+    "example": "先生の話はとても面白かったです。",
+    "exampleMeaning": "老師說的話非常有趣。",
+    "meaningZh": [
+      "話",
+      "談話",
+      "故事"
+    ],
+    "exampleFurigana": "先生[せんせい]の話[はなし]はとても面白[おもしろ]かったです。"
   },
   "v700": {
     "meaning": "那樣、像那樣",
@@ -3371,5 +3409,48 @@
   "v724": {
     "example": "オートバイを買います。",
     "exampleMeaning": "我要買摩托車。"
+  },
+  "v605": {
+    "meaning": "八號；八天",
+    "meaningZh": [
+      "八號",
+      "八天"
+    ],
+    "example": "八日に行きます。",
+    "exampleMeaning": "八號要去。",
+    "exampleFurigana": "八日[ようか]に行[い]きます。",
+    "speechReading": "ようか"
+  },
+  "v642": {
+    "meaning": "北、北方",
+    "meaningZh": [
+      "北",
+      "北方"
+    ],
+    "example": "北へ行きます。",
+    "exampleMeaning": "往北走。",
+    "exampleFurigana": "北[きた]へ行[い]きます。",
+    "speechReading": "きた"
+  },
+  "v669": {
+    "meaning": "有名的、著名的",
+    "meaningZh": [
+      "有名的",
+      "著名的"
+    ],
+    "example": "富士山は有名です。",
+    "exampleMeaning": "富士山很有名。",
+    "exampleFurigana": "富士山[ふじさん]は有名[ゆうめい]です。"
+  },
+  "v580": {
+    "meaning": "二十號；二十天",
+    "meaningZh": [
+      "二十號",
+      "二十天"
+    ],
+    "example": "二十日に会います。",
+    "exampleMeaning": "二十號要見面。",
+    "exampleFurigana": "二十日[はつか]に会[あ]います。",
+    "speechReading": "はつか"
   }
 }

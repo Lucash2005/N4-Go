@@ -17,6 +17,11 @@ export const FURIGANA_OVERRIDES = [
   { pattern: /一番乗\[いちばんの\]/g, replace: '一番[いちばん]乗[の]り' },
   // 十日：避免被切成 十[じゅう]日[にち]
   { pattern: /十\[じゅう\]日\[にち\]/g, replace: '十日[とおか]' },
+  // 八日／二十日／二人：專有訓讀
+  { pattern: /八\[はち\]日\[にち\]/g, replace: '八日[ようか]' },
+  { pattern: /二\[に\]十\[じゅう\]日\[にち\]/g, replace: '二十日[はつか]' },
+  { pattern: /二\[に\]人\[にん\]/g, replace: '二人[ふたり]' },
+  { pattern: /二十歳\[に[じっ]?っ?さい\]/g, replace: '二十歳[はたち]' },
 ]
 
 export function applyFuriganaOverrides(text) {

@@ -284,7 +284,7 @@ function buildQueue() {
   return all
 }
 
-function applyResults(items) {
+function applyResults(items, { onlyIds = null } = {}) {
   const vocabCards = Object.fromEntries(
     JSON.parse(readFileSync(VOCAB_PATH, 'utf8')).map((c) => [c.id, c]),
   )
@@ -293,9 +293,12 @@ function applyResults(items) {
   const grammarOverrides = loadJson(GRAMMAR_OVERRIDES_PATH, {})
   let vPatch = 0
   let gPatch = 0
+  const allow = onlyIds ? new Set(onlyIds) : null
 
   for (const row of Object.values(items)) {
     if (row.status !== 'done' || row.verdict !== 'FIX') continue
+    // Avoid re-applying historical FIX rows (would clobber manual polish).
+    if (allow && !allow.has(row.id)) continue
     if (row.type === 'vocab') {
       const card = vocabCards[row.id]
       if (!card) continue
@@ -315,7 +318,7 @@ function applyResults(items) {
 
   saveJson(VOCAB_OVERRIDES_PATH, vocabOverrides)
   saveJson(GRAMMAR_OVERRIDES_PATH, grammarOverrides)
-  console.log(JSON.stringify({ appliedVocab: vPatch, appliedGrammar: gPatch }, null, 2))
+  console.log(JSON.stringify({ appliedVocab: vPatch, appliedGrammar: gPatch, scoped: Boolean(allow) }, null, 2))
   console.log('Next: npm run postprocess:vocab && npm run apply:grammar-overrides && npm run build:content-updates')
   return { vPatch, gPatch }
 }
@@ -474,7 +477,7 @@ async function main() {
   })
   const progress = writeScanProgress(items, queue.length)
 
-  if (APPLY) applyResults(items)
+  if (APPLY) applyResults(items, { onlyIds: work.map((c) => c.id) })
 
   const elapsedMin = ((Date.now() - started) / 60000).toFixed(1)
   console.log(
