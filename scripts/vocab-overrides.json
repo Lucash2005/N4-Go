@@ -764,12 +764,14 @@
     "exampleFurigana": "このかばんは高[たか]いです。"
   },
   "v706": {
-    "meaning": "播音員；主持人",
+    "meaning": "播音員；氣象主播；主持人",
     "meaningEn": "announcer; presenter",
     "meaningZh": [
       "播音員",
       "主持人"
-    ]
+    ],
+    "example": "彼女はニュースのプロのアナウンサーです。",
+    "exampleMeaning": "她是新聞的專業播音員。"
   },
   "v986": {
     "meaning": "適合；合得來；一致",
@@ -2999,8 +3001,8 @@
     "exampleMeaning": "教室裡有兩個人。"
   },
   "v582": {
-    "example": "二日に行きます。",
-    "exampleMeaning": "二號要去。"
+    "example": "旅行は二日間にわたります。",
+    "exampleMeaning": "旅行為期兩天。"
   },
   "v585": {
     "example": "日曜日は図書館へ行きます。",
@@ -3008,16 +3010,16 @@
   },
   "v586": {
     "meaning": "進入；進去",
-    "example": "部屋に入ります。",
-    "exampleMeaning": "進房間。"
+    "example": "部屋に入る。",
+    "exampleMeaning": "進入房間。"
   },
   "v587": {
     "example": "コーヒーに砂糖を入れますか。",
     "exampleMeaning": "咖啡要加糖嗎？"
   },
   "v588": {
-    "example": "入口の前に立っています。",
-    "exampleMeaning": "我站在入口前面。"
+    "example": "入口の側に立った。",
+    "exampleMeaning": "我站在入口旁邊。"
   },
   "v590": {
     "meaning": "熱的、燙的",
@@ -3055,9 +3057,9 @@
     "exampleMeaning": "我買了八個蘋果。"
   },
   "v607": {
-    "meaning": "半；一半",
-    "example": "一時半です。",
-    "exampleMeaning": "一點半。"
+    "meaning": "一半",
+    "example": "半分をください。",
+    "exampleMeaning": "請給我一半。"
   },
   "v608": {
     "meaning": "一半",
@@ -3074,8 +3076,8 @@
     "exampleMeaning": "鳥兒正在天空中飛翔。"
   },
   "v616": {
-    "example": "鼻が痛いです。",
-    "exampleMeaning": "鼻子痛。"
+    "example": "鼻が高いです。",
+    "exampleMeaning": "我很驕傲／得意。"
   },
   "v617": {
     "example": "デパートで百円のペンを買いました。",
@@ -3090,7 +3092,7 @@
     "exampleMeaning": "進房間。"
   },
   "v621": {
-    "example": "封筒が要ります。",
+    "example": "封筒がいます。",
     "exampleMeaning": "需要信封。"
   },
   "v622": {
@@ -3098,8 +3100,8 @@
     "exampleMeaning": "正在吹強風。"
   },
   "v623": {
-    "example": "風邪を引きました。",
-    "exampleMeaning": "感冒了。"
+    "example": "昨日の夜から風邪を引いています。イマイチ調子が悪いです。",
+    "exampleMeaning": "從昨天晚上開始就感冒了。狀況有點不太好。"
   },
   "v625": {
     "meaning": "事物、東西",
@@ -3118,7 +3120,7 @@
   },
   "v630": {
     "meaning": "排列；擺放",
-    "example": "机の上に本を並べます。",
+    "example": "机の上に本を並べる。",
     "exampleMeaning": "把書本排列在桌子上。"
   },
   "v632": {
@@ -3132,7 +3134,7 @@
     "exampleMeaning": "這附近有便利商店嗎？"
   },
   "v634": {
-    "example": "本を図書館に返します。",
+    "example": "本を図書館に返す。",
     "exampleMeaning": "把書還給圖書館。"
   },
   "v636": {
@@ -3171,5 +3173,203 @@
   "v648": {
     "example": "毎週釣りに行きます。",
     "exampleMeaning": "我每週去釣魚。"
+  },
+  "v652": {
+    "example": "毎晩電話します。",
+    "exampleMeaning": "我每天晚上打電話。"
+  },
+  "v653": {
+    "meaning": "萬",
+    "example": "一万円です。",
+    "exampleMeaning": "一萬日圓。"
+  },
+  "v654": {
+    "example": "私は万年筆で手紙を書きます。",
+    "exampleMeaning": "我用鋼筆寫信。"
+  },
+  "v655": {
+    "meaning": "弄丟、失去（某物）",
+    "example": "鍵を無くしてしまいました。",
+    "exampleMeaning": "把鑰匙弄丟了。"
+  },
+  "v656": {
+    "example": "お名前は何ですか。",
+    "exampleMeaning": "請教您的名字是什麼？"
+  },
+  "v658": {
+    "example": "明日来られますか。",
+    "exampleMeaning": "明天您能來嗎？"
+  },
+  "v659": {
+    "meaning": "（動物）叫、鳴叫",
+    "example": "鳥が鳴いています。",
+    "exampleMeaning": "鳥兒在叫。"
+  },
+  "v660": {
+    "example": "庭に木を植えます。",
+    "exampleMeaning": "要在庭院裡種樹。"
+  },
+  "v662": {
+    "example": "目が痛いです。",
+    "exampleMeaning": "眼睛很痛。"
+  },
+  "v663": {
+    "example": "この問題は難しかったです。",
+    "exampleMeaning": "這道題目很難。"
+  },
+  "v665": {
+    "example": "夜、勉強します。",
+    "exampleMeaning": "晚上學習。"
+  },
+  "v666": {
+    "example": "私は野菜が好きです。",
+    "exampleMeaning": "我喜歡蔬菜。"
+  },
+  "v670": {
+    "meaning": "玩；遊玩",
+    "example": "友だちと公園で遊びます。",
+    "exampleMeaning": "和朋友在公園玩。"
+  },
+  "v671": {
+    "example": "明日、郵便局に行きます。",
+    "exampleMeaning": "明天我要去郵局。"
+  },
+  "v672": {
+    "example": "今、夕飯を食べます。",
+    "exampleMeaning": "我現在要吃晚餐。"
+  },
+  "v674": {
+    "example": "デパートで洋服を買います。",
+    "exampleMeaning": "在百貨公司買西服。"
+  },
+  "v675": {
+    "example": "母に葉書を出しました。",
+    "exampleMeaning": "我寄了明信片給媽媽。"
+  },
+  "v676": {
+    "example": "車が要りますか。",
+    "exampleMeaning": "需要車嗎？"
+  },
+  "v678": {
+    "example": "先生が来ます。",
+    "exampleMeaning": "老師來了。"
+  },
+  "v679": {
+    "example": "来月、日本へ行きます。",
+    "exampleMeaning": "下個月要去日本。"
+  },
+  "v681": {
+    "example": "来年は日本に行きます。",
+    "exampleMeaning": "明年要去日本。"
+  },
+  "v682": {
+    "meaning": "拜託、請求",
+    "meaningZh": ["拜託", "請求"],
+    "example": "友達に頼みます。",
+    "exampleMeaning": "拜託朋友。"
+  },
+  "v684": {
+    "example": "先生が教室の前に立っています。",
+    "exampleMeaning": "老師站在教室前面。"
+  },
+  "v687": {
+    "meaning": "料理、做菜",
+    "example": "母は料理が上手です。",
+    "exampleMeaning": "我媽媽很擅長做菜。"
+  },
+  "v690": {
+    "example": "隣に座ってください。",
+    "exampleMeaning": "請坐在我旁邊。"
+  },
+  "v691": {
+    "meaning": "冰涼的、冷的（觸覺）",
+    "example": "この水は冷たいです。",
+    "exampleMeaning": "這水是冰的。"
+  },
+  "v696": {
+    "meaning": "六個",
+    "example": "リンゴを六つ買いました。",
+    "exampleMeaning": "買了六個蘋果。"
+  },
+  "v698": {
+    "meaning": "話；故事；說話",
+    "example": "先生の話は面白かったです。",
+    "exampleMeaning": "老師的故事很有趣。"
+  },
+  "v700": {
+    "meaning": "那樣、像那樣",
+    "example": "ああいう映画が好きです。",
+    "exampleMeaning": "我喜歡那樣的電影。"
+  },
+  "v702": {
+    "example": "あかちゃんが泣いています。",
+    "exampleMeaning": "嬰兒正在哭。"
+  },
+  "v704": {
+    "example": "友達に本をあげました。",
+    "exampleMeaning": "送給了朋友書。"
+  },
+  "v709": {
+    "example": "アルコールを飲みますか。",
+    "exampleMeaning": "要喝酒精飲料（酒）嗎？"
+  },
+  "v710": {
+    "example": "私もアルバイトをしたいです。"
+  },
+  "v711": {
+    "example": "あんな店には二度と行きません。",
+    "exampleMeaning": "我再也不去那種店了。"
+  },
+  "v712": {
+    "meaning": "欺負、戲弄",
+    "example": "友達をいじめてはいけません。",
+    "exampleMeaning": "不可以欺負朋友。"
+  },
+  "v714": {
+    "meaning": "滿的、充滿；飽的",
+    "example": "お腹がいっぱいです。",
+    "exampleMeaning": "我吃飽了。"
+  },
+  "v715": {
+    "meaning": "（尊敬語）在、來、去",
+    "example": "明日、先生がいらっしゃいます。",
+    "exampleMeaning": "明天，老師要來。"
+  },
+  "v717": {
+    "meaning": "謊言",
+    "example": "それはうそです。",
+    "exampleMeaning": "那是謊言。",
+    "kanji": "嘘"
+  },
+  "v718": {
+    "meaning": "家、內部",
+    "example": "うちの会社は大きいです。",
+    "exampleMeaning": "我們公司很大。"
+  },
+  "v719": {
+    "meaning": "美味的、好吃的",
+    "example": "この料理はとてもうまいです。",
+    "exampleMeaning": "這道菜非常好吃。"
+  },
+  "v720": {
+    "example": "お会いできてうれしいです。",
+    "exampleMeaning": "能見到你真是太高興了。"
+  },
+  "v721": {
+    "meaning": "嗯（口語同意）",
+    "example": "「行く？」「うん。」",
+    "exampleMeaning": "「要去嗎？」「嗯。」"
+  },
+  "v722": {
+    "exampleMeaning": "電扶梯在哪裡？"
+  },
+  "v723": {
+    "meaning": "（「行く」「来る」「いる」的尊敬語）去、來、在",
+    "example": "先生が教室においでになりました。",
+    "exampleMeaning": "老師來到教室了。"
+  },
+  "v724": {
+    "example": "オートバイを買います。",
+    "exampleMeaning": "我要買摩托車。"
   }
 }
