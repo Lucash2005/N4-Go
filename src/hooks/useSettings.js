@@ -1,5 +1,13 @@
 import { useLocalStorage } from './useLocalStorage'
 
+/** Flashcard type scale — applied via --fc-scale CSS var */
+export const CARD_FONT_SIZES = {
+  sm: { label: '小', scale: 0.85 },
+  md: { label: '中', scale: 1 },
+  lg: { label: '大', scale: 1.18 },
+  xl: { label: '特大', scale: 1.35 },
+}
+
 const DEFAULT_SETTINGS = {
   showFurigana: true,
   showExampleMeaning: true,
@@ -15,6 +23,8 @@ const DEFAULT_SETTINGS = {
   geminiApiKey: '',
   ttsEngine: 'auto', // auto | system
   ttsRate: 0.88,
+  /** Flashcard content type size: sm | md | lg | xl */
+  cardFontSize: 'md',
   loopPlayWord: true,
   loopPlayExample: true,
   loopPlayMeaning: false,
@@ -35,6 +45,10 @@ export function useSettings() {
     : 'auto'
   const quizDirection = settings.quizDirection === 'zh-ja' ? 'zh-ja' : 'ja-zh'
   const geminiApiKey = String(settings.geminiApiKey || '').trim()
+  const cardFontSize = CARD_FONT_SIZES[settings.cardFontSize]
+    ? settings.cardFontSize
+    : 'md'
+  const cardFontScale = CARD_FONT_SIZES[cardFontSize].scale
 
   return {
     settings: merged,
@@ -45,6 +59,8 @@ export function useSettings() {
     geminiApiKey,
     ttsEngine: settings.ttsEngine || 'auto',
     ttsRate: typeof settings.ttsRate === 'number' ? settings.ttsRate : 0.88,
+    cardFontSize,
+    cardFontScale,
     loopPlayWord: merged.loopPlayWord !== false,
     loopPlayExample: merged.loopPlayExample !== false,
     loopPlayMeaning: merged.loopPlayMeaning === true,
@@ -56,6 +72,8 @@ export function useSettings() {
     setGeminiApiKey: (v) => updateSetting('geminiApiKey', String(v || '').trim()),
     setTtsEngine: (v) => updateSetting('ttsEngine', v),
     setTtsRate: (v) => updateSetting('ttsRate', v),
+    setCardFontSize: (v) =>
+      updateSetting('cardFontSize', CARD_FONT_SIZES[v] ? v : 'md'),
     setLoopPlayWord: (v) => updateSetting('loopPlayWord', v),
     setLoopPlayExample: (v) => updateSetting('loopPlayExample', v),
     setLoopPlayMeaning: (v) => updateSetting('loopPlayMeaning', v),

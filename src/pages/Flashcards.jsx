@@ -6,7 +6,7 @@ import { withMemory } from '../data/memory'
 import { FORM_CARDS, formRule } from '../data/verbForms'
 import { getVocabulary } from '../data/vocabulary'
 import { useProgress } from '../hooks/useProgress'
-import { useSettings } from '../hooks/useSettings'
+import { useSettings, CARD_FONT_SIZES } from '../hooks/useSettings'
 import { useLocalStorage } from '../hooks/useLocalStorage'
 import { seededShuffle } from '../utils/dailyPlan'
 import { compactGlossLines, compactSenseGlosses, isChineseGloss } from '../utils/gloss'
@@ -128,6 +128,9 @@ export default function Flashcards() {
     setTtsEngine,
     ttsRate,
     setTtsRate,
+    cardFontSize,
+    cardFontScale,
+    setCardFontSize,
     loopPlayWord,
     loopPlayExample,
     loopPlayMeaning,
@@ -880,6 +883,19 @@ export default function Flashcards() {
           />
           <span className="w-10 tabular-nums">{ttsRate.toFixed(2)}</span>
         </label>
+        <div className="flex flex-wrap items-center gap-2 text-sm text-ink-soft">
+          <span className="shrink-0">字卡字級</span>
+          {Object.entries(CARD_FONT_SIZES).map(([key, meta]) => (
+            <FilterChip
+              key={key}
+              active={cardFontSize === key}
+              onClick={() => setCardFontSize(key)}
+            >
+              {meta.label}
+            </FilterChip>
+          ))}
+          <span className="text-xs text-ink-soft/80">單字・字義・例句</span>
+        </div>
         <p className="text-xs text-ink-soft">
           練習模式正面不顯示讀音，逼自己先回想。翻面後用「忘記／困難／記得／簡單」評分。
           {voiceEngine
@@ -1151,7 +1167,8 @@ export default function Flashcards() {
         <>
           <article
             key={card.id}
-            className="animate-flip-in soft-shadow relative cursor-pointer rounded-3xl [perspective:1200px]"
+            className="flash-card-scale animate-flip-in soft-shadow relative cursor-pointer rounded-3xl [perspective:1200px]"
+            style={{ '--fc-scale': cardFontScale }}
             onClick={flipCard}
             onKeyDown={(e) => {
               if (e.key === 'Enter' || e.key === ' ') {
@@ -1183,13 +1200,13 @@ export default function Flashcards() {
                 )}
                 {meaningFirst && card.type === 'vocab' ? (
                   <>
-                    <p className="mt-8 font-display text-4xl font-bold leading-snug text-ink sm:text-5xl">
+                    <p className="fc-word mt-8 font-display font-bold leading-snug text-ink">
                       {primaryZhMeaning(card)}
                     </p>
                   </>
                 ) : (
                   <>
-                    <p className="mt-8 font-display text-5xl font-bold text-ink sm:text-6xl">
+                    <p className="fc-word mt-8 font-display font-bold text-ink">
                       {card.type === 'vocab'
                         ? frontPromptForCard(card, promptScript)
                         : card.word}
@@ -1198,9 +1215,9 @@ export default function Flashcards() {
                     showFurigana &&
                     card.type === 'vocab' &&
                     frontPromptForCard(card, promptScript) !== card.reading ? (
-                      <p className="mt-4 text-2xl text-sea-deep">{card.reading}</p>
+                      <p className="fc-reading mt-4 text-sea-deep">{card.reading}</p>
                     ) : !hideReadingOnFront && showFurigana && card.type !== 'vocab' ? (
-                      <p className="mt-4 text-2xl text-sea-deep">{card.reading}</p>
+                      <p className="fc-reading mt-4 text-sea-deep">{card.reading}</p>
                     ) : null}
                   </>
                 )}
@@ -1670,24 +1687,24 @@ function VocabCardBack({
     <div className="w-full text-left">
       {meaningFirst ? (
         <>
-          <p className="mt-2 font-display text-4xl font-bold text-ink sm:text-5xl">{frontPrompt}</p>
+          <p className="fc-word mt-2 font-display font-bold text-ink">{frontPrompt}</p>
           {card.reading && frontPrompt !== card.reading ? (
-            <p className="mt-1 text-xl text-sea-deep">{card.reading}</p>
+            <p className="fc-reading mt-1 text-sea-deep">{card.reading}</p>
           ) : null}
-          <p className="mt-2 text-lg text-ink-soft sm:text-xl">{zhPrimary}</p>
+          <p className="fc-example-zh mt-2 text-ink-soft">{zhPrimary}</p>
         </>
       ) : (
-        <p className="mt-2 text-3xl font-bold leading-snug text-ink sm:text-4xl">{zhPrimary}</p>
+        <p className="fc-meaning mt-2 font-bold leading-snug text-ink">{zhPrimary}</p>
       )}
 
       {card.pos ? (
-        <p className="mt-2 text-base font-medium text-sea-deep">詞性：{card.pos}</p>
+        <p className="fc-pos mt-2 font-medium text-sea-deep">詞性：{card.pos}</p>
       ) : null}
 
       {(showKanjiLine || showKanaLine) && (forms.kanji !== forms.kana || showKanaLine) ? (
         <div className="mt-2 rounded-xl bg-sand/60 px-3 py-2 ring-1 ring-line/50">
-          <p className="text-[11px] font-medium text-sea-deep">寫法練習（與此字義／例句一致）</p>
-          <div className="mt-1 flex flex-wrap gap-x-4 gap-y-1 text-sm text-ink">
+          <p className="fc-meta font-medium text-sea-deep">寫法練習（與此字義／例句一致）</p>
+          <div className="fc-example mt-1 flex flex-wrap gap-x-4 gap-y-1 text-ink">
             {showKanjiLine ? (
               <p>
                 <span className="text-ink-soft">漢字：</span>
@@ -1751,14 +1768,14 @@ function VocabCardBack({
 
       <div className="mt-2 rounded-xl bg-foam/80 px-3 py-2">
         <div className="flex flex-wrap items-baseline justify-between gap-x-2 gap-y-0.5">
-          <p className="text-xs font-medium text-sea-deep">例句</p>
+          <p className="fc-meta font-medium text-sea-deep">例句</p>
           {card.exampleSource ? (
-            <p className="text-[11px] text-ink-soft">
+            <p className="fc-meta text-ink-soft">
               出處：{exampleSourceLabel(card.exampleSource)}
             </p>
           ) : null}
         </div>
-        <p className="mt-1.5 text-lg leading-relaxed text-ink sm:text-xl">
+        <p className="fc-example mt-1.5 leading-relaxed text-ink">
           <FuriganaText
             text={card.example}
             annotated={card.exampleFurigana || card.example}
@@ -1766,9 +1783,9 @@ function VocabCardBack({
           />
         </p>
         {showZhMeaning ? (
-          <p className="mt-1.5 text-base text-ink-soft sm:text-lg">{card.exampleMeaning}</p>
+          <p className="fc-example-zh mt-1.5 text-ink-soft">{card.exampleMeaning}</p>
         ) : (
-          <p className="mt-1 text-xs text-ink-soft">中文解釋已隱藏</p>
+          <p className="fc-meta mt-1 text-ink-soft">中文解釋已隱藏</p>
         )}
       </div>
 
@@ -1828,9 +1845,9 @@ function SenseDetail({ sense }) {
 function FormCardBack({ card, showZhMeaning, showFurigana }) {
   return (
     <>
-      <p className="mt-2 text-3xl font-bold text-ink">{card.meaning}</p>
+      <p className="fc-meaning mt-2 font-bold text-ink">{card.meaning}</p>
       {showFurigana && card.reading ? (
-        <p className="mt-1 text-base text-sea-deep">
+        <p className="fc-reading mt-1 text-sea-deep">
           {card.formDrill?.answerReading || card.reading}
         </p>
       ) : null}
@@ -1865,7 +1882,7 @@ function FormCardBack({ card, showZhMeaning, showFurigana }) {
       </div>
       <div className="mt-4 w-full rounded-2xl bg-foam/80 p-4 text-left">
         <p className="text-xs font-medium uppercase tracking-wide text-sea-deep">例句</p>
-        <p className="mt-2 text-lg leading-relaxed text-ink">
+        <p className="mt-2 fc-example leading-relaxed text-ink">
           <FuriganaText
             text={card.example}
             annotated={card.exampleFurigana}
@@ -1873,9 +1890,9 @@ function FormCardBack({ card, showZhMeaning, showFurigana }) {
           />
         </p>
         {showZhMeaning ? (
-          <p className="mt-2 text-base text-ink-soft">{card.exampleMeaning}</p>
+          <p className="mt-2 fc-example-zh text-ink-soft">{card.exampleMeaning}</p>
         ) : (
-          <p className="mt-2 text-sm text-ink-soft">中文解釋已隱藏</p>
+          <p className="mt-2 fc-meta text-ink-soft">中文解釋已隱藏</p>
         )}
       </div>
     </>
@@ -1885,8 +1902,8 @@ function FormCardBack({ card, showZhMeaning, showFurigana }) {
 function GrammarCardBack({ card }) {
   return (
     <>
-      <p className="mt-2 text-3xl font-bold text-ink">{card.meaning}</p>
-      {card.pattern ? <p className="mt-2 text-base text-sea-deep">句型：{card.pattern}</p> : null}
+      <p className="fc-meaning mt-2 font-bold text-ink">{card.meaning}</p>
+      {card.pattern ? <p className="fc-pos mt-2 text-sea-deep">句型：{card.pattern}</p> : null}
       <div className="mt-4 w-full space-y-2.5 text-left text-sm leading-relaxed text-ink sm:text-base">
         {card.useWhen ? (
           <p className="rounded-xl bg-foam/90 px-3.5 py-2.5">
@@ -1918,7 +1935,7 @@ function GrammarCardBack({ card }) {
       </div>
       {card.example ? (
         <div className="mt-4 w-full rounded-2xl bg-foam/80 p-4 text-left">
-          <p className="text-lg leading-relaxed text-ink">
+          <p className="fc-example leading-relaxed text-ink">
             <FuriganaText
               text={card.example}
               annotated={card.exampleFurigana}
@@ -1926,7 +1943,7 @@ function GrammarCardBack({ card }) {
             />
           </p>
           {card.exampleMeaning ? (
-            <p className="mt-2 text-base text-ink-soft">{card.exampleMeaning}</p>
+            <p className="fc-example-zh mt-2 text-ink-soft">{card.exampleMeaning}</p>
           ) : null}
         </div>
       ) : null}

@@ -74,6 +74,57 @@
         rgb(58 138 122 / 0.04) 19px
       );
   }
+
+  /* Flashcard type scale — set --fc-scale on .flash-card-scale */
+  .flash-card-scale {
+    --fc-s: var(--fc-scale, 1);
+    --fc-word: calc(2.75rem * var(--fc-s));
+    --fc-meaning: calc(1.75rem * var(--fc-s));
+    --fc-reading: calc(1.35rem * var(--fc-s));
+    --fc-example: calc(1.125rem * var(--fc-s));
+    --fc-example-zh: calc(1rem * var(--fc-s));
+    --fc-pos: calc(0.95rem * var(--fc-s));
+    --fc-meta: calc(0.8rem * var(--fc-s));
+  }
+
+  @media (min-width: 640px) {
+    .flash-card-scale {
+      --fc-word: calc(3.5rem * var(--fc-s));
+      --fc-meaning: calc(2.15rem * var(--fc-s));
+      --fc-reading: calc(1.5rem * var(--fc-s));
+      --fc-example: calc(1.25rem * var(--fc-s));
+      --fc-example-zh: calc(1.1rem * var(--fc-s));
+    }
+  }
+
+  .fc-word {
+    font-size: var(--fc-word);
+    line-height: 1.15;
+  }
+  .fc-meaning {
+    font-size: var(--fc-meaning);
+    line-height: 1.25;
+  }
+  .fc-reading {
+    font-size: var(--fc-reading);
+    line-height: 1.3;
+  }
+  .fc-example {
+    font-size: var(--fc-example);
+    line-height: 1.45;
+  }
+  .fc-example-zh {
+    font-size: var(--fc-example-zh);
+    line-height: 1.4;
+  }
+  .fc-pos {
+    font-size: var(--fc-pos);
+    line-height: 1.35;
+  }
+  .fc-meta {
+    font-size: var(--fc-meta);
+    line-height: 1.35;
+  }
 }
 
 @keyframes fade-up {
