@@ -1236,7 +1236,7 @@ export default function Flashcards() {
                   : 'transition-transform duration-500'
               }`}
             >
-              <CardFace className="[grid-area:stack] [backface-visibility:hidden] overflow-hidden">
+              <CardFace align="start" className="[grid-area:stack] [backface-visibility:hidden] overflow-hidden">
                 {card.type === 'vocab' && card.pos ? (
                   <span className="rounded-full bg-sand/90 px-2.5 py-0.5 text-xs font-medium text-sea-deep ring-1 ring-line/60">
                     {card.pos}
@@ -1248,13 +1248,13 @@ export default function Flashcards() {
                 )}
                 {meaningFirst && card.type === 'vocab' ? (
                   <>
-                    <p className="fc-word mt-8 font-display font-bold leading-snug text-ink">
+                    <p className="fc-word mt-6 font-display font-bold leading-snug text-ink">
                       {primaryZhMeaning(card)}
                     </p>
                   </>
                 ) : (
                   <>
-                    <p className="fc-word mt-8 font-display font-bold text-ink">
+                    <p className="fc-word mt-6 font-display font-bold text-ink">
                       {card.type === 'vocab'
                         ? frontPromptForCard(card, promptScript)
                         : card.word}
@@ -1263,9 +1263,9 @@ export default function Flashcards() {
                     showFurigana &&
                     card.type === 'vocab' &&
                     frontPromptForCard(card, promptScript) !== card.reading ? (
-                      <p className="fc-reading mt-4 text-sea-deep">{card.reading}</p>
+                      <p className="fc-reading mt-3 text-sea-deep">{card.reading}</p>
                     ) : !hideReadingOnFront && showFurigana && card.type !== 'vocab' ? (
-                      <p className="fc-reading mt-4 text-sea-deep">{card.reading}</p>
+                      <p className="fc-reading mt-3 text-sea-deep">{card.reading}</p>
                     ) : null}
                   </>
                 )}
