@@ -1,4 +1,4 @@
-import { NavLink, Outlet } from 'react-router-dom'
+import { NavLink, Outlet, useLocation } from 'react-router-dom'
 
 const links = [
   { to: '/', label: '首頁', icon: HomeIcon },
@@ -8,19 +8,43 @@ const links = [
 ]
 
 export default function Layout() {
+  const { pathname } = useLocation()
+  const studyMode = pathname.startsWith('/flashcards')
+
   return (
-    <div className="mx-auto flex min-h-dvh w-full max-w-5xl flex-col px-4 pb-28 pt-5 sm:px-6 sm:pb-10 sm:pt-8">
-      <header className="animate-fade-up mb-6 flex items-end justify-between gap-4">
+    <div
+      className={`mx-auto flex min-h-dvh w-full max-w-5xl flex-col px-4 pb-28 sm:px-6 sm:pb-10 ${
+        studyMode ? 'pt-3 sm:pt-4' : 'pt-5 sm:pt-8'
+      }`}
+    >
+      <header
+        className={`animate-fade-up flex items-end justify-between gap-4 ${
+          studyMode ? 'mb-3' : 'mb-6'
+        }`}
+      >
         <div>
-          <p className="text-sm font-medium tracking-[0.2em] text-sea">JLPT N4</p>
-          <h1 className="font-display text-3xl font-bold tracking-wide text-ink sm:text-4xl">
-            N4 Go
-          </h1>
-          <p className="mt-1 text-sm text-ink-soft">淡青日系學習助手 · 目標 2026.12</p>
+          {studyMode ? (
+            <>
+              <p className="text-xs font-medium tracking-[0.18em] text-sea">JLPT N4 · N4 Go</p>
+              <h1 className="font-display text-xl font-bold tracking-wide text-ink sm:text-2xl">
+                字卡練習
+              </h1>
+            </>
+          ) : (
+            <>
+              <p className="text-sm font-medium tracking-[0.2em] text-sea">JLPT N4</p>
+              <h1 className="font-display text-3xl font-bold tracking-wide text-ink sm:text-4xl">
+                N4 Go
+              </h1>
+              <p className="mt-1 text-sm text-ink-soft">淡青日系學習助手 · 目標 2026.12</p>
+            </>
+          )}
         </div>
-        <div className="hidden rounded-2xl bg-sea/10 px-3 py-2 text-xs text-sea-deep sm:block">
-          本地儲存 · 可離線使用
-        </div>
+        {!studyMode ? (
+          <div className="hidden rounded-2xl bg-sea/10 px-3 py-2 text-xs text-sea-deep sm:block">
+            本地儲存 · 可離線使用
+          </div>
+        ) : null}
       </header>
 
       <main className="flex-1">

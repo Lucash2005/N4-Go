@@ -25,6 +25,8 @@ const DEFAULT_SETTINGS = {
   ttsRate: 0.88,
   /** Flashcard content type size: sm | md | lg | xl */
   cardFontSize: 'md',
+  /** Auto-speak when a card face is shown */
+  autoPlayOnShow: false,
   loopPlayWord: true,
   loopPlayExample: true,
   loopPlayMeaning: false,
@@ -61,6 +63,7 @@ export function useSettings() {
     ttsRate: typeof settings.ttsRate === 'number' ? settings.ttsRate : 0.88,
     cardFontSize,
     cardFontScale,
+    autoPlayOnShow: merged.autoPlayOnShow === true,
     loopPlayWord: merged.loopPlayWord !== false,
     loopPlayExample: merged.loopPlayExample !== false,
     loopPlayMeaning: merged.loopPlayMeaning === true,
@@ -74,6 +77,7 @@ export function useSettings() {
     setTtsRate: (v) => updateSetting('ttsRate', v),
     setCardFontSize: (v) =>
       updateSetting('cardFontSize', CARD_FONT_SIZES[v] ? v : 'md'),
+    setAutoPlayOnShow: (v) => updateSetting('autoPlayOnShow', Boolean(v)),
     setLoopPlayWord: (v) => updateSetting('loopPlayWord', v),
     setLoopPlayExample: (v) => updateSetting('loopPlayExample', v),
     setLoopPlayMeaning: (v) => updateSetting('loopPlayMeaning', v),

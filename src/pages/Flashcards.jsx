@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import FuriganaText from '../components/FuriganaText'
 import { getGrammar } from '../data/grammar'
@@ -9,6 +9,7 @@ import { useProgress } from '../hooks/useProgress'
 import { useSettings, CARD_FONT_SIZES } from '../hooks/useSettings'
 import { useLocalStorage } from '../hooks/useLocalStorage'
 import { seededShuffle } from '../utils/dailyPlan'
+import { briefExampleGrammar } from '../utils/exampleGrammar'
 import { compactGlossLines, compactSenseGlosses, isChineseGloss } from '../utils/gloss'
 
 const EXAMPLE_SOURCE_LABEL = {
@@ -131,6 +132,8 @@ export default function Flashcards() {
     cardFontSize,
     cardFontScale,
     setCardFontSize,
+    autoPlayOnShow,
+    setAutoPlayOnShow,
     loopPlayWord,
     loopPlayExample,
     loopPlayMeaning,
@@ -143,6 +146,7 @@ export default function Flashcards() {
   const [searchParams, setSearchParams] = useSearchParams()
   const mode = searchParams.get('mode') || 'all'
   const focusId = searchParams.get('id') || ''
+  const cardAnchorRef = useRef(null)
 
   const [query, setQuery] = useState('')
   const [typeFilter, setTypeFilter] = useState('all')
@@ -351,6 +355,18 @@ export default function Flashcards() {
     setReportNote('')
     // eslint-disable-next-line react-hooks/exhaustive-deps -- only reload when the card changes
   }, [card?.id])
+
+  // Keep the study card pinned to the top of the viewport when switching cards
+  useEffect(() => {
+    if (!card?.id) return
+    const el = cardAnchorRef.current
+    if (!el) return
+    // Prefer aligning the card itself; fall back to page top on first paint
+    requestAnimationFrame(() => {
+      el.scrollIntoView({ block: 'start', behavior: 'auto' })
+      if (window.scrollY > 0) window.scrollBy({ top: -8, behavior: 'auto' })
+    })
+  }, [card?.id, mode])
 
   function saveNote(text) {
     if (!card) return
@@ -714,6 +730,17 @@ export default function Flashcards() {
     }
   }
 
+  // Auto-play current face when a card is shown (skip while loop playlist is playing)
+  useEffect(() => {
+    if (!autoPlayOnShow || !card) return
+    if (playlist.playing) return
+    const timer = window.setTimeout(() => {
+      playAudio()
+    }, 280)
+    return () => window.clearTimeout(timer)
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- play on card/face change only
+  }, [autoPlayOnShow, card?.id, flipped])
+
   const loopOptions = {
     playWord: loopPlayWord,
     playExample: loopPlayExample,
@@ -802,37 +829,47 @@ export default function Flashcards() {
     : MODE_META['today-grammar'].hint
 
   return (
-    <div className="space-y-5">
-      <section className="animate-fade-up">
-        <h2 className="font-display text-2xl font-bold text-ink">
-          {meta ? meta.title : '單字與文法卡片'}
-        </h2>
-        <p className="mt-1 text-sm text-ink-soft">
-          {meta
-            ? mode === 'today-grammar'
-              ? grammarHint
-              : meta.hint
-            : '點擊卡片翻面 · 支援搜尋與分類 · TTS 發音'}
-        </p>
+    <div className="space-y-3">
+      <section className="animate-fade-up flex flex-wrap items-end justify-between gap-2">
+        <div className="min-w-0">
+          <h2 className="font-display text-lg font-bold text-ink sm:text-xl">
+            {meta ? meta.title : '單字與文法卡片'}
+          </h2>
+          <p className="mt-0.5 line-clamp-2 text-xs text-ink-soft sm:text-sm">
+            {meta
+              ? mode === 'today-grammar'
+                ? grammarHint
+                : meta.hint
+              : '點擊卡片翻面 · TTS 發音'}
+          </p>
+        </div>
         {todayMode ? (
           <button
             type="button"
             onClick={clearMode}
-            className="mt-2 text-sm text-sea-deep underline-offset-2 hover:underline"
+            className="shrink-0 text-xs text-sea-deep underline-offset-2 hover:underline sm:text-sm"
           >
             返回全部卡片
           </button>
         ) : (
           <Link
             to="/flashcards?mode=today-review"
-            className="mt-2 inline-block text-sm text-sea-deep underline-offset-2 hover:underline"
+            className="shrink-0 text-xs text-sea-deep underline-offset-2 hover:underline sm:text-sm"
           >
-            開始 SRS 複習 →
+            SRS 複習 →
           </Link>
         )}
       </section>
 
-      <section className="surface soft-shadow animate-fade-up stagger-1 space-y-3 rounded-3xl p-4 sm:p-5">
+      <details className="surface soft-shadow animate-fade-up rounded-3xl">
+        <summary className="cursor-pointer list-none px-4 py-2.5 text-sm font-medium text-ink marker:content-none [&::-webkit-details-marker]:hidden">
+          <span className="flex items-center justify-between gap-2">
+            <span>設定・篩選・循環播放</span>
+            <span className="text-xs font-normal text-ink-soft">點開調整</span>
+          </span>
+        </summary>
+        <div className="space-y-3 border-t border-line/60 px-4 py-3 sm:px-5 sm:py-4">
+      <section className="space-y-3">
         <div className="flex flex-wrap gap-2">
           <FilterChip active={showFurigana} onClick={() => setShowFurigana(!showFurigana)}>
             {showFurigana ? '音標：顯示中' : '音標：已隱藏'}
@@ -868,6 +905,9 @@ export default function Flashcards() {
             onClick={() => setTtsEngine(ttsEngine === 'auto' ? 'system' : 'auto')}
           >
             {ttsEngine === 'auto' ? '發音：Neural 自然聲' : '發音：系統聲'}
+          </FilterChip>
+          <FilterChip active={autoPlayOnShow} onClick={() => setAutoPlayOnShow(!autoPlayOnShow)}>
+            {autoPlayOnShow ? '自動播放：開' : '自動播放：關'}
           </FilterChip>
         </div>
         <label className="flex items-center gap-3 text-sm text-ink-soft">
@@ -911,7 +951,7 @@ export default function Flashcards() {
       </section>
 
       {deck.length > 0 && !doneSession && !(srsMode && flipped) ? (
-        <section className="surface soft-shadow animate-fade-up stagger-1 rounded-3xl p-4 sm:p-5">
+        <section className="space-y-2 rounded-2xl bg-foam/50 p-3 ring-1 ring-line/50">
           <div className="flex flex-wrap items-start justify-between gap-3">
             <div>
               <p className="font-medium text-ink">循環播放</p>
@@ -988,7 +1028,7 @@ export default function Flashcards() {
       ) : null}
 
       {!todayMode ? (
-        <section className="surface soft-shadow animate-fade-up stagger-2 space-y-3 rounded-3xl p-4 sm:p-5">
+        <section className="space-y-3 rounded-2xl bg-foam/50 p-3 ring-1 ring-line/50">
           <input
             type="search"
             value={query}
@@ -1125,14 +1165,21 @@ export default function Flashcards() {
           </span>
         )}
       </div>
+        </div>
+      </details>
 
-      <p className="text-xs text-ink-soft">
-        {srsMode
-          ? `本輪剩餘 ${deck.length} 張`
-          : `共 ${deck.length} 張`}
-        {card && !doneSession ? ` · 目前第 ${safeIndex + 1} 張` : ''}
-        {entry?.due ? ` · 下次 ${entry.due}` : ''}
-        {card && todayMode && !srsMode && isStudied(card.id) ? ' · 已計入今日' : ''}
+      <p className="flex flex-wrap items-center gap-2 text-xs text-ink-soft">
+        <span>
+          {srsMode
+            ? `本輪剩餘 ${deck.length} 張`
+            : `共 ${deck.length} 張`}
+          {card && !doneSession ? ` · 目前第 ${safeIndex + 1} 張` : ''}
+          {entry?.due ? ` · 下次 ${entry.due}` : ''}
+          {card && todayMode && !srsMode && isStudied(card.id) ? ' · 已計入今日' : ''}
+        </span>
+        <FilterChip active={autoPlayOnShow} onClick={() => setAutoPlayOnShow(!autoPlayOnShow)}>
+          {autoPlayOnShow ? '自動播放：開' : '自動播放：關'}
+        </FilterChip>
       </p>
 
       {doneSession ? (
@@ -1165,6 +1212,7 @@ export default function Flashcards() {
         </div>
       ) : (
         <>
+          <div ref={cardAnchorRef} className="scroll-mt-2" />
           <article
             key={card.id}
             className="flash-card-scale animate-flip-in soft-shadow relative cursor-pointer rounded-3xl [perspective:1200px]"
@@ -1787,6 +1835,7 @@ function VocabCardBack({
         ) : (
           <p className="fc-meta mt-1 text-ink-soft">中文解釋已隱藏</p>
         )}
+        <ExampleGrammarNote example={card.example} card={card} />
       </div>
 
       {canExpandDetail ? (
@@ -1894,6 +1943,7 @@ function FormCardBack({ card, showZhMeaning, showFurigana }) {
         ) : (
           <p className="mt-2 fc-meta text-ink-soft">中文解釋已隱藏</p>
         )}
+        <ExampleGrammarNote example={card.example} card={card} />
       </div>
     </>
   )
@@ -1945,9 +1995,21 @@ function GrammarCardBack({ card }) {
           {card.exampleMeaning ? (
             <p className="fc-example-zh mt-2 text-ink-soft">{card.exampleMeaning}</p>
           ) : null}
+          <ExampleGrammarNote example={card.example} card={card} />
         </div>
       ) : null}
     </>
+  )
+}
+
+function ExampleGrammarNote({ example, card }) {
+  const note = briefExampleGrammar(example, card)
+  if (!note) return null
+  return (
+    <p className="fc-meta mt-1.5 rounded-lg bg-sand/50 px-2.5 py-1.5 leading-relaxed text-sea-deep">
+      <span className="font-medium">文法：</span>
+      {note}
+    </p>
   )
 }
 
