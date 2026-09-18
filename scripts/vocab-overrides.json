@@ -1114,9 +1114,10 @@
       "樣子",
       "打扮"
     ],
-    "example": "かっこうがいいですね。",
+    "example": "格好がいいですね。",
     "exampleMeaning": "樣子很好看呢。",
-    "exampleFurigana": "かっこうがいいですね。"
+    "exampleFurigana": "かっこうがいいですね。",
+    "kanji": "格好"
   },
   "v1068": {
     "meaning": "上去；上升",
@@ -3452,5 +3453,249 @@
     "exampleMeaning": "二十號要見面。",
     "exampleFurigana": "二十日[はつか]に会[あ]います。",
     "speechReading": "はつか"
+  },
+  "v725": {
+    "meaning": "由於、多虧",
+    "example": "先生のおかげで、日本語が上手になりました。",
+    "exampleMeaning": "多虧了老師，我的日語變好了。"
+  },
+  "v729": {
+    "example": "子どもが おもちゃで 遊んでいます。",
+    "exampleMeaning": "小孩子在玩玩具。"
+  },
+  "v733": {
+    "meaning": "祝賀、慶祝、賀禮",
+    "example": "誕生月のお祝いをします。",
+    "exampleMeaning": "要慶祝生日。"
+  },
+  "v738": {
+    "example": "カーテンを閉めてください。",
+    "exampleMeaning": "請把窗簾關上。"
+  },
+  "v739": {
+    "meaning": "瓦斯、氣體",
+    "example": "お風呂のガスをつけました。",
+    "exampleMeaning": "我開了浴室的瓦斯。"
+  },
+  "v740": {
+    "example": "車にガソリンを入れます。",
+    "exampleMeaning": "為汽車加汽油。"
+  },
+  "v741": {
+    "example": "次のガソリンスタンドで止まります。"
+  },
+  "v743": {
+    "meaning": "介意、管閒事",
+    "example": "そんなに細かいことは気にしないでください。",
+    "exampleMeaning": "請不要太在意那些小事。",
+    "kanji": "構う"
+  },
+  "v744": {
+    "meaning": "玻璃",
+    "example": "窓のガラスが割れました。",
+    "exampleMeaning": "窗戶的玻璃破了。",
+    "kanji": "硝子"
+  },
+  "v746": {
+    "meaning": "給予（尊敬語，用於尊長給自己）",
+    "example": "先生が本を貸してくださいました。",
+    "exampleMeaning": "老師借給我書。"
+  },
+  "v747": {
+    "meaning": "給予（別人為我做某事）",
+    "example": "友達が本をくれました。",
+    "exampleMeaning": "朋友給了我書。"
+  },
+  "v748": {
+    "example": "誕生日（たんじょうび）にケーキを食べました。",
+    "exampleMeaning": "我在生日時吃了蛋糕。"
+  },
+  "v749": {
+    "meaning": "受傷",
+    "example": "昨日、足をけがしました。",
+    "exampleMeaning": "昨天腳受傷了。",
+    "kanji": "怪我する"
+  },
+  "v752": {
+    "meaning": "這樣、如此",
+    "example": "こうしてください。",
+    "exampleMeaning": "請這樣做。"
+  },
+  "v753": {
+    "meaning": "豐盛的料理、盛宴",
+    "example": "昨日の夕食はごちそうでした。",
+    "exampleMeaning": "昨天的晚餐是豐盛的料理。"
+  },
+  "v754": {
+    "meaning": "事情、事物",
+    "example": "それは大切なことです。",
+    "exampleMeaning": "那是很重要的事情。"
+  },
+  "v755": {
+    "example": "このあいだ、新しい本を買いました。",
+    "exampleMeaning": "我前幾天買了一本新書。",
+    "meaning": "日前；最近"
+  },
+  "v760": {
+    "meaning": "音樂會、演唱會",
+    "example": "週末にコンサートに行きます。",
+    "exampleMeaning": "週末要去音樂會。"
+  },
+  "v761": {
+    "example": "コンピューターが止まってしまいました。",
+    "exampleMeaning": "電腦當機了。",
+    "meaning": "電腦"
+  },
+  "v762": {
+    "meaning": "知道；了解（「知っている」的敬語）",
+    "example": "山田さんをご存じですか。",
+    "exampleMeaning": "您認識山田先生嗎？"
+  },
+  "v764": {
+    "example": "サラダは美味しいですか。"
+  },
+  "v765": {
+    "example": "サンダルを買いました。"
+  },
+  "v766": {
+    "example": "サンドイッチを食べます。",
+    "exampleMeaning": "我要吃三明治。"
+  },
+  "v767": {
+    "meaning": "大下個月",
+    "example": "さ来月は旅行に行きます。",
+    "exampleMeaning": "大下個月要去旅行。"
+  },
+  "v768": {
+    "meaning": "大下週（下下週）",
+    "example": "さ来週、友だちに会います。",
+    "exampleMeaning": "大下週要跟朋友見面。"
+  },
+  "v769": {
+    "meaning": "斥責、責罵",
+    "example": "先生が遅刻した生徒を叱ります。",
+    "exampleMeaning": "老師會責罵遲到的學生。",
+    "kanji": "叱る"
+  },
+  "v770": {
+    "meaning": "牢牢；堅固；好好地",
+    "example": "毎日しっかり勉強します。",
+    "exampleMeaning": "我每天都有好好學習。"
+  },
+  "v771": {
+    "meaning": "一會兒、暫時、好久不見",
+    "example": "しばらくですね。お元気ですか。",
+    "exampleMeaning": "好久不見了。您還好嗎？"
+  },
+  "v773": {
+    "example": "苺をジャムにします。",
+    "exampleMeaning": "要把草莓做成果醬。"
+  },
+  "v774": {
+    "meaning": "極為、相當",
+    "example": "ずいぶん寒くなりましたね。",
+    "exampleMeaning": "變得相當冷了呢。"
+  },
+  "v775": {
+    "example": "月曜日はスーツを着ます。",
+    "exampleMeaning": "星期一要穿西裝。"
+  },
+  "v776": {
+    "example": "そのスーツケースは重いですか。"
+  },
+  "v778": {
+    "meaning": "螢幕、銀幕",
+    "example": "映画館のスクリーンは大きいです。",
+    "exampleMeaning": "電影院的螢幕很大。"
+  },
+  "v779": {
+    "example": "すっかり忘れてしまいました。"
+  },
+  "v780": {
+    "meaning": "筆直；暢快、舒服",
+    "example": "窓を開けたら、空気がすっと入ってきました。",
+    "exampleMeaning": "打開窗戶後，新鮮空氣一下子就透進來了。"
+  },
+  "v781": {
+    "example": "今晩はステーキを食べます。",
+    "exampleMeaning": "今晚我要吃牛排。"
+  },
+  "v782": {
+    "example": "このステレオは音がきれいです。",
+    "exampleMeaning": "這台立體聲音響的音質很好。"
+  },
+  "v784": {
+    "example": "スリに財布を盗まれました。",
+    "exampleMeaning": "錢包被扒手偷走了。",
+    "meaning": "扒手"
+  },
+  "v785": {
+    "meaning": "然後、於是",
+    "example": "天気が悪くなりました。すると、彼は傘を取り出しました。",
+    "exampleMeaning": "天氣變壞了。於是，他拿出了雨傘。"
+  },
+  "v787": {
+    "meaning": "完全、根本（用於否定句）",
+    "example": "ぜんぜんわかりません。",
+    "exampleMeaning": "我完全不懂。"
+  },
+  "v788": {
+    "meaning": "這樣、如此",
+    "example": "そうですか。",
+    "exampleMeaning": "是這樣嗎？／原來如此。"
+  },
+  "v789": {
+    "meaning": "柔軟的；軟體",
+    "example": "ソフトクリームが食べたいです。",
+    "exampleMeaning": "我想吃霜淇淋。"
+  },
+  "v790": {
+    "meaning": "因此；所以；然後",
+    "example": "雨が降っていました。それで、傘を持っていきました。",
+    "exampleMeaning": "當時在下雨。所以，我帶了傘。"
+  },
+  "v791": {
+    "meaning": "而且、再加上",
+    "example": "この店は安いし、それに美味しいです。",
+    "exampleMeaning": "這家店既便宜，而且又好吃。"
+  },
+  "v793": {
+    "meaning": "那樣的、那種",
+    "example": "そんなに難しくないです。",
+    "exampleMeaning": "不會那麼難。"
+  },
+  "v796": {
+    "example": "私はこのタイプの車が好きです。",
+    "exampleMeaning": "我喜歡這種類型的車。"
+  },
+  "v797": {
+    "meaning": "所以、因此",
+    "example": "明日は試験ですから、早く寝ます。",
+    "exampleMeaning": "明天有考試，所以我要早點睡。"
+  },
+  "v798": {
+    "example": "たまに夕食を作ります。",
+    "exampleMeaning": "偶爾會做晚餐。"
+  },
+  "v799": {
+    "meaning": "不行",
+    "example": "ここではタバコを吸ってはだめです。",
+    "exampleMeaning": "在這裡抽菸是不行的。"
+  },
+  "v800": {
+    "meaning": "檢查、確認",
+    "example": "先生がテストの答案をチェックします。",
+    "exampleMeaning": "老師在檢查考試的答案。"
+  },
+  "v803": {
+    "example": "空に美しい月が出ています。",
+    "exampleMeaning": "天空中出現了美麗的月亮。",
+    "kanji": "月",
+    "meaning": "月亮"
+  },
+  "v804": {
+    "meaning": "打算、意圖",
+    "example": "何をするつもりですか。",
+    "exampleMeaning": "你打算做什麼？"
   }
 }
