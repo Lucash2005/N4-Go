@@ -249,22 +249,17 @@ async function callGeminiModel(model, key, prompt, signal, { useThinkingConfig =
 }
 
 /**
- * @param {object} card
+ * @param {string} prompt
  * @param {string} apiKey
- * @param {{ signal?: AbortSignal }} [opts]
+ * @param {{ signal?: AbortSignal, maxChars?: number }} [opts]
  * @returns {Promise<{ ok: boolean, text: string, error?: string, model?: string }>}
  */
-export async function reviewCardWithGemini(card, apiKey, opts = {}) {
+export async function generateGeminiText(prompt, apiKey, opts = {}) {
   const key = String(apiKey || '').trim()
   if (!key) {
-    return {
-      ok: false,
-      text: '',
-      error: 'missing_key',
-    }
+    return { ok: false, text: '', error: 'missing_key' }
   }
-
-  const prompt = buildGeminiReviewPrompt(card)
+  const maxChars = opts.maxChars ?? 1200
   let lastError = ''
 
   try {
@@ -272,7 +267,6 @@ export async function reviewCardWithGemini(card, apiKey, opts = {}) {
       for (let attempt = 0; attempt < 2; attempt += 1) {
         let { res, body } = await callGeminiModel(model, key, prompt, opts.signal)
 
-        // Some models reject thinkingConfig — retry once without it.
         if (!res.ok && /thinkingConfig|Unknown name/i.test(body)) {
           ;({ res, body } = await callGeminiModel(model, key, prompt, opts.signal, {
             useThinkingConfig: false,
@@ -281,12 +275,11 @@ export async function reviewCardWithGemini(card, apiKey, opts = {}) {
 
         if (res.status === 404) {
           lastError = shortError(404, body)
-          break // next model
+          break
         }
 
         if (RETRYABLE.has(res.status)) {
           lastError = shortError(res.status, body)
-          // brief backoff then retry same model once; else next model
           if (attempt === 0) {
             await sleep(700 + attempt * 500)
             continue
@@ -296,7 +289,6 @@ export async function reviewCardWithGemini(card, apiKey, opts = {}) {
 
         if (!res.ok) {
           lastError = shortError(res.status, body)
-          // Non-retryable for this model — try next model anyway
           break
         }
 
@@ -313,21 +305,60 @@ export async function reviewCardWithGemini(card, apiKey, opts = {}) {
           lastError = 'empty_response'
           break
         }
-        return { ok: true, text: text.slice(0, 1200), model }
+        return { ok: true, text: text.slice(0, maxChars), model }
       }
     }
 
-    return {
-      ok: false,
-      text: '',
-      error: lastError || 'no_available_model',
-    }
+    return { ok: false, text: '', error: lastError || 'no_available_model' }
   } catch (err) {
     if (err?.name === 'AbortError') {
       return { ok: false, text: '', error: 'aborted' }
     }
     return { ok: false, text: '', error: String(err?.message || err || 'network_error') }
   }
+}
+
+/**
+ * @param {object} card
+ * @param {string} apiKey
+ * @param {{ signal?: AbortSignal }} [opts]
+ * @returns {Promise<{ ok: boolean, text: string, error?: string, model?: string }>}
+ */
+export async function reviewCardWithGemini(card, apiKey, opts = {}) {
+  return generateGeminiText(buildGeminiReviewPrompt(card), apiKey, opts)
+}
+
+/** Prompt for short example-sentence grammar breakdown (Traditional Chinese). */
+export function buildExampleGrammarPrompt({
+  example = '',
+  exampleMeaning = '',
+  word = '',
+} = {}) {
+  const ja = String(example || '').trim()
+  const zh = String(exampleMeaning || '').trim()
+  const head = String(word || '').trim()
+  return `請扮演日語教學專家。當我提供一個日语句子時，請嚴格按照以下結構進行簡短分析，不要有額外開場白：
+1.原句與翻譯：呈現原句並附上繁體中文翻譯。
+2.核心文法拆解：使用條列式，將句子拆解為單字與助詞，標註假名、詞性與文法功能。
+3.語感與特點：說明語氣（常體/敬體）、時態與適用情境。
+
+【待分析句子】
+日文：${ja || '（無）'}
+${zh ? `參考中譯：${zh}` : '參考中譯：（請自行翻譯）'}
+${head ? `本卡目標詞：${head}` : ''}
+
+請用繁體中文輸出，保持簡短（約 180～320 字），嚴格使用上述 1. 2. 3. 三段標題，不要加開場白或結語。`
+}
+
+/**
+ * Gemini analysis of a flashcard example sentence.
+ * @param {{ example?: string, exampleMeaning?: string, word?: string }} cardOrParts
+ * @param {string} apiKey
+ * @param {{ signal?: AbortSignal }} [opts]
+ */
+export async function analyzeExampleGrammarWithGemini(cardOrParts, apiKey, opts = {}) {
+  const prompt = buildExampleGrammarPrompt(cardOrParts)
+  return generateGeminiText(prompt, apiKey, { ...opts, maxChars: 1800 })
 }
 
 export { cardSnapshot }

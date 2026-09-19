@@ -9,7 +9,6 @@ import { useProgress } from '../hooks/useProgress'
 import { useSettings, CARD_FONT_SIZES } from '../hooks/useSettings'
 import { useLocalStorage } from '../hooks/useLocalStorage'
 import { seededShuffle } from '../utils/dailyPlan'
-import { briefExampleGrammar } from '../utils/exampleGrammar'
 import { compactGlossLines, compactSenseGlosses, isChineseGloss } from '../utils/gloss'
 
 const EXAMPLE_SOURCE_LABEL = {
@@ -37,7 +36,17 @@ import {
 import { getFilterStatus, GRADE_LABELS, normalizeEntry } from '../utils/srs'
 import { speakJapanese, speechTextForCard, audioClipForCard, stopSpeaking } from '../utils/tts'
 import { frontPromptForCard, scriptFormsForCard } from '../utils/scriptForms'
-import { buildChatCopyPrompt, parseGeminiReviewText, reviewCardWithGemini } from '../utils/geminiReview'
+import {
+  buildChatCopyPrompt,
+  parseGeminiReviewText,
+  reviewCardWithGemini,
+  analyzeExampleGrammarWithGemini,
+} from '../utils/geminiReview'
+import {
+  getCachedExampleGrammar,
+  setCachedExampleGrammar,
+  clearCachedExampleGrammar,
+} from '../utils/exampleGrammarCache'
 import {
   applyLocalCardFix,
   clearLocalCardFix,
@@ -2003,13 +2012,134 @@ function GrammarCardBack({ card }) {
 }
 
 function ExampleGrammarNote({ example, card }) {
-  const note = briefExampleGrammar(example, card)
-  if (!note) return null
+  const { geminiApiKey, setGeminiApiKey } = useSettings()
+  const [text, setText] = useState('')
+  const [status, setStatus] = useState('idle') // idle | loading | ready | error | need_key
+  const [error, setError] = useState('')
+  const [keyDraft, setKeyDraft] = useState('')
+  const [tick, setTick] = useState(0)
+
+  const exampleZh = card?.exampleMeaning || ''
+  const cardId = card?.id || ''
+
+  useEffect(() => {
+    const ja = String(example || '').trim()
+    if (!ja || /例句準備中/.test(ja)) {
+      setText('')
+      setStatus('idle')
+      return undefined
+    }
+
+    const cached = getCachedExampleGrammar(cardId, ja, exampleZh)
+    if (cached?.text) {
+      setText(cached.text)
+      setStatus('ready')
+      setError('')
+      return undefined
+    }
+
+    const key = String(geminiApiKey || '').trim()
+    if (!key) {
+      setText('')
+      setStatus('need_key')
+      setError('')
+      return undefined
+    }
+
+    const ac = new AbortController()
+    setStatus('loading')
+    setError('')
+    ;(async () => {
+      const result = await analyzeExampleGrammarWithGemini(
+        { example: ja, exampleMeaning: exampleZh, word: card?.word || '' },
+        key,
+        { signal: ac.signal },
+      )
+      if (ac.signal.aborted) return
+      if (result.ok && result.text) {
+        setCachedExampleGrammar(cardId, ja, exampleZh, result.text, { model: result.model })
+        bumpGeminiDayUsage()
+        setText(result.text)
+        setStatus('ready')
+        return
+      }
+      if (result.error === 'aborted') return
+      if (result.error === 'missing_key') {
+        setStatus('need_key')
+        return
+      }
+      setError(result.error || '分析失敗')
+      setStatus('error')
+    })()
+
+    return () => ac.abort()
+  }, [cardId, example, exampleZh, geminiApiKey, card?.word, tick])
+
+  if (!example || /例句準備中/.test(example)) return null
+
   return (
-    <p className="fc-meta mt-1.5 rounded-lg bg-sand/50 px-2.5 py-1.5 leading-relaxed text-sea-deep">
-      <span className="font-medium">文法：</span>
-      {note}
-    </p>
+    <div
+      className="fc-meta mt-1.5 rounded-lg bg-sand/50 px-2.5 py-1.5 text-left leading-relaxed text-sea-deep"
+      onClick={(e) => e.stopPropagation()}
+      onKeyDown={(e) => e.stopPropagation()}
+    >
+      <div className="mb-1 flex flex-wrap items-center justify-between gap-2">
+        <p className="font-medium">例句文法（Gemini）</p>
+        {status === 'ready' || status === 'error' ? (
+          <button
+            type="button"
+            className="text-[11px] underline-offset-2 hover:underline"
+            onClick={() => {
+              clearCachedExampleGrammar(cardId)
+              setTick((n) => n + 1)
+            }}
+          >
+            重新分析
+          </button>
+        ) : null}
+      </div>
+
+      {status === 'loading' ? (
+        <p className="text-ink-soft">分析中…</p>
+      ) : null}
+
+      {status === 'ready' && text ? (
+        <pre className="whitespace-pre-wrap font-sans text-[0.95em] leading-relaxed text-ink">
+          {text}
+        </pre>
+      ) : null}
+
+      {status === 'error' ? (
+        <p className="text-coral">分析失敗：{error}</p>
+      ) : null}
+
+      {status === 'need_key' ? (
+        <div className="space-y-2 text-ink-soft">
+          <p>請設定 Gemini API Key（僅存本機），翻面後會自動分析例句文法。</p>
+          <div className="flex flex-wrap gap-2">
+            <input
+              type="password"
+              value={keyDraft}
+              onChange={(e) => setKeyDraft(e.target.value)}
+              placeholder="貼上 API Key"
+              className="min-w-[12rem] flex-1 rounded-xl border border-line bg-white/90 px-3 py-1.5 text-sm text-ink outline-none ring-sea/30 focus:ring-2"
+              onClick={(e) => e.stopPropagation()}
+            />
+            <button
+              type="button"
+              className="rounded-xl bg-sea px-3 py-1.5 text-xs font-medium text-white hover:bg-sea-deep"
+              onClick={() => {
+                const key = keyDraft.trim()
+                if (!key) return
+                setGeminiApiKey(key)
+              }}
+            >
+              儲存並分析
+            </button>
+          </div>
+        </div>
+      ) : null}
+    </div>
   )
 }
 
