@@ -167,7 +167,7 @@
       "幾乎",
       "大多"
     ],
-    "example": "本はほとんどない。",
+    "example": "本はほとんどありません。",
     "exampleMeaning": "書幾乎沒有。",
     "exampleFurigana": "本[ほん]はほとんどない。",
     "senses": [
@@ -552,7 +552,9 @@
     "exampleFurigana": ""
   },
   "v805": {
-    "exampleMeaning": "你用的是哪一本課本？"
+    "exampleMeaning": "這本教科書很易懂。",
+    "meaning": "課本；教科書；文字",
+    "example": "このテキストは分かりやすいです。"
   },
   "v413": {
     "meaning": "耳朵",
@@ -652,8 +654,8 @@
       "搬運",
       "運送"
     ],
-    "example": "荷物を運んでください。",
-    "exampleMeaning": "請搬行李。",
+    "example": "荷物を運びます。",
+    "exampleMeaning": "搬運行李。",
     "exampleFurigana": "荷物[にもつ]を運[はこ]んでください。"
   },
   "v972": {
@@ -3465,7 +3467,9 @@
   },
   "v733": {
     "meaning": "祝賀、慶祝、賀禮",
-    "meaningZh": ["祝賀、慶祝、賀禮"],
+    "meaningZh": [
+      "祝賀、慶祝、賀禮"
+    ],
     "example": "誕生日のお祝いをします。",
     "exampleMeaning": "要辦生日慶祝活動。"
   },
@@ -3487,7 +3491,10 @@
   },
   "v743": {
     "meaning": "介意、關心；管閒事",
-    "meaningZh": ["介意、關心", "管閒事"],
+    "meaningZh": [
+      "介意、關心",
+      "管閒事"
+    ],
     "example": "私のことは構わないでください。",
     "exampleMeaning": "請不要管我的事。",
     "kanji": "構う"
@@ -3615,7 +3622,10 @@
   },
   "v780": {
     "meaning": "一下子、順暢地；暢快",
-    "meaningZh": ["一下子、順暢地", "暢快"],
+    "meaningZh": [
+      "一下子、順暢地",
+      "暢快"
+    ],
     "example": "窓を開けたら、空気がすっと入ってきました。",
     "exampleMeaning": "打開窗戶後，空氣一下子順暢地透進來了。"
   },
@@ -3673,7 +3683,9 @@
   },
   "v797": {
     "meaning": "所以、因此（接續詞）",
-    "meaningZh": ["所以、因此"],
+    "meaningZh": [
+      "所以、因此"
+    ],
     "example": "時間がありません。だから急ぎます。",
     "exampleMeaning": "沒有時間了。所以我要趕緊。"
   },
@@ -3701,5 +3713,232 @@
     "meaning": "打算、意圖",
     "example": "何をするつもりですか。",
     "exampleMeaning": "你打算做什麼？"
+  },
+  "v806": {
+    "example": "できるだけ早く来てください。",
+    "exampleMeaning": "請盡量早點來。"
+  },
+  "v809": {
+    "meaning": "理髮店",
+    "example": "明日、床屋に行きます。",
+    "exampleMeaning": "明天我要去理髮店。",
+    "kanji": "床屋"
+  },
+  "v812": {
+    "example": "なるべく早く帰ります。",
+    "exampleMeaning": "我會盡量趕快回去。"
+  },
+  "v813": {
+    "meaning": "原來如此",
+    "example": "なるほど、そういうことですね。",
+    "exampleMeaning": "原來如此，是這麼一回事啊。"
+  },
+  "v814": {
+    "meaning": "氣味、香味、臭味",
+    "meaningZh": [
+      "氣味",
+      "香味",
+      "臭味"
+    ],
+    "example": "台所から良いにおいがします。",
+    "exampleMeaning": "廚房傳來了好聞的香味。"
+  },
+  "v816": {
+    "example": "この靴の値段はいくらですか。",
+    "exampleMeaning": "這雙鞋子的價格是多少？",
+    "kanji": "値段"
+  },
+  "v817": {
+    "meaning": "熱心、熱誠",
+    "example": "鈴木さんは仕事に熱心です。",
+    "exampleMeaning": "鈴木先生對工作很熱心。",
+    "kanji": "熱心"
+  },
+  "v818": {
+    "meaning": "喉嚨",
+    "example": "のどが渇きました。",
+    "exampleMeaning": "我口渴了。",
+    "kanji": "喉"
+  },
+  "v819": {
+    "example": "母はスーパーでパートをしています。",
+    "exampleMeaning": "我媽媽在超市做兼職。"
+  },
+  "v820": {
+    "meaning": "應該、理應",
+    "example": "田中さんは来るはずです。",
+    "exampleMeaning": "田中先生應該會來。"
+  },
+  "v821": {
+    "example": "私はパソコンで日本語を勉強します。",
+    "exampleMeaning": "我用電腦學習日文。"
+  },
+  "v822": {
+    "example": "遠くまではっきり見えます。",
+    "exampleMeaning": "可以清楚地看到遠處。"
+  },
+  "v824": {
+    "example": "ピアノが好きですか。"
+  },
+  "v825": {
+    "example": "昨日、ひげを剃りましたか。",
+    "exampleMeaning": "昨天刮鬍子了嗎？",
+    "kanji": "髭"
+  },
+  "v827": {
+    "meaning": "嚴重、糟糕",
+    "example": "今日はひどい雨ですね。",
+    "exampleMeaning": "今天雨下得真大呢。"
+  },
+  "v828": {
+    "meaning": "大樓、建築物",
+    "example": "あの白いビルは新しい病院です。",
+    "exampleMeaning": "那棟白色的建築物是新醫院。"
+  },
+  "v829": {
+    "example": "ファックスで送ります。",
+    "exampleMeaning": "用傳真發送。"
+  },
+  "v830": {
+    "example": "庭にぶどうの木があります。",
+    "exampleMeaning": "院子裡有一棵葡萄樹。",
+    "kanji": "葡萄"
+  },
+  "v831": {
+    "meaning": "禮物",
+    "example": "友だちにプレゼントを贈ります。",
+    "exampleMeaning": "送禮物給朋友。"
+  },
+  "v833": {
+    "meaning": "程度、大約、越……越……",
+    "example": "田中さんは私ほど日本語が上手ではありません。",
+    "exampleMeaning": "田中先生不像我日語那麼好。"
+  },
+  "v835": {
+    "example": "先生は私の日本語をほめました。",
+    "exampleMeaning": "老師稱讚了我的日語。",
+    "kanji": "褒める"
+  },
+  "v836": {
+    "meaning": "認真的、正經的",
+    "example": "彼はまじめな学生です。",
+    "exampleMeaning": "他是個認真的學生。",
+    "kanji": "真面目"
+  },
+  "v837": {
+    "example": "まず京都に行きます。"
+  },
+  "v841": {
+    "example": "もちろん、行きます。",
+    "exampleMeaning": "當然要去。"
+  },
+  "v843": {
+    "meaning": "收到、領受",
+    "example": "友達からプレゼントをもらいました。",
+    "exampleMeaning": "從朋友那裡收到了禮物。"
+  },
+  "v844": {
+    "example": "やっと着きました。",
+    "exampleMeaning": "終於到了。"
+  },
+  "v846": {
+    "meaning": "（恭敬）好的、可以",
+    "example": "これでよろしいですか。",
+    "exampleMeaning": "這樣可以嗎？"
+  },
+  "v847": {
+    "meaning": "收銀機、收銀臺",
+    "example": "レジで代金を払います。",
+    "exampleMeaning": "在收銀臺付錢。"
+  },
+  "v849": {
+    "meaning": "文書處理機、文字處理器",
+    "meaningZh": [
+      "文書處理機",
+      "文字處理器"
+    ],
+    "example": "ワープロで手紙を打ちます。",
+    "exampleMeaning": "用文書處理機打信件。"
+  },
+  "v853": {
+    "meaning": "除了……之外",
+    "example": "これ以外を見てください。",
+    "exampleMeaning": "請看這個以外的部分。"
+  },
+  "v854": {
+    "meaning": "以上；超過；既然",
+    "example": "これ以上は無理です。",
+    "exampleMeaning": "不能再勉強了。"
+  },
+  "v855": {
+    "example": "一週間以内にお願いします。",
+    "exampleMeaning": "請在一星期之內完成。"
+  },
+  "v857": {
+    "meaning": "轉移、移動；遷移",
+    "example": "来月、大阪へ移ります。",
+    "exampleMeaning": "下個月要搬到大阪。"
+  },
+  "v861": {
+    "meaning": "一次、曾經",
+    "example": "一度富士山に登りたいです。",
+    "exampleMeaning": "我想去爬一次富士山。"
+  },
+  "v862": {
+    "meaning": "抽屜",
+    "example": "机の引き出しに鍵をかけました。",
+    "exampleMeaning": "我把書桌抽屜鎖上了。",
+    "kanji": "引き出し"
+  },
+  "v863": {
+    "meaning": "領取、提款；抽出來",
+    "example": "銀行でお金を引き出します。",
+    "exampleMeaning": "在銀行提領現金。",
+    "kanji": "引き出す"
+  },
+  "v864": {
+    "example": "来月、東京へ引っ越します。",
+    "exampleMeaning": "我下個月要搬到東京去。"
+  },
+  "v869": {
+    "example": "空に白い雲があります。",
+    "exampleMeaning": "天空中有一朵白雲。"
+  },
+  "v873": {
+    "meaning": "弄髒、變髒",
+    "example": "服が汚れました。",
+    "exampleMeaning": "衣服弄髒了。",
+    "kanji": "汚れる"
+  },
+  "v874": {
+    "example": "押し入れに布団を入れます。",
+    "exampleMeaning": "把棉被放進衣櫥裡。"
+  },
+  "v878": {
+    "meaning": "掛；降低",
+    "example": "バッグを肩に下げます。",
+    "exampleMeaning": "把包包掛在肩上。",
+    "kanji": "下げる"
+  },
+  "v880": {
+    "meaning": "下降、降低",
+    "meaningZh": [
+      "下降",
+      "降低"
+    ],
+    "word": "下がる",
+    "reading": "さがる",
+    "example": "気温が下がると、雪が降ります。",
+    "exampleMeaning": "當氣溫下降時，會下雪。",
+    "kanji": "下がる"
+  },
+  "v875": {
+    "meaning": "億（一億）",
+    "meaningZh": [
+      "億"
+    ],
+    "example": "日本の人口は一億人以上です。",
+    "exampleMeaning": "日本的人口超過一億人。",
+    "kanji": "億"
   }
 }
