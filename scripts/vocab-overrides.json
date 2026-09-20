@@ -606,7 +606,9 @@
     "exampleFurigana": "もう十分[じゅうぶん]です。"
   },
   "v934": {
-    "exampleMeaning": "我和他比賽了。"
+    "exampleMeaning": "我和他競爭了。",
+    "meaning": "競賽、競爭",
+    "example": "私は彼と競争しました。"
   },
   "v334": {
     "example": "これは犬です。",
@@ -623,8 +625,9 @@
       "研究室",
       "實驗室"
     ],
-    "exampleMeaning": "請回研究室。",
-    "exampleFurigana": "研究室[けんきゅうしつ]に戻[もど]りなさい。"
+    "exampleMeaning": "老師在研究室裡。",
+    "exampleFurigana": "研究室[けんきゅうしつ]に戻[もど]りなさい。",
+    "example": "先生は研究室にいます。"
   },
   "v320": {
     "meaning": "九號；九天",
@@ -1364,8 +1367,8 @@
       "期間",
       "之間"
     ],
-    "example": "食事の間、話しました。",
-    "exampleMeaning": "吃飯的時候聊了天。",
+    "example": "夏休みの間、日本旅行をしました。",
+    "exampleMeaning": "暑假期間，我去日本旅行了。",
     "exampleFurigana": "食事[しょくじ]の間[あいだ]、話[はな]しました。"
   },
   "v002": {
@@ -3940,5 +3943,252 @@
     "example": "日本の人口は一億人以上です。",
     "exampleMeaning": "日本的人口超過一億人。",
     "kanji": "億"
+  },
+  "v887": {
+    "meaning": "賞花",
+    "example": "週末、友達と花見をします。",
+    "exampleMeaning": "週末和朋友去賞花。"
+  },
+  "v890": {
+    "example": "会議室はどこですか。"
+  },
+  "v891": {
+    "example": "会議室はどこですか。"
+  },
+  "v893": {
+    "example": "日本語の会話を練習します。",
+    "exampleMeaning": "練習日語對話。"
+  },
+  "v894": {
+    "meaning": "轉動、繞圈子",
+    "example": "地球は太陽の周りを回ります。",
+    "exampleMeaning": "地球繞著太陽轉。",
+    "kanji": "回る"
+  },
+  "v895": {
+    "meaning": "弄壞、打破",
+    "example": "彼は眼鏡を壊してしまいました。",
+    "exampleMeaning": "他把眼鏡弄壞了。"
+  },
+  "v897": {
+    "meaning": "海岸、海濱",
+    "example": "週末に海岸を散歩しました。",
+    "exampleMeaning": "週末在海岸散步了。"
+  },
+  "v898": {
+    "example": "皆が笑いました。"
+  },
+  "v899": {
+    "meaning": "確實、大概／確切的、可靠的",
+    "example": "明日の予定は確かですか。",
+    "exampleMeaning": "明天的預定確定嗎？"
+  },
+  "v900": {
+    "meaning": "樂趣、期待",
+    "example": "明日の遠足が楽しみです。",
+    "exampleMeaning": "我很期待明天的遠足。"
+  },
+  "v901": {
+    "meaning": "享受、樂趣",
+    "word": "楽しむ",
+    "reading": "たのしむ",
+    "example": "旅行を楽しんでいます。",
+    "exampleMeaning": "我正在享受旅行。",
+    "kanji": "楽しむ"
+  },
+  "v902": {
+    "meaning": "掛上；戴上；打（電話）",
+    "example": "壁にカレンダーを掛けます。",
+    "exampleMeaning": "在牆上掛日曆。",
+    "kanji": "掛ける"
+  },
+  "v903": {
+    "meaning": "破裂、碎裂",
+    "example": "コップが割れてしまいました。",
+    "exampleMeaning": "杯子打破了。"
+  },
+  "v904": {
+    "meaning": "比率；比例",
+    "example": "クラスの女子の割合は半分より多いです。",
+    "exampleMeaning": "班上女生的比例比一半還要多。",
+    "kanji": "割合"
+  },
+  "v905": {
+    "example": "床が濡れているので、滑らないように注意してください。",
+    "exampleMeaning": "因為地板很濕，請注意不要滑倒。"
+  },
+  "v906": {
+    "example": "犬が靴を噛んでいます。",
+    "exampleMeaning": "小狗正在咬鞋子。"
+  },
+  "v907": {
+    "meaning": "變乾、乾燥",
+    "example": "洗濯物が乾きました。",
+    "exampleMeaning": "洗好的衣服乾了。"
+  },
+  "v908": {
+    "example": "すぐに慣れますよ。",
+    "exampleMeaning": "很快就會習慣的。"
+  },
+  "v909": {
+    "meaning": "護士、護理師",
+    "example": "彼女は看護師です。",
+    "exampleMeaning": "她是護士。",
+    "kanji": "看護師"
+  },
+  "v910": {
+    "example": "この宿題は簡単です。",
+    "exampleMeaning": "這個作業很簡單。"
+  },
+  "v912": {
+    "meaning": "來得及、及時",
+    "example": "まだ間に合います。",
+    "exampleMeaning": "還來得及。"
+  },
+  "v913": {
+    "meaning": "弄錯、犯錯",
+    "example": "テストの答えを間違えました。",
+    "exampleMeaning": "我把考試答案寫錯了。"
+  },
+  "v916": {
+    "example": "父は私の合格を聞いて喜んでいました。",
+    "exampleMeaning": "父親聽到我考試合格的消息，顯得很高興。"
+  },
+  "v917": {
+    "meaning": "靠近、順道去",
+    "example": "駅の近くのコンビニに寄ります。",
+    "exampleMeaning": "順道去車站附近的便利商店。",
+    "kanji": "寄る"
+  },
+  "v918": {
+    "example": "別の機会にしましょう。",
+    "exampleMeaning": "改天再找機會吧。"
+  },
+  "v919": {
+    "meaning": "返回、回程",
+    "example": "会社帰りにお酒を飲みます。",
+    "exampleMeaning": "下班回家的路上喝酒。"
+  },
+  "v920": {
+    "meaning": "精神；情緒；氣氛",
+    "example": "彼はいつも元気がありません。",
+    "exampleMeaning": "他總是沒有精神。"
+  },
+  "v921": {
+    "meaning": "感覺；心情；情緒",
+    "example": "朝は気持ちがいいです。",
+    "exampleMeaning": "早晨感覺真舒服。"
+  },
+  "v923": {
+    "meaning": "火車",
+    "meaningZh": [
+      "火車"
+    ],
+    "example": "汽車で旅行します。",
+    "exampleMeaning": "搭火車去旅行。",
+    "kanji": "汽車"
+  },
+  "v924": {
+    "example": "合格を祈ります。",
+    "exampleMeaning": "祈求考試合格。"
+  },
+  "v925": {
+    "meaning": "規則、法規",
+    "example": "学校の規則を守ります。",
+    "exampleMeaning": "我會遵守學校的規則。"
+  },
+  "v926": {
+    "meaning": "叫醒、喚醒",
+    "example": "朝、母が私を起こします。",
+    "exampleMeaning": "早晨，媽媽叫醒我。",
+    "kanji": "起こす"
+  },
+  "v927": {
+    "meaning": "技術、科技",
+    "example": "日本の技術はとても進んでいます。",
+    "exampleMeaning": "日本的技術非常先進。"
+  },
+  "v928": {
+    "example": "トムさんは客です。",
+    "exampleMeaning": "湯姆是客人。"
+  },
+  "v929": {
+    "meaning": "好久不見",
+    "example": "お久しぶりですね。元気でしたか。",
+    "exampleMeaning": "好久不見呢。你過得好嗎？"
+  },
+  "v930": {
+    "meaning": "突然；緊急；陡峭",
+    "example": "急に雨が降ってきました。",
+    "exampleMeaning": "突然下起雨來了。",
+    "kanji": "急"
+  },
+  "v932": {
+    "meaning": "急行（列車）；快車",
+    "example": "次は急行が来ます。",
+    "exampleMeaning": "接下來會來一班急行列車。"
+  },
+  "v933": {
+    "example": "赤ちゃんが泣いています。",
+    "exampleMeaning": "嬰兒在哭。"
+  },
+  "v935": {
+    "example": "母は学校で教育について教えています。",
+    "exampleMeaning": "我母親在學校教導關於教育的事。"
+  },
+  "v937": {
+    "example": "日本語の歴史に興味があります。",
+    "exampleMeaning": "我對日本的歷史有興趣。"
+  },
+  "v940": {
+    "meaning": "鄰近地區、鄰居",
+    "example": "近所のスーパーで野菜を買いました。",
+    "exampleMeaning": "在附近的超市買了蔬菜。"
+  },
+  "v941": {
+    "example": "この薬は苦いです。",
+    "exampleMeaning": "這藥很苦。"
+  },
+  "v944": {
+    "example": "部屋の空気を入れ替えます。",
+    "exampleMeaning": "我要更換房間裡的空氣。"
+  },
+  "v947": {
+    "meaning": "你（用於平輩、晚輩或親近的人）",
+    "example": "君は毎日日本語を勉強しますか。",
+    "exampleMeaning": "你每天學習日語嗎？"
+  },
+  "v950": {
+    "example": "警察に道を聞きました。",
+    "exampleMeaning": "向警察問路。"
+  },
+  "v951": {
+    "meaning": "迎接、迎向",
+    "example": "来年、祖父は100歳を迎えます。",
+    "exampleMeaning": "明年祖父就滿一百歲了。",
+    "kanji": "迎える"
+  },
+  "v952": {
+    "meaning": "絕不、決不",
+    "example": "私は決して諦めません。",
+    "exampleMeaning": "我絕不放棄。"
+  },
+  "v953": {
+    "meaning": "決定、敲定",
+    "word": "決まる",
+    "reading": "きまる",
+    "example": "時間と場所はもう決まりましたか。",
+    "exampleMeaning": "時間和地點已經決定好了嗎？",
+    "kanji": "決まる"
+  },
+  "v942": {
+    "meaning": "狀況；身體狀況",
+    "meaningZh": [
+      "狀況",
+      "身體狀況"
+    ],
+    "example": "今日は具合が悪いです。",
+    "exampleMeaning": "今天身體不舒服。",
+    "kanji": "具合"
   }
 }
