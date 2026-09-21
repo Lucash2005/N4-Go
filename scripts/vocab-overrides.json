@@ -506,7 +506,8 @@
     "exampleMeaning": "今天會參加會議。"
   },
   "v990": {
-    "exampleMeaning": "今晚能見面嗎？"
+    "exampleMeaning": "今晚能見面嗎？",
+    "example": "今夜会えますか。"
   },
   "v393": {
     "exampleMeaning": "去散步了。"
@@ -4190,5 +4191,211 @@
     "example": "今日は具合が悪いです。",
     "exampleMeaning": "今天身體不舒服。",
     "kanji": "具合"
+  },
+  "v959": {
+    "example": "絹は高価です。"
+  },
+  "v961": {
+    "meaning": "發現、找到",
+    "example": "財布を見つけました。",
+    "exampleMeaning": "我找到錢包了。"
+  },
+  "v967": {
+    "meaning": "（尊敬的）別人丈夫、您的丈夫",
+    "example": "御主人はお元気ですか。",
+    "exampleMeaning": "您丈夫身體好嗎？"
+  },
+  "v970": {
+    "meaning": "閃耀；閃閃發光",
+    "example": "夜空の星が光ります。",
+    "exampleMeaning": "夜空中的星星在閃爍。",
+    "kanji": "光る"
+  },
+  "v977": {
+    "meaning": "考慮、思考",
+    "example": "少し考えます。",
+    "exampleMeaning": "我稍微考慮一下。"
+  },
+  "v978": {
+    "meaning": "舉行、實施、做",
+    "example": "明日、学校で運動会を行います。",
+    "exampleMeaning": "明天學校要舉行運動會。"
+  },
+  "v979": {
+    "meaning": "授課、講課",
+    "example": "文学の講義を受けます。",
+    "exampleMeaning": "上文學課。",
+    "kanji": "講義"
+  },
+  "v980": {
+    "meaning": "禮堂",
+    "example": "先生は講堂に学生を集めました。",
+    "exampleMeaning": "老師把學生們聚集在禮堂裡。",
+    "kanji": "講堂"
+  },
+  "v983": {
+    "meaning": "高中",
+    "example": "妹は高校生です。",
+    "exampleMeaning": "妹妹是高中生。",
+    "kanji": "高校"
+  },
+  "v984": {
+    "example": "私は高校生です。",
+    "exampleMeaning": "我是高中生。"
+  },
+  "v985": {
+    "meaning": "高中"
+  },
+  "v987": {
+    "example": "私は国際交流が好きです。",
+    "exampleMeaning": "我喜歡國際交流。"
+  },
+  "v988": {
+    "meaning": "擁擠",
+    "word": "混む",
+    "reading": "こむ",
+    "example": "電車が混んでいます。",
+    "exampleMeaning": "電車很擁擠。",
+    "kanji": "混む"
+  },
+  "v989": {
+    "meaning": "這次；下次",
+    "example": "また今度お願いします。",
+    "exampleMeaning": "下次請多指教。"
+  },
+  "v991": {
+    "example": "先生にプレゼントを差し上げます。",
+    "exampleMeaning": "送禮物給老師。"
+  },
+  "v992": {
+    "meaning": "沙",
+    "example": "公園の砂で遊びます。",
+    "exampleMeaning": "在公園的沙子裡玩。",
+    "kanji": "砂"
+  },
+  "v993": {
+    "meaning": "最近；最近這陣子",
+    "example": "最近、いかがですか。",
+    "exampleMeaning": "您最近好嗎？"
+  },
+  "v994": {
+    "example": "これは最後のリンゴです。",
+    "exampleMeaning": "這是最後的蘋果。"
+  },
+  "v996": {
+    "meaning": "妻子（向他人介紹自己的妻子時使用）",
+    "example": "妻は会社員です。",
+    "exampleMeaning": "我妻子是公司職員。"
+  },
+  "v998": {
+    "meaning": "細小的；零碎的；詳細的",
+    "example": "細かいお金がありません。",
+    "exampleMeaning": "我沒有零錢。"
+  },
+  "v999": {
+    "meaning": "坡；斜坡",
+    "example": "この坂を登ります。",
+    "exampleMeaning": "我要爬上這個斜坡。"
+  },
+  "v1000": {
+    "example": "明日、そちらに参ります。",
+    "exampleMeaning": "明天我會去您那裡。"
+  },
+  "v1001": {
+    "example": "この町は産業が盛んです。",
+    "exampleMeaning": "這個城鎮的產業很興盛。"
+  },
+  "v1002": {
+    "meaning": "留下來、剩下",
+    "example": "部屋にケーキが少し残っています。",
+    "exampleMeaning": "房間裡還剩下一點蛋糕。"
+  },
+  "v1003": {
+    "meaning": "遺憾、可惜",
+    "example": "明日（あした）の遠足（えんそく）は雨（あめ）で中止（ちゅうし）になりました。残念ですね。",
+    "exampleMeaning": "明天的遠足因為下雨取消了。真可惜呢。"
+  },
+  "v1005": {
+    "example": "日本語の勉強を始めます。",
+    "exampleMeaning": "開始學日語。"
+  },
+  "v1009": {
+    "meaning": "想起、回想起",
+    "example": "最初のころを思い出します。",
+    "exampleMeaning": "回想起最初的時候。",
+    "kanji": "思い出す"
+  },
+  "v1010": {
+    "meaning": "想；認為；覺得",
+    "example": "明日は雨が降ると思います。",
+    "exampleMeaning": "我想明天會下雨。"
+  },
+  "v1011": {
+    "example": "指を怪我しました。",
+    "exampleMeaning": "手指受傷了。"
+  },
+  "v1013": {
+    "example": "出かける支度をしてください。",
+    "exampleMeaning": "請準備出門。"
+  },
+  "v1014": {
+    "meaning": "樹枝；枝條",
+    "example": "木から枝が落ちました。",
+    "exampleMeaning": "樹枝從樹上掉下來了。"
+  },
+  "v1015": {
+    "example": "雨が止みました。",
+    "exampleMeaning": "雨停了。"
+  },
+  "v1016": {
+    "meaning": "停止、阻止",
+    "example": "車をここに止めてください。",
+    "exampleMeaning": "請把車停在這裡。"
+  },
+  "v1017": {
+    "exampleMeaning": "請看一下這條線。"
+  },
+  "v1018": {
+    "example": "来週は試験です。",
+    "exampleMeaning": "下週有考試。"
+  },
+  "v1022": {
+    "example": "息子は父親に似ています。",
+    "exampleMeaning": "兒子和父親很像。"
+  },
+  "v1023": {
+    "meaning": "字",
+    "example": "彼は字が綺麗です。",
+    "exampleMeaning": "他的字很漂亮。"
+  },
+  "v1024": {
+    "example": "週末に寺へ行きます。",
+    "exampleMeaning": "週末要去寺廟。"
+  },
+  "v1027": {
+    "example": "週末は自由に過ごします。",
+    "exampleMeaning": "週末我會自由地度過。"
+  },
+  "v1029": {
+    "meaning": "抄寫；拍照",
+    "example": "友達のノートを写します。",
+    "exampleMeaning": "抄寫朋友的筆記。",
+    "kanji": "写す"
+  },
+  "v1030": {
+    "example": "古い服を捨てます。",
+    "exampleMeaning": "我要把舊衣服丟掉。"
+  },
+  "v1031": {
+    "example": "彼女は社会のために働いています。",
+    "exampleMeaning": "她為社會工作。"
+  },
+  "v1032": {
+    "meaning": "公司社長、總經理",
+    "exampleMeaning": "社長目前外出不在。"
+  },
+  "v1033": {
+    "example": "友達に謝りました。",
+    "exampleMeaning": "我向朋友道歉了。"
   }
 }
