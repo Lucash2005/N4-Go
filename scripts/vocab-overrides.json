@@ -4397,5 +4397,219 @@
   "v1033": {
     "example": "友達に謝りました。",
     "exampleMeaning": "我向朋友道歉了。"
+  },
+  "v1036": {
+    "example": "寒いですから、手袋をしてください。",
+    "exampleMeaning": "因為很冷，請戴上手套。"
+  },
+  "v1037": {
+    "example": "私が手伝いましょうか。",
+    "exampleMeaning": "需要我幫忙嗎？"
+  },
+  "v1038": {
+    "meaning": "嗜好、興趣",
+    "example": "私の趣味は読書です。",
+    "exampleMeaning": "我的興趣是閱讀。"
+  },
+  "v1039": {
+    "example": "寒くて首まで布団に入りました。",
+    "exampleMeaning": "因為很冷，連脖子都進了棉被裡。"
+  },
+  "v1040": {
+    "meaning": "接受、參加（考試／課程）",
+    "example": "明日、日本語の試験を受けます。",
+    "exampleMeaning": "我明天要參加日語考試。",
+    "kanji": "受ける"
+  },
+  "v1041": {
+    "meaning": "接待處；櫃檯；受理",
+    "exampleMeaning": "接待處從兩點半開始。"
+  },
+  "v1044": {
+    "meaning": "結束、盡頭",
+    "example": "夏休みの終わりは寂しいです。",
+    "exampleMeaning": "暑假結束時令人寂寞。",
+    "kanji": "終わり"
+  },
+  "v1045": {
+    "meaning": "習慣；習俗",
+    "example": "日本の生活習慣に慣れました。",
+    "exampleMeaning": "我已經習慣日本的生活習慣了。"
+  },
+  "v1048": {
+    "meaning": "聚集",
+    "word": "集まる",
+    "reading": "あつまる",
+    "example": "駅前に人が集まります。",
+    "exampleMeaning": "人們聚集在車站前。",
+    "kanji": "集まる"
+  },
+  "v1053": {
+    "meaning": "出發、離開",
+    "example": "明日の朝、東京に出発します。",
+    "exampleMeaning": "明天早上出發去東京。",
+    "kanji": "出発"
+  },
+  "v1054": {
+    "meaning": "女性、女士",
+    "example": "あの女性は親切です。",
+    "exampleMeaning": "那位女性很親切。"
+  },
+  "v1055": {
+    "meaning": "贏、獲勝",
+    "example": "試合に勝ちます。",
+    "exampleMeaning": "贏得比賽。",
+    "kanji": "勝つ"
+  },
+  "v1056": {
+    "meaning": "（敬語）吃、喝",
+    "example": "どうぞ、たくさん召し上がってください。",
+    "exampleMeaning": "請多吃一點。"
+  },
+  "v1057": {
+    "example": "将来の夢は医者になることです。",
+    "exampleMeaning": "未來的夢想是成為醫生。"
+  },
+  "v1058": {
+    "example": "私は小学校の先生です。",
+    "exampleMeaning": "我是小學老師。"
+  },
+  "v1059": {
+    "example": "私は小説を読むのが好きです。",
+    "exampleMeaning": "我喜歡讀小說。"
+  },
+  "v1060": {
+    "example": "庭に小鳥が来ました。",
+    "exampleMeaning": "庭院裡來了一隻小鳥。"
+  },
+  "v1062": {
+    "meaning": "邀請",
+    "example": "友達をパーティーに招待しました。",
+    "exampleMeaning": "我邀請朋友來派對。",
+    "kanji": "招待"
+  },
+  "v1063": {
+    "meaning": "橡皮擦",
+    "example": "消しゴムを貸してください。",
+    "exampleMeaning": "請借我橡皮擦。"
+  },
+  "v1064": {
+    "meaning": "烘焙；燒烤；烤",
+    "example": "パンを焼きます。",
+    "exampleMeaning": "烤麵包。"
+  },
+  "v1065": {
+    "meaning": "燒焦；烤熟；著火",
+    "example": "パンが焼けました。",
+    "exampleMeaning": "麵包烤好了。",
+    "kanji": "焼ける"
+  },
+  "v1067": {
+    "example": "自己紹介をします。",
+    "exampleMeaning": "我要做自我介紹。"
+  },
+  "v1070": {
+    "meaning": "交通工具、車輛",
+    "example": "休日は乗り物で出かけます。",
+    "exampleMeaning": "假日搭乘交通工具出門。"
+  },
+  "v1071": {
+    "example": "雨の場合、運動会は中止です。",
+    "exampleMeaning": "如果是下雨的情況，運動會就會取消。"
+  },
+  "v1072": {
+    "meaning": "地點、場所",
+    "example": "この場所は静かです。",
+    "exampleMeaning": "這個地方很安靜。"
+  },
+  "v1076": {
+    "example": "陳列棚の商品には触らないでください。",
+    "exampleMeaning": "請不要觸摸陳列架上的商品。"
+  },
+  "v1077": {
+    "meaning": "用餐、吃飯",
+    "example": "そろそろ食事にしましょう。",
+    "exampleMeaning": "差不多該吃飯了吧。"
+  },
+  "v1078": {
+    "meaning": "食品、糧食",
+    "example": "スーパーで食料品を買います。",
+    "exampleMeaning": "我在超級市場買食品。"
+  },
+  "v1079": {
+    "meaning": "睡過頭、睡懶覺",
+    "example": "よく寝坊します。",
+    "exampleMeaning": "我經常睡過頭。"
+  },
+  "v1087": {
+    "example": "親が払います。",
+    "exampleMeaning": "父母會付錢。"
+  },
+  "v1088": {
+    "meaning": "前進、進步",
+    "example": "前に進みます。",
+    "exampleMeaning": "向前走。",
+    "kanji": "進む"
+  },
+  "v1089": {
+    "meaning": "人形，娃娃",
+    "example": "この人形は可愛いです。",
+    "exampleMeaning": "這個娃娃很可愛。"
+  },
+  "v1091": {
+    "meaning": "詢問、尋找",
+    "example": "道に迷ったので、交番で警察官に道を尋ねました。",
+    "exampleMeaning": "因為迷路了，所以在派出所向警察問路。",
+    "kanji": "尋ねる"
+  },
+  "v1092": {
+    "example": "私は毎年夏に水泳をします。",
+    "exampleMeaning": "我每年夏天都會游泳。"
+  },
+  "v1093": {
+    "meaning": "自來水",
+    "example": "毎日水道の水を使います。",
+    "exampleMeaning": "每天使用自來水。"
+  },
+  "v1094": {
+    "meaning": "數學",
+    "example": "私は数学がすきです。",
+    "exampleMeaning": "我喜歡數學。"
+  },
+  "v1096": {
+    "example": "毎日母の世話をします。",
+    "exampleMeaning": "每天照顧媽媽。"
+  },
+  "v1097": {
+    "meaning": "了不起、真厲害",
+    "example": "昨日のテストは凄かったです。",
+    "exampleMeaning": "昨天的考試非常厲害（考得很好）。"
+  },
+  "v1100": {
+    "example": "この答えは正しいです。",
+    "exampleMeaning": "這個答案是正確的。"
+  },
+  "v1102": {
+    "meaning": "生活",
+    "example": "日本で生活します。",
+    "exampleMeaning": "在日本生活。",
+    "kanji": "生活"
+  },
+  "v1107": {
+    "meaning": "以前；過去；從前",
+    "example": "昔はよく映画を見ました。",
+    "exampleMeaning": "我以前經常看電影。"
+  },
+  "v1108": {
+    "meaning": "石頭"
+  },
+  "v1110": {
+    "example": "木を折ります。",
+    "exampleMeaning": "折斷樹枝。"
+  },
+  "v1111": {
+    "meaning": "折斷、斷裂",
+    "example": "鉛筆が折れました。",
+    "exampleMeaning": "鉛筆折斷了。"
   }
 }
