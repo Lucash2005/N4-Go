@@ -833,9 +833,10 @@
     "exampleFurigana": "お砂糖[さとう]を百[ひゃく]グラムください。"
   },
   "v1167": {
-    "example": "適当に選んでください。",
-    "exampleMeaning": "請適當地選／看著辦選一個。",
-    "exampleFurigana": "適当[てきとう]に選[えら]んでください。"
+    "meaning": "適合、恰當；隨便、隨意",
+    "example": "この仕事は彼に適当です。",
+    "exampleMeaning": "這份工作很適合他。",
+    "kanji": "適当"
   },
   "v610": {
     "example": "晩ごはんは何ですか。",
@@ -4611,5 +4612,187 @@
     "meaning": "折斷、斷裂",
     "example": "鉛筆が折れました。",
     "exampleMeaning": "鉛筆折斷了。"
+  },
+  "v1112": {
+    "meaning": "前輩、學長、學姐",
+    "example": "彼は私の会社の先輩です。",
+    "exampleMeaning": "他是我們公司的前輩。"
+  },
+  "v1114": {
+    "example": "昨夜は眠りが浅かったです。",
+    "exampleMeaning": "昨晚的睡眠很淺。"
+  },
+  "v1115": {
+    "exampleMeaning": "請看這條線。"
+  },
+  "v1117": {
+    "example": "私の祖父は八十歳です。",
+    "exampleMeaning": "我的祖父八十歲。"
+  },
+  "v1123": {
+    "meaning": "喧鬧；發出噪音；興奮",
+    "example": "教室で騒いではいけません。",
+    "exampleMeaning": "請不要在教室裡喧嘩。"
+  },
+  "v1128": {
+    "example": "これで足りますか。",
+    "exampleMeaning": "這樣可以嗎？／這樣夠嗎？"
+  },
+  "v1130": {
+    "example": "学校を卒業しました。"
+  },
+  "v1134": {
+    "example": "病気の人の代わりに働きます。",
+    "exampleMeaning": "代替生病的人工作。"
+  },
+  "v1135": {
+    "example": "台風が来ました。",
+    "exampleMeaning": "颱風來了。"
+  },
+  "v1138": {
+    "meaning": "大致、大約、一般來說",
+    "example": "会議は大体終わりました。",
+    "exampleMeaning": "會議大致上結束了。"
+  },
+  "v1139": {
+    "meaning": "相當、大大地",
+    "example": "テストの成績は大分よくなりました。",
+    "exampleMeaning": "考試成績進步相當多。"
+  },
+  "v1142": {
+    "meaning": "暖氣",
+    "example": "暖房をつけましょうか。",
+    "exampleMeaning": "要開暖氣嗎？"
+  },
+  "v1144": {
+    "example": "後で知らせます。"
+  },
+  "v1146": {
+    "meaning": "地理",
+    "example": "私は地理が苦手です。",
+    "exampleMeaning": "我不擅長地理。",
+    "kanji": "地理"
+  },
+  "v1147": {
+    "meaning": "不好意思的，害羞的，尷尬的",
+    "example": "みんなの前で歌を歌うのは恥ずかしいです。",
+    "exampleMeaning": "在大家面前唱歌覺得很不好意思。"
+  },
+  "v1148": {
+    "example": "私がご案内いたします。",
+    "exampleMeaning": "由我來為您帶路。"
+  },
+  "v1149": {
+    "meaning": "遲到、延誤",
+    "example": "電車が遅れました。",
+    "exampleMeaning": "電車遲到了。"
+  },
+  "v1151": {
+    "meaning": "相當、挺、頗",
+    "example": "この本はなかなか面白いです。",
+    "exampleMeaning": "這本書相當有趣。"
+  },
+  "v1154": {
+    "example": "お昼休みはいつですか。",
+    "exampleMeaning": "午休時間是什麼時候？"
+  },
+  "v1155": {
+    "example": "病院で注射をします。",
+    "exampleMeaning": "在醫院打針。"
+  },
+  "v1159": {
+    "meaning": "修理；修復",
+    "example": "壊れた自転車を直します。",
+    "exampleMeaning": "我要修理壞掉的腳踏車。"
+  },
+  "v1160": {
+    "meaning": "修復、好轉",
+    "example": "故障したテレビが直りました。",
+    "exampleMeaning": "壞掉的電視修理好了。"
+  },
+  "v1162": {
+    "meaning": "來往、通學、通勤",
+    "example": "私は毎日バスで学校に通います。",
+    "exampleMeaning": "我每天坐公車去學校。",
+    "kanji": "通う"
+  },
+  "v1163": {
+    "meaning": "通過、穿過",
+    "example": "この道をまっすぐ通ると、駅があります。",
+    "exampleMeaning": "沿著這條路一直走過去，就會有車站。"
+  },
+  "v1165": {
+    "meaning": "釣魚",
+    "example": "川で魚を釣ります。",
+    "exampleMeaning": "在河裡釣魚。",
+    "kanji": "釣る"
+  },
+  "v1168": {
+    "example": "今日の天気予報は雨です。",
+    "exampleMeaning": "今天的氣象預報是雨天。"
+  },
+  "v1170": {
+    "meaning": "售貨員、店員",
+    "example": "彼は店員にお金を払いました。",
+    "exampleMeaning": "他付錢給了店員。"
+  },
+  "v1171": {
+    "meaning": "分數",
+    "example": "テストで百点を取りました。",
+    "exampleMeaning": "考試考了一百分。",
+    "kanji": "点"
+  },
+  "v1172": {
+    "meaning": "傳達、轉告",
+    "example": "先生の言ったことを彼に伝えてください。",
+    "exampleMeaning": "請把老師說的話傳達給他。"
+  },
+  "v1173": {
+    "meaning": "鄉下",
+    "example": "私の実家は田舎にあります。",
+    "exampleMeaning": "我的老家在鄉下。"
+  },
+  "v1175": {
+    "example": "電報を送ります。",
+    "exampleMeaning": "要發送電報。"
+  },
+  "v1176": {
+    "meaning": "塗；刷；抹",
+    "exampleMeaning": "我打算粉刷牆壁。"
+  },
+  "v1180": {
+    "meaning": "倒下、倒塌",
+    "example": "強い風で木が倒れました。",
+    "exampleMeaning": "強風把樹吹倒了。"
+  },
+  "v1182": {
+    "meaning": "投、擲、拋",
+    "example": "ボールを投げます。",
+    "exampleMeaning": "我把球投出去。"
+  },
+  "v1185": {
+    "meaning": "答案、回答",
+    "example": "正しい答えを教えてください。",
+    "exampleMeaning": "請告訴我正確的答案。",
+    "kanji": "答え"
+  },
+  "v1186": {
+    "example": "危ないですから、ガラスを踏まないでください。",
+    "exampleMeaning": "很危險，請不要踩到玻璃。"
+  },
+  "v1187": {
+    "meaning": "逃跑、逃走",
+    "example": "犯人は警察から逃げました。",
+    "exampleMeaning": "犯人從警察那裡逃跑了。"
+  },
+  "v1188": {
+    "meaning": "移動、運作",
+    "example": "時計が動きます。",
+    "exampleMeaning": "時鐘在走。",
+    "kanji": "動く"
+  },
+  "v1189": {
+    "example": "週末に動物園へ行きます。イヌを見ました。",
+    "exampleMeaning": "週末要去看動物園。"
   }
 }
