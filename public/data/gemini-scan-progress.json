@@ -1,22 +1,22 @@
 {
   "total": 1580,
-  "done": 1193,
-  "remaining": 387,
+  "done": 1268,
+  "remaining": 312,
   "needsRecheck": 0,
-  "remainingWork": 387,
-  "currentPromptDone": 1193,
+  "remainingWork": 312,
+  "currentPromptDone": 1268,
   "promptVersion": 2,
-  "ok": 664,
-  "fix": 529,
+  "ok": 697,
+  "fix": 571,
   "error": 0,
-  "percent": 75.5,
+  "percent": 80.3,
   "dailyQuotaHint": 75,
-  "estimatedDaysLeft": 6,
-  "today": "2026-09-23",
+  "estimatedDaysLeft": 5,
+  "today": "2026-09-24",
   "todayScanned": 75,
-  "todayFix": 40,
-  "todayOk": 35,
-  "updatedAt": "2026-09-23T08:09:59.719Z",
+  "todayFix": 42,
+  "todayOk": 33,
+  "updatedAt": "2026-09-24T08:09:42.807Z",
   "days": {
     "2026-09-10": {
       "scanned": 218,
@@ -100,6 +100,12 @@
       "scanned": 75,
       "ok": 35,
       "fix": 40,
+      "error": 0
+    },
+    "2026-09-24": {
+      "scanned": 75,
+      "ok": 33,
+      "fix": 42,
       "error": 0
     }
   },

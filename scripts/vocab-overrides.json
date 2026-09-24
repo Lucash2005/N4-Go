@@ -4794,5 +4794,198 @@
   "v1189": {
     "example": "週末に動物園へ行きます。イヌを見ました。",
     "exampleMeaning": "週末要去看動物園。"
+  },
+  "v1190": {
+    "meaning": "工具；道具",
+    "example": "便利な道具を買いました。",
+    "exampleMeaning": "買了方便的工具。"
+  },
+  "v1192": {
+    "example": "君は特別ですよ。",
+    "exampleMeaning": "你是特別的喔。"
+  },
+  "v1195": {
+    "meaning": "日記",
+    "example": "毎日日記をつけます。",
+    "exampleMeaning": "我每天寫日記。",
+    "kanji": "日記"
+  },
+  "v1196": {
+    "example": "先週から入院しています。",
+    "exampleMeaning": "從上週開始住院。"
+  },
+  "v1198": {
+    "example": "熱がありますか。",
+    "exampleMeaning": "你有發燒嗎？"
+  },
+  "v1203": {
+    "example": "ホテルに泊まりました。",
+    "exampleMeaning": "住在飯店了。"
+  },
+  "v1206": {
+    "example": "私はその意見に反対です。",
+    "exampleMeaning": "我反對那個意見。"
+  },
+  "v1207": {
+    "example": "この番組を見ますか。",
+    "exampleMeaning": "你要看這個節目嗎？"
+  },
+  "v1209": {
+    "example": "彼らは友達です。",
+    "exampleMeaning": "他們是朋友。"
+  },
+  "v1210": {
+    "example": "彼女は学生です。",
+    "exampleMeaning": "她是學生。"
+  },
+  "v1211": {
+    "meaning": "悲傷",
+    "example": "母の手紙を読んで、悲しくなりました。",
+    "exampleMeaning": "讀了媽媽的信後，我變得有些悲傷。"
+  },
+  "v1214": {
+    "example": "この町は美しいです。",
+    "exampleMeaning": "這座城鎮很美麗。"
+  },
+  "v1215": {
+    "example": "パスポートが必要ですか。",
+    "exampleMeaning": "需要護照嗎？"
+  },
+  "v1216": {
+    "meaning": "表面、正面",
+    "example": "服の表と裏を間違えて着てしまいました。",
+    "exampleMeaning": "把衣服的正反面穿錯了。",
+    "kanji": "表"
+  },
+  "v1220": {
+    "meaning": "日式棉被；被褥",
+    "example": "天気がいいので、布団を干します。",
+    "exampleMeaning": "因為天氣很好，所以要曬棉被。"
+  },
+  "v1221": {
+    "meaning": "可怕的、令人恐懼的",
+    "example": "この映画は怖いです。",
+    "exampleMeaning": "這部電影很可怕。"
+  },
+  "v1223": {
+    "meaning": "輸",
+    "example": "試合に負けました。",
+    "exampleMeaning": "比賽輸了。"
+  },
+  "v1224": {
+    "meaning": "部長",
+    "exampleMeaning": "他是營業部的部長。"
+  },
+  "v1225": {
+    "meaning": "複習",
+    "exampleMeaning": "我們來複習第五課吧。"
+  },
+  "v1226": {
+    "meaning": "支付、付錢",
+    "example": "明日、代金を払います。",
+    "exampleMeaning": "我明天會支付代金。"
+  },
+  "v1229": {
+    "example": "日本の文化に興味があります。",
+    "exampleMeaning": "我对日本文化很感兴趣。"
+  },
+  "v1230": {
+    "example": "私は文学の本が好きです。",
+    "exampleMeaning": "我喜歡文學的書。"
+  },
+  "v1232": {
+    "meaning": "聽到、聽見",
+    "example": "何か聞こえますか。",
+    "exampleMeaning": "聽到什麼聲音了嗎？"
+  },
+  "v1233": {
+    "meaning": "米、稻米、生米",
+    "example": "米を炊きます。",
+    "exampleMeaning": "煮飯。"
+  },
+  "v1234": {
+    "example": "部屋の壁にカレンダーを貼りました。",
+    "exampleMeaning": "我在房間的牆上貼了日曆。"
+  },
+  "v1235": {
+    "meaning": "不同的、另外的",
+    "example": "別人のようです。",
+    "exampleMeaning": "看起來像另一個人。"
+  },
+  "v1237": {
+    "example": "これは変な問題ですね。",
+    "exampleMeaning": "這是一個奇怪的問題呢。"
+  },
+  "v1244": {
+    "meaning": "廣播、播出",
+    "example": "毎朝ラジオの放送を聞きます。",
+    "exampleMeaning": "每天早上聽廣播。"
+  },
+  "v1245": {
+    "example": "法律を守らなければなりません。",
+    "exampleMeaning": "必須遵守法律。"
+  },
+  "v1246": {
+    "meaning": "拜訪",
+    "example": "明日、先生のお宅を訪ねるつもりです。",
+    "exampleMeaning": "我打算明天去老師家拜訪。"
+  },
+  "v1247": {
+    "meaning": "去世",
+    "example": "交通事故で亡くなる方が増えています。",
+    "exampleMeaning": "因交通事故而去世的人正在增加。"
+  },
+  "v1248": {
+    "meaning": "遺失物、落下的物品",
+    "example": "電車に忘れ物をしました。",
+    "exampleMeaning": "我在電車上遺失了物品。"
+  },
+  "v1249": {
+    "example": "日本は多くの国と貿易をしています。",
+    "exampleMeaning": "日本和許多國家進行貿易。"
+  },
+  "v1251": {
+    "example": "この本を日本語に翻訳しました。",
+    "exampleMeaning": "我把這本書翻譯成日文了。"
+  },
+  "v1254": {
+    "meaning": "味噌",
+    "example": "味噌汁が温まりました。",
+    "exampleMeaning": "味噌湯熱好了。",
+    "kanji": "味噌"
+  },
+  "v1256": {
+    "example": "昨日は早く眠りました。",
+    "exampleMeaning": "昨天很早就睡覺了。"
+  },
+  "v1258": {
+    "meaning": "消失；沒有了；被取消",
+    "example": "会議は無くなるかもしれません。",
+    "exampleMeaning": "會議可能會取消。",
+    "kanji": "無くなる"
+  },
+  "v1260": {
+    "meaning": "鳴叫、發出聲響",
+    "example": "電話が鳴っています。",
+    "exampleMeaning": "電話正在響。",
+    "kanji": "鳴る"
+  },
+  "v1262": {
+    "meaning": "棉布、木綿",
+    "example": "このシャツは木綿でできています。",
+    "exampleMeaning": "這件襯衫是用棉布做的。"
+  },
+  "v1263": {
+    "meaning": "返回",
+    "example": "すぐに戻ります。"
+  },
+  "v1264": {
+    "meaning": "有用、有幫助",
+    "example": "この本は日本語の勉強に役に立ちます。",
+    "exampleMeaning": "這本書對日語學習很有幫助。"
+  },
+  "v1266": {
+    "example": "日本は自動車を多く輸出しています。",
+    "exampleMeaning": "日本出口很多汽車。"
   }
 }
