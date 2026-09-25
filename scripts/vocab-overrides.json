@@ -4987,5 +4987,243 @@
   "v1266": {
     "example": "日本は自動車を多く輸出しています。",
     "exampleMeaning": "日本出口很多汽車。"
+  },
+  "v1268": {
+    "meaning": "溫柔的、親切的",
+    "example": "彼は優しい人です。",
+    "exampleMeaning": "他是一個溫柔的人。"
+  },
+  "v1269": {
+    "meaning": "玩、遊玩",
+    "example": "週末、友達と遊びます。",
+    "exampleMeaning": "週末跟朋友玩。"
+  },
+  "v1270": {
+    "meaning": "預習",
+    "example": "彼は予習をしました。",
+    "exampleMeaning": "他預習了。"
+  },
+  "v1271": {
+    "meaning": "預定、計畫",
+    "example": "次の予定は何ですか。",
+    "exampleMeaning": "接下來的預定是什麼？"
+  },
+  "v1272": {
+    "meaning": "預訂、預約",
+    "example": "ホテルを予約しました。",
+    "exampleMeaning": "我預訂了飯店。"
+  },
+  "v1275": {
+    "example": "出かける前に、しっかりと用意をします。",
+    "exampleMeaning": "出門前，會好好地做好準備。"
+  },
+  "v1278": {
+    "meaning": "舞蹈",
+    "example": "毎日踊りを練習します。",
+    "exampleMeaning": "每天練習舞蹈。"
+  },
+  "v1279": {
+    "example": "私は祭りで踊るのが好きです。",
+    "exampleMeaning": "我喜歡在祭典上跳舞。"
+  },
+  "v1280": {
+    "meaning": "弄掉、掉落",
+    "word": "落とす",
+    "reading": "おとす",
+    "example": "財布を落としてしまいました。",
+    "exampleMeaning": "我不小心把錢包弄丟了。",
+    "kanji": "落とす"
+  },
+  "v1281": {
+    "meaning": "跌倒或掉落",
+    "word": "落ちる",
+    "reading": "おちる",
+    "example": "木から葉が落ちます。",
+    "exampleMeaning": "葉子從樹上掉下來。",
+    "kanji": "落ちる"
+  },
+  "v1282": {
+    "meaning": "利用、使用",
+    "example": "このサービスは無料で利用できます。",
+    "exampleMeaning": "這個服務可以免費利用。"
+  },
+  "v1283": {
+    "meaning": "理由、原因",
+    "example": "理由は何ですか。",
+    "exampleMeaning": "理由是什麼呢？"
+  },
+  "v1284": {
+    "meaning": "背面、反面",
+    "example": "シャツの裏に名前を書きます。",
+    "exampleMeaning": "在襯衫的反面寫上名字。"
+  },
+  "v1288": {
+    "meaning": "雙方、兩者",
+    "example": "両方が好きです。",
+    "exampleMeaning": "兩我都喜歡。"
+  },
+  "v1289": {
+    "example": "彼は力が強いです。",
+    "exampleMeaning": "他力氣很大。"
+  },
+  "v1290": {
+    "meaning": "樹林",
+    "example": "学校の裏に大きな林があります。",
+    "exampleMeaning": "學校後面有一片大樹林。"
+  },
+  "v1294": {
+    "example": "私は日本の歴史を勉強しています。",
+    "exampleMeaning": "我在學習日本歷史。"
+  },
+  "v1296": {
+    "example": "腕が痛いです。",
+    "exampleMeaning": "手臂很痛。"
+  },
+  "v1298": {
+    "meaning": "很不巧；遺憾的是",
+    "example": "あいにく席を外しております。",
+    "exampleMeaning": "很不巧，他不在座位上。"
+  },
+  "v1299": {
+    "meaning": "熨斗",
+    "example": "ワイシャツにアイロンをかけます。",
+    "exampleMeaning": "我幫襯衫燙平。"
+  },
+  "v1300": {
+    "meaning": "出局",
+    "example": "彼はアウトになりました。",
+    "exampleMeaning": "他出局了。"
+  },
+  "v1301": {
+    "example": "あしたは日曜日です。",
+    "exampleMeaning": "明天是星期日。",
+    "kanji": "明日"
+  },
+  "v1302": {
+    "meaning": "這裡和那裡、到處",
+    "example": "部屋のあちこちを掃除しました。",
+    "exampleMeaning": "把房間各處都打掃了。"
+  },
+  "v1303": {
+    "meaning": "啊！；哦！",
+    "example": "あっ、忘れました！",
+    "exampleMeaning": "啊，我忘記了！"
+  },
+  "v1304": {
+    "meaning": "(1)後；後面 (2)以後；之後 (3)剩下",
+    "example": "あとで連絡します。",
+    "exampleMeaning": "之後會跟你聯絡。"
+  },
+  "v1305": {
+    "meaning": "所有；每一個；各種",
+    "example": "あらゆる機会を利用します。",
+    "exampleMeaning": "利用所有機會。"
+  },
+  "v1306": {
+    "meaning": "謝謝",
+    "example": "本をありがとうございます。"
+  },
+  "v1308": {
+    "meaning": "相簿",
+    "example": "棚にアルバムがあります。",
+    "exampleMeaning": "架子上有一本相簿。"
+  },
+  "v1309": {
+    "meaning": "那麼、那樣地、到那個程度",
+    "example": "あんなに美味しいケーキは初めて食べました。",
+    "exampleMeaning": "我從沒吃過那麼好吃的蛋糕。"
+  },
+  "v1310": {
+    "example": "あんまり無理をしないでください。",
+    "exampleMeaning": "請不要勉強自己。"
+  },
+  "v1313": {
+    "meaning": "不行；不可以；不好",
+    "example": "ここでタバコを吸ってはいけません。",
+    "exampleMeaning": "在這裡抽菸是不行的。"
+  },
+  "v1314": {
+    "meaning": "總有一天；哪一個",
+    "example": "いずれ日本へ行きたいです。",
+    "exampleMeaning": "總有一天想去日本。"
+  },
+  "v1318": {
+    "example": "いつか日本に行きたいです。",
+    "exampleMeaning": "有朝一日想去日本。"
+  },
+  "v1319": {
+    "meaning": "隨時；無論何時",
+    "example": "いつでも電話してください。",
+    "exampleMeaning": "請隨時打電話給我。"
+  },
+  "v1321": {
+    "meaning": "焦躁，急躁",
+    "example": "待ち時間が長くて、いらいらします。",
+    "exampleMeaning": "等候的時間太長，讓人覺得很焦躁。"
+  },
+  "v1322": {
+    "example": "いらっしゃいませ。どうぞお入りください。",
+    "exampleMeaning": "歡迎光臨。請進。"
+  },
+  "v1324": {
+    "meaning": "墨水",
+    "example": "プリンターのインクが切れました。",
+    "exampleMeaning": "印表機的墨水用完了。"
+  },
+  "v1326": {
+    "example": "うがいをしましたか。"
+  },
+  "v1327": {
+    "meaning": "呻吟、發出低沉的聲音",
+    "example": "犬がうなっています。",
+    "exampleMeaning": "狗在低吼。"
+  },
+  "v1328": {
+    "meaning": "吵鬧；嘈雜",
+    "example": "外（そと）がうるさいです。",
+    "exampleMeaning": "外面很吵。"
+  },
+  "v1330": {
+    "example": "エンジンをかけます。",
+    "exampleMeaning": "發動引擎。"
+  },
+  "v1333": {
+    "meaning": "聊天；愛講話；健談",
+    "example": "彼女はよくおしゃべりをします。",
+    "exampleMeaning": "她很愛聊天。"
+  },
+  "v1334": {
+    "meaning": "也許、恐怕",
+    "example": "おそらく明日は雨でしょう。",
+    "exampleMeaning": "明天恐怕會下雨吧。"
+  },
+  "v1335": {
+    "example": "彼女のオフィスはどこですか。"
+  },
+  "v1336": {
+    "meaning": "你（用於對晚輩、平輩或熟人的稱呼）",
+    "example": "おまえの傘はどれですか。",
+    "exampleMeaning": "你的傘是哪一把呢？"
+  },
+  "v1337": {
+    "meaning": "恭喜！",
+    "example": "ご結婚、おめでとうございます。",
+    "exampleMeaning": "恭喜結婚。"
+  },
+  "v1338": {
+    "example": "親に感謝しなければなりません。",
+    "exampleMeaning": "必須感謝父母。",
+    "kanji": "親"
+  },
+  "v1342": {
+    "meaning": "肚子",
+    "example": "お腹が痛いです。イブプロフェンを飲みます。",
+    "exampleMeaning": "肚子痛。我吃布洛芬。"
+  },
+  "v1343": {
+    "meaning": "車、汽車",
+    "example": "あの赤いカーは父のものです。",
+    "exampleMeaning": "那輛紅色的車是我父親的。",
+    "kanji": "車"
   }
 }
