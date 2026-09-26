@@ -5225,5 +5225,226 @@
     "example": "あの赤いカーは父のものです。",
     "exampleMeaning": "那輛紅色的車是我父親的。",
     "kanji": "車"
+  },
+  "v1344": {
+    "meaning": "卡片",
+    "example": "クレジットカードで払いますか。",
+    "exampleMeaning": "你要用信用卡付錢嗎？"
+  },
+  "v1345": {
+    "example": "試験に落ちて、がっかりしました。",
+    "exampleMeaning": "考試沒考好，覺得很失望。"
+  },
+  "v1348": {
+    "meaning": "可憐的",
+    "example": "子犬（こいぬ）がいなくて、かわいそうですね。",
+    "exampleMeaning": "小狗不見了，真可憐呢。"
+  },
+  "v1349": {
+    "meaning": "可愛的；討人喜歡的",
+    "example": "あの赤ちゃんはとてもかわいらしいです。",
+    "exampleMeaning": "那個小寶寶非常可愛。"
+  },
+  "v1350": {
+    "meaning": "整齊地；好好地；準確地",
+    "example": "カバンをきちんと片付けました。",
+    "exampleMeaning": "把書包好好地收拾整齊了。"
+  },
+  "v1351": {
+    "meaning": "緊的；嚴厲的；辛苦的",
+    "example": "このズボンは少しきついです。",
+    "exampleMeaning": "這條褲子有點緊。"
+  },
+  "v1353": {
+    "meaning": "露營",
+    "example": "週末にキャンプに行きます。",
+    "exampleMeaning": "週末要去露營。"
+  },
+  "v1354": {
+    "meaning": "公斤；千（字首）",
+    "example": "私の鞄は五キロあります。",
+    "exampleMeaning": "我的包包有五公斤重。"
+  },
+  "v1355": {
+    "meaning": "睡得很熟；睡得香甜",
+    "example": "昨日はぐっすり寝ました。",
+    "exampleMeaning": "昨天睡得很熟。"
+  },
+  "v1356": {
+    "meaning": "古典音樂、經典",
+    "example": "クラシック音楽をよく聴きます。",
+    "exampleMeaning": "我常聽古典音樂。"
+  },
+  "v1357": {
+    "meaning": "(1)玻璃杯",
+    "example": "グラスを割ってしまいました。",
+    "exampleMeaning": "我不小心把玻璃杯打破了。"
+  },
+  "v1358": {
+    "meaning": "操場、運動場",
+    "example": "子どもたちがグランドで遊んでいます。",
+    "exampleMeaning": "孩子們在操場上玩耍。"
+  },
+  "v1359": {
+    "meaning": "奶油、鮮奶油",
+    "example": "パンにクリームをぬって食べます。",
+    "exampleMeaning": "把奶油塗在麵包上吃。"
+  },
+  "v1360": {
+    "example": "今年のクリスマスは友達とパーティーをします。",
+    "exampleMeaning": "今年聖誕節我和朋友舉辦派對。"
+  },
+  "v1362": {
+    "meaning": "箱子、情況",
+    "example": "スマホのケースを買いました。",
+    "exampleMeaning": "我買了手機殼。"
+  },
+  "v1365": {
+    "example": "サッカーのコーチに教わりました。",
+    "exampleMeaning": "我向足球教練學習了。"
+  },
+  "v1368": {
+    "meaning": "影印、複印",
+    "example": "書類をコピーしてください。",
+    "exampleMeaning": "請幫我影印文件。"
+  },
+  "v1369": {
+    "meaning": "對不起；抱歉"
+  },
+  "v1370": {
+    "example": "これらは日本の本です。",
+    "exampleMeaning": "這些是日本的書。"
+  },
+  "v1373": {
+    "meaning": "電腦",
+    "example": "コンピューターが急に動かなくなりました。",
+    "exampleMeaning": "電腦突然不能運作了。"
+  },
+  "v1375": {
+    "example": "書類にサインをお願いします。",
+    "exampleMeaning": "請在文件上簽名。"
+  },
+  "v1377": {
+    "example": "お風呂に入ったら、さっぱりしました。",
+    "exampleMeaning": "洗完澡後，覺得神清氣爽。"
+  },
+  "v1378": {
+    "meaning": "那麼；話說回來",
+    "example": "さて、次の問題に進みましょう。",
+    "exampleMeaning": "那麼，我們進入下一題吧。"
+  },
+  "v1382": {
+    "meaning": "頻繁地；不斷地",
+    "example": "トムはしきりに謝りました。",
+    "exampleMeaning": "湯姆不斷地道歉。"
+  },
+  "v1384": {
+    "meaning": "固定地；牢牢；目不轉睛地",
+    "example": "赤ちゃんは母親の顔をじっと見ていました。",
+    "exampleMeaning": "小寶寶目不轉睛地看著媽媽的臉。"
+  },
+  "v1390": {
+    "example": "友達と楽しくしゃべりました。",
+    "exampleMeaning": "和朋友愉快地聊天了。"
+  },
+  "v1391": {
+    "meaning": "果汁；飲料",
+    "example": "ジュースを飲みます。",
+    "exampleMeaning": "喝果汁。"
+  },
+  "v1392": {
+    "meaning": "開關",
+    "example": "スイッチを切ります。",
+    "exampleMeaning": "關掉開關。"
+  },
+  "v1393": {
+    "example": "スープをいかがですか。",
+    "exampleMeaning": "要來點湯嗎？"
+  },
+  "v1394": {
+    "example": "冬にスキーに行きます。",
+    "exampleMeaning": "冬天要去滑雪。"
+  },
+  "v1396": {
+    "meaning": "厲害的；驚人的",
+    "example": "すごい花火ですね。",
+    "exampleMeaning": "好厲害的煙火啊。"
+  },
+  "v1397": {
+    "meaning": "星星、明星",
+    "example": "好きな映画スターは誰ですか。"
+  },
+  "v1398": {
+    "meaning": "身材、體型、風格",
+    "example": "彼はスタイルがいいです。",
+    "exampleMeaning": "他身材很好。"
+  },
+  "v1399": {
+    "meaning": "看台、攤位",
+    "example": "サッカーの試合をスタンドで見ました。",
+    "exampleMeaning": "我在看台上看了足球比賽。"
+  },
+  "v1401": {
+    "meaning": "迷人的；漂亮的；美好的",
+    "example": "彼女の服はとてもすてきですね。",
+    "exampleMeaning": "她的衣服非常漂亮呢。"
+  },
+  "v1402": {
+    "meaning": "也就是；換句話說",
+    "example": "彼は私の兄、すなわち医者です。",
+    "exampleMeaning": "他是我的哥哥，也就是醫生。"
+  },
+  "v1405": {
+    "meaning": "設置、組合、套餐",
+    "example": "朝、髪の毛をセットします。",
+    "exampleMeaning": "早上把頭髮整理定型。"
+  },
+  "v1406": {
+    "meaning": "中心",
+    "example": "コールセンターで働いています。",
+    "exampleMeaning": "我在客服中心工作。"
+  },
+  "v1407": {
+    "meaning": "所以（連接詞）；因此",
+    "example": "雨が降ってきました。そこで、傘を借りました。",
+    "exampleMeaning": "下雨了。於是，我借了雨傘。"
+  },
+  "v1408": {
+    "meaning": "然後、而且",
+    "example": "朝ごはんを食べました。そして、學校へ行きました。",
+    "exampleMeaning": "我吃了早餐。然後，去學校了。"
+  },
+  "v1410": {
+    "meaning": "悄悄地、輕輕地",
+    "example": "ドアをそっと開けました。",
+    "exampleMeaning": "我輕輕地把門打開了。"
+  },
+  "v1412": {
+    "meaning": "就這樣；照原樣；沒有改變",
+    "example": "そのままにしてください。",
+    "exampleMeaning": "請就這樣不要動。"
+  },
+  "v1414": {
+    "meaning": "每個；各自",
+    "example": "それぞれのお弁当を食べます。",
+    "exampleMeaning": "大家各自吃自己的便當。"
+  },
+  "v1416": {
+    "meaning": "或者；還是",
+    "example": "コーヒーにしますか、それとも紅茶にしますか。",
+    "exampleMeaning": "你要喝咖啡，還是紅茶？"
+  },
+  "v1417": {
+    "meaning": "打字機",
+    "meaningZh": [
+      "打字機"
+    ],
+    "example": "タイプライターで手紙を打ちます。",
+    "exampleMeaning": "用打字機打信件。"
+  },
+  "v1418": {
+    "meaning": "鑽石",
+    "example": "彼女（かのじょ）にダイヤの指輪（ゆびわ）を贈（おく）りました。",
+    "exampleMeaning": "我送了女朋友鑽石戒指。"
   }
 }
