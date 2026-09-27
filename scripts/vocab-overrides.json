@@ -72,15 +72,15 @@
     "exampleFurigana": "どうかよろしくお願[ねが]いします。"
   },
   "v1451": {
-    "meaning": "豈有此理（とんでもない）",
-    "meaningEn": "outrageous; unexpected (in とんでもない)",
+    "meaning": "噸（重量單位）",
+    "meaningEn": "ton (unit of weight)",
     "meaningZh": [
-      "豈有此理",
-      "離譜"
+      "噸"
     ],
-    "example": "とんでもない！",
-    "exampleMeaning": "豈有此理！",
-    "exampleFurigana": "とんでもない！"
+    "example": "この荷物は一トンもあります。",
+    "exampleMeaning": "這件行李足足有一噸重。",
+    "exampleFurigana": "",
+    "kanji": ""
   },
   "v1461": {
     "meaning": "吧；呢（句末語氣）",
@@ -5446,5 +5446,239 @@
     "meaning": "鑽石",
     "example": "彼女（かのじょ）にダイヤの指輪（ゆびわ）を贈（おく）りました。",
     "exampleMeaning": "我送了女朋友鑽石戒指。"
+  },
+  "v1419": {
+    "meaning": "毛巾",
+    "example": "新しいタオルを出してください。",
+    "exampleMeaning": "請拿一條新毛巾出來。"
+  },
+  "v1421": {
+    "meaning": "免費；僅僅、只是",
+    "example": "これはただの水です。",
+    "exampleMeaning": "這只是水。"
+  },
+  "v1422": {
+    "meaning": "可是；因為",
+    "example": "遅くなってすみません。だって、道が混んでいたんだもの。",
+    "exampleMeaning": "遲到了對不起。因為路上很塞嘛。"
+  },
+  "v1424": {
+    "meaning": "即使、縱使",
+    "example": "たとえ雨が降っても、行きます。",
+    "exampleMeaning": "即使下雨，我也要去。"
+  },
+  "v1428": {
+    "example": "朝ごはんのサンドイッチにチーズを挟みます。",
+    "exampleMeaning": "早餐的夾心三明治裡要放起司。"
+  },
+  "v1429": {
+    "example": "私たちはチームで仕事をします。",
+    "exampleMeaning": "我們以團隊方式工作。"
+  },
+  "v1430": {
+    "example": "これが最後のチャンスです。",
+    "exampleMeaning": "這是最後的機會。"
+  },
+  "v1431": {
+    "meaning": "好好地；規規矩矩地；適當地",
+    "example": "ちゃんと服をたたんでください。",
+    "exampleMeaning": "請把衣服好好地摺好。"
+  },
+  "v1432": {
+    "meaning": "請給我……（口語授受表現，接在動詞て形或名詞後）",
+    "example": "すみません、水を一杯ちょうだい。",
+    "exampleMeaning": "不好意思，請給我一杯水。"
+  },
+  "v1433": {
+    "meaning": "也就是說、換句話說",
+    "example": "彼は学生です。つまり、まだ子供です。",
+    "exampleMeaning": "他是學生。也就是說，他還是個孩子。"
+  },
+  "v1434": {
+    "meaning": "（助詞）用……；在……；因為……",
+    "example": "バスで学校に行きます。",
+    "exampleMeaning": "我搭公車去學校。",
+    "kanji": ""
+  },
+  "v1435": {
+    "meaning": "約會",
+    "example": "今週末、彼女とデートをします。",
+    "exampleMeaning": "這週末我要跟女朋友去約會。"
+  },
+  "v1437": {
+    "meaning": "示威；遊行",
+    "example": "道路でデモが行われています。",
+    "exampleMeaning": "馬路上正在舉行示威遊行。"
+  },
+  "v1438": {
+    "example": "ここにテントを張ります。",
+    "exampleMeaning": "在這裡搭帳篷。"
+  },
+  "v1440": {
+    "meaning": "無論如何；不管怎樣",
+    "example": "どうしても行きたいです。",
+    "exampleMeaning": "我無論如何都想去。"
+  },
+  "v1441": {
+    "example": "どこかに行きたいです。",
+    "exampleMeaning": "想去某個地方。"
+  },
+  "v1443": {
+    "meaning": "話說回來；順便一提",
+    "example": "ところで、明日の予定は何ですか。",
+    "exampleMeaning": "話說回來，明天的行程是什麼呢？"
+  },
+  "v1445": {
+    "meaning": "無論如何；反正",
+    "example": "とにかく行きましょう。",
+    "exampleMeaning": "無論如何，我們先走吧。"
+  },
+  "v1446": {
+    "example": "週末、車で海へドライブに行きました。",
+    "exampleMeaning": "週末開車去海邊兜風了。"
+  },
+  "v1449": {
+    "meaning": "撲克牌",
+    "example": "友達とトランプで遊びました。",
+    "exampleMeaning": "和朋友一起玩了撲克牌。"
+  },
+  "v1450": {
+    "meaning": "洋裝、禮服",
+    "example": "あのドレスが好きです。",
+    "exampleMeaning": "我很喜歡那件洋裝。"
+  },
+  "v1452": {
+    "meaning": "豈有此理；哪的話；出乎意料",
+    "example": "とんでもない間違いをしてしまいました。",
+    "exampleMeaning": "犯了個大錯。"
+  },
+  "v1453": {
+    "example": "どんな食べ物が好きですか。",
+    "exampleMeaning": "你喜歡什麼樣的食物？"
+  },
+  "v1455": {
+    "example": "このトンネルは長いです。",
+    "exampleMeaning": "這個隧道很長。"
+  },
+  "v1456": {
+    "meaning": "仍然；更加",
+    "example": "雨が降っているのに、なお出かけます。",
+    "exampleMeaning": "雖然在下雨，卻仍然要出門。"
+  },
+  "v1457": {
+    "example": "この本はなかなか面白いです。",
+    "exampleMeaning": "這本書相當有趣。"
+  },
+  "v1458": {
+    "example": "出かけません。なぜなら雨が降っているからです。",
+    "exampleMeaning": "我不出去。因為正在下雨。"
+  },
+  "v1459": {
+    "meaning": "什麼也（不）……、完全（不）……",
+    "example": "机の上に何もありません。",
+    "exampleMeaning": "桌子上什麼都沒有。"
+  },
+  "v1460": {
+    "example": "彼女はにっこり微笑みました。",
+    "exampleMeaning": "她微微一笑。"
+  },
+  "v1462": {
+    "meaning": "(1) 敲門、敲擊；(2) 棒球的擊球練習",
+    "example": "ドアをノックしてください。",
+    "exampleMeaning": "請敲門。"
+  },
+  "v1463": {
+    "meaning": "悠閒地；輕鬆自在地",
+    "example": "週末は家でのんびりしましょう。",
+    "exampleMeaning": "週末在家好好放鬆休息吧。"
+  },
+  "v1465": {
+    "example": "私はバイオリンを弾きます。"
+  },
+  "v1466": {
+    "meaning": "健行、遠足",
+    "example": "週末に友達と山へハイキングに行きます。",
+    "exampleMeaning": "週末要和朋友去山上健行。"
+  },
+  "v1469": {
+    "example": "はさみで紙を切ります。",
+    "exampleMeaning": "用剪刀剪紙。",
+    "kanji": "鋏"
+  },
+  "v1470": {
+    "meaning": "通過、考試及格；（球類運動的）傳球",
+    "example": "試験にパスしました。",
+    "exampleMeaning": "考試及格了。"
+  },
+  "v1471": {
+    "example": "パスポートを持っていますか。"
+  },
+  "v1472": {
+    "meaning": "包包",
+    "example": "バッグを買いに行きます。",
+    "exampleMeaning": "我要去買包包。"
+  },
+  "v1473": {
+    "meaning": "突然；砰地（倒下）；意外（相遇）",
+    "example": "彼は道で友だちとばったり会いました。",
+    "exampleMeaning": "他在路上意外遇到了朋友。"
+  },
+  "v1474": {
+    "meaning": "廂型車、大篷車（van）",
+    "example": "新しいバンを買いました。",
+    "exampleMeaning": "我買了一輛新廂型車。"
+  },
+  "v1476": {
+    "example": "ビールを飲みますか。",
+    "exampleMeaning": "你要喝啤酒嗎？"
+  },
+  "v1477": {
+    "example": "ピクニックに行きませんか。",
+    "exampleMeaning": "要不要去野餐呢？"
+  },
+  "v1478": {
+    "example": "ニュースを聞いて、びっくりしました。",
+    "exampleMeaning": "聽到新聞，嚇了一跳。"
+  },
+  "v1480": {
+    "example": "ビデオを見たい人がいますか。"
+  },
+  "v1483": {
+    "meaning": "加、正、優點",
+    "example": "十に五をプラスすると十五になります。",
+    "exampleMeaning": "十加五等於十五。"
+  },
+  "v1485": {
+    "example": "急にブレーキをかけました。",
+    "exampleMeaning": "突然踩了煞車。"
+  },
+  "v1486": {
+    "meaning": "專家、專業人士",
+    "example": "彼は料理のプロです。",
+    "exampleMeaning": "他是料理專家。"
+  },
+  "v1489": {
+    "example": "ベンチに座りました。",
+    "exampleMeaning": "我坐在長椅上。"
+  },
+  "v1490": {
+    "meaning": "服務生、男孩子",
+    "example": "彼はホテルでボーイとして働いています。",
+    "exampleMeaning": "他在飯店裡擔任服務生。"
+  },
+  "v1491": {
+    "meaning": "小船、划艇",
+    "example": "湖でボートに乗りました。",
+    "exampleMeaning": "我在湖上坐了小船。"
+  },
+  "v1492": {
+    "meaning": "(1) 月台；(2) 家",
+    "example": "電車のホームで電車を待っています。",
+    "exampleMeaning": "我在電車月台等車。"
+  },
+  "v1493": {
+    "meaning": "球",
+    "example": "子供たちは公園でボールを投げて遊んでいます。",
+    "exampleMeaning": "孩子們在公園裡丟球玩。"
   }
 }

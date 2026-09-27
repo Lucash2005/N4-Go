@@ -372,9 +372,14 @@ async function main() {
     }
 
     // Sense-safe script forms: never invent kanji from reading alone.
-    const forms = resolveScriptForms(c, patch?.kanji)
-    if (forms.kanji) c.kanji = forms.kanji
-    else delete c.kanji
+    // Empty-string kanji in overrides means "clear" (e.g. particle で wrongly tagged 出る).
+    if (patch && Object.prototype.hasOwnProperty.call(patch, 'kanji') && !String(patch.kanji || '').trim()) {
+      delete c.kanji
+    } else {
+      const forms = resolveScriptForms(c, patch?.kanji)
+      if (forms.kanji) c.kanji = forms.kanji
+      else delete c.kanji
+    }
 
     // Chinese gloss for example sentence — prefer JA→zh cache; never keep lazy/bad glosses.
     // Manual overrides win: do not overwrite curated exampleMeaning.
