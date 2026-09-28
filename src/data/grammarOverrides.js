@@ -1,2 +1,15 @@
 /** Gemini / manual grammar card patches. Keys are grammar ids (g001…). */
-export const grammarOverrides = {}
+export const grammarOverrides = {
+  "g030": {
+    "meaning": "已經被做好（表示人為動作後的結果狀態持續著）",
+    "pattern": "他動詞て形 + ある",
+    "exampleMeaning": "窗戶已經被打開了（有人刻意開著的）。",
+    "exampleFurigana": "窓(まど)が開(あ)けてあります。"
+  },
+  "g062": {
+    "pattern": "上一段・下一段動詞の未然形 ＋ られる",
+    "example": "この映画はいつでも見られます。",
+    "exampleMeaning": "這部電影隨時都能看。",
+    "exampleFurigana": "この映画(えいが)はいつでも見(み)られます。"
+  }
+}

@@ -1,10 +1,10 @@
 {
-  "updatedAt": "2026-09-27T08:08:05.176Z",
+  "updatedAt": "2026-09-28T08:27:10.009Z",
   "promptVersion": 2,
   "counts": {
-    "done": 1493,
-    "fix": 718,
-    "ok": 775,
+    "done": 1568,
+    "fix": 726,
+    "ok": 842,
     "error": 0,
     "needsRecheck": 0
   },
@@ -28384,6 +28384,1375 @@
       },
       "model": "gemini-3.5-flash-lite",
       "at": "2026-09-27T08:08:05.160Z"
+    },
+    "v1494": {
+      "id": "v1494",
+      "type": "vocab",
+      "word": "ほぼ",
+      "status": "done",
+      "promptVersion": 2,
+      "verdict": "FIX",
+      "issues": [
+        "主例句未使用丁寧體（「終わった」為常體），違反紅線規定。"
+      ],
+      "review": {
+        "meaning": "幾乎；大致",
+        "pattern": "",
+        "example": "ほぼ終わりました。",
+        "exampleMeaning": "幾乎完成了。",
+        "kanji": ""
+      },
+      "model": "gemini-3.5-flash-lite",
+      "at": "2026-09-28T08:18:31.505Z"
+    },
+    "v1495": {
+      "id": "v1495",
+      "type": "vocab",
+      "word": "ぼんやり",
+      "status": "done",
+      "promptVersion": 2,
+      "verdict": "FIX",
+      "issues": [
+        "原字義「傻瓜」過於偏頗且不符合此副詞的常用含義，應修正為「發呆、茫然、模糊」；原例句「彼女はぼんやり顔をしている」不太自然，建議更換為更標準且常用於 N4 程度的副詞用法例句。"
+      ],
+      "review": {
+        "meaning": "茫然；發呆；模糊",
+        "pattern": "",
+        "example": "授業中、ぼんやりして先生の話を聞き逃してしまった。",
+        "exampleMeaning": "上課時發呆，沒聽到老師說的話。",
+        "kanji": ""
+      },
+      "model": "gemini-3.5-flash-lite",
+      "at": "2026-09-28T08:18:37.597Z"
+    },
+    "v1496": {
+      "id": "v1496",
+      "type": "vocab",
+      "word": "まあ",
+      "status": "done",
+      "promptVersion": 2,
+      "verdict": "FIX",
+      "issues": [
+        "原字義「（女）你可能會說」過於模糊且不正確，「まあ」作為副詞或感嘆詞，主要用於表示驚訝、贊同、猶豫或緩和語氣（相當於中文的「哎呀」、「噢」、「話說回來」、「算啦」等）。原例句「まあ、本当？」合適，但中文翻譯應更自然。"
+      ],
+      "review": {
+        "meaning": "哎呀、噢（表示驚訝或感嘆）；話說回來、總之（緩和語氣）",
+        "pattern": "",
+        "example": "まあ、本当？",
+        "exampleMeaning": "哎呀，真的嗎？",
+        "kanji": ""
+      },
+      "model": "gemini-3.5-flash-lite",
+      "at": "2026-09-28T08:18:43.699Z"
+    },
+    "v1497": {
+      "id": "v1497",
+      "type": "vocab",
+      "word": "マーケット",
+      "status": "done",
+      "promptVersion": 2,
+      "verdict": "FIX",
+      "issues": [
+        "例句使用了「～しようよ」，違反了主例句優先丁寧體且避免過度口語的紅線。"
+      ],
+      "review": {
+        "meaning": "市場、市集",
+        "pattern": "",
+        "example": "休日にスーパーマーケットへ行きます。",
+        "exampleMeaning": "我假日要去超級市場。",
+        "kanji": ""
+      },
+      "model": "gemini-3.5-flash-lite",
+      "at": "2026-09-28T08:18:49.549Z"
+    },
+    "v1498": {
+      "id": "v1498",
+      "type": "vocab",
+      "word": "マイク",
+      "status": "done",
+      "promptVersion": 2,
+      "verdict": "FIX",
+      "issues": [
+        "原例句「マイクは笑った。」（麥克笑了）將外來語「マイク」（麥克風）當作人名使用，不符合該單字的本意，且不適合作為學習麥克風的例句。"
+      ],
+      "review": {
+        "meaning": "麥克風",
+        "pattern": "",
+        "example": "マイクを使って話します。",
+        "exampleMeaning": "使用麥克風說話。",
+        "kanji": ""
+      },
+      "model": "gemini-3.5-flash-lite",
+      "at": "2026-09-28T08:18:55.439Z"
+    },
+    "v1499": {
+      "id": "v1499",
+      "type": "vocab",
+      "word": "まさか",
+      "status": "done",
+      "promptVersion": 2,
+      "verdict": "FIX",
+      "issues": [
+        "原字義「絕不是」過窄，「まさか」常用於表示「意想不到、怎麼也想不到、難道」等語意。",
+        "原例句「まさか秘密か？」不符合日語慣用表現，應使用更自然的假設或否定猜測句型（例如：まさか彼が来ないとは）。",
+        "例句中文翻譯應符合「まさか」的正確含意。"
+      ],
+      "review": {
+        "meaning": "怎麼也想不到、難道、萬一",
+        "pattern": "",
+        "example": "まさか彼が来るとは思わなかった。",
+        "exampleMeaning": "怎麼也想不到他會來。",
+        "kanji": ""
+      },
+      "model": "gemini-3.5-flash-lite",
+      "at": "2026-09-28T08:19:01.667Z"
+    },
+    "v1500": {
+      "id": "v1500",
+      "type": "vocab",
+      "word": "まさに",
+      "status": "done",
+      "promptVersion": 2,
+      "verdict": "OK",
+      "issues": [],
+      "review": {
+        "meaning": "正確地；一定；簡直是",
+        "pattern": "",
+        "example": "まさに傑作だ。",
+        "exampleMeaning": "這確實是一件傑作。",
+        "kanji": ""
+      },
+      "model": "gemini-3.5-flash-lite",
+      "at": "2026-09-28T08:19:07.267Z"
+    },
+    "g001": {
+      "id": "g001",
+      "type": "grammar",
+      "word": "〜てあげる",
+      "status": "done",
+      "promptVersion": 2,
+      "verdict": "OK",
+      "issues": [],
+      "review": {
+        "meaning": "幫對方做某事（授受）",
+        "pattern": "Vて + あげる",
+        "example": "友達に本を貸してあげました。",
+        "exampleMeaning": "把書借給朋友了。",
+        "kanji": ""
+      },
+      "model": "gemini-3.5-flash-lite",
+      "at": "2026-09-28T08:19:12.866Z"
+    },
+    "g002": {
+      "id": "g002",
+      "type": "grammar",
+      "word": "〜てもらう",
+      "status": "done",
+      "promptVersion": 2,
+      "verdict": "OK",
+      "issues": [],
+      "review": {
+        "meaning": "請對方為自己做某事",
+        "pattern": "Vて + もらう",
+        "example": "先生に作文を直してもらいました。",
+        "exampleMeaning": "請老師幫我改作文了。",
+        "kanji": ""
+      },
+      "model": "gemini-3.5-flash-lite",
+      "at": "2026-09-28T08:19:18.592Z"
+    },
+    "g003": {
+      "id": "g003",
+      "type": "grammar",
+      "word": "〜てくれる",
+      "status": "done",
+      "promptVersion": 2,
+      "verdict": "OK",
+      "issues": [],
+      "review": {
+        "meaning": "對方為我（們）做某事",
+        "pattern": "Vて + くれる",
+        "example": "母が料理を作ってくれました。",
+        "exampleMeaning": "媽媽幫我做了料理。",
+        "kanji": ""
+      },
+      "model": "gemini-3.5-flash-lite",
+      "at": "2026-09-28T08:19:24.274Z"
+    },
+    "g004": {
+      "id": "g004",
+      "type": "grammar",
+      "word": "〜なければならない",
+      "status": "done",
+      "promptVersion": 2,
+      "verdict": "OK",
+      "issues": [],
+      "review": {
+        "meaning": "必須…",
+        "pattern": "Vない形の「ない」→「なければならない」に置き換え",
+        "example": "早く起きなければなりません。",
+        "exampleMeaning": "必須早起。",
+        "kanji": ""
+      },
+      "model": "gemini-3.5-flash-lite",
+      "at": "2026-09-28T08:19:29.854Z"
+    },
+    "g005": {
+      "id": "g005",
+      "type": "grammar",
+      "word": "〜なくてもいい",
+      "status": "done",
+      "promptVersion": 2,
+      "verdict": "OK",
+      "issues": [],
+      "review": {
+        "meaning": "不必…也可以",
+        "pattern": "Vない形の「ない」→「なくてもいい」に置き換え",
+        "example": "今日は会社へ行かなくてもいいです。",
+        "exampleMeaning": "今天不用去公司也可以。",
+        "kanji": ""
+      },
+      "model": "gemini-3.5-flash-lite",
+      "at": "2026-09-28T08:19:35.535Z"
+    },
+    "g006": {
+      "id": "g006",
+      "type": "grammar",
+      "word": "〜ほうがいい",
+      "status": "done",
+      "promptVersion": 2,
+      "verdict": "OK",
+      "issues": [],
+      "review": {
+        "meaning": "最好…（建議）",
+        "pattern": "Vた形 / Vない形 + ほうがいい",
+        "example": "もっと野菜を食べたほうがいいです。",
+        "exampleMeaning": "最好多吃一點蔬菜。",
+        "kanji": ""
+      },
+      "model": "gemini-3.5-flash-lite",
+      "at": "2026-09-28T08:19:41.024Z"
+    },
+    "g007": {
+      "id": "g007",
+      "type": "grammar",
+      "word": "〜つもりだ",
+      "status": "done",
+      "promptVersion": 2,
+      "verdict": "OK",
+      "issues": [],
+      "review": {
+        "meaning": "打算…",
+        "pattern": "V辞書形 / Vない形 + つもりだ",
+        "example": "来年日本へ留学するつもりです。",
+        "exampleMeaning": "打算明年去日本留學。",
+        "kanji": ""
+      },
+      "model": "gemini-3.5-flash-lite",
+      "at": "2026-09-28T08:19:46.531Z"
+    },
+    "g008": {
+      "id": "g008",
+      "type": "grammar",
+      "word": "〜予定だ",
+      "status": "done",
+      "promptVersion": 2,
+      "verdict": "OK",
+      "issues": [],
+      "review": {
+        "meaning": "預定…",
+        "pattern": "V辞書形 / 名詞の + 予定だ",
+        "example": "来週会議をする予定です。",
+        "exampleMeaning": "預定下週開會。",
+        "kanji": ""
+      },
+      "model": "gemini-3.5-flash-lite",
+      "at": "2026-09-28T08:19:52.672Z"
+    },
+    "g009": {
+      "id": "g009",
+      "type": "grammar",
+      "word": "〜そうだ（樣態）",
+      "status": "done",
+      "promptVersion": 2,
+      "verdict": "OK",
+      "issues": [],
+      "review": {
+        "meaning": "看起來…",
+        "pattern": "い形容詞語幹 / な形容詞 / Vます形 + そうだ",
+        "example": "このケーキはおいしそうです。",
+        "exampleMeaning": "這個蛋糕看起來很好吃。",
+        "kanji": ""
+      },
+      "model": "gemini-3.5-flash-lite",
+      "at": "2026-09-28T08:19:58.356Z"
+    },
+    "g010": {
+      "id": "g010",
+      "type": "grammar",
+      "word": "〜そうだ（傳聞）",
+      "status": "done",
+      "promptVersion": 2,
+      "verdict": "OK",
+      "issues": [],
+      "review": {
+        "meaning": "聽說…",
+        "pattern": "普通形 + そうだ",
+        "example": "明日雨が降るそうです。",
+        "exampleMeaning": "聽說明天下雨。",
+        "kanji": ""
+      },
+      "model": "gemini-3.5-flash-lite",
+      "at": "2026-09-28T08:20:12.236Z"
+    },
+    "g011": {
+      "id": "g011",
+      "type": "grammar",
+      "word": "〜らしい",
+      "status": "done",
+      "promptVersion": 2,
+      "verdict": "OK",
+      "issues": [],
+      "review": {
+        "meaning": "好像／據說…",
+        "pattern": "普通形 + らしい",
+        "example": "彼は忙しいらしいです。",
+        "exampleMeaning": "聽說他好像很忙。",
+        "kanji": ""
+      },
+      "model": "gemini-3.5-flash-lite",
+      "at": "2026-09-28T08:20:17.986Z"
+    },
+    "g012": {
+      "id": "g012",
+      "type": "grammar",
+      "word": "〜ようだ",
+      "status": "done",
+      "promptVersion": 2,
+      "verdict": "OK",
+      "issues": [],
+      "review": {
+        "meaning": "似乎…（推測／比喻）",
+        "pattern": "普通形 + ようだ",
+        "example": "熱があるようです。",
+        "exampleMeaning": "似乎發燒了。",
+        "kanji": ""
+      },
+      "model": "gemini-3.5-flash-lite",
+      "at": "2026-09-28T08:20:24.021Z"
+    },
+    "g013": {
+      "id": "g013",
+      "type": "grammar",
+      "word": "〜かもしれない",
+      "status": "done",
+      "promptVersion": 2,
+      "verdict": "OK",
+      "issues": [],
+      "review": {
+        "meaning": "也許…",
+        "pattern": "普通形 + かもしれない",
+        "example": "彼は来ないかもしれません。",
+        "exampleMeaning": "他也許不會來。",
+        "kanji": ""
+      },
+      "model": "gemini-3.5-flash-lite",
+      "at": "2026-09-28T08:20:30.302Z"
+    },
+    "g014": {
+      "id": "g014",
+      "type": "grammar",
+      "word": "〜ば",
+      "status": "done",
+      "promptVersion": 2,
+      "verdict": "OK",
+      "issues": [],
+      "review": {
+        "meaning": "如果…（條件）",
+        "pattern": "ば形",
+        "example": "安ければ買います。",
+        "exampleMeaning": "如果便宜我就買。",
+        "kanji": ""
+      },
+      "model": "gemini-3.5-flash-lite",
+      "at": "2026-09-28T08:20:36.088Z"
+    },
+    "g015": {
+      "id": "g015",
+      "type": "grammar",
+      "word": "〜たら",
+      "status": "done",
+      "promptVersion": 2,
+      "verdict": "OK",
+      "issues": [],
+      "review": {
+        "meaning": "如果／…之後",
+        "pattern": "た形 + ら",
+        "example": "雨が降ったら、家にいます。",
+        "exampleMeaning": "如果下雨就待在家。",
+        "kanji": ""
+      },
+      "model": "gemini-3.5-flash-lite",
+      "at": "2026-09-28T08:20:41.790Z"
+    },
+    "g016": {
+      "id": "g016",
+      "type": "grammar",
+      "word": "〜ても",
+      "status": "done",
+      "promptVersion": 2,
+      "verdict": "OK",
+      "issues": [],
+      "review": {
+        "meaning": "即使…也",
+        "pattern": "て形 + も",
+        "example": "雨が降っても行きます。",
+        "exampleMeaning": "即使下雨也會去。",
+        "kanji": ""
+      },
+      "model": "gemini-3.5-flash-lite",
+      "at": "2026-09-28T08:20:47.459Z"
+    },
+    "g017": {
+      "id": "g017",
+      "type": "grammar",
+      "word": "〜のに",
+      "status": "done",
+      "promptVersion": 2,
+      "verdict": "OK",
+      "issues": [],
+      "review": {
+        "meaning": "明明…卻",
+        "pattern": "普通形 + のに",
+        "example": "勉強したのに、試験に落ちました。",
+        "exampleMeaning": "明明念書了卻落榜了。",
+        "kanji": ""
+      },
+      "model": "gemini-3.5-flash-lite",
+      "at": "2026-09-28T08:20:53.138Z"
+    },
+    "g018": {
+      "id": "g018",
+      "type": "grammar",
+      "word": "〜ところだ",
+      "status": "done",
+      "promptVersion": 2,
+      "verdict": "OK",
+      "issues": [],
+      "review": {
+        "meaning": "正要／正在／剛…",
+        "pattern": "V辞書形 / Vている / Vた + ところだ",
+        "example": "今から出かけるところです。",
+        "exampleMeaning": "正要出門。",
+        "kanji": ""
+      },
+      "model": "gemini-3.5-flash-lite",
+      "at": "2026-09-28T08:20:58.705Z"
+    },
+    "g019": {
+      "id": "g019",
+      "type": "grammar",
+      "word": "〜たばかり",
+      "status": "done",
+      "promptVersion": 2,
+      "verdict": "OK",
+      "issues": [],
+      "review": {
+        "meaning": "剛剛…",
+        "pattern": "Vた形 + ばかり",
+        "example": "日本に来たばかりです。",
+        "exampleMeaning": "剛來到日本。",
+        "kanji": ""
+      },
+      "model": "gemini-3.5-flash-lite",
+      "at": "2026-09-28T08:21:04.711Z"
+    },
+    "g020": {
+      "id": "g020",
+      "type": "grammar",
+      "word": "〜ようにする",
+      "status": "done",
+      "promptVersion": 2,
+      "verdict": "OK",
+      "issues": [],
+      "review": {
+        "meaning": "努力做到…",
+        "pattern": "V辞書形 / Vない形 + ようにする",
+        "example": "毎日運動するようにしています。",
+        "exampleMeaning": "盡量每天運動。",
+        "kanji": ""
+      },
+      "model": "gemini-3.5-flash-lite",
+      "at": "2026-09-28T08:21:10.443Z"
+    },
+    "g021": {
+      "id": "g021",
+      "type": "grammar",
+      "word": "〜ようになる",
+      "status": "done",
+      "promptVersion": 2,
+      "verdict": "OK",
+      "issues": [],
+      "review": {
+        "meaning": "變得能夠…",
+        "pattern": "V辞書形 / Vない形 + ようになる",
+        "example": "日本語が話せるようになりました。",
+        "exampleMeaning": "變得會說日文了。",
+        "kanji": ""
+      },
+      "model": "gemini-3.5-flash-lite",
+      "at": "2026-09-28T08:21:16.268Z"
+    },
+    "g022": {
+      "id": "g022",
+      "type": "grammar",
+      "word": "〜すぎる",
+      "status": "done",
+      "promptVersion": 2,
+      "verdict": "OK",
+      "issues": [],
+      "review": {
+        "meaning": "過於…",
+        "pattern": "Vます形去掉ます / い形容詞語幹 / な形容詞 + すぎる",
+        "example": "食べすぎました。",
+        "exampleMeaning": "吃太多了。",
+        "kanji": ""
+      },
+      "model": "gemini-3.5-flash-lite",
+      "at": "2026-09-28T08:21:21.982Z"
+    },
+    "g023": {
+      "id": "g023",
+      "type": "grammar",
+      "word": "〜やすい／にくい",
+      "status": "done",
+      "promptVersion": 2,
+      "verdict": "OK",
+      "issues": [],
+      "review": {
+        "meaning": "容易／不容易…",
+        "pattern": "Vます形 + やすい／にくい",
+        "example": "この本は読みやすいです。",
+        "exampleMeaning": "這本書容易讀。",
+        "kanji": ""
+      },
+      "model": "gemini-3.5-flash-lite",
+      "at": "2026-09-28T08:21:27.615Z"
+    },
+    "g024": {
+      "id": "g024",
+      "type": "grammar",
+      "word": "〜間に",
+      "status": "done",
+      "promptVersion": 2,
+      "verdict": "OK",
+      "issues": [],
+      "review": {
+        "meaning": "在…期間內",
+        "pattern": "Nの / Vている + 間に",
+        "example": "留守の間に荷物が届きました。",
+        "exampleMeaning": "不在家的期間內包裹送到了。",
+        "kanji": ""
+      },
+      "model": "gemini-3.5-flash-lite",
+      "at": "2026-09-28T08:21:33.267Z"
+    },
+    "g025": {
+      "id": "g025",
+      "type": "grammar",
+      "word": "〜てしまう",
+      "status": "done",
+      "promptVersion": 2,
+      "verdict": "OK",
+      "issues": [],
+      "review": {
+        "meaning": "做完／不小心…了（完成或遺憾）",
+        "pattern": "Vて + しまう",
+        "example": "宿題を全部やってしまいました。",
+        "exampleMeaning": "作業全部做完了。",
+        "kanji": ""
+      },
+      "model": "gemini-3.5-flash-lite",
+      "at": "2026-09-28T08:21:39.009Z"
+    },
+    "g026": {
+      "id": "g026",
+      "type": "grammar",
+      "word": "〜ておく",
+      "status": "done",
+      "promptVersion": 2,
+      "verdict": "OK",
+      "issues": [],
+      "review": {
+        "meaning": "事先做好…",
+        "pattern": "Vて + おく",
+        "example": "旅行の前に切符を買っておきます。",
+        "exampleMeaning": "旅行前先把票買好。",
+        "kanji": ""
+      },
+      "model": "gemini-3.5-flash-lite",
+      "at": "2026-09-28T08:22:24.799Z"
+    },
+    "g027": {
+      "id": "g027",
+      "type": "grammar",
+      "word": "〜てみる",
+      "status": "done",
+      "promptVersion": 2,
+      "verdict": "OK",
+      "issues": [],
+      "review": {
+        "meaning": "試試看…",
+        "pattern": "Vて + みる",
+        "example": "この靴をはいてみてもいいですか。",
+        "exampleMeaning": "這雙鞋子可以試穿嗎？",
+        "kanji": ""
+      },
+      "model": "gemini-3.5-flash-lite",
+      "at": "2026-09-28T08:22:30.521Z"
+    },
+    "g028": {
+      "id": "g028",
+      "type": "grammar",
+      "word": "〜ていく",
+      "status": "done",
+      "promptVersion": 2,
+      "verdict": "OK",
+      "issues": [],
+      "review": {
+        "meaning": "逐漸…下去／帶著去做",
+        "pattern": "Vて + いく",
+        "example": "これから寒くなっていきます。",
+        "exampleMeaning": "接下來會漸漸變冷。",
+        "kanji": ""
+      },
+      "model": "gemini-3.5-flash-lite",
+      "at": "2026-09-28T08:22:36.188Z"
+    },
+    "g029": {
+      "id": "g029",
+      "type": "grammar",
+      "word": "〜てくる",
+      "status": "done",
+      "promptVersion": 2,
+      "verdict": "OK",
+      "issues": [],
+      "review": {
+        "meaning": "漸漸…起來／做了再回來",
+        "pattern": "Vて + くる",
+        "example": "日本語が話せるようになってきました。",
+        "exampleMeaning": "日語漸漸變得能說了。",
+        "kanji": ""
+      },
+      "model": "gemini-3.5-flash-lite",
+      "at": "2026-09-28T08:22:41.898Z"
+    },
+    "g030": {
+      "id": "g030",
+      "type": "grammar",
+      "word": "〜てある",
+      "status": "done",
+      "promptVersion": 2,
+      "verdict": "FIX",
+      "issues": [
+        "「窓が開けてあります」的用法有誤。「開ける」是他動詞，表人為動作，若要表示窗戶呈現被打開的狀態，應該使用自動詞「開く」，即「窓が開いてあります」或「窓が開いている」。",
+        "若堅持使用他動詞「開ける」，其「〜てある」的句型應為「窓を開けてあります」（某人為了某個目的已經把窗戶打開了），但這與原意「窗戶已經被打開著（狀態）」不符。"
+      ],
+      "review": {
+        "meaning": "已經被做好（表示人為動作後的結果狀態持續著）",
+        "pattern": "他動詞て形 + ある",
+        "example": "窓が開けてあります。",
+        "exampleMeaning": "窗戶已經被打開了（有人刻意開著的）。",
+        "kanji": ""
+      },
+      "model": "gemini-3.5-flash-lite",
+      "at": "2026-09-28T08:22:48.415Z"
+    },
+    "g031": {
+      "id": "g031",
+      "type": "grammar",
+      "word": "〜てほしい",
+      "status": "done",
+      "promptVersion": 2,
+      "verdict": "OK",
+      "issues": [],
+      "review": {
+        "meaning": "希望對方做…",
+        "pattern": "Vて + ほしい",
+        "example": "もう少しゆっくり話してほしいです。",
+        "exampleMeaning": "希望你再說慢一點。",
+        "kanji": ""
+      },
+      "model": "gemini-3.5-flash-lite",
+      "at": "2026-09-28T08:22:54.987Z"
+    },
+    "g032": {
+      "id": "g032",
+      "type": "grammar",
+      "word": "〜なさい",
+      "status": "done",
+      "promptVersion": 2,
+      "verdict": "OK",
+      "issues": [],
+      "review": {
+        "meaning": "請…（較強的指示）",
+        "pattern": "Vます形去除ます + なさい",
+        "example": "早く宿題をしなさい。",
+        "exampleMeaning": "快去做作業。",
+        "kanji": ""
+      },
+      "model": "gemini-3.5-flash-lite",
+      "at": "2026-09-28T08:23:00.754Z"
+    },
+    "g033": {
+      "id": "g033",
+      "type": "grammar",
+      "word": "〜てはいけない",
+      "status": "done",
+      "promptVersion": 2,
+      "verdict": "OK",
+      "issues": [],
+      "review": {
+        "meaning": "不可以…",
+        "pattern": "Vて + はいけない",
+        "example": "ここで写真を撮ってはいけません。",
+        "exampleMeaning": "這裡不可以拍照。",
+        "kanji": ""
+      },
+      "model": "gemini-3.5-flash-lite",
+      "at": "2026-09-28T08:23:20.062Z"
+    },
+    "g034": {
+      "id": "g034",
+      "type": "grammar",
+      "word": "〜てもいい",
+      "status": "done",
+      "promptVersion": 2,
+      "verdict": "OK",
+      "issues": [],
+      "review": {
+        "meaning": "可以…（許可）",
+        "pattern": "Vて + もいい",
+        "example": "入ってもいいですか。",
+        "exampleMeaning": "可以進去嗎？",
+        "kanji": ""
+      },
+      "model": "gemini-3.5-flash-lite",
+      "at": "2026-09-28T08:23:25.838Z"
+    },
+    "g035": {
+      "id": "g035",
+      "type": "grammar",
+      "word": "〜ないで",
+      "status": "done",
+      "promptVersion": 2,
+      "verdict": "OK",
+      "issues": [],
+      "review": {
+        "meaning": "不要…地做／請不要…",
+        "pattern": "Vない形 + で",
+        "example": "今日は傘を持たないで出かけました。",
+        "exampleMeaning": "今天沒帶傘就出門了。",
+        "kanji": ""
+      },
+      "model": "gemini-3.5-flash-lite",
+      "at": "2026-09-28T08:23:31.582Z"
+    },
+    "g036": {
+      "id": "g036",
+      "type": "grammar",
+      "word": "〜ために",
+      "status": "done",
+      "promptVersion": 2,
+      "verdict": "OK",
+      "issues": [],
+      "review": {
+        "meaning": "為了…／因為…",
+        "pattern": "V辞書形 / Nの + ために",
+        "example": "合格するために毎日勉強しています。",
+        "exampleMeaning": "為了合格每天都在念書。",
+        "kanji": ""
+      },
+      "model": "gemini-3.5-flash-lite",
+      "at": "2026-09-28T08:23:37.082Z"
+    },
+    "g037": {
+      "id": "g037",
+      "type": "grammar",
+      "word": "〜ように（目的）",
+      "status": "done",
+      "promptVersion": 2,
+      "verdict": "OK",
+      "issues": [],
+      "review": {
+        "meaning": "以便…／為了能…",
+        "pattern": "V辞書形 / Vない形 + ように",
+        "example": "聞こえるように大きい声で話してください。",
+        "exampleMeaning": "請大聲說，好讓人聽得見。",
+        "kanji": ""
+      },
+      "model": "gemini-3.5-flash-lite",
+      "at": "2026-09-28T08:23:42.727Z"
+    },
+    "g038": {
+      "id": "g038",
+      "type": "grammar",
+      "word": "〜ので",
+      "status": "done",
+      "promptVersion": 2,
+      "verdict": "OK",
+      "issues": [],
+      "review": {
+        "meaning": "因為…（較委婉）",
+        "pattern": "普通形 + ので",
+        "example": "熱があるので、今日は休みます。",
+        "exampleMeaning": "因為發燒，今天請假。",
+        "kanji": ""
+      },
+      "model": "gemini-3.5-flash-lite",
+      "at": "2026-09-28T08:23:48.523Z"
+    },
+    "g039": {
+      "id": "g039",
+      "type": "grammar",
+      "word": "〜ながら",
+      "status": "done",
+      "promptVersion": 2,
+      "verdict": "OK",
+      "issues": [],
+      "review": {
+        "meaning": "一邊…一邊…",
+        "pattern": "Vます形 + ながら",
+        "example": "音楽を聞きながら勉強します。",
+        "exampleMeaning": "一邊聽音樂一邊念書。",
+        "kanji": ""
+      },
+      "model": "gemini-3.5-flash-lite",
+      "at": "2026-09-28T08:24:21.023Z"
+    },
+    "g040": {
+      "id": "g040",
+      "type": "grammar",
+      "word": "〜たり〜たり",
+      "status": "done",
+      "promptVersion": 2,
+      "verdict": "OK",
+      "issues": [],
+      "review": {
+        "meaning": "又…又…／有時…有時…",
+        "pattern": "Vた形 + り … たりする",
+        "example": "日曜日は映画を見たり本を読んだりします。",
+        "exampleMeaning": "星期日看看電影、讀讀書。",
+        "kanji": ""
+      },
+      "model": "gemini-3.5-flash-lite",
+      "at": "2026-09-28T08:24:26.618Z"
+    },
+    "g041": {
+      "id": "g041",
+      "type": "grammar",
+      "word": "〜し〜し",
+      "status": "done",
+      "promptVersion": 2,
+      "verdict": "OK",
+      "issues": [],
+      "review": {
+        "meaning": "又…又…（列舉理由）",
+        "pattern": "普通形 + し",
+        "example": "この店は安いし、美味しいし、よく来ます。",
+        "exampleMeaning": "這店又便宜又好吃，所以常來。",
+        "kanji": ""
+      },
+      "model": "gemini-3.5-flash-lite",
+      "at": "2026-09-28T08:24:32.354Z"
+    },
+    "g042": {
+      "id": "g042",
+      "type": "grammar",
+      "word": "〜だけ",
+      "status": "done",
+      "promptVersion": 2,
+      "verdict": "OK",
+      "issues": [],
+      "review": {
+        "meaning": "只…／僅僅…",
+        "pattern": "N / 普通形 + だけ",
+        "example": "水だけ飲みました。",
+        "exampleMeaning": "只喝了水。",
+        "kanji": ""
+      },
+      "model": "gemini-3.5-flash-lite",
+      "at": "2026-09-28T08:24:37.980Z"
+    },
+    "g043": {
+      "id": "g043",
+      "type": "grammar",
+      "word": "〜しか〜ない",
+      "status": "done",
+      "promptVersion": 2,
+      "verdict": "OK",
+      "issues": [],
+      "review": {
+        "meaning": "只有…（別的都沒有）",
+        "pattern": "N + しか + ない",
+        "example": "100円しかありません。",
+        "exampleMeaning": "只有 100 日圓。",
+        "kanji": ""
+      },
+      "model": "gemini-3.5-flash-lite",
+      "at": "2026-09-28T08:24:43.760Z"
+    },
+    "g044": {
+      "id": "g044",
+      "type": "grammar",
+      "word": "〜はずだ",
+      "status": "done",
+      "promptVersion": 2,
+      "verdict": "OK",
+      "issues": [],
+      "review": {
+        "meaning": "按理應該…",
+        "pattern": "普通形 + はずだ",
+        "example": "彼は今日来るはずです。",
+        "exampleMeaning": "他今天應該會來。",
+        "kanji": ""
+      },
+      "model": "gemini-3.5-flash-lite",
+      "at": "2026-09-28T08:24:49.380Z"
+    },
+    "g045": {
+      "id": "g045",
+      "type": "grammar",
+      "word": "〜ことになる",
+      "status": "done",
+      "promptVersion": 2,
+      "verdict": "OK",
+      "issues": [],
+      "review": {
+        "meaning": "（結果）決定要…",
+        "pattern": "V辞書形 / Vない形 + ことになる",
+        "example": "来月から大阪で働くことになりました。",
+        "exampleMeaning": "（結果）下個月起要在大阪工作。",
+        "kanji": ""
+      },
+      "model": "gemini-3.5-flash-lite",
+      "at": "2026-09-28T08:24:54.959Z"
+    },
+    "g046": {
+      "id": "g046",
+      "type": "grammar",
+      "word": "〜ことにする",
+      "status": "done",
+      "promptVersion": 2,
+      "verdict": "OK",
+      "issues": [],
+      "review": {
+        "meaning": "決定要…（自己決定）",
+        "pattern": "V辞書形 / Vない形 + ことにする",
+        "example": "明日から毎日走ることにしました。",
+        "exampleMeaning": "我決定從明天起每天跑步。",
+        "kanji": ""
+      },
+      "model": "gemini-3.5-flash-lite",
+      "at": "2026-09-28T08:25:01.039Z"
+    },
+    "g047": {
+      "id": "g047",
+      "type": "grammar",
+      "word": "〜について",
+      "status": "done",
+      "promptVersion": 2,
+      "verdict": "OK",
+      "issues": [],
+      "review": {
+        "meaning": "關於…",
+        "pattern": "N + について",
+        "example": "日本の文化について話します。",
+        "exampleMeaning": "要談關於日本文化的事。",
+        "kanji": ""
+      },
+      "model": "gemini-3.5-flash-lite",
+      "at": "2026-09-28T08:25:06.630Z"
+    },
+    "g048": {
+      "id": "g048",
+      "type": "grammar",
+      "word": "〜として",
+      "status": "done",
+      "promptVersion": 2,
+      "verdict": "OK",
+      "issues": [],
+      "review": {
+        "meaning": "作為…",
+        "pattern": "N + として",
+        "example": "留学生として日本へ来ました。",
+        "exampleMeaning": "以留學生身分來到日本。",
+        "kanji": ""
+      },
+      "model": "gemini-3.5-flash-lite",
+      "at": "2026-09-28T08:25:12.293Z"
+    },
+    "g049": {
+      "id": "g049",
+      "type": "grammar",
+      "word": "〜中",
+      "status": "done",
+      "promptVersion": 2,
+      "verdict": "OK",
+      "issues": [],
+      "review": {
+        "meaning": "正在…之中",
+        "pattern": "N + 中",
+        "example": "今、会議中ですから、あとで連絡します。",
+        "exampleMeaning": "現在正在開會，稍後再聯絡。",
+        "kanji": ""
+      },
+      "model": "gemini-3.5-flash-lite",
+      "at": "2026-09-28T08:25:17.851Z"
+    },
+    "g050": {
+      "id": "g050",
+      "type": "grammar",
+      "word": "〜場合",
+      "status": "done",
+      "promptVersion": 2,
+      "verdict": "OK",
+      "issues": [],
+      "review": {
+        "meaning": "在…的情況下",
+        "pattern": "普通形 / Nの + 場合",
+        "example": "わからない場合は、先生に聞いてください。",
+        "exampleMeaning": "不懂的時候請問老師。",
+        "kanji": ""
+      },
+      "model": "gemini-3.5-flash-lite",
+      "at": "2026-09-28T08:25:23.537Z"
+    },
+    "g051": {
+      "id": "g051",
+      "type": "grammar",
+      "word": "〜なら",
+      "status": "done",
+      "promptVersion": 2,
+      "verdict": "OK",
+      "issues": [],
+      "review": {
+        "meaning": "如果是…的話",
+        "pattern": "N / 普通形 + なら",
+        "example": "安いなら買います。",
+        "exampleMeaning": "如果便宜的話我就買。",
+        "kanji": ""
+      },
+      "model": "gemini-3.5-flash-lite",
+      "at": "2026-09-28T08:25:29.115Z"
+    },
+    "g052": {
+      "id": "g052",
+      "type": "grammar",
+      "word": "〜と（條件）",
+      "status": "done",
+      "promptVersion": 2,
+      "verdict": "OK",
+      "issues": [],
+      "review": {
+        "meaning": "一…就…／如果…就（必然）",
+        "pattern": "V辞書形 + と",
+        "example": "このボタンを押すと、ドアが開きます。",
+        "exampleMeaning": "一按這個按鈕，門就會開。",
+        "kanji": ""
+      },
+      "model": "gemini-3.5-flash-lite",
+      "at": "2026-09-28T08:25:34.858Z"
+    },
+    "g053": {
+      "id": "g053",
+      "type": "grammar",
+      "word": "〜あとで",
+      "status": "done",
+      "promptVersion": 2,
+      "verdict": "OK",
+      "issues": [],
+      "review": {
+        "meaning": "…之後",
+        "pattern": "Vた形 / Nの + あとで",
+        "example": "仕事が終わったあとで、映画を見ます。",
+        "exampleMeaning": "工作結束之後去看電影。",
+        "kanji": ""
+      },
+      "model": "gemini-3.5-flash-lite",
+      "at": "2026-09-28T08:25:40.575Z"
+    },
+    "g054": {
+      "id": "g054",
+      "type": "grammar",
+      "word": "〜まえに",
+      "status": "done",
+      "promptVersion": 2,
+      "verdict": "OK",
+      "issues": [],
+      "review": {
+        "meaning": "在…之前",
+        "pattern": "V辞書形 / Nの + まえに",
+        "example": "寝る前に歯を磨きます。",
+        "exampleMeaning": "睡覺前刷牙。",
+        "kanji": ""
+      },
+      "model": "gemini-3.5-flash-lite",
+      "at": "2026-09-28T08:25:46.267Z"
+    },
+    "g055": {
+      "id": "g055",
+      "type": "grammar",
+      "word": "〜てから",
+      "status": "done",
+      "promptVersion": 2,
+      "verdict": "OK",
+      "issues": [],
+      "review": {
+        "meaning": "…之後才",
+        "pattern": "Vて + から",
+        "example": "手を洗ってからご飯を食べます。",
+        "exampleMeaning": "洗手之後才吃飯。",
+        "kanji": ""
+      },
+      "model": "gemini-3.5-flash-lite",
+      "at": "2026-09-28T08:25:54.495Z"
+    },
+    "g056": {
+      "id": "g056",
+      "type": "grammar",
+      "word": "〜間",
+      "status": "done",
+      "promptVersion": 2,
+      "verdict": "OK",
+      "issues": [],
+      "review": {
+        "meaning": "在…期間（整段時間）",
+        "pattern": "Nの / Vている + 間",
+        "example": "夏休みの間、アルバイトをします。",
+        "exampleMeaning": "暑假期間會打工。",
+        "kanji": ""
+      },
+      "model": "gemini-3.5-flash-lite",
+      "at": "2026-09-28T08:26:00.197Z"
+    },
+    "g057": {
+      "id": "g057",
+      "type": "grammar",
+      "word": "〜うちに",
+      "status": "done",
+      "promptVersion": 2,
+      "verdict": "OK",
+      "issues": [],
+      "review": {
+        "meaning": "趁…的時候",
+        "pattern": "Vている / い形容詞 + うちに",
+        "example": "若いうちに、いろいろ経験したほうがいいです。",
+        "exampleMeaning": "趁年輕最好多經歷。",
+        "kanji": ""
+      },
+      "model": "gemini-3.5-flash-lite",
+      "at": "2026-09-28T08:26:05.785Z"
+    },
+    "g058": {
+      "id": "g058",
+      "type": "grammar",
+      "word": "〜みたいだ",
+      "status": "done",
+      "promptVersion": 2,
+      "verdict": "OK",
+      "issues": [],
+      "review": {
+        "meaning": "好像…（口語）",
+        "pattern": "普通形 + みたいだ",
+        "example": "今日は雨みたいです。",
+        "exampleMeaning": "今天好像會下雨。",
+        "kanji": ""
+      },
+      "model": "gemini-3.5-flash-lite",
+      "at": "2026-09-28T08:26:11.406Z"
+    },
+    "g059": {
+      "id": "g059",
+      "type": "grammar",
+      "word": "〜たがる",
+      "status": "done",
+      "promptVersion": 2,
+      "verdict": "OK",
+      "issues": [],
+      "review": {
+        "meaning": "（別人）想要…",
+        "pattern": "Vます形 + たがる",
+        "example": "子どもはお菓子を食べたがります。",
+        "exampleMeaning": "小孩想吃零食。",
+        "kanji": ""
+      },
+      "model": "gemini-3.5-flash-lite",
+      "at": "2026-09-28T08:26:17.059Z"
+    },
+    "g060": {
+      "id": "g060",
+      "type": "grammar",
+      "word": "〜させる（使役）",
+      "status": "done",
+      "promptVersion": 2,
+      "verdict": "OK",
+      "issues": [],
+      "review": {
+        "meaning": "讓／叫某人做…",
+        "pattern": "[動詞Ⅱ上一段/下一段/五段]未然形 + させる\n[動詞Ⅲ] させる (する -> させる)",
+        "example": "母は子どもに野菜を食べさせます。",
+        "exampleMeaning": "媽媽讓孩子吃蔬菜。",
+        "kanji": ""
+      },
+      "model": "gemini-3.5-flash-lite",
+      "at": "2026-09-28T08:26:23.839Z"
+    },
+    "g061": {
+      "id": "g061",
+      "type": "grammar",
+      "word": "〜られる（受身）",
+      "status": "done",
+      "promptVersion": 2,
+      "verdict": "OK",
+      "issues": [],
+      "review": {
+        "meaning": "被…",
+        "pattern": "受身形",
+        "example": "私は先生に名前を呼ばれました。",
+        "exampleMeaning": "我被老師叫到名字。",
+        "kanji": ""
+      },
+      "model": "gemini-3.5-flash-lite",
+      "at": "2026-09-28T08:26:29.590Z"
+    },
+    "g062": {
+      "id": "g062",
+      "type": "grammar",
+      "word": "〜られる（可能）",
+      "status": "done",
+      "promptVersion": 2,
+      "verdict": "FIX",
+      "issues": [
+        "文法卡目標文法是「〜られる（可能）」（五段動詞的可能形或上一段・下一段動詞的可能形），但例句使用了「漢字が読めます。」，這是「〜ます（可能動詞 読める）」的句子，並未示範「〜られる」的文法。若要示範「られる」的可能形，應使用上一段或下一段動詞，例如「見られる」或「食べられる」。"
+      ],
+      "review": {
+        "meaning": "能夠…",
+        "pattern": "上一段・下一段動詞の未然形 ＋ られる",
+        "example": "この映画はいつでも見られます。",
+        "exampleMeaning": "這部電影隨時都能看。",
+        "kanji": ""
+      },
+      "model": "gemini-3.5-flash-lite",
+      "at": "2026-09-28T08:26:35.516Z"
+    },
+    "g063": {
+      "id": "g063",
+      "type": "grammar",
+      "word": "〜かどうか",
+      "status": "done",
+      "promptVersion": 2,
+      "verdict": "OK",
+      "issues": [],
+      "review": {
+        "meaning": "是否…",
+        "pattern": "普通形 + かどうか",
+        "example": "彼が来るかどうか、わかりません。",
+        "exampleMeaning": "不知道他來不來。",
+        "kanji": ""
+      },
+      "model": "gemini-3.5-flash-lite",
+      "at": "2026-09-28T08:26:41.340Z"
+    },
+    "g064": {
+      "id": "g064",
+      "type": "grammar",
+      "word": "〜まで",
+      "status": "done",
+      "promptVersion": 2,
+      "verdict": "OK",
+      "issues": [],
+      "review": {
+        "meaning": "到…為止（含該點）",
+        "pattern": "N / V辞書形 + まで",
+        "example": "駅まで歩きます。",
+        "exampleMeaning": "走到車站。",
+        "kanji": ""
+      },
+      "model": "gemini-3.5-flash-lite",
+      "at": "2026-09-28T08:26:47.055Z"
+    },
+    "g065": {
+      "id": "g065",
+      "type": "grammar",
+      "word": "〜までに",
+      "status": "done",
+      "promptVersion": 2,
+      "verdict": "OK",
+      "issues": [],
+      "review": {
+        "meaning": "在…之前（期限）",
+        "pattern": "N / V辞書形 + までに",
+        "example": "金曜日までにレポートを出してください。",
+        "exampleMeaning": "請在星期五之前交報告。",
+        "kanji": ""
+      },
+      "model": "gemini-3.5-flash-lite",
+      "at": "2026-09-28T08:26:52.952Z"
+    },
+    "g066": {
+      "id": "g066",
+      "type": "grammar",
+      "word": "〜方",
+      "status": "done",
+      "promptVersion": 2,
+      "verdict": "OK",
+      "issues": [],
+      "review": {
+        "meaning": "…的方法",
+        "pattern": "Vます形 + 方",
+        "example": "漢字の読み方を教えてください。",
+        "exampleMeaning": "請教我漢字的讀法。",
+        "kanji": ""
+      },
+      "model": "gemini-3.5-flash-lite",
+      "at": "2026-09-28T08:26:58.710Z"
+    },
+    "g067": {
+      "id": "g067",
+      "type": "grammar",
+      "word": "〜がする",
+      "status": "done",
+      "promptVersion": 2,
+      "verdict": "OK",
+      "issues": [],
+      "review": {
+        "meaning": "感覺到（味道／氣味／聲音等）",
+        "pattern": "N + がする",
+        "example": "いいにおいがします。",
+        "exampleMeaning": "有香味。",
+        "kanji": ""
+      },
+      "model": "gemini-3.5-flash-lite",
+      "at": "2026-09-28T08:27:04.283Z"
+    },
+    "g068": {
+      "id": "g068",
+      "type": "grammar",
+      "word": "〜という",
+      "status": "done",
+      "promptVersion": 2,
+      "verdict": "OK",
+      "issues": [],
+      "review": {
+        "meaning": "叫做…／所謂…",
+        "pattern": "N / 文 + という + N",
+        "example": "これは何という花ですか。",
+        "exampleMeaning": "這朵花叫什麼名字？",
+        "kanji": ""
+      },
+      "model": "gemini-3.5-flash-lite",
+      "at": "2026-09-28T08:27:09.971Z"
     }
   }
 }
