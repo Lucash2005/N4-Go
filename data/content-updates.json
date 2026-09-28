@@ -1,6 +1,6 @@
 {
-  "contentVersion": 65,
-  "updatedAt": "2026-09-27T08:12:51.584Z",
+  "contentVersion": 66,
+  "updatedAt": "2026-09-28T08:28:07.878Z",
   "days": {
     "2026-09-06": [
       "v023",
@@ -3252,9 +3252,21 @@
       "v1491",
       "v1492",
       "v1493"
+    ],
+    "2026-09-28": [
+      "g030",
+      "g062",
+      "v1494",
+      "v1495",
+      "v1496",
+      "v1497",
+      "v1498",
+      "v1499"
     ]
   },
   "ids": [
+    "g030",
+    "g062",
     "v002",
     "v005",
     "v006",
@@ -4213,7 +4225,13 @@
     "v1490",
     "v1491",
     "v1492",
-    "v1493"
+    "v1493",
+    "v1494",
+    "v1495",
+    "v1496",
+    "v1497",
+    "v1498",
+    "v1499"
   ],
   "note": "Cards fixed in this content version; client marks them and skips duplicate Gemini checks."
 }
