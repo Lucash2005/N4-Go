@@ -627,8 +627,9 @@
       "實驗室"
     ],
     "exampleMeaning": "老師在研究室裡。",
-    "exampleFurigana": "研究室[けんきゅうしつ]に戻[もど]りなさい。",
-    "example": "先生は研究室にいます。"
+    "exampleFurigana": "先生[せんせい]は研究室[けんきゅうしつ]にいます。",
+    "example": "先生は研究室にいます。",
+    "speechReading": "けんきゅうしつ"
   },
   "v320": {
     "meaning": "九號；九天",
@@ -1738,16 +1739,17 @@
     "exampleFurigana": "四日[よっか]に行[い]きます。"
   },
   "v777": {
-    "meaning": "空；餓",
+    "meaning": "變空；（肚子）餓",
     "meaningEn": "to become empty; to get hungry",
     "meaningZh": [
-      "空",
-      "餓"
+      "變空",
+      "（肚子）餓"
     ],
     "kanji": "空く",
     "example": "お腹が空きました。",
     "exampleMeaning": "肚子餓了。",
-    "exampleFurigana": "お腹[なか]が空[す]きました。"
+    "exampleFurigana": "お腹[おなか]が空[す]きました。",
+    "speechReading": "すく"
   },
   "v233": {
     "meaning": "一個人",
@@ -2190,15 +2192,16 @@
     "exampleFurigana": ""
   },
   "v1090": {
-    "meaning": "人口",
+    "meaning": "（某地的）人口、居民人數",
     "meaningEn": "population",
-    "example": "この町の人口は多いです。",
-    "exampleMeaning": "這個城鎮的人口很多。",
-    "exampleFurigana": "この町[まち]の人口[じんこう]は多[おお]いです。",
+    "example": "この町の人口は約十万人です。",
+    "exampleMeaning": "這個城鎮的人口大約十萬人。",
+    "exampleFurigana": "",
     "meaningZh": [
-      "人口"
+      "人口",
+      "居民人數"
     ],
-    "speechReading": "ジンコー"
+    "speechReading": "じんこう"
   },
   "v629": {
     "meaning": "排隊；並列、陳列",
@@ -3018,8 +3021,15 @@
     "speechReading": "ふたり"
   },
   "v582": {
-    "example": "旅行は二日間にわたります。",
-    "exampleMeaning": "旅行為期兩天。"
+    "example": "二日に友だちに会います。",
+    "exampleMeaning": "二號要跟朋友見面。",
+    "meaning": "二號；兩天",
+    "meaningZh": [
+      "二號",
+      "兩天"
+    ],
+    "exampleFurigana": "二日[ふつか]に友[とも]だちに会[あ]います。",
+    "speechReading": "ふつか"
   },
   "v585": {
     "example": "日曜日は図書館へ行きます。",
@@ -3471,12 +3481,15 @@
     "exampleMeaning": "小孩子在玩玩具。"
   },
   "v733": {
-    "meaning": "祝賀、慶祝、賀禮",
+    "meaning": "祝賀；慶祝活動；賀禮",
     "meaningZh": [
-      "祝賀、慶祝、賀禮"
+      "祝賀",
+      "慶祝活動",
+      "賀禮"
     ],
     "example": "誕生日のお祝いをします。",
-    "exampleMeaning": "要辦生日慶祝活動。"
+    "exampleMeaning": "要辦生日慶祝活動。",
+    "exampleFurigana": ""
   },
   "v738": {
     "example": "カーテンを閉めてください。",
@@ -3495,14 +3508,15 @@
     "example": "次のガソリンスタンドで止まります。"
   },
   "v743": {
-    "meaning": "介意、關心；管閒事",
+    "meaning": "介意、在意；理會",
     "meaningZh": [
-      "介意、關心",
-      "管閒事"
+      "介意、在意",
+      "理會"
     ],
     "example": "私のことは構わないでください。",
-    "exampleMeaning": "請不要管我的事。",
-    "kanji": "構う"
+    "exampleMeaning": "請不要管我的事。／請別介意我。",
+    "kanji": "構う",
+    "exampleFurigana": ""
   },
   "v744": {
     "meaning": "玻璃",
@@ -3626,13 +3640,14 @@
     "example": "すっかり忘れてしまいました。"
   },
   "v780": {
-    "meaning": "一下子、順暢地；暢快",
+    "meaning": "一下子、順利地；舒暢、暢快",
     "meaningZh": [
-      "一下子、順暢地",
-      "暢快"
+      "一下子、順利地",
+      "舒暢、暢快"
     ],
-    "example": "窓を開けたら、空気がすっと入ってきました。",
-    "exampleMeaning": "打開窗戶後，空氣一下子順暢地透進來了。"
+    "example": "窓を開けたら、気持ちがすっとしました。",
+    "exampleMeaning": "打開窗戶後，心情一下子舒暢了。",
+    "exampleFurigana": ""
   },
   "v781": {
     "example": "今晩はステーキを食べます。",
@@ -3687,12 +3702,14 @@
     "exampleMeaning": "我喜歡這種類型的車。"
   },
   "v797": {
-    "meaning": "所以、因此（接續詞）",
+    "meaning": "所以；因此",
     "meaningZh": [
-      "所以、因此"
+      "所以",
+      "因此"
     ],
     "example": "時間がありません。だから急ぎます。",
-    "exampleMeaning": "沒有時間了。所以我要趕緊。"
+    "exampleMeaning": "沒有時間了。所以我要趕緊。",
+    "exampleFurigana": ""
   },
   "v798": {
     "example": "たまに夕食を作ります。",
