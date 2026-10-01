@@ -29,7 +29,8 @@ export const STUDY_PHASES = [
     end: '2026-10-20',
     goal: '完成 N4 單字約 1500、文法約 80～120；SRS 穩定評分。',
     focus: ['單字／文法衝刺', 'SRS 評分養成', '活用て形・ない形'],
-    daily: { vocab: 30, grammar: 5, reading: 0, listening: 0, reviewShare: 0.4 },
+    // 18 new + multi-pass ≈ 30–40 min with 2–3 looks each (was 30→catch-up 40, one pass).
+    daily: { vocab: 18, grammar: 5, reading: 0, listening: 0, reviewShare: 0.4 },
     modules: ['flashcards', 'quiz', 'drill'],
   },
   {

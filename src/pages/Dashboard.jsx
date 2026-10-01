@@ -5,12 +5,18 @@ import Countdown from '../components/Countdown'
 import ProgressBar from '../components/ProgressBar'
 import { DRILL_BANK_SIZE } from '../data/drill'
 import { useProgress } from '../hooks/useProgress'
+import { useSettings } from '../hooks/useSettings'
 import { getPlanProgress } from '../utils/planProgress'
 import { checkContentUpdates, getTodayKey } from '../utils/contentUpdates'
 import { computeReadiness, getStudyPhase } from '../data/studyPhases'
 import { getReadingStats } from '../pages/ReadingPractice'
 import { getListeningStats } from '../pages/ListeningPractice'
 import { wrongBankCount } from '../utils/wrongBank'
+import {
+  NEW_CARD_PASS_CHOICES,
+  VOCAB_TARGET_CHOICES,
+  vocabQuotaSourceLabel,
+} from '../utils/studyPrefs'
 
 export default function Dashboard() {
   const {
@@ -50,7 +56,16 @@ export default function Dashboard() {
     clearCardReports,
     copyReportsExport,
     unreportCardIssue,
+    dailyPlan,
   } = useProgress()
+  const {
+    dailyVocabTarget,
+    setDailyVocabTarget,
+    newCardPasses,
+    setNewCardPasses,
+    autoCatchUp,
+    setAutoCatchUp,
+  } = useSettings()
   const [exportMsg, setExportMsg] = useState('')
   const [vocabMsg, setVocabMsg] = useState('')
   const [contentCheckMsg, setContentCheckMsg] = useState('')
@@ -117,6 +132,19 @@ export default function Dashboard() {
   })
   const wrongCount = wrongBankCount()
   const dailyGoal = studyPhase.daily
+  const phaseVocab = dailyPlan?.phaseVocab || dailyGoal.vocab
+  const quotaSource = dailyPlan?.vocabQuotaSource || 'phase'
+  const quotaLabel = vocabQuotaSourceLabel(quotaSource, phaseVocab)
+
+  function applyVocabTarget(value) {
+    setDailyVocabTarget(value)
+    reshuffleTodayPlan()
+  }
+
+  function applyAutoCatchUp(next) {
+    setAutoCatchUp(next)
+    reshuffleTodayPlan()
+  }
 
   return (
     <div className="space-y-5">
@@ -149,7 +177,9 @@ export default function Dashboard() {
           </p>
         </div>
         <p className="mt-4 rounded-2xl bg-foam/80 px-3 py-2 text-sm text-ink">
-          今日目標：單字 {dailyGoal.vocab} · 文法 {dailyGoal.grammar}
+          今日單字 {todayVocab.length} 張（{quotaLabel}）
+          {newCardPasses > 1 ? ` · 新字本輪評 ${newCardPasses} 次` : ''}
+          {' · '}文法 {dailyGoal.grammar}
           {dailyGoal.reading ? ` · 讀解 ${dailyGoal.reading}` : ''}
           {dailyGoal.listening ? ` · 聽解 ${dailyGoal.listening}` : ''}
         </p>
@@ -386,7 +416,9 @@ export default function Dashboard() {
         <p className="mt-3 text-xs text-ink-soft">
           掌握標準偏誠實：同一字「簡單」或「記得」需成功約兩次才進進度；到期複習不會扣掉已掌握。
           動力看「本週有沒有 +N」與「離本月目標還多近」，不是每天被「此時應約」追著跑。
-          {todayVocab.length > 15 ? ` 今天已加量至 ${todayVocab.length} 個單字（手動重抽／加量）。` : ''}
+          {quotaSource === 'catch-up'
+            ? ` 今天 ${todayVocab.length} 張來自進度落後加量（階段預設 ${phaseVocab}）；可在下方關閉自動加量或改較小目標。`
+            : ''}
         </p>
         <Link
           to="/schedule"
@@ -422,6 +454,79 @@ export default function Dashboard() {
           </button>
         </div>
 
+        <div className="mb-4 space-y-3 rounded-2xl bg-white/75 p-4 ring-1 ring-line/50">
+          <div>
+            <p className="text-sm font-medium text-ink">每日新單字量</p>
+            <p className="mt-0.5 text-xs text-ink-soft">
+              目前 {todayVocab.length} 張 · {quotaLabel}
+              。量少一點＋多輪，比一天 40 張只看一次更容易記住。
+            </p>
+            <div className="mt-2 flex flex-wrap gap-1.5">
+              {VOCAB_TARGET_CHOICES.map((opt) => {
+                const active =
+                  opt.value === 'phase'
+                    ? dailyVocabTarget === 'phase'
+                    : Number(dailyVocabTarget) === opt.value
+                return (
+                  <button
+                    key={String(opt.value)}
+                    type="button"
+                    onClick={() => applyVocabTarget(opt.value)}
+                    className={`rounded-full px-3 py-1 text-xs transition ${
+                      active
+                        ? 'bg-sea text-white'
+                        : 'bg-white text-ink-soft ring-1 ring-line hover:bg-foam'
+                    }`}
+                  >
+                    {opt.value === 'phase' ? `階段（${phaseVocab}）` : opt.label}
+                  </button>
+                )
+              })}
+            </div>
+          </div>
+          <div>
+            <p className="text-sm font-medium text-ink">新字本輪次數</p>
+            <p className="mt-0.5 text-xs text-ink-soft">
+              評「困難／記得／簡單」累計到次數才離開本輪；按「忘記」會重來。
+            </p>
+            <div className="mt-2 flex flex-wrap gap-1.5">
+              {NEW_CARD_PASS_CHOICES.map((n) => (
+                <button
+                  key={n}
+                  type="button"
+                  onClick={() => setNewCardPasses(n)}
+                  className={`rounded-full px-3 py-1 text-xs transition ${
+                    newCardPasses === n
+                      ? 'bg-sea text-white'
+                      : 'bg-white text-ink-soft ring-1 ring-line hover:bg-foam'
+                  }`}
+                >
+                  {n} 次
+                </button>
+              ))}
+            </div>
+          </div>
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <div>
+              <p className="text-sm font-medium text-ink">落後自動加量</p>
+              <p className="mt-0.5 text-xs text-ink-soft">
+                開啟後若進度落後，今天可能抽到約 40 張（這常是「每天 40 筆」的來源）。
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={() => applyAutoCatchUp(!autoCatchUp)}
+              className={`rounded-full px-3 py-1.5 text-xs transition ${
+                autoCatchUp
+                  ? 'bg-coral/15 text-coral ring-1 ring-coral/30'
+                  : 'bg-white text-ink-soft ring-1 ring-line hover:bg-foam'
+              }`}
+            >
+              {autoCatchUp ? '自動加量：開' : '自動加量：關'}
+            </button>
+          </div>
+        </div>
+
         <div className="space-y-3">
           <PlanBlock
             title="今日單字"
@@ -430,6 +535,7 @@ export default function Dashboard() {
             cta="開始單字"
             items={todayVocab}
             isStudied={isStudied}
+            note={`來源：${quotaLabel}${newCardPasses > 1 ? ` · 本輪每字評 ${newCardPasses} 次` : ''}`}
           />
           <PlanBlock
             title="今日文法"

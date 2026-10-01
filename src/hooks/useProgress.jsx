@@ -60,10 +60,17 @@ import {
   describeDrillProgress,
   recordDrillResult,
 } from '../utils/drillProgress'
+import { getStudyPrefs } from '../utils/studyPrefs'
 
 const ProgressContext = createContext(null)
 
-function catchUpPlanOptions(cardProgress) {
+/**
+ * Resolve today's vocab quota + source label.
+ * @param {object} cardProgress
+ * @param {{ forceCatchUp?: boolean }} [opts] forceCatchUp = 手動加量 button
+ */
+function catchUpPlanOptions(cardProgress, opts = {}) {
+  const prefs = getStudyPrefs()
   const vocabulary = getVocabulary()
   const learnedVocab = vocabulary.filter((v) => isLearned(cardProgress[v.id])).length
   const learnedGrammar = grammar.filter((g) => isLearned(cardProgress[g.id])).length
@@ -81,32 +88,50 @@ function catchUpPlanOptions(cardProgress) {
     appGrammar: grammar.length,
     weekVocabGain,
   })
-  const vocabQuota = plan.behind.vocab
-    ? Math.min(
-        40,
-        Math.max(
-          getPhaseDailyQuota().vocab,
-          Math.ceil(plan.month.vocabRemaining / Math.max(7, plan.month.daysLeft)),
-        ),
-      )
-    : getPhaseDailyQuota().vocab
+
+  let vocabQuota = prefs.vocabQuota
+  let vocabQuotaSource = prefs.dailyVocabTarget === 'phase' ? 'phase' : 'user'
+  const wantCatchUp = Boolean(opts.forceCatchUp) || prefs.autoCatchUp
+  if (wantCatchUp && plan.behind.vocab) {
+    const boosted = Math.min(
+      40,
+      Math.max(
+        prefs.vocabQuota,
+        Math.ceil(plan.month.vocabRemaining / Math.max(7, plan.month.daysLeft)),
+      ),
+    )
+    if (boosted > prefs.vocabQuota) {
+      vocabQuota = boosted
+      vocabQuotaSource = 'catch-up'
+    }
+  }
+
   return {
     vocabQuota,
+    vocabQuotaSource,
+    phaseVocab: prefs.phaseVocab,
     // Prefer N5/N4 only for now — 延伸 cards have more data quality issues
     includeExtension: false,
   }
+}
+
+function studyPrefsKey() {
+  const p = getStudyPrefs()
+  return `${p.dailyVocabTarget}:${p.autoCatchUp ? 1 : 0}`
 }
 
 function ensurePlan(plan, cardProgress, allowedIds = null) {
   const today = todayKey()
   const hiddenIds = reportedIdSet()
   const approvedCount = allowedIds instanceof Set ? allowedIds.size : null
+  const prefsKey = studyPrefsKey()
   if (
     plan?.date === today &&
     Array.isArray(plan.vocabIds) &&
     Array.isArray(plan.formIds) &&
     plan.grammarPathVersion === GRAMMAR_PATH_VERSION &&
     plan.allowlistPolicy === ALLOWLIST_POLICY &&
+    plan.studyPrefsKey === prefsKey &&
     (approvedCount == null || plan.geminiApprovedCount === approvedCount)
   ) {
     return plan
@@ -114,6 +139,7 @@ function ensurePlan(plan, cardProgress, allowedIds = null) {
   const catchUp = catchUpPlanOptions(cardProgress)
   return buildDailyPlan(today, cardProgress, '', {
     ...catchUp,
+    studyPrefsKey: prefsKey,
     hiddenIds,
     allowedIds: allowedIds instanceof Set ? allowedIds : undefined,
   })
@@ -210,15 +236,18 @@ export function ProgressProvider({ children }) {
     }
     const catchUp = catchUpPlanOptions(cardProgress)
     const allowed = geminiAllowedIds
+    const prefsKey = studyPrefsKey()
     const needsRebuild =
       dailyPlan.date !== today ||
       dailyPlan.grammarPathVersion !== GRAMMAR_PATH_VERSION ||
       dailyPlan.allowlistPolicy !== ALLOWLIST_POLICY ||
+      dailyPlan.studyPrefsKey !== prefsKey ||
       (allowed instanceof Set && dailyPlan.geminiApprovedCount !== allowed.size)
     if (needsRebuild) {
       setDailyPlan(
         buildDailyPlan(today, cardProgress, '', {
           ...catchUp,
+          studyPrefsKey: prefsKey,
           hiddenIds: reportedIdSet(reportedStore),
           allowedIds: allowed instanceof Set ? allowed : undefined,
         }),
@@ -233,6 +262,7 @@ export function ProgressProvider({ children }) {
     dailyPlan.grammarPathVersion,
     dailyPlan.allowlistPolicy,
     dailyPlan.geminiApprovedCount,
+    dailyPlan.studyPrefsKey,
     dailyPlan.vocabIds,
     dailyPlan.vocabQuota,
     cardProgress,
@@ -501,6 +531,7 @@ export function ProgressProvider({ children }) {
       setDailyPlan(
         buildDailyPlan(day, cardProgress, `reshuffle:${Date.now()}`, {
           ...catchUp,
+          studyPrefsKey: studyPrefsKey(),
           hiddenIds: reportedIdSet(reportedStore),
           allowedIds: geminiAllowedIds || undefined,
         }),
@@ -519,10 +550,11 @@ export function ProgressProvider({ children }) {
 
     function catchUpTodayPlan() {
       const day = todayKey()
-      const catchUp = catchUpPlanOptions(cardProgress)
+      const catchUp = catchUpPlanOptions(cardProgress, { forceCatchUp: true })
       setDailyPlan(
         buildDailyPlan(day, cardProgress, `catch-up:${Date.now()}`, {
           ...catchUp,
+          studyPrefsKey: studyPrefsKey(),
           hiddenIds: reportedIdSet(reportedStore),
           allowedIds: geminiAllowedIds || undefined,
         }),

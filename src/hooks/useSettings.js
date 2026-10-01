@@ -1,3 +1,4 @@
+import { saveJSON } from '../utils/storage'
 import { useLocalStorage } from './useLocalStorage'
 
 /** Flashcard type scale — applied via --fc-scale CSS var */
@@ -31,13 +32,27 @@ const DEFAULT_SETTINGS = {
   loopPlayExample: true,
   loopPlayMeaning: false,
   loopPlayExampleMeaning: false,
+  /**
+   * Daily new-vocab target: 'phase' follows studyPhases, or 12–30 fixed.
+   * Catch-up boost is separate (autoCatchUp / 手動加量).
+   */
+  dailyVocabTarget: 'phase',
+  /** How many non-again grades a new card needs in today-vocab before it leaves the session */
+  newCardPasses: 2,
+  /** When behind month target, auto-raise today's vocab up to 40 (default off) */
+  autoCatchUp: false,
 }
 
 export function useSettings() {
   const [settings, setSettings] = useLocalStorage('ui-settings', DEFAULT_SETTINGS)
 
   function updateSetting(key, value) {
-    setSettings((prev) => ({ ...DEFAULT_SETTINGS, ...prev, [key]: value }))
+    setSettings((prev) => {
+      const next = { ...DEFAULT_SETTINGS, ...prev, [key]: value }
+      // Sync persist so plan rebuild / getStudyPrefs() sees the new value immediately.
+      saveJSON('ui-settings', next)
+      return next
+    })
   }
 
   const merged = { ...DEFAULT_SETTINGS, ...settings }
@@ -51,6 +66,16 @@ export function useSettings() {
     ? settings.cardFontSize
     : 'md'
   const cardFontScale = CARD_FONT_SIZES[cardFontSize].scale
+
+  const rawTarget = merged.dailyVocabTarget
+  const dailyVocabTarget =
+    rawTarget === 'phase' || rawTarget === undefined || rawTarget === null || rawTarget === ''
+      ? 'phase'
+      : Number.isFinite(Number(rawTarget))
+        ? Math.min(40, Math.max(5, Number(rawTarget)))
+        : 'phase'
+  const newCardPasses = Math.min(3, Math.max(1, Number(merged.newCardPasses) || 2))
+  const autoCatchUp = merged.autoCatchUp === true
 
   return {
     settings: merged,
@@ -68,6 +93,9 @@ export function useSettings() {
     loopPlayExample: merged.loopPlayExample !== false,
     loopPlayMeaning: merged.loopPlayMeaning === true,
     loopPlayExampleMeaning: merged.loopPlayExampleMeaning === true,
+    dailyVocabTarget,
+    newCardPasses,
+    autoCatchUp,
     setShowFurigana: (v) => updateSetting('showFurigana', v),
     setShowExampleMeaning: (v) => updateSetting('showExampleMeaning', v),
     setPromptScript: (v) => updateSetting('promptScript', v),
@@ -82,5 +110,15 @@ export function useSettings() {
     setLoopPlayExample: (v) => updateSetting('loopPlayExample', v),
     setLoopPlayMeaning: (v) => updateSetting('loopPlayMeaning', v),
     setLoopPlayExampleMeaning: (v) => updateSetting('loopPlayExampleMeaning', v),
+    setDailyVocabTarget: (v) =>
+      updateSetting(
+        'dailyVocabTarget',
+        v === 'phase' || v === undefined || v === null || v === ''
+          ? 'phase'
+          : Math.min(40, Math.max(5, Number(v) || 18)),
+      ),
+    setNewCardPasses: (v) =>
+      updateSetting('newCardPasses', Math.min(3, Math.max(1, Number(v) || 2))),
+    setAutoCatchUp: (v) => updateSetting('autoCatchUp', Boolean(v)),
   }
 }

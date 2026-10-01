@@ -77,7 +77,7 @@ function allBrowseCards(allowedIds = null) {
 const MODE_META = {
   'today-vocab': {
     title: '今日單字',
-    hint: '先回想意思，翻面後用下方四鍵評分（間隔重複）',
+    hint: '先回想意思，翻面評分；新字會在本輪多出現幾次再離開',
   },
   'today-grammar': {
     title: '今日文法',
@@ -151,6 +151,7 @@ export default function Flashcards() {
     setLoopPlayExample,
     setLoopPlayMeaning,
     setLoopPlayExampleMeaning,
+    newCardPasses,
   } = useSettings()
   const [searchParams, setSearchParams] = useSearchParams()
   const mode = searchParams.get('mode') || 'all'
@@ -170,6 +171,8 @@ export default function Flashcards() {
   const [flipped, setFlipped] = useState(false)
   const [voiceEngine, setVoiceEngine] = useState(null)
   const [sessionLeft, setSessionLeft] = useState(null)
+  /** Non-again grade counts in this SRS session (for new-card multi-pass). */
+  const [sessionPasses, setSessionPasses] = useState({})
   const [browseSeed] = useState(() => `${Date.now()}-${Math.random()}`)
   const [playlist, setPlaylist] = useState(() => getPlaylistState())
   const [cardNotes, setCardNotes] = useLocalStorage('card-notes', {})
@@ -307,6 +310,7 @@ export default function Flashcards() {
         ? filtered
         : seededShuffle(filtered, `srs-enter:${Date.now()}:${Math.random()}`),
     )
+    setSessionPasses({})
     setIndex(0)
     setFlipped(false)
     // eslint-disable-next-line react-hooks/exhaustive-deps -- snapshot only on mode enter
@@ -692,13 +696,32 @@ export default function Flashcards() {
     gradeCard(card.id, grade)
 
     if (srsMode && sessionLeft) {
-      // "Again" cards stay in session for another pass
+      // "Again" cards stay in session; reset multi-pass progress
       if (grade === 'again') {
+        setSessionPasses((prev) => ({ ...prev, [card.id]: 0 }))
         const rest = sessionLeft.filter((c) => c.id !== card.id)
         const requeue = [...rest, card]
         advanceTo(safeIndex >= rest.length ? 0 : safeIndex, requeue)
         return
       }
+
+      // today-vocab: require N successful grades before leaving the session
+      const needPasses = mode === 'today-vocab' ? newCardPasses : 1
+      const donePasses = (sessionPasses[card.id] || 0) + 1
+      if (donePasses < needPasses) {
+        setSessionPasses((prev) => ({ ...prev, [card.id]: donePasses }))
+        const rest = sessionLeft.filter((c) => c.id !== card.id)
+        const requeue = [...rest, card]
+        advanceTo(safeIndex >= rest.length ? 0 : safeIndex, requeue)
+        return
+      }
+
+      setSessionPasses((prev) => {
+        if (!(card.id in prev)) return prev
+        const next = { ...prev }
+        delete next[card.id]
+        return next
+      })
       const nextDeck = sessionLeft.filter((c) => c.id !== card.id)
       if (!nextDeck.length) {
         advanceTo(0, nextDeck)
@@ -1183,6 +1206,16 @@ export default function Flashcards() {
             ? `本輪剩餘 ${deck.length} 張`
             : `共 ${deck.length} 張`}
           {card && !doneSession ? ` · 目前第 ${safeIndex + 1} 張` : ''}
+          {mode === 'today-vocab' && newCardPasses > 1
+            ? ` · 新字需評 ${newCardPasses} 次才離開`
+            : ''}
+          {mode === 'today-vocab' &&
+          card &&
+          !doneSession &&
+          newCardPasses > 1 &&
+          (sessionPasses[card.id] || 0) < newCardPasses
+            ? ` · 此字 ${(sessionPasses[card.id] || 0) + 1}/${newCardPasses}`
+            : ''}
           {entry?.due ? ` · 下次 ${entry.due}` : ''}
           {card && todayMode && !srsMode && isStudied(card.id) ? ' · 已計入今日' : ''}
         </span>

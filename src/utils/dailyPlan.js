@@ -310,8 +310,10 @@ export function buildDailyPlan(date, cardProgress = {}, seedExtra = '', options 
     allowedIds: options.allowedIds,
   }
   const quota = resolveDailyQuota(options)
-  // Catch-up may raise vocab above phase baseline (capped at 40).
+  // Catch-up / user target may raise vocab above phase baseline (capped at 40).
   const vocabQuota = Math.min(40, Math.max(quota.vocab, Number(options.vocabQuota) || quota.vocab))
+  const vocabQuotaSource = options.vocabQuotaSource || 'phase'
+  const phaseVocab = Number(options.phaseVocab) || quota.vocab
 
   const grammarIds = pickGrammarByPath(
     quota.grammar,
@@ -353,6 +355,9 @@ export function buildDailyPlan(date, cardProgress = {}, seedExtra = '', options 
     grammarPathVersion: GRAMMAR_PATH_VERSION,
     allowlistPolicy: ALLOWLIST_POLICY,
     vocabQuota,
+    vocabQuotaSource,
+    phaseVocab,
+    studyPrefsKey: options.studyPrefsKey || '',
     phaseId: quota.phaseId,
     readingQuota: quota.reading,
     listeningQuota: quota.listening,
@@ -399,6 +404,9 @@ export function emptyDailyPlan(date = '') {
     grammarPathVersion: GRAMMAR_PATH_VERSION,
     allowlistPolicy: ALLOWLIST_POLICY,
     vocabQuota: quota.vocab,
+    vocabQuotaSource: 'phase',
+    phaseVocab: quota.vocab,
+    studyPrefsKey: '',
     phaseId: quota.phaseId,
     readingQuota: quota.reading,
     listeningQuota: quota.listening,
