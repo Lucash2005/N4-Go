@@ -433,7 +433,7 @@ export default function Dashboard() {
           <div>
             <h2 className="font-display text-xl font-bold text-ink">今日自動排程</h2>
             <p className="mt-1 text-sm text-ink-soft">
-              文法依 8→12 月路線解鎖；今日單字優先抽本月文法例句裡的詞。目前只從 Gemini prompt v2 已審卡池抽題（舊版／未掃的先進每日審查）。
+              文法依 8→12 月路線解鎖；今日單字先抽種子卡，再從例句裡的詞接龍補滿目標量。目前只從 Gemini prompt v2 已審卡池抽題（舊版／未掃的先進每日審查）。
             </p>
           </div>
           <button

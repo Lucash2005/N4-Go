@@ -35,6 +35,13 @@ export function resolveDailyQuota(options = {}) {
  */
 export const ALLOWLIST_POLICY = 2
 
+/**
+ * Vocab daily pick strategy version.
+ * 1 = seed cards → pull linked words from their examples (BFS chain) to fill quota.
+ * Bump when the picker changes so cached daily plans rebuild.
+ */
+export const VOCAB_PICK_VERSION = 1
+
 function alwaysAllowedDuringScan(id) {
   const s = String(id || '')
   return s.startsWith('g') || s.startsWith('f')
@@ -51,7 +58,45 @@ const GENERIC_VOCAB = new Set([
   'よう',
   'とき',
   'ところ',
+  // High-noise function / deictic words — skip when chaining from examples
+  'いい',
+  'よい',
+  'この',
+  'その',
+  'あの',
+  'これ',
+  'それ',
+  'あれ',
+  'ここ',
+  'そこ',
+  'あそこ',
+  'はい',
+  'ええ',
+  'では',
+  'でも',
+  'もう',
+  'また',
+  'まだ',
+  'から',
+  'まで',
+  'ので',
+  'のに',
+  'です',
+  'ます',
+  'ました',
+  'ません',
 ])
+
+const KANA_ONLY = /^[\u3040-\u309F\u30A0-\u30FF]+$/
+
+/** Skip surfaces that create noisy false positives inside example sentences. */
+function isWeakMatchForm(form) {
+  if (!form || form.length < 2) return true
+  if (GENERIC_VOCAB.has(form)) return true
+  // Short kana-only forms often match inside conjugations (ては／では, etc.)
+  if (KANA_ONLY.test(form) && form.length <= 2) return true
+  return false
+}
 
 export function isCoreVocab(card) {
   return card?.type === 'vocab' && card.level !== '延伸'
@@ -238,58 +283,157 @@ function pickFormIds(count, seedStr, cardProgress, date = todayKey(), options = 
   return pickByPriority(pool, count, seedStr, cardProgress, date, options)
 }
 
-function vocabMatchingTexts(texts, pool = getVocabulary()) {
-  const hay = texts.filter(Boolean).join('\n')
-  if (!hay) return []
-  return pool.filter((v) => {
-    if (!v.word || v.word.length < 2) return false
-    if (GENERIC_VOCAB.has(v.word)) return false
-    return hay.includes(v.word)
-  })
+/** Surface forms used to find this vocab card inside another card's example. */
+function vocabMatchForms(card) {
+  const forms = []
+  const word = String(card?.word || '').trim()
+  const kanji = String(card?.kanji || '').trim()
+  if (!isWeakMatchForm(word)) forms.push(word)
+  if (kanji && kanji !== word && !isWeakMatchForm(kanji)) forms.push(kanji)
+  return forms
 }
 
-function pickVocabThemed(count, seedStr, cardProgress, date, grammarIds, options = {}) {
-  const path = getGrammarPath(date)
-  const studyPool = vocabStudyPool(options)
-  const byId = new Map(grammar.map((g) => [g.id, g]))
-  const todayTexts = grammarIds.flatMap((id) => {
-    const g = byId.get(id)
-    return g ? [g.example, g.word, g.pattern] : []
-  })
-  const monthTexts = path.newIds.flatMap((id) => {
-    const g = byId.get(id)
-    return g ? [g.example, g.word] : []
-  })
-  const unlockedTexts = path.unlockedIds.flatMap((id) => {
-    const g = byId.get(id)
-    return g ? [g.example] : []
-  })
+function cardMatchesExample(card, exampleText) {
+  if (!exampleText) return false
+  return vocabMatchForms(card).some((form) => exampleText.includes(form))
+}
 
-  const layers = [
-    vocabMatchingTexts(todayTexts, studyPool),
-    vocabMatchingTexts(monthTexts, studyPool),
-    vocabMatchingTexts(unlockedTexts, studyPool),
-    studyPool,
+/**
+ * Priority order used by daily picks: new → due → learning → (optional) learned.
+ * Returns cards (not ids) so callers can expand examples in the same order.
+ */
+function priorityOrderedCards(cards, seedStr, cardProgress, date = todayKey(), options = {}) {
+  if (!cards.length) return []
+  const { excludeLearned = false } = options
+  const hidden = options.hiddenIds || reportedIdSet()
+  const allowed = options.allowedIds
+  let visible = hidden.size ? cards.filter((c) => !hidden.has(c.id)) : cards
+  if (allowed instanceof Set) {
+    visible = visible.filter((c) => allowed.has(c.id))
+  }
+  const pool = excludeLearned
+    ? visible.filter((c) => !isLearned(cardProgress[c.id], date))
+    : visible
+  if (!pool.length) return []
+
+  const newOnes = pool.filter((c) => !normalizeEntry(cardProgress[c.id], date))
+  const dueOnes = pool.filter((c) => {
+    const e = normalizeEntry(cardProgress[c.id], date)
+    return e && e.due <= date && e.status !== 'learned'
+  })
+  const learningOnes = pool.filter((c) => {
+    const e = normalizeEntry(cardProgress[c.id], date)
+    return e && e.due > date && e.status !== 'learned'
+  })
+  const learnedOnes = excludeLearned
+    ? []
+    : pool.filter((c) => {
+        const e = normalizeEntry(cardProgress[c.id], date)
+        return e && e.status === 'learned' && e.due > date
+      })
+
+  const ordered = [
+    ...seededShuffle(newOnes, `${seedStr}:new`),
+    ...seededShuffle(dueOnes, `${seedStr}:due`),
+    ...seededShuffle(learningOnes, `${seedStr}:learning`),
+    ...seededShuffle(learnedOnes, `${seedStr}:learned`),
   ]
 
+  const seen = new Set()
+  const out = []
+  for (const card of ordered) {
+    if (seen.has(card.id)) continue
+    seen.add(card.id)
+    out.push(card)
+  }
+  return out
+}
+
+/**
+ * Pick today's vocab by example-linked chaining:
+ * 1. Take a small seed batch (default 3) from the SRS priority pool
+ * 2. From each seed's example sentence, add other study-pool words that appear there
+ * 3. BFS/接龍: newly added cards also contribute their examples
+ * 4. When the frontier is empty and quota remains, take another seed and continue
+ *
+ * Keeps related words together in the returned id list (study session can keep order).
+ */
+function pickVocabExampleLinked(count, seedStr, cardProgress, date, options = {}) {
+  if (count <= 0) return []
+  const studyPool = vocabStudyPool(options)
+  const candidates = priorityOrderedCards(studyPool, seedStr, cardProgress, date, options)
+  if (!candidates.length) return []
+
+  const byId = new Map(candidates.map((c) => [c.id, c]))
+  const remaining = candidates.map((c) => c.id) // priority queue of unused seeds
+  const remainingSet = new Set(remaining)
   const picked = []
   const seen = new Set()
-  for (let i = 0; i < layers.length && picked.length < count; i += 1) {
-    const pool = layers[i].filter((c) => !seen.has(c.id))
-    const ids = pickByPriority(
-      pool,
-      count - picked.length,
-      `${seedStr}:layer${i}`,
-      cardProgress,
-      date,
-      options,
-    )
-    for (const id of ids) {
+  const frontier = [] // BFS queue of card ids whose examples still need expansion
+  const seedBatch = Math.min(3, count)
+
+  const takeSeed = () => {
+    while (remaining.length) {
+      const id = remaining.shift()
+      remainingSet.delete(id)
       if (seen.has(id)) continue
-      seen.add(id)
-      picked.push(id)
+      return id
+    }
+    return null
+  }
+
+  const addCard = (id) => {
+    if (!id || seen.has(id) || picked.length >= count) return false
+    if (!byId.has(id)) return false
+    seen.add(id)
+    remainingSet.delete(id)
+    picked.push(id)
+    frontier.push(id)
+    return true
+  }
+
+  const neighborsFromExample = (card) => {
+    const example = String(card?.example || '')
+    if (!example) return []
+    const hits = []
+    for (const id of remainingSet) {
+      const other = byId.get(id)
+      if (!other || seen.has(id)) continue
+      if (cardMatchesExample(other, example)) hits.push(other)
+    }
+    // Longer surface forms first (fewer accidental substring hits), then keep priority order
+    hits.sort((a, b) => {
+      const la = Math.max(...vocabMatchForms(a).map((f) => f.length), 0)
+      const lb = Math.max(...vocabMatchForms(b).map((f) => f.length), 0)
+      if (lb !== la) return lb - la
+      return 0 // remainingSet iteration already roughly priority-stable; leave as-is
+    })
+    return hits.map((c) => c.id)
+  }
+
+  // Initial seeds
+  for (let i = 0; i < seedBatch && picked.length < count; i += 1) {
+    const id = takeSeed()
+    if (!id) break
+    addCard(id)
+  }
+
+  while (picked.length < count) {
+    if (!frontier.length) {
+      const id = takeSeed()
+      if (!id) break
+      addCard(id)
+      continue
+    }
+    const currentId = frontier.shift()
+    const current = byId.get(currentId)
+    if (!current) continue
+    for (const neighborId of neighborsFromExample(current)) {
+      if (picked.length >= count) break
+      addCard(neighborId)
     }
   }
+
   return picked
 }
 
@@ -323,12 +467,11 @@ export function buildDailyPlan(date, cardProgress = {}, seedExtra = '', options 
     pickOpts,
   )
   const formIds = pickFormIds(quota.forms, `${seed}:forms`, cardProgress, date, pickOpts)
-  const vocabIds = pickVocabThemed(
+  const vocabIds = pickVocabExampleLinked(
     vocabQuota,
     `${seed}:vocab`,
     cardProgress,
     date,
-    grammarIds,
     pickOpts,
   )
 
@@ -354,6 +497,7 @@ export function buildDailyPlan(date, cardProgress = {}, seedExtra = '', options 
     listenedIds: [],
     grammarPathVersion: GRAMMAR_PATH_VERSION,
     allowlistPolicy: ALLOWLIST_POLICY,
+    vocabPickVersion: VOCAB_PICK_VERSION,
     vocabQuota,
     vocabQuotaSource,
     phaseVocab,
@@ -403,6 +547,7 @@ export function emptyDailyPlan(date = '') {
     listenedIds: [],
     grammarPathVersion: GRAMMAR_PATH_VERSION,
     allowlistPolicy: ALLOWLIST_POLICY,
+    vocabPickVersion: VOCAB_PICK_VERSION,
     vocabQuota: quota.vocab,
     vocabQuotaSource: 'phase',
     phaseVocab: quota.vocab,

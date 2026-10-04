@@ -48,14 +48,6 @@ import {
   clearCachedExampleGrammar,
 } from '../utils/exampleGrammarCache'
 import {
-  clearCachedReviewCluster,
-  clusterFingerprint,
-  clusterReviewCardsWithGemini,
-  findClusterTarget,
-  getCachedReviewCluster,
-  orderCardsByCluster,
-} from '../utils/reviewClustering'
-import {
   applyLocalCardFix,
   clearLocalCardFix,
   exportLocalCardFixesJson,
@@ -85,7 +77,7 @@ function allBrowseCards(allowedIds = null) {
 const MODE_META = {
   'today-vocab': {
     title: '今日單字',
-    hint: '先回想意思，翻面評分；新字會在本輪多出現幾次再離開',
+    hint: '例句接龍抽題：相關字會連著出現；先回想意思，翻面評分',
   },
   'today-grammar': {
     title: '今日文法',
@@ -93,7 +85,7 @@ const MODE_META = {
   },
   'today-review': {
     title: '到期複習',
-    hint: '可先「情境串聯」把相關字編成短故事，再獨立評分複習',
+    hint: '依 SRS 到期順序獨立評分；相關字已在今日單字以例句接龍一起抽出',
   },
   'today-listening': {
     title: '今日聽力',
@@ -181,11 +173,6 @@ export default function Flashcards() {
   const [sessionLeft, setSessionLeft] = useState(null)
   /** Non-again grade counts in this SRS session (for new-card multi-pass). */
   const [sessionPasses, setSessionPasses] = useState({})
-  /** Gemini situational clustering for today-review (does not alter SRS). */
-  const [clusterResult, setClusterResult] = useState(null)
-  const [clusterFp, setClusterFp] = useState('')
-  const [clusterStatus, setClusterStatus] = useState('idle') // idle|loading|ready|error|need_key
-  const [clusterError, setClusterError] = useState('')
   const [browseSeed] = useState(() => `${Date.now()}-${Math.random()}`)
   const [playlist, setPlaylist] = useState(() => getPlaylistState())
   const [cardNotes, setCardNotes] = useLocalStorage('card-notes', {})
@@ -315,11 +302,12 @@ export default function Flashcards() {
     if (!srsMode) setSessionLeft(null)
   }, [mode, query, typeFilter, levelFilter, statusFilter, srsMode])
 
-  // Snapshot the deck once when entering an SRS mode (don't reset mid-session on progress updates)
+  // Snapshot the deck once when entering an SRS mode (don't reset mid-session on progress updates).
+  // Keep plan order for today-vocab so example-linked chains stay together.
   useEffect(() => {
     if (!srsMode) return
     setSessionLeft(
-      mode === 'today-grammar'
+      mode === 'today-grammar' || mode === 'today-vocab'
         ? filtered
         : seededShuffle(filtered, `srs-enter:${Date.now()}:${Math.random()}`),
     )
@@ -328,82 +316,6 @@ export default function Flashcards() {
     setFlipped(false)
     // eslint-disable-next-line react-hooks/exhaustive-deps -- snapshot only on mode enter
   }, [mode])
-
-  // Load cached situational clusters for today's review deck
-  useEffect(() => {
-    if (mode !== 'today-review') {
-      setClusterResult(null)
-      setClusterFp('')
-      setClusterStatus('idle')
-      setClusterError('')
-      return
-    }
-    const source = sessionLeft || todayReview || []
-    if (source.length < 2) {
-      setClusterResult(null)
-      setClusterStatus('idle')
-      return
-    }
-    const fp = clusterFingerprint(source)
-    setClusterFp(fp)
-    const cached = getCachedReviewCluster(fp)
-    if (cached?.result) {
-      setClusterResult(cached.result)
-      setClusterStatus('ready')
-      setClusterError('')
-    } else {
-      setClusterResult(null)
-      setClusterStatus('idle')
-    }
-  }, [mode, sessionLeft, todayReview])
-
-  async function runReviewClustering({ force = false, keyOverride = '' } = {}) {
-    const source = sessionLeft || todayReview || []
-    if (source.length < 2) {
-      setClusterError('至少需要 2 張到期卡才能串聯')
-      setClusterStatus('error')
-      return
-    }
-    const key = String(keyOverride || geminiApiKey || '').trim()
-    if (!key) {
-      setClusterStatus('need_key')
-      setClusterError('')
-      return
-    }
-    const fp = clusterFingerprint(source)
-    setClusterFp(fp)
-    setClusterStatus('loading')
-    setClusterError('')
-    const out = await clusterReviewCardsWithGemini(source, key, { force })
-    if (!out.ok) {
-      if (out.error === 'missing_key') {
-        setClusterStatus('need_key')
-        setClusterError('')
-        return
-      }
-      if (out.error === 'invalid_key') {
-        setClusterStatus('invalid_key')
-        setClusterError(
-          'API Key 無效。請到 Google AI Studio 重新複製完整 Key 後貼上（勿加引號或 Bearer）；也可先按「清除舊 Key」。',
-        )
-        return
-      }
-      if (out.error === 'aborted') return
-      setClusterStatus('error')
-      setClusterError(out.error || '串聯失敗')
-      return
-    }
-    setClusterResult(out.result)
-    setClusterStatus('ready')
-    bumpGeminiDayUsage()
-    // Soft reorder session by story groups (IDs / SRS unchanged)
-    if (sessionLeft?.length && out.result?.groups?.length) {
-      const ordered = orderCardsByCluster(sessionLeft, out.result)
-      setSessionLeft(ordered)
-      setIndex(0)
-      setFlipped(false)
-    }
-  }
 
   // Deep-link: /flashcards?mode=...&id=v477 → jump to that card
   useEffect(() => {
@@ -1289,22 +1201,6 @@ export default function Flashcards() {
         </div>
       </details>
 
-      {mode === 'today-review' ? (
-        <ReviewClusterBar
-          status={clusterStatus}
-          error={clusterError}
-          result={clusterResult}
-          cardId={card?.id}
-          geminiApiKey={geminiApiKey}
-          setGeminiApiKey={setGeminiApiKey}
-          onRun={(keyOverride) => void runReviewClustering({ force: false, keyOverride })}
-          onRerun={() => {
-            if (clusterFp) clearCachedReviewCluster(clusterFp)
-            void runReviewClustering({ force: true })
-          }}
-        />
-      ) : null}
-
       <p className="flex flex-wrap items-center gap-2 text-xs text-ink-soft">
         <span>
           {srsMode
@@ -1453,9 +1349,6 @@ export default function Flashcards() {
                     setShowMoreDetail={setShowMoreDetail}
                   />
                 )}
-                {mode === 'today-review' ? (
-                  <ReviewClusterNote result={clusterResult} cardId={card.id} />
-                ) : null}
               </CardFace>
             </div>
           </article>
@@ -2149,179 +2042,6 @@ function GrammarCardBack({ card }) {
         </div>
       ) : null}
     </>
-  )
-}
-
-function ReviewClusterBar({
-  status,
-  error,
-  result,
-  cardId,
-  geminiApiKey,
-  setGeminiApiKey,
-  onRun,
-  onRerun,
-}) {
-  const [keyDraft, setKeyDraft] = useState('')
-  const hit = findClusterTarget(result, cardId)
-  const groupCount = result?.groups?.length || 0
-  const unCount = result?.unclustered_card_ids?.length || 0
-  const showKeyInput =
-    status === 'need_key' ||
-    status === 'invalid_key' ||
-    (!geminiApiKey && status !== 'ready')
-
-  return (
-    <div
-      className="surface soft-shadow animate-fade-up rounded-3xl px-4 py-3 text-sm"
-      onClick={(e) => e.stopPropagation()}
-      onKeyDown={(e) => e.stopPropagation()}
-    >
-      <div className="flex flex-wrap items-center justify-between gap-2">
-        <div>
-          <p className="font-medium text-ink">情境串聯（輔助記憶）</p>
-          <p className="mt-0.5 text-xs text-ink-soft">
-            把相關到期字編成短故事；每張卡仍獨立評分，不影響 SRS。
-            {status === 'ready'
-              ? ` · ${groupCount} 組故事 · ${unCount} 張單獨複習`
-              : ''}
-            {hit ? ` · 本卡：${hit.group.theme}` : ''}
-          </p>
-        </div>
-        <div className="flex flex-wrap gap-2">
-          {status === 'ready' ? (
-            <button
-              type="button"
-              className="rounded-full bg-white px-3 py-1.5 text-xs text-ink-soft ring-1 ring-line hover:bg-foam"
-              onClick={onRerun}
-            >
-              重新串聯
-            </button>
-          ) : (
-            <button
-              type="button"
-              className="rounded-full bg-sea px-3 py-1.5 text-xs font-medium text-white hover:bg-sea-deep disabled:opacity-60"
-              disabled={status === 'loading' || showKeyInput}
-              onClick={() => onRun()}
-            >
-              {status === 'loading' ? '串聯中…' : '開始情境串聯'}
-            </button>
-          )}
-        </div>
-      </div>
-
-      {status === 'error' || status === 'invalid_key' ? (
-        <p className="mt-2 text-xs text-coral">
-          {status === 'invalid_key' ? error : `串聯失敗：${error}`}
-        </p>
-      ) : null}
-
-      {showKeyInput ? (
-        <div className="mt-2 space-y-2">
-          <p className="text-xs text-ink-soft">
-            請貼上{' '}
-            <a
-              href="https://aistudio.google.com/apikey"
-              target="_blank"
-              rel="noreferrer"
-              className="text-sea-deep underline-offset-2 hover:underline"
-            >
-              Google AI Studio
-            </a>{' '}
-            的 Gemini API Key（僅存本機；不要加引號或 <span className="font-mono">Bearer</span>）。
-          </p>
-          <div className="flex flex-wrap gap-2">
-            <input
-              type="password"
-              value={keyDraft}
-              onChange={(e) => setKeyDraft(e.target.value)}
-              placeholder="貼上 Gemini API Key"
-              autoComplete="off"
-              spellCheck={false}
-              className="min-w-[12rem] flex-1 rounded-xl border border-line bg-white/90 px-3 py-1.5 font-mono text-sm text-ink outline-none ring-sea/30 focus:ring-2"
-            />
-            <button
-              type="button"
-              className="rounded-xl bg-sea px-3 py-1.5 text-xs font-medium text-white hover:bg-sea-deep"
-              onClick={() => {
-                const key = keyDraft.trim()
-                if (!key) return
-                setGeminiApiKey(key)
-                onRun(key)
-              }}
-            >
-              儲存並串聯
-            </button>
-            {geminiApiKey ? (
-              <button
-                type="button"
-                className="rounded-xl bg-white px-3 py-1.5 text-xs text-ink-soft ring-1 ring-line hover:bg-foam"
-                onClick={() => {
-                  setGeminiApiKey('')
-                  setKeyDraft('')
-                }}
-              >
-                清除舊 Key
-              </button>
-            ) : null}
-          </div>
-        </div>
-      ) : null}
-
-      {status === 'ready' && hit?.group?.shared_sentence_jp ? (
-        <div className="mt-2 rounded-2xl bg-foam/80 px-3 py-2 text-xs text-ink">
-          <p className="font-medium text-sea-deep">{hit.group.theme}</p>
-          <p className="mt-1 leading-relaxed">{hit.group.shared_sentence_jp}</p>
-          {hit.group.shared_sentence_zh ? (
-            <p className="mt-0.5 text-ink-soft">{hit.group.shared_sentence_zh}</p>
-          ) : null}
-        </div>
-      ) : null}
-    </div>
-  )
-}
-
-function ReviewClusterNote({ result, cardId }) {
-  const hit = findClusterTarget(result, cardId)
-  const [showFull, setShowFull] = useState(false)
-  if (!hit) return null
-  const { group, target } = hit
-  const clozeJp = target.cloze_sentence_jp || group.shared_sentence_jp
-  const clozeZh = target.cloze_sentence_zh || group.shared_sentence_zh
-
-  return (
-    <div
-      className="fc-meta mt-2 rounded-lg bg-sea/10 px-2.5 py-1.5 text-left leading-relaxed text-sea-deep"
-      onClick={(e) => e.stopPropagation()}
-      onKeyDown={(e) => e.stopPropagation()}
-    >
-      <div className="mb-1 flex flex-wrap items-center justify-between gap-2">
-        <p className="font-medium">故事挖空 · {group.theme}</p>
-        <button
-          type="button"
-          className="text-[11px] underline-offset-2 hover:underline"
-          onClick={() => setShowFull((v) => !v)}
-        >
-          {showFull ? '看挖空' : '看完整句'}
-        </button>
-      </div>
-      {showFull ? (
-        <>
-          <p className="text-[0.95em] text-ink">{group.shared_sentence_jp}</p>
-          {group.shared_sentence_reading ? (
-            <p className="mt-0.5 text-[0.85em] text-ink-soft">{group.shared_sentence_reading}</p>
-          ) : null}
-          {group.shared_sentence_zh ? (
-            <p className="mt-0.5 text-[0.9em] text-ink-soft">{group.shared_sentence_zh}</p>
-          ) : null}
-        </>
-      ) : (
-        <>
-          <p className="text-[0.95em] text-ink">{clozeJp}</p>
-          {clozeZh ? <p className="mt-0.5 text-[0.9em] text-ink-soft">{clozeZh}</p> : null}
-        </>
-      )}
-    </div>
   )
 }
 

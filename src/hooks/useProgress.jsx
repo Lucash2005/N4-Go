@@ -12,6 +12,7 @@ import {
 } from '../data/vocabulary'
 import {
   ALLOWLIST_POLICY,
+  VOCAB_PICK_VERSION,
   buildDailyPlan,
   emptyDailyPlan,
   getLiveReviewIds,
@@ -241,6 +242,7 @@ export function ProgressProvider({ children }) {
       dailyPlan.date !== today ||
       dailyPlan.grammarPathVersion !== GRAMMAR_PATH_VERSION ||
       dailyPlan.allowlistPolicy !== ALLOWLIST_POLICY ||
+      dailyPlan.vocabPickVersion !== VOCAB_PICK_VERSION ||
       dailyPlan.studyPrefsKey !== prefsKey ||
       (allowed instanceof Set && dailyPlan.geminiApprovedCount !== allowed.size)
     if (needsRebuild) {
@@ -261,6 +263,7 @@ export function ProgressProvider({ children }) {
     dailyPlan.date,
     dailyPlan.grammarPathVersion,
     dailyPlan.allowlistPolicy,
+    dailyPlan.vocabPickVersion,
     dailyPlan.geminiApprovedCount,
     dailyPlan.studyPrefsKey,
     dailyPlan.vocabIds,
