@@ -18,6 +18,34 @@ function sleep(ms) {
   return new Promise((r) => setTimeout(r, ms))
 }
 
+/** Strip paste artifacts so Google accepts the key. */
+export function sanitizeGeminiApiKey(raw = '') {
+  let key = String(raw || '')
+    .replace(/^\uFEFF/, '')
+    .replace(/[\u200B-\u200D\uFEFF]/g, '')
+    .trim()
+  // Common paste mistakes
+  key = key.replace(/^Bearer\s+/i, '').trim()
+  if (
+    (key.startsWith('"') && key.endsWith('"')) ||
+    (key.startsWith("'") && key.endsWith("'"))
+  ) {
+    key = key.slice(1, -1).trim()
+  }
+  // Accidental "API_KEY=..." / "GEMINI_API_KEY=..."
+  const eq = key.match(/^(?:GEMINI_)?API[_-]?KEY\s*=\s*(.+)$/i)
+  if (eq) key = eq[1].trim()
+  // Collapse internal whitespace/newlines from messy paste
+  key = key.replace(/\s+/g, '')
+  return key
+}
+
+export function isLikelyGeminiApiKey(raw = '') {
+  const key = sanitizeGeminiApiKey(raw)
+  // Google AI Studio keys are typically AIza… (~39 chars)
+  return /^AIza[0-9A-Za-z_-]{20,}$/.test(key)
+}
+
 function shortError(status, body = '') {
   const raw = String(body || '')
   let message = ''
@@ -26,6 +54,15 @@ function shortError(status, body = '') {
     message = String(parsed?.error?.message || '')
   } catch {
     message = raw
+  }
+  if (/API key not valid|API_KEY_INVALID|invalid api key/i.test(message)) {
+    return 'invalid_key'
+  }
+  if (/API key expired|API_KEY_INVALID.*expired/i.test(message)) {
+    return 'invalid_key'
+  }
+  if (status === 401 || status === 403) {
+    if (/key|permission|credential|unauth|forbidden/i.test(message)) return 'invalid_key'
   }
   if (/high demand|unavailable|try again later/i.test(message)) {
     return `伺服器忙碌（${status}），請稍後再試`
@@ -261,9 +298,12 @@ async function callGeminiModel(
  * @returns {Promise<{ ok: boolean, text: string, error?: string, model?: string }>}
  */
 export async function generateGeminiText(prompt, apiKey, opts = {}) {
-  const key = String(apiKey || '').trim()
+  const key = sanitizeGeminiApiKey(apiKey)
   if (!key) {
     return { ok: false, text: '', error: 'missing_key' }
+  }
+  if (!isLikelyGeminiApiKey(key)) {
+    return { ok: false, text: '', error: 'invalid_key' }
   }
   const maxChars = opts.maxChars ?? 1200
   const callOpts = {
@@ -300,6 +340,10 @@ export async function generateGeminiText(prompt, apiKey, opts = {}) {
 
         if (!res.ok) {
           lastError = shortError(res.status, body)
+          // Bad credentials won't work on other models either
+          if (lastError === 'invalid_key') {
+            return { ok: false, text: '', error: 'invalid_key' }
+          }
           break
         }
 

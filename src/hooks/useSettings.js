@@ -1,3 +1,4 @@
+import { sanitizeGeminiApiKey } from '../utils/geminiReview'
 import { saveJSON } from '../utils/storage'
 import { useLocalStorage } from './useLocalStorage'
 
@@ -61,7 +62,7 @@ export function useSettings() {
     ? settings.promptScript
     : 'auto'
   const quizDirection = settings.quizDirection === 'zh-ja' ? 'zh-ja' : 'ja-zh'
-  const geminiApiKey = String(settings.geminiApiKey || '').trim()
+  const geminiApiKey = sanitizeGeminiApiKey(settings.geminiApiKey || '')
   const cardFontSize = CARD_FONT_SIZES[settings.cardFontSize]
     ? settings.cardFontSize
     : 'md'
@@ -100,7 +101,7 @@ export function useSettings() {
     setShowExampleMeaning: (v) => updateSetting('showExampleMeaning', v),
     setPromptScript: (v) => updateSetting('promptScript', v),
     setQuizDirection: (v) => updateSetting('quizDirection', v === 'zh-ja' ? 'zh-ja' : 'ja-zh'),
-    setGeminiApiKey: (v) => updateSetting('geminiApiKey', String(v || '').trim()),
+    setGeminiApiKey: (v) => updateSetting('geminiApiKey', sanitizeGeminiApiKey(v)),
     setTtsEngine: (v) => updateSetting('ttsEngine', v),
     setTtsRate: (v) => updateSetting('ttsRate', v),
     setCardFontSize: (v) =>

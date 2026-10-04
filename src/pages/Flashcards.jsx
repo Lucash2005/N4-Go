@@ -378,6 +378,14 @@ export default function Flashcards() {
     if (!out.ok) {
       if (out.error === 'missing_key') {
         setClusterStatus('need_key')
+        setClusterError('')
+        return
+      }
+      if (out.error === 'invalid_key') {
+        setClusterStatus('invalid_key')
+        setClusterError(
+          'API Key 無效。請到 Google AI Studio 重新複製（通常以 AIza 開頭），貼上後再試。',
+        )
         return
       }
       if (out.error === 'aborted') return
@@ -2158,6 +2166,10 @@ function ReviewClusterBar({
   const hit = findClusterTarget(result, cardId)
   const groupCount = result?.groups?.length || 0
   const unCount = result?.unclustered_card_ids?.length || 0
+  const showKeyInput =
+    status === 'need_key' ||
+    status === 'invalid_key' ||
+    (!geminiApiKey && status !== 'ready')
 
   return (
     <div
@@ -2189,8 +2201,8 @@ function ReviewClusterBar({
             <button
               type="button"
               className="rounded-full bg-sea px-3 py-1.5 text-xs font-medium text-white hover:bg-sea-deep disabled:opacity-60"
-              disabled={status === 'loading'}
-              onClick={onRun}
+              disabled={status === 'loading' || showKeyInput}
+              onClick={() => onRun()}
             >
               {status === 'loading' ? '串聯中…' : '開始情境串聯'}
             </button>
@@ -2198,31 +2210,61 @@ function ReviewClusterBar({
         </div>
       </div>
 
-      {status === 'error' ? (
-        <p className="mt-2 text-xs text-coral">串聯失敗：{error}</p>
+      {status === 'error' || status === 'invalid_key' ? (
+        <p className="mt-2 text-xs text-coral">
+          {status === 'invalid_key' ? error : `串聯失敗：${error}`}
+        </p>
       ) : null}
 
-      {status === 'need_key' || (!geminiApiKey && status !== 'ready') ? (
-        <div className="mt-2 flex flex-wrap gap-2">
-          <input
-            type="password"
-            value={keyDraft}
-            onChange={(e) => setKeyDraft(e.target.value)}
-            placeholder="貼上 Gemini API Key（僅存本機）"
-            className="min-w-[12rem] flex-1 rounded-xl border border-line bg-white/90 px-3 py-1.5 text-sm text-ink outline-none ring-sea/30 focus:ring-2"
-          />
-          <button
-            type="button"
-            className="rounded-xl bg-sea px-3 py-1.5 text-xs font-medium text-white hover:bg-sea-deep"
-            onClick={() => {
-              const key = keyDraft.trim()
-              if (!key) return
-              setGeminiApiKey(key)
-              onRun(key)
-            }}
-          >
-            儲存並串聯
-          </button>
+      {showKeyInput ? (
+        <div className="mt-2 space-y-2">
+          <p className="text-xs text-ink-soft">
+            請貼上{' '}
+            <a
+              href="https://aistudio.google.com/apikey"
+              target="_blank"
+              rel="noreferrer"
+              className="text-sea-deep underline-offset-2 hover:underline"
+            >
+              Google AI Studio
+            </a>{' '}
+            的 Gemini API Key（通常以 <span className="font-mono">AIza</span> 開頭；僅存本機）。
+          </p>
+          <div className="flex flex-wrap gap-2">
+            <input
+              type="password"
+              value={keyDraft}
+              onChange={(e) => setKeyDraft(e.target.value)}
+              placeholder="貼上 AIza… API Key"
+              autoComplete="off"
+              spellCheck={false}
+              className="min-w-[12rem] flex-1 rounded-xl border border-line bg-white/90 px-3 py-1.5 font-mono text-sm text-ink outline-none ring-sea/30 focus:ring-2"
+            />
+            <button
+              type="button"
+              className="rounded-xl bg-sea px-3 py-1.5 text-xs font-medium text-white hover:bg-sea-deep"
+              onClick={() => {
+                const key = keyDraft.trim()
+                if (!key) return
+                setGeminiApiKey(key)
+                onRun(key)
+              }}
+            >
+              儲存並串聯
+            </button>
+            {geminiApiKey ? (
+              <button
+                type="button"
+                className="rounded-xl bg-white px-3 py-1.5 text-xs text-ink-soft ring-1 ring-line hover:bg-foam"
+                onClick={() => {
+                  setGeminiApiKey('')
+                  setKeyDraft('')
+                }}
+              >
+                清除舊 Key
+              </button>
+            ) : null}
+          </div>
         </div>
       ) : null}
 
