@@ -226,11 +226,17 @@ function extractText(data) {
     .trim()
 }
 
-async function callGeminiModel(model, key, prompt, signal, { useThinkingConfig = false } = {}) {
+async function callGeminiModel(
+  model,
+  key,
+  prompt,
+  signal,
+  { useThinkingConfig = false, maxOutputTokens = 2048, temperature = 0.2 } = {},
+) {
   const url = `${API_BASE}/${model}:generateContent?key=${encodeURIComponent(key)}`
   const generationConfig = {
-    temperature: 0.2,
-    maxOutputTokens: 2048,
+    temperature,
+    maxOutputTokens: Math.min(8192, Math.max(256, Number(maxOutputTokens) || 2048)),
   }
   if (useThinkingConfig) {
     generationConfig.thinkingConfig = { thinkingBudget: 0 }
@@ -251,7 +257,7 @@ async function callGeminiModel(model, key, prompt, signal, { useThinkingConfig =
 /**
  * @param {string} prompt
  * @param {string} apiKey
- * @param {{ signal?: AbortSignal, maxChars?: number }} [opts]
+ * @param {{ signal?: AbortSignal, maxChars?: number, maxOutputTokens?: number, temperature?: number }} [opts]
  * @returns {Promise<{ ok: boolean, text: string, error?: string, model?: string }>}
  */
 export async function generateGeminiText(prompt, apiKey, opts = {}) {
@@ -260,15 +266,20 @@ export async function generateGeminiText(prompt, apiKey, opts = {}) {
     return { ok: false, text: '', error: 'missing_key' }
   }
   const maxChars = opts.maxChars ?? 1200
+  const callOpts = {
+    maxOutputTokens: opts.maxOutputTokens,
+    temperature: opts.temperature,
+  }
   let lastError = ''
 
   try {
     for (const model of GEMINI_MODELS) {
       for (let attempt = 0; attempt < 2; attempt += 1) {
-        let { res, body } = await callGeminiModel(model, key, prompt, opts.signal)
+        let { res, body } = await callGeminiModel(model, key, prompt, opts.signal, callOpts)
 
         if (!res.ok && /thinkingConfig|Unknown name/i.test(body)) {
           ;({ res, body } = await callGeminiModel(model, key, prompt, opts.signal, {
+            ...callOpts,
             useThinkingConfig: false,
           }))
         }
