@@ -384,7 +384,7 @@ export default function Flashcards() {
       if (out.error === 'invalid_key') {
         setClusterStatus('invalid_key')
         setClusterError(
-          'API Key 無效。請到 Google AI Studio 重新複製（通常以 AIza 開頭），貼上後再試。',
+          'API Key 無效。請到 Google AI Studio 重新複製完整 Key 後貼上（勿加引號或 Bearer）；也可先按「清除舊 Key」。',
         )
         return
       }
@@ -2228,14 +2228,14 @@ function ReviewClusterBar({
             >
               Google AI Studio
             </a>{' '}
-            的 Gemini API Key（通常以 <span className="font-mono">AIza</span> 開頭；僅存本機）。
+            的 Gemini API Key（僅存本機；不要加引號或 <span className="font-mono">Bearer</span>）。
           </p>
           <div className="flex flex-wrap gap-2">
             <input
               type="password"
               value={keyDraft}
               onChange={(e) => setKeyDraft(e.target.value)}
-              placeholder="貼上 AIza… API Key"
+              placeholder="貼上 Gemini API Key"
               autoComplete="off"
               spellCheck={false}
               className="min-w-[12rem] flex-1 rounded-xl border border-line bg-white/90 px-3 py-1.5 font-mono text-sm text-ink outline-none ring-sea/30 focus:ring-2"

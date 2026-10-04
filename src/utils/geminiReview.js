@@ -42,8 +42,13 @@ export function sanitizeGeminiApiKey(raw = '') {
 
 export function isLikelyGeminiApiKey(raw = '') {
   const key = sanitizeGeminiApiKey(raw)
-  // Google AI Studio keys are typically AIza… (~39 chars)
-  return /^AIza[0-9A-Za-z_-]{20,}$/.test(key)
+  if (key.length < 20 || key.length > 200) return false
+  // Reject common non-Gemini pastes
+  if (/^(sk-|sk-proj-|ghp_|github_pat_|xoxb-|ya29\.)/i.test(key)) return false
+  // Classic AI Studio: AIza… ; newer Google keys may use other prefixes (e.g. AQ.)
+  if (/^AIza[0-9A-Za-z_-]{20,}$/.test(key)) return true
+  if (/^[A-Za-z0-9._-]{20,}$/.test(key)) return true
+  return false
 }
 
 function shortError(status, body = '') {
