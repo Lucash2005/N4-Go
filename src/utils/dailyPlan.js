@@ -37,10 +37,10 @@ export const ALLOWLIST_POLICY = 2
 
 /**
  * Vocab daily pick strategy version.
- * 1 = seed cards → pull linked words from their examples (BFS chain) to fill quota.
+ * 2 = one high-degree seed → undirected example-graph BFS (接龍) → refill seeds by degree.
  * Bump when the picker changes so cached daily plans rebuild.
  */
-export const VOCAB_PICK_VERSION = 1
+export const VOCAB_PICK_VERSION = 2
 
 function alwaysAllowedDuringScan(id) {
   const s = String(id || '')
@@ -350,13 +350,36 @@ function priorityOrderedCards(cards, seedStr, cardProgress, date = todayKey(), o
 }
 
 /**
+ * Undirected example-link: A↔B if A's example contains B, or B's example contains A.
+ * One-way-only linking was too sparse (many cards only self-mention), so reshuffles
+ * looked like unrelated bags once the 3 initial seeds ran out of neighbors.
+ */
+function cardsExampleLinked(a, b) {
+  if (!a || !b || a.id === b.id) return false
+  const aEx = String(a.example || '')
+  const bEx = String(b.example || '')
+  if (aEx && cardMatchesExample(b, aEx)) return true
+  if (bEx && cardMatchesExample(a, bEx)) return true
+  return false
+}
+
+function neighborDegree(card, remainingSet, byId, seen) {
+  let degree = 0
+  for (const id of remainingSet) {
+    if (seen.has(id) || id === card.id) continue
+    const other = byId.get(id)
+    if (other && cardsExampleLinked(card, other)) degree += 1
+  }
+  return degree
+}
+
+/**
  * Pick today's vocab by example-linked chaining:
- * 1. Take a small seed batch (default 3) from the SRS priority pool
- * 2. From each seed's example sentence, add other study-pool words that appear there
- * 3. BFS/接龍: newly added cards also contribute their examples
- * 4. When the frontier is empty and quota remains, take another seed and continue
+ * 1. Prefer one high-connectivity seed from the SRS priority pool (not 3 random seeds)
+ * 2. BFS/接龍 on the undirected example graph until the frontier is empty
+ * 3. When stuck, pick the remaining card with the most links still available
  *
- * Keeps related words together in the returned id list (study session can keep order).
+ * Keeps related words together in the returned id list (study session keeps order).
  */
 function pickVocabExampleLinked(count, seedStr, cardProgress, date, options = {}) {
   if (count <= 0) return []
@@ -365,22 +388,11 @@ function pickVocabExampleLinked(count, seedStr, cardProgress, date, options = {}
   if (!candidates.length) return []
 
   const byId = new Map(candidates.map((c) => [c.id, c]))
-  const remaining = candidates.map((c) => c.id) // priority queue of unused seeds
+  const remaining = candidates.map((c) => c.id) // priority order for fallback
   const remainingSet = new Set(remaining)
   const picked = []
   const seen = new Set()
-  const frontier = [] // BFS queue of card ids whose examples still need expansion
-  const seedBatch = Math.min(3, count)
-
-  const takeSeed = () => {
-    while (remaining.length) {
-      const id = remaining.shift()
-      remainingSet.delete(id)
-      if (seen.has(id)) continue
-      return id
-    }
-    return null
-  }
+  const frontier = []
 
   const addCard = (id) => {
     if (!id || seen.has(id) || picked.length >= count) return false
@@ -392,30 +404,54 @@ function pickVocabExampleLinked(count, seedStr, cardProgress, date, options = {}
     return true
   }
 
-  const neighborsFromExample = (card) => {
-    const example = String(card?.example || '')
-    if (!example) return []
+  /** Next seed: highest remaining degree; ties keep SRS priority order. */
+  const takeSeed = () => {
+    let bestId = null
+    let bestDegree = -1
+    for (const id of remaining) {
+      if (seen.has(id) || !remainingSet.has(id)) continue
+      const card = byId.get(id)
+      if (!card) continue
+      const degree = neighborDegree(card, remainingSet, byId, seen)
+      if (degree > bestDegree) {
+        bestDegree = degree
+        bestId = id
+        // Early exit when we already found a richly linked seed
+        if (bestDegree >= 6) break
+      }
+    }
+    if (bestId) {
+      remainingSet.delete(bestId)
+      return bestId
+    }
+    while (remaining.length) {
+      const id = remaining.shift()
+      remainingSet.delete(id)
+      if (!seen.has(id)) return id
+    }
+    return null
+  }
+
+  const neighborsOf = (card) => {
     const hits = []
     for (const id of remainingSet) {
       const other = byId.get(id)
       if (!other || seen.has(id)) continue
-      if (cardMatchesExample(other, example)) hits.push(other)
+      if (cardsExampleLinked(card, other)) hits.push(other)
     }
-    // Longer surface forms first (fewer accidental substring hits), then keep priority order
     hits.sort((a, b) => {
       const la = Math.max(...vocabMatchForms(a).map((f) => f.length), 0)
       const lb = Math.max(...vocabMatchForms(b).map((f) => f.length), 0)
       if (lb !== la) return lb - la
-      return 0 // remainingSet iteration already roughly priority-stable; leave as-is
+      return 0
     })
     return hits.map((c) => c.id)
   }
 
-  // Initial seeds
-  for (let i = 0; i < seedBatch && picked.length < count; i += 1) {
+  // One seed first, then deep-chain (avoid 3 unrelated mini-clusters)
+  if (picked.length < count) {
     const id = takeSeed()
-    if (!id) break
-    addCard(id)
+    if (id) addCard(id)
   }
 
   while (picked.length < count) {
@@ -428,7 +464,7 @@ function pickVocabExampleLinked(count, seedStr, cardProgress, date, options = {}
     const currentId = frontier.shift()
     const current = byId.get(currentId)
     if (!current) continue
-    for (const neighborId of neighborsFromExample(current)) {
+    for (const neighborId of neighborsOf(current)) {
       if (picked.length >= count) break
       addCard(neighborId)
     }

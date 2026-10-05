@@ -661,7 +661,8 @@
     ],
     "example": "荷物を運びます。",
     "exampleMeaning": "搬運行李。",
-    "exampleFurigana": "荷物[にもつ]を運[はこ]んでください。"
+    "exampleFurigana": "荷物[にもつ]を運[はこ]びます。",
+    "speechReading": "はこぶ"
   },
   "v972": {
     "meaning": "前往；朝向",
@@ -930,9 +931,10 @@
       "加",
       "加上"
     ],
-    "example": "１足す２は３です。",
-    "exampleMeaning": "一加二等於三。",
-    "exampleFurigana": "１足[た]す２は３です。"
+    "example": "２足す３は５です。",
+    "exampleMeaning": "二加三等於五。",
+    "exampleFurigana": "２足[た]す３は５です。",
+    "speechReading": "たす"
   },
   "v969": {
     "meaning": "光；光線",
@@ -1953,11 +1955,16 @@
     "exampleMeaning": "他丟了70公尺。"
   },
   "v211": {
-    "meaning": "經常；好好地、清楚地",
+    "meaning": "好好地、清楚地；經常",
     "example": "よく見えません。",
     "exampleMeaning": "看不清楚。",
-    "meaningEn": "often; well; clearly",
-    "exampleFurigana": ""
+    "meaningEn": "well; clearly; often",
+    "exampleFurigana": "よく見[み]えません。",
+    "meaningZh": [
+      "好好地",
+      "清楚地",
+      "經常"
+    ]
   },
   "v214": {
     "meaning": "收錄音機",
@@ -2855,9 +2862,16 @@
     "exampleMeaning": "他早上很早起床。"
   },
   "v504": {
-    "meaning": "跑",
-    "example": "私は毎日走る。",
-    "exampleMeaning": "我每天跑步。"
+    "meaning": "跑；（車等）行駛",
+    "example": "私は毎日公園を走ります。",
+    "exampleMeaning": "我每天在公園跑步。",
+    "meaningZh": [
+      "跑",
+      "行駛"
+    ],
+    "meaningEn": "to run; to travel (of a vehicle)",
+    "exampleFurigana": "",
+    "speechReading": "はしる"
   },
   "v509": {
     "meaning": "粗的",
@@ -4320,8 +4334,15 @@
     "exampleMeaning": "明天我會去您那裡。"
   },
   "v1001": {
-    "example": "この町は産業が盛んです。",
-    "exampleMeaning": "這個城鎮的產業很興盛。"
+    "example": "日本の産業は進んでいます。",
+    "exampleMeaning": "日本的產業很發達。",
+    "meaning": "產業",
+    "meaningZh": [
+      "產業"
+    ],
+    "meaningEn": "industry",
+    "exampleFurigana": "日本[にほん]の産業[さんぎょう]は進[すす]んでいます。",
+    "speechReading": "さんぎょう"
   },
   "v1002": {
     "meaning": "留下來、剩下",
@@ -4330,8 +4351,15 @@
   },
   "v1003": {
     "meaning": "遺憾、可惜",
-    "example": "明日（あした）の遠足（えんそく）は雨（あめ）で中止（ちゅうし）になりました。残念ですね。",
-    "exampleMeaning": "明天的遠足因為下雨取消了。真可惜呢。"
+    "example": "遠足は中止になりました。残念ですね。",
+    "exampleMeaning": "遠足取消了。真可惜呢。",
+    "meaningZh": [
+      "遺憾",
+      "可惜"
+    ],
+    "meaningEn": "regrettable; unfortunate; disappointing",
+    "exampleFurigana": "",
+    "speechReading": "ざんねん"
   },
   "v1005": {
     "example": "日本語の勉強を始めます。",
@@ -4672,9 +4700,16 @@
     "exampleMeaning": "會議大致上結束了。"
   },
   "v1139": {
-    "meaning": "相當、大大地",
+    "meaning": "相當；大大地",
     "example": "テストの成績は大分よくなりました。",
-    "exampleMeaning": "考試成績進步相當多。"
+    "exampleMeaning": "考試成績進步相當多。",
+    "meaningZh": [
+      "相當",
+      "大大地"
+    ],
+    "meaningEn": "considerably; greatly; a lot",
+    "exampleFurigana": "テストの成績[せいせき]は大分[だいぶ]よくなりました。",
+    "speechReading": "だいぶ"
   },
   "v1142": {
     "meaning": "暖氣",
@@ -5725,5 +5760,90 @@
     "meaning": "怎麼也想不到、難道、萬一",
     "example": "まさか彼が来るとは思いませんでした。",
     "exampleMeaning": "怎麼也想不到他會來。"
+  },
+  "v943": {
+    "reading": "すく",
+    "meaning": "有空；空出來",
+    "meaningZh": [
+      "有空",
+      "空出來"
+    ],
+    "meaningEn": "to be free; to have time; to become less crowded",
+    "example": "あと十分で手が空きます。",
+    "exampleMeaning": "再過十分鐘我就有空了。",
+    "exampleFurigana": "あと十分[じゅっぷん]で手[て]が空[す]きます。",
+    "speechReading": "すく"
+  },
+  "v1193": {
+    "meaning": "兩層樓（的建築）",
+    "meaningZh": [
+      "兩層樓"
+    ],
+    "meaningEn": "two-storied building",
+    "example": "二階建ての家に住んでいます。",
+    "exampleMeaning": "住在兩層樓的房子。",
+    "exampleFurigana": "二階建[にかいだ]ての家[いえ]に住[す]んでいます。",
+    "speechReading": "にかいだて"
+  },
+  "v750": {
+    "reading": "けれど",
+    "meaning": "但是；可是",
+    "meaningZh": [
+      "但是",
+      "可是"
+    ],
+    "meaningEn": "but; however; although",
+    "example": "行きたいけれど、時間がない。",
+    "exampleMeaning": "想去，可是沒時間。",
+    "exampleFurigana": "行[い]きたいけれど、時間[じかん]がない。",
+    "speechReading": "けれど"
+  },
+  "v1116": {
+    "meaning": "選擇；挑選",
+    "meaningZh": [
+      "選擇",
+      "挑選"
+    ],
+    "meaningEn": "to choose; to select",
+    "example": "好きな色を選んでください。",
+    "exampleMeaning": "請選喜歡的顏色。",
+    "exampleFurigana": "好き[すき]な色[いろ]を選[えら]んでください。",
+    "speechReading": "えらぶ"
+  },
+  "v1219": {
+    "meaning": "丈夫",
+    "meaningZh": [
+      "丈夫"
+    ],
+    "meaningEn": "husband",
+    "example": "私の夫は会社員です。",
+    "exampleMeaning": "我的丈夫是公司職員。",
+    "exampleFurigana": "私[わたし]の夫[おっと]は会社員[かいしゃいん]です。",
+    "speechReading": "おっと"
+  },
+  "v1274": {
+    "meaning": "事情；要辦的事",
+    "meaningZh": [
+      "事情",
+      "要辦的事"
+    ],
+    "meaningEn": "business; errand; use",
+    "example": "他にご用はありますか。",
+    "exampleMeaning": "您還有其他事情嗎？",
+    "exampleFurigana": "",
+    "speechReading": "よう"
+  },
+  "v1194": {
+    "meaning": "天；日子；太陽",
+    "meaningZh": [
+      "天",
+      "日子",
+      "太陽"
+    ],
+    "meaningEn": "day; sun",
+    "example": "いい日になりました。",
+    "exampleMeaning": "變成了個好日子。",
+    "exampleFurigana": "いい日[ひ]になりました。",
+    "speechReading": "ひ"
   }
 }
