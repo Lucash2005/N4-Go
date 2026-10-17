@@ -1141,16 +1141,17 @@
     "exampleFurigana": "階段[かいだん]を上[あ]がります。"
   },
   "v1218": {
-    "meaning": "附著；點亮；沾上",
+    "meaning": "亮；附著；沾上",
     "meaningEn": "to be attached; to turn on; to stick",
     "meaningZh": [
+      "亮",
       "附著",
-      "點亮",
       "沾上"
     ],
     "example": "電気が付きます。",
     "exampleMeaning": "燈亮了。",
-    "exampleFurigana": "電気[でんき]が付[つ]きます。"
+    "exampleFurigana": "電気[でんき]が付[つ]きます。",
+    "speechReading": "つく"
   },
   "v1101": {
     "meaning": "活；生存",
@@ -1372,9 +1373,10 @@
       "期間",
       "之間"
     ],
-    "example": "夏休みの間、日本旅行をしました。",
-    "exampleMeaning": "暑假期間，我去日本旅行了。",
-    "exampleFurigana": "食事[しょくじ]の間[あいだ]、話[はな]しました。"
+    "example": "夏休みの間、日本へ行きました。",
+    "exampleMeaning": "暑假期間我去了日本。",
+    "exampleFurigana": "夏休み[なつやすみ]の間[あいだ]、日本[にほん]へ行[い]きました。",
+    "speechReading": "あいだ"
   },
   "v002": {
     "meaning": "方便；情況",
@@ -1806,9 +1808,14 @@
   },
   "v065": {
     "meaning": "肚子",
-    "example": "おなかが空きました。",
+    "example": "おなかがすきました。",
     "exampleMeaning": "我肚子餓了。",
-    "kanji": "お腹"
+    "kanji": "お腹",
+    "meaningZh": [
+      "肚子"
+    ],
+    "exampleFurigana": "おなかがすきました。",
+    "speechReading": "おなか"
   },
   "v069": {
     "meaning": "點心、零食",
@@ -1964,7 +1971,8 @@
       "好好地",
       "清楚地",
       "經常"
-    ]
+    ],
+    "speechReading": "よく"
   },
   "v214": {
     "meaning": "收錄音機",
@@ -2802,9 +2810,10 @@
     "meaningZh": [
       "出生"
     ],
-    "example": "彼女に赤ちゃんが生まれる。",
-    "exampleMeaning": "她要生孩子了。",
-    "exampleFurigana": "弟[おとうと]が生[う]まれました。"
+    "example": "弟が生まれました。",
+    "exampleMeaning": "弟弟出生了。",
+    "exampleFurigana": "弟[おとうと]が生[う]まれました。",
+    "speechReading": "うまれる"
   },
   "v375": {
     "meaning": "左、左邊",
@@ -2870,7 +2879,7 @@
       "行駛"
     ],
     "meaningEn": "to run; to travel (of a vehicle)",
-    "exampleFurigana": "",
+    "exampleFurigana": "私[わたし]は毎日[まいにち]公園[こうえん]を走[はし]ります。",
     "speechReading": "はしる"
   },
   "v509": {
@@ -3104,9 +3113,15 @@
     "exampleMeaning": "我買了八個蘋果。"
   },
   "v607": {
-    "meaning": "一半",
-    "example": "半分をください。",
-    "exampleMeaning": "請給我一半。"
+    "meaning": "半（點）；一半",
+    "example": "三時半です。",
+    "exampleMeaning": "三點半。",
+    "meaningZh": [
+      "半",
+      "一半"
+    ],
+    "exampleFurigana": "三[さん]時[じ]半[はん]です。",
+    "speechReading": "はん"
   },
   "v608": {
     "meaning": "一半",
@@ -3123,8 +3138,14 @@
     "exampleMeaning": "鳥兒正在天空中飛翔。"
   },
   "v616": {
-    "example": "鼻が高いです。",
-    "exampleMeaning": "我很驕傲／得意。"
+    "example": "鼻がかゆいです。",
+    "exampleMeaning": "鼻子發癢。",
+    "meaning": "鼻子",
+    "meaningZh": [
+      "鼻子"
+    ],
+    "exampleFurigana": "鼻[はな]がかゆいです。",
+    "speechReading": "はな"
   },
   "v617": {
     "example": "デパートで百円のペンを買いました。",
@@ -3153,8 +3174,15 @@
     "exampleMeaning": "正在吹強風。"
   },
   "v623": {
-    "example": "昨日の夜から風邪を引いています。イマイチ調子が悪いです。",
-    "exampleMeaning": "從昨天晚上開始就感冒了。狀況有點不太好。"
+    "example": "風邪を引きました。",
+    "exampleMeaning": "我感冒了。",
+    "meaning": "感冒",
+    "meaningZh": [
+      "感冒"
+    ],
+    "meaningEn": "cold (illness); common cold",
+    "exampleFurigana": "風邪[かぜ]を引[ひ]きました。",
+    "speechReading": "かぜ"
   },
   "v625": {
     "meaning": "事物、東西",
@@ -4064,10 +4092,19 @@
     "exampleMeaning": "很快就會習慣的。"
   },
   "v909": {
-    "meaning": "護士、護理師",
+    "meaning": "護士；護理師",
     "example": "彼女は看護師です。",
     "exampleMeaning": "她是護士。",
-    "kanji": "看護師"
+    "kanji": "看護師",
+    "word": "看護師",
+    "reading": "かんごし",
+    "meaningZh": [
+      "護士",
+      "護理師"
+    ],
+    "meaningEn": "nurse",
+    "exampleFurigana": "彼女[かのじょ]は看護師[かんごし]です。",
+    "speechReading": "かんごし"
   },
   "v910": {
     "example": "この宿題は簡単です。",
@@ -4358,7 +4395,7 @@
       "可惜"
     ],
     "meaningEn": "regrettable; unfortunate; disappointing",
-    "exampleFurigana": "",
+    "exampleFurigana": "遠足[えんそく]は中止[ちゅうし]になりました。残念[ざんねん]ですね。",
     "speechReading": "ざんねん"
   },
   "v1005": {
@@ -4701,14 +4738,14 @@
   },
   "v1139": {
     "meaning": "相當；大大地",
-    "example": "テストの成績は大分よくなりました。",
+    "example": "テストの成績はだいぶよくなりました。",
     "exampleMeaning": "考試成績進步相當多。",
     "meaningZh": [
       "相當",
       "大大地"
     ],
     "meaningEn": "considerably; greatly; a lot",
-    "exampleFurigana": "テストの成績[せいせき]は大分[だいぶ]よくなりました。",
+    "exampleFurigana": "テストの成績[せいせき]はだいぶよくなりました。",
     "speechReading": "だいぶ"
   },
   "v1142": {
@@ -4896,8 +4933,15 @@
     "exampleMeaning": "讀了媽媽的信後，我變得有些悲傷。"
   },
   "v1214": {
-    "example": "この町は美しいです。",
-    "exampleMeaning": "這座城鎮很美麗。"
+    "example": "このまちは美しいです。",
+    "exampleMeaning": "這座城鎮很美麗。",
+    "meaning": "美麗的；漂亮的",
+    "meaningZh": [
+      "美麗",
+      "漂亮"
+    ],
+    "exampleFurigana": "このまちは美[うつく]しいです。",
+    "speechReading": "うつくしい"
   },
   "v1215": {
     "example": "パスポートが必要ですか。",
@@ -4983,9 +5027,15 @@
     "exampleMeaning": "我打算明天去老師家拜訪。"
   },
   "v1247": {
-    "meaning": "去世",
-    "example": "交通事故で亡くなる方が増えています。",
-    "exampleMeaning": "因交通事故而去世的人正在增加。"
+    "meaning": "去世；過世",
+    "example": "祖父が亡くなりました。",
+    "exampleMeaning": "祖父過世了。",
+    "meaningZh": [
+      "去世",
+      "過世"
+    ],
+    "exampleFurigana": "祖父[そふ]が亡[な]くなりました。",
+    "speechReading": "なくなる"
   },
   "v1248": {
     "meaning": "遺失物、落下的物品",
@@ -5769,9 +5819,9 @@
       "空出來"
     ],
     "meaningEn": "to be free; to have time; to become less crowded",
-    "example": "あと十分で手が空きます。",
+    "example": "あと十分で手がすきます。",
     "exampleMeaning": "再過十分鐘我就有空了。",
-    "exampleFurigana": "あと十分[じゅっぷん]で手[て]が空[す]きます。",
+    "exampleFurigana": "あと十分[じゅっぷん]で手[て]がすきます。",
     "speechReading": "すく"
   },
   "v1193": {
@@ -5828,9 +5878,9 @@
       "要辦的事"
     ],
     "meaningEn": "business; errand; use",
-    "example": "他にご用はありますか。",
+    "example": "ほかにご用はありますか。",
     "exampleMeaning": "您還有其他事情嗎？",
-    "exampleFurigana": "",
+    "exampleFurigana": "ほかにご用[よう]はありますか。",
     "speechReading": "よう"
   },
   "v1194": {
