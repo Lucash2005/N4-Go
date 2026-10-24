@@ -2017,7 +2017,15 @@
   },
   "v267": {
     "example": "私はよくカラオケで歌います。",
-    "exampleMeaning": "我常在卡拉OK唱歌。"
+    "exampleMeaning": "我常在卡拉OK唱歌。",
+    "meaning": "唱歌；唱",
+    "meaningZh": [
+      "唱歌",
+      "唱"
+    ],
+    "meaningEn": "to sing",
+    "exampleFurigana": "私[わたし]はよくカラオケで歌[うた]います。",
+    "speechReading": "うたう"
   },
   "v274": {
     "exampleMeaning": "他很害怕海。"
@@ -2897,9 +2905,17 @@
     "exampleMeaning": "我非常喜歡他！"
   },
   "v519": {
-    "meaning": "沒問題、沒關係",
-    "example": "大丈夫そう？",
-    "exampleMeaning": "看起來沒問題吧？"
+    "meaning": "沒問題；沒關係；可以",
+    "example": "大丈夫です。心配しないで。",
+    "exampleMeaning": "沒問題，別擔心。",
+    "meaningZh": [
+      "沒問題",
+      "沒關係",
+      "可以"
+    ],
+    "meaningEn": "all right; OK; safe; no problem",
+    "exampleFurigana": "大丈夫[だいじょうぶ]です。心配[しんぱい]しないで。",
+    "speechReading": "だいじょうぶ"
   },
   "v523": {
     "example": "暑いので、コートを脱ぎました。",
@@ -3648,9 +3664,17 @@
     "kanji": "叱る"
   },
   "v770": {
-    "meaning": "牢牢；堅固；好好地",
+    "meaning": "好好地；牢牢地；踏實地",
     "example": "毎日しっかり勉強します。",
-    "exampleMeaning": "我每天都有好好學習。"
+    "exampleMeaning": "我每天都認真好好學習。",
+    "meaningZh": [
+      "好好地",
+      "牢牢地",
+      "踏實地"
+    ],
+    "meaningEn": "firmly; steadily; properly",
+    "exampleFurigana": "毎日[まいにち]しっかり勉強[べんきょう]します。",
+    "speechReading": "しっかり"
   },
   "v771": {
     "meaning": "一會兒、暫時、好久不見",
@@ -3735,9 +3759,16 @@
     "exampleMeaning": "這家店既便宜，而且又好吃。"
   },
   "v793": {
-    "meaning": "那樣的、那種",
-    "example": "そんなに難しくないです。",
-    "exampleMeaning": "不會那麼難。"
+    "meaning": "那樣的；那種",
+    "example": "そんな話は信じられません。",
+    "exampleMeaning": "那種話我沒辦法相信。",
+    "meaningZh": [
+      "那樣的",
+      "那種"
+    ],
+    "meaningEn": "such; that kind of",
+    "exampleFurigana": "そんな話[はなし]は信[しん]じられません。",
+    "speechReading": "そんな"
   },
   "v796": {
     "example": "私はこのタイプの車が好きです。",
@@ -4140,9 +4171,17 @@
     "exampleMeaning": "下班回家的路上喝酒。"
   },
   "v920": {
-    "meaning": "精神；情緒；氣氛",
-    "example": "彼はいつも元気がありません。",
-    "exampleMeaning": "他總是沒有精神。"
+    "meaning": "精神；心情；注意力",
+    "example": "気をつけてください。",
+    "exampleMeaning": "請小心。",
+    "meaningZh": [
+      "精神",
+      "心情",
+      "注意力"
+    ],
+    "meaningEn": "spirit; mind; attention",
+    "exampleFurigana": "気[き]をつけてください。",
+    "speechReading": "き"
   },
   "v921": {
     "meaning": "感覺；心情；情緒",
@@ -5813,12 +5852,12 @@
   },
   "v943": {
     "reading": "すく",
-    "meaning": "有空；空出來",
+    "meaning": "有空；（時間／手頭）空下來",
     "meaningZh": [
       "有空",
-      "空出來"
+      "空下來"
     ],
-    "meaningEn": "to be free; to have time; to become less crowded",
+    "meaningEn": "to be free; to have time",
     "example": "あと十分で手がすきます。",
     "exampleMeaning": "再過十分鐘我就有空了。",
     "exampleFurigana": "あと十分[じゅっぷん]で手[て]がすきます。",
@@ -5895,5 +5934,42 @@
     "exampleMeaning": "變成了個好日子。",
     "exampleFurigana": "いい日[ひ]になりました。",
     "speechReading": "ひ"
+  },
+  "v842": {
+    "meaning": "理所當然；有道理",
+    "meaningZh": [
+      "理所當然",
+      "有道理"
+    ],
+    "meaningEn": "reasonable; natural; justified",
+    "example": "彼が怒るのももっともです。",
+    "exampleMeaning": "他生氣也是理所當然的。",
+    "exampleFurigana": "彼[かれ]が怒[おこ]るのももっともです。",
+    "speechReading": "もっとも"
+  },
+  "v385": {
+    "meaning": "昨晚；昨天晚上",
+    "meaningZh": [
+      "昨晚",
+      "昨天晚上"
+    ],
+    "meaningEn": "last night; yesterday evening",
+    "example": "ゆうべは遅くまで勉強しました。",
+    "exampleMeaning": "昨晚我學到很晚。",
+    "exampleFurigana": "ゆうべは遅[おそ]くまで勉強[べんきょう]しました。",
+    "speechReading": "ゆうべ",
+    "reading": "ゆうべ"
+  },
+  "v1287": {
+    "meaning": "日式旅館；旅館",
+    "meaningZh": [
+      "日式旅館",
+      "旅館"
+    ],
+    "meaningEn": "ryokan; traditional Japanese inn",
+    "example": "あの旅館に泊まりました。",
+    "exampleMeaning": "我住在那家日式旅館。",
+    "exampleFurigana": "あの旅館[りょかん]に泊[と]まりました。",
+    "speechReading": "りょかん"
   }
 }
