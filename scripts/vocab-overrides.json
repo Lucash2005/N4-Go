@@ -2025,7 +2025,15 @@
     ],
     "meaningEn": "to sing",
     "exampleFurigana": "私[わたし]はよくカラオケで歌[うた]います。",
-    "speechReading": "うたう"
+    "speechReading": "うたう",
+    "senses": [
+      {
+        "senseIndex": 0,
+        "meaning": "唱歌",
+        "meaningEn": "to sing",
+        "pos": "Godan verb"
+      }
+    ]
   },
   "v274": {
     "exampleMeaning": "他很害怕海。"
@@ -2055,7 +2063,23 @@
   "v324": {
     "meaning": "（自己的）哥哥",
     "example": "兄が二人います。",
-    "exampleMeaning": "我有兩個哥哥。"
+    "exampleMeaning": "我有兩個哥哥。",
+    "meaningZh": [
+      "（自己的）哥哥",
+      "哥哥"
+    ],
+    "meaningEn": "older brother",
+    "reading": "あに",
+    "exampleFurigana": "兄[あに]が二人[ふたり]います。",
+    "speechReading": "あに",
+    "senses": [
+      {
+        "senseIndex": 0,
+        "meaning": "（自己的）哥哥",
+        "meaningEn": "older brother",
+        "pos": "Noun"
+      }
+    ]
   },
   "v325": {
     "meaning": "兄弟姊妹",
@@ -2913,9 +2937,17 @@
       "沒關係",
       "可以"
     ],
-    "meaningEn": "all right; OK; safe; no problem",
+    "meaningEn": "all right; OK; no problem",
     "exampleFurigana": "大丈夫[だいじょうぶ]です。心配[しんぱい]しないで。",
-    "speechReading": "だいじょうぶ"
+    "speechReading": "だいじょうぶ",
+    "senses": [
+      {
+        "senseIndex": 0,
+        "meaning": "沒問題；沒關係",
+        "meaningEn": "all right; OK",
+        "pos": "Na-adjective"
+      }
+    ]
   },
   "v523": {
     "example": "暑いので、コートを脱ぎました。",
@@ -3672,9 +3704,17 @@
       "牢牢地",
       "踏實地"
     ],
-    "meaningEn": "firmly; steadily; properly",
+    "meaningEn": "firmly; properly; steadily",
     "exampleFurigana": "毎日[まいにち]しっかり勉強[べんきょう]します。",
-    "speechReading": "しっかり"
+    "speechReading": "しっかり",
+    "senses": [
+      {
+        "senseIndex": 0,
+        "meaning": "好好地；牢牢地",
+        "meaningEn": "firmly; properly",
+        "pos": "Adverb"
+      }
+    ]
   },
   "v771": {
     "meaning": "一會兒、暫時、好久不見",
@@ -3768,7 +3808,15 @@
     ],
     "meaningEn": "such; that kind of",
     "exampleFurigana": "そんな話[はなし]は信[しん]じられません。",
-    "speechReading": "そんな"
+    "speechReading": "そんな",
+    "senses": [
+      {
+        "senseIndex": 0,
+        "meaning": "那樣的；那種",
+        "meaningEn": "such; that kind of",
+        "pos": "Pre-noun adjectival"
+      }
+    ]
   },
   "v796": {
     "example": "私はこのタイプの車が好きです。",
@@ -4181,7 +4229,21 @@
     ],
     "meaningEn": "spirit; mind; attention",
     "exampleFurigana": "気[き]をつけてください。",
-    "speechReading": "き"
+    "speechReading": "き",
+    "senses": [
+      {
+        "senseIndex": 0,
+        "meaning": "精神；心情",
+        "meaningEn": "spirit; mind",
+        "pos": "Noun"
+      },
+      {
+        "senseIndex": 1,
+        "meaning": "注意力",
+        "meaningEn": "attention",
+        "pos": "Noun"
+      }
+    ]
   },
   "v921": {
     "meaning": "感覺；心情；情緒",
@@ -5861,7 +5923,15 @@
     "example": "あと十分で手がすきます。",
     "exampleMeaning": "再過十分鐘我就有空了。",
     "exampleFurigana": "あと十分[じゅっぷん]で手[て]がすきます。",
-    "speechReading": "すく"
+    "speechReading": "すく",
+    "senses": [
+      {
+        "senseIndex": 0,
+        "meaning": "有空；空下來",
+        "meaningEn": "to be free; to have time",
+        "pos": "Godan verb"
+      }
+    ]
   },
   "v1193": {
     "meaning": "兩層樓（的建築）",
@@ -5945,7 +6015,15 @@
     "example": "彼が怒るのももっともです。",
     "exampleMeaning": "他生氣也是理所當然的。",
     "exampleFurigana": "彼[かれ]が怒[おこ]るのももっともです。",
-    "speechReading": "もっとも"
+    "speechReading": "もっとも",
+    "senses": [
+      {
+        "senseIndex": 0,
+        "meaning": "理所當然；有道理",
+        "meaningEn": "reasonable; justified",
+        "pos": "Adverb"
+      }
+    ]
   },
   "v385": {
     "meaning": "昨晚；昨天晚上",
@@ -5953,12 +6031,20 @@
       "昨晚",
       "昨天晚上"
     ],
-    "meaningEn": "last night; yesterday evening",
+    "meaningEn": "last night",
     "example": "ゆうべは遅くまで勉強しました。",
     "exampleMeaning": "昨晚我學到很晚。",
     "exampleFurigana": "ゆうべは遅[おそ]くまで勉強[べんきょう]しました。",
     "speechReading": "ゆうべ",
-    "reading": "ゆうべ"
+    "reading": "ゆうべ",
+    "senses": [
+      {
+        "senseIndex": 0,
+        "meaning": "昨晚",
+        "meaningEn": "last night",
+        "pos": "Noun；Adverb"
+      }
+    ]
   },
   "v1287": {
     "meaning": "日式旅館；旅館",
@@ -5970,6 +6056,14 @@
     "example": "あの旅館に泊まりました。",
     "exampleMeaning": "我住在那家日式旅館。",
     "exampleFurigana": "あの旅館[りょかん]に泊[と]まりました。",
-    "speechReading": "りょかん"
+    "speechReading": "りょかん",
+    "senses": [
+      {
+        "senseIndex": 0,
+        "meaning": "日式旅館",
+        "meaningEn": "ryokan",
+        "pos": "Noun"
+      }
+    ]
   }
 }

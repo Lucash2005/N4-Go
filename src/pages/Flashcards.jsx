@@ -1746,18 +1746,28 @@ function VocabCardBack({
   showMoreDetail,
   setShowMoreDetail,
 }) {
-  // Prefer Chinese glosses only; English stays behind「更多說明」
+  // Curated meaningZh / meaning wins; auto senses often mistranslate (e.g. sound→聲音).
+  const curatedLines = Array.isArray(card.meaningZh)
+    ? card.meaningZh.map((s) => String(s || '').trim()).filter(Boolean)
+    : compactGlossLines(isChineseGloss(card.meaning) ? card.meaning : '', 4)
   const zhSenses = (card.senses || []).filter((s) => isChineseGloss(s.meaning))
-  const sensePool = zhSenses
+  const sensePool = zhSenses.filter((s) => {
+    const lines = compactGlossLines(s.meaning, 3, 32)
+    // Drop sense lines already covered by curated glosses
+    return lines.some((line) => !curatedLines.includes(line))
+  })
   const primaryLines = (() => {
-    const fromSenses = compactSenseGlosses(sensePool, 2)
+    if (curatedLines.length) return curatedLines.slice(0, 2)
+    const fromSenses = compactSenseGlosses(zhSenses, 2)
     if (fromSenses.length) return fromSenses
     return compactGlossLines(isChineseGloss(card.meaning) ? card.meaning : '', 2)
   })()
-  const extraSenses = sensePool.slice(2)
-  const hiddenSenseCount = Math.max(0, sensePool.length - 2)
+  const extraFromCurated = curatedLines.slice(2)
+  const extraSenses = sensePool
+  const hiddenSenseCount =
+    Math.max(0, extraFromCurated.length) + Math.max(0, extraSenses.length)
   const hasHiddenSenses = hiddenSenseCount > 0 && !showMoreSenses
-  const showSenseBlock = primaryLines.length > 0 && sensePool.length > 1
+  const showSenseBlock = primaryLines.length > 0 && (curatedLines.length > 1 || zhSenses.length > 1)
   const canExpandDetail =
     card.memory ||
     card.exampleUsage ||
@@ -1840,8 +1850,13 @@ function VocabCardBack({
               更多多義（{hiddenSenseCount}）
             </button>
           ) : null}
-          {showMoreSenses && extraSenses.length ? (
+          {showMoreSenses && (extraFromCurated.length || extraSenses.length) ? (
             <ul className="mt-1 space-y-0.5">
+              {extraFromCurated.map((line) => (
+                <li key={`curated-${line}`} className="rounded-md bg-white/70 px-2 py-0.5 ring-1 ring-line/40">
+                  {line}
+                </li>
+              ))}
               {extraSenses.map((sense) =>
                 compactGlossLines(sense.meaning, 2, 32).map((line) => (
                   <li
