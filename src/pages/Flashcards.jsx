@@ -2164,7 +2164,7 @@ function ExampleGrammarNote({ example, card }) {
 
       {status === 'need_key' ? (
         <div className="space-y-2 text-ink-soft">
-          <p>請設定 Gemini API Key（僅存本機），翻面後會自動分析例句文法。</p>
+          <p>請設定 Gemini API Key（僅存本機），翻面後會自動分析例句文法。結果會保存在本機，直到例句變更或你按「重新分析」。</p>
           <div className="flex flex-wrap gap-2">
             <input
               type="password"
