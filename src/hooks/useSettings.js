@@ -29,6 +29,11 @@ const DEFAULT_SETTINGS = {
   cardFontSize: 'md',
   /** Auto-speak when a card face is shown */
   autoPlayOnShow: false,
+  /**
+   * Listening / audio-only study: hide word text on the front face
+   * (flip still reveals meaning/answer).
+   */
+  audioOnlyMode: false,
   loopPlayWord: true,
   loopPlayExample: true,
   loopPlayMeaning: false,
@@ -90,6 +95,7 @@ export function useSettings() {
     cardFontSize,
     cardFontScale,
     autoPlayOnShow: merged.autoPlayOnShow === true,
+    audioOnlyMode: merged.audioOnlyMode === true,
     loopPlayWord: merged.loopPlayWord !== false,
     loopPlayExample: merged.loopPlayExample !== false,
     loopPlayMeaning: merged.loopPlayMeaning === true,
@@ -107,6 +113,7 @@ export function useSettings() {
     setCardFontSize: (v) =>
       updateSetting('cardFontSize', CARD_FONT_SIZES[v] ? v : 'md'),
     setAutoPlayOnShow: (v) => updateSetting('autoPlayOnShow', Boolean(v)),
+    setAudioOnlyMode: (v) => updateSetting('audioOnlyMode', Boolean(v)),
     setLoopPlayWord: (v) => updateSetting('loopPlayWord', v),
     setLoopPlayExample: (v) => updateSetting('loopPlayExample', v),
     setLoopPlayMeaning: (v) => updateSetting('loopPlayMeaning', v),

@@ -433,7 +433,7 @@ export default function Dashboard() {
           <div>
             <h2 className="font-display text-xl font-bold text-ink">今日自動排程</h2>
             <p className="mt-1 text-sm text-ink-soft">
-              文法依 8→12 月路線解鎖；今日單字從連結最多的種子卡出發，依例句雙向接龍補滿目標量。目前只從 Gemini prompt v2 已審卡池抽題（舊版／未掃的先進每日審查）。
+              文法依 8→12 月路線解鎖；今日單字從連結最多的種子卡出發，依例句雙向接龍補滿目標量。「重新抽題」不會再抽出今天已出現過的單字（含評為忘記／困難）。目前只從 Gemini prompt v2 已審卡池抽題。
             </p>
           </div>
           <button
@@ -448,7 +448,7 @@ export default function Dashboard() {
             type="button"
             onClick={reshuffleTodayPlan}
             className="rounded-full bg-white px-3 py-1.5 text-xs text-ink-soft ring-1 ring-line hover:bg-foam"
-            title="已掌握的字不會再出現，改抽新字；到期複習請用「到期複習」"
+            title="今天已抽過的單字（含忘記／困難）不會再出現，改抽還沒看過的字"
           >
             重新抽題
           </button>

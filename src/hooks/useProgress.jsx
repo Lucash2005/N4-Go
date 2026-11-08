@@ -246,12 +246,22 @@ export function ProgressProvider({ children }) {
       dailyPlan.studyPrefsKey !== prefsKey ||
       (allowed instanceof Set && dailyPlan.geminiApprovedCount !== allowed.size)
     if (needsRebuild) {
+      // Same calendar day: keep excluding already-drawn vocab across plan rebuilds.
+      const excludeVocabIds =
+        dailyPlan.date === today
+          ? new Set([
+              ...(dailyPlan.seenVocabIds || []),
+              ...(dailyPlan.vocabIds || []),
+              ...(dailyPlan.studiedIds || []),
+            ])
+          : undefined
       setDailyPlan(
         buildDailyPlan(today, cardProgress, '', {
           ...catchUp,
           studyPrefsKey: prefsKey,
           hiddenIds: reportedIdSet(reportedStore),
           allowedIds: allowed instanceof Set ? allowed : undefined,
+          excludeVocabIds,
         }),
       )
     }
@@ -531,12 +541,20 @@ export function ProgressProvider({ children }) {
     function reshuffleTodayPlan() {
       const day = todayKey()
       const catchUp = catchUpPlanOptions(cardProgress)
+      const prev = ensurePlan(dailyPlan, cardProgress)
+      // Never re-draw today's vocab batch — including again/hard/forgotten cards.
+      const excludeVocabIds = new Set([
+        ...(prev.seenVocabIds || []),
+        ...(prev.vocabIds || []),
+        ...(prev.studiedIds || []),
+      ])
       setDailyPlan(
         buildDailyPlan(day, cardProgress, `reshuffle:${Date.now()}`, {
           ...catchUp,
           studyPrefsKey: studyPrefsKey(),
           hiddenIds: reportedIdSet(reportedStore),
           allowedIds: geminiAllowedIds || undefined,
+          excludeVocabIds,
         }),
       )
       setDailyTasks({
@@ -554,12 +572,19 @@ export function ProgressProvider({ children }) {
     function catchUpTodayPlan() {
       const day = todayKey()
       const catchUp = catchUpPlanOptions(cardProgress, { forceCatchUp: true })
+      const prev = ensurePlan(dailyPlan, cardProgress)
+      const excludeVocabIds = new Set([
+        ...(prev.seenVocabIds || []),
+        ...(prev.vocabIds || []),
+        ...(prev.studiedIds || []),
+      ])
       setDailyPlan(
         buildDailyPlan(day, cardProgress, `catch-up:${Date.now()}`, {
           ...catchUp,
           studyPrefsKey: studyPrefsKey(),
           hiddenIds: reportedIdSet(reportedStore),
           allowedIds: geminiAllowedIds || undefined,
+          excludeVocabIds,
         }),
       )
     }

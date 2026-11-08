@@ -143,6 +143,8 @@ export default function Flashcards() {
     setCardFontSize,
     autoPlayOnShow,
     setAutoPlayOnShow,
+    audioOnlyMode,
+    setAudioOnlyMode,
     loopPlayWord,
     loopPlayExample,
     loopPlayMeaning,
@@ -942,6 +944,17 @@ export default function Flashcards() {
           <FilterChip active={autoPlayOnShow} onClick={() => setAutoPlayOnShow(!autoPlayOnShow)}>
             {autoPlayOnShow ? '自動播放：開' : '自動播放：關'}
           </FilterChip>
+          <FilterChip
+            active={audioOnlyMode}
+            onClick={() => {
+              const next = !audioOnlyMode
+              setAudioOnlyMode(next)
+              // Listening mode is more useful with auto-play on
+              if (next && !autoPlayOnShow) setAutoPlayOnShow(true)
+            }}
+          >
+            {audioOnlyMode ? '只發音：文字已關' : '只發音：文字顯示'}
+          </FilterChip>
         </div>
         <label className="flex items-center gap-3 text-sm text-ink-soft">
           <span className="shrink-0">語速</span>
@@ -1223,6 +1236,16 @@ export default function Flashcards() {
         <FilterChip active={autoPlayOnShow} onClick={() => setAutoPlayOnShow(!autoPlayOnShow)}>
           {autoPlayOnShow ? '自動播放：開' : '自動播放：關'}
         </FilterChip>
+        <FilterChip
+          active={audioOnlyMode}
+          onClick={() => {
+            const next = !audioOnlyMode
+            setAudioOnlyMode(next)
+            if (next && !autoPlayOnShow) setAutoPlayOnShow(true)
+          }}
+        >
+          {audioOnlyMode ? '只發音：關文字' : '只發音'}
+        </FilterChip>
       </p>
 
       {doneSession ? (
@@ -1280,36 +1303,47 @@ export default function Flashcards() {
               }`}
             >
               <CardFace align="start" className="[grid-area:stack] [backface-visibility:hidden] overflow-hidden">
-                {card.type === 'vocab' && card.pos ? (
-                  <span className="rounded-full bg-sand/90 px-2.5 py-0.5 text-xs font-medium text-sea-deep ring-1 ring-line/60">
-                    {card.pos}
-                  </span>
-                ) : (
-                  <Badge>
-                    {card.type === 'vocab' ? '單字' : card.type === 'form' ? '活用' : '文法'}
-                  </Badge>
-                )}
-                {meaningFirst && card.type === 'vocab' ? (
-                  <>
-                    <p className="fc-word mt-6 font-display font-bold leading-snug text-ink">
-                      {primaryZhMeaning(card)}
+                {audioOnlyMode ? (
+                  <div className="mt-10 flex w-full flex-col items-center justify-center gap-3 text-center">
+                    <p className="font-display text-2xl font-bold text-sea-deep">只聽發音</p>
+                    <p className="max-w-[16rem] text-sm leading-relaxed text-ink-soft">
+                      正面不顯示文字。點下方「播放」聽讀音，翻面後再核對答案。
                     </p>
-                  </>
+                  </div>
                 ) : (
                   <>
-                    <p className="fc-word mt-6 font-display font-bold text-ink">
-                      {card.type === 'vocab'
-                        ? frontPromptForCard(card, promptScript)
-                        : card.word}
-                    </p>
-                    {!hideReadingOnFront &&
-                    showFurigana &&
-                    card.type === 'vocab' &&
-                    frontPromptForCard(card, promptScript) !== card.reading ? (
-                      <p className="fc-reading mt-3 text-sea-deep">{card.reading}</p>
-                    ) : !hideReadingOnFront && showFurigana && card.type !== 'vocab' ? (
-                      <p className="fc-reading mt-3 text-sea-deep">{card.reading}</p>
-                    ) : null}
+                    {card.type === 'vocab' && card.pos ? (
+                      <span className="rounded-full bg-sand/90 px-2.5 py-0.5 text-xs font-medium text-sea-deep ring-1 ring-line/60">
+                        {card.pos}
+                      </span>
+                    ) : (
+                      <Badge>
+                        {card.type === 'vocab' ? '單字' : card.type === 'form' ? '活用' : '文法'}
+                      </Badge>
+                    )}
+                    {meaningFirst && card.type === 'vocab' ? (
+                      <>
+                        <p className="fc-word mt-6 font-display font-bold leading-snug text-ink">
+                          {primaryZhMeaning(card)}
+                        </p>
+                      </>
+                    ) : (
+                      <>
+                        <p className="fc-word mt-6 font-display font-bold text-ink">
+                          {card.type === 'vocab'
+                            ? frontPromptForCard(card, promptScript)
+                            : card.word}
+                        </p>
+                        {!hideReadingOnFront &&
+                        showFurigana &&
+                        card.type === 'vocab' &&
+                        frontPromptForCard(card, promptScript) !== card.reading ? (
+                          <p className="fc-reading mt-3 text-sea-deep">{card.reading}</p>
+                        ) : !hideReadingOnFront && showFurigana && card.type !== 'vocab' ? (
+                          <p className="fc-reading mt-3 text-sea-deep">{card.reading}</p>
+                        ) : null}
+                      </>
+                    )}
                   </>
                 )}
               </CardFace>

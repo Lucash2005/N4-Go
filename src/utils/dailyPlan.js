@@ -307,9 +307,13 @@ function priorityOrderedCards(cards, seedStr, cardProgress, date = todayKey(), o
   const { excludeLearned = false } = options
   const hidden = options.hiddenIds || reportedIdSet()
   const allowed = options.allowedIds
+  const excludeIds = options.excludeIds instanceof Set ? options.excludeIds : null
   let visible = hidden.size ? cards.filter((c) => !hidden.has(c.id)) : cards
   if (allowed instanceof Set) {
     visible = visible.filter((c) => allowed.has(c.id))
+  }
+  if (excludeIds?.size) {
+    visible = visible.filter((c) => !excludeIds.has(c.id))
   }
   const pool = excludeLearned
     ? visible.filter((c) => !isLearned(cardProgress[c.id], date))
@@ -483,11 +487,20 @@ function pickVocabExampleLinked(count, seedStr, cardProgress, date, options = {}
  */
 export function buildDailyPlan(date, cardProgress = {}, seedExtra = '', options = {}) {
   const seed = `n4-go:${date}${seedExtra ? `:${seedExtra}` : ''}`
+  const excludeVocabIds =
+    options.excludeVocabIds instanceof Set
+      ? options.excludeVocabIds
+      : new Set(options.excludeVocabIds || [])
   const pickOpts = {
     excludeLearned: options.excludeLearned ?? true,
     includeExtension: options.includeExtension ?? false,
     hiddenIds: options.hiddenIds || reportedIdSet(),
     allowedIds: options.allowedIds,
+  }
+  const vocabPickOpts = {
+    ...pickOpts,
+    // Reshuffle: skip anything already shown today (any grade, including again/hard).
+    excludeIds: excludeVocabIds.size ? excludeVocabIds : null,
   }
   const quota = resolveDailyQuota(options)
   // Catch-up / user target may raise vocab above phase baseline (capped at 40).
@@ -508,7 +521,7 @@ export function buildDailyPlan(date, cardProgress = {}, seedExtra = '', options 
     `${seed}:vocab`,
     cardProgress,
     date,
-    pickOpts,
+    vocabPickOpts,
   )
 
   const vocabulary = getVocabulary()
@@ -522,6 +535,7 @@ export function buildDailyPlan(date, cardProgress = {}, seedExtra = '', options 
     allIds = allIds.filter((id) => allowed.has(id) || alwaysAllowedDuringScan(id))
   }
   const reviewIds = getDueIds(cardProgress, allIds, quota.review, date)
+  const seenVocabIds = [...new Set([...excludeVocabIds, ...vocabIds])]
 
   return {
     date,
@@ -531,6 +545,8 @@ export function buildDailyPlan(date, cardProgress = {}, seedExtra = '', options 
     reviewIds,
     studiedIds: [],
     listenedIds: [],
+    /** Vocab ids already drawn today — reshuffle must not repeat these. */
+    seenVocabIds,
     grammarPathVersion: GRAMMAR_PATH_VERSION,
     allowlistPolicy: ALLOWLIST_POLICY,
     vocabPickVersion: VOCAB_PICK_VERSION,
@@ -581,6 +597,7 @@ export function emptyDailyPlan(date = '') {
     reviewIds: [],
     studiedIds: [],
     listenedIds: [],
+    seenVocabIds: [],
     grammarPathVersion: GRAMMAR_PATH_VERSION,
     allowlistPolicy: ALLOWLIST_POLICY,
     vocabPickVersion: VOCAB_PICK_VERSION,
