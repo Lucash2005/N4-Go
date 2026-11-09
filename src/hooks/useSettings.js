@@ -38,6 +38,11 @@ const DEFAULT_SETTINGS = {
   loopPlayExample: true,
   loopPlayMeaning: false,
   loopPlayExampleMeaning: false,
+  /** How many times each enabled clip plays before the next track (1–5). */
+  loopWordRepeats: 1,
+  loopExampleRepeats: 1,
+  loopMeaningRepeats: 1,
+  loopExampleMeaningRepeats: 1,
   /**
    * Daily new-vocab target: 'phase' follows studyPhases, or 12–30 fixed.
    * Catch-up boost is separate (autoCatchUp / 手動加量).
@@ -100,6 +105,13 @@ export function useSettings() {
     loopPlayExample: merged.loopPlayExample !== false,
     loopPlayMeaning: merged.loopPlayMeaning === true,
     loopPlayExampleMeaning: merged.loopPlayExampleMeaning === true,
+    loopWordRepeats: Math.min(5, Math.max(1, Number(merged.loopWordRepeats) || 1)),
+    loopExampleRepeats: Math.min(5, Math.max(1, Number(merged.loopExampleRepeats) || 1)),
+    loopMeaningRepeats: Math.min(5, Math.max(1, Number(merged.loopMeaningRepeats) || 1)),
+    loopExampleMeaningRepeats: Math.min(
+      5,
+      Math.max(1, Number(merged.loopExampleMeaningRepeats) || 1),
+    ),
     dailyVocabTarget,
     newCardPasses,
     autoCatchUp,
@@ -118,6 +130,14 @@ export function useSettings() {
     setLoopPlayExample: (v) => updateSetting('loopPlayExample', v),
     setLoopPlayMeaning: (v) => updateSetting('loopPlayMeaning', v),
     setLoopPlayExampleMeaning: (v) => updateSetting('loopPlayExampleMeaning', v),
+    setLoopWordRepeats: (v) =>
+      updateSetting('loopWordRepeats', Math.min(5, Math.max(1, Number(v) || 1))),
+    setLoopExampleRepeats: (v) =>
+      updateSetting('loopExampleRepeats', Math.min(5, Math.max(1, Number(v) || 1))),
+    setLoopMeaningRepeats: (v) =>
+      updateSetting('loopMeaningRepeats', Math.min(5, Math.max(1, Number(v) || 1))),
+    setLoopExampleMeaningRepeats: (v) =>
+      updateSetting('loopExampleMeaningRepeats', Math.min(5, Math.max(1, Number(v) || 1))),
     setDailyVocabTarget: (v) =>
       updateSetting(
         'dailyVocabTarget',

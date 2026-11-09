@@ -2791,8 +2791,25 @@
     "exampleMeaning": "公車停下來了。"
   },
   "v407": {
-    "example": "本棚から字引を取り出して調べます。",
-    "exampleMeaning": "從書架上拿出字典來查。"
+    "example": "字引で意味を調べます。",
+    "exampleMeaning": "用字典查意思。",
+    "meaning": "字典；詞典",
+    "meaningZh": [
+      "字典",
+      "詞典"
+    ],
+    "meaningEn": "dictionary",
+    "reading": "じびき",
+    "speechReading": "じびき",
+    "exampleFurigana": "字引[じびき]で意味[いみ]を調[しら]べます。",
+    "senses": [
+      {
+        "senseIndex": 0,
+        "meaning": "字典；詞典",
+        "meaningEn": "dictionary",
+        "pos": "Noun"
+      }
+    ]
   },
   "v418": {
     "example": "七月に日本へ行きます。",
@@ -4162,9 +4179,25 @@
     "exampleMeaning": "小狗正在咬鞋子。"
   },
   "v907": {
-    "meaning": "變乾、乾燥",
+    "meaning": "變乾；乾了",
     "example": "洗濯物が乾きました。",
-    "exampleMeaning": "洗好的衣服乾了。"
+    "exampleMeaning": "洗好的衣服乾了。",
+    "meaningZh": [
+      "變乾",
+      "乾了"
+    ],
+    "meaningEn": "to get dry; to dry",
+    "reading": "かわく",
+    "speechReading": "かわく",
+    "exampleFurigana": "洗濯物[せんたくもの]が乾[かわ]きました。",
+    "senses": [
+      {
+        "senseIndex": 0,
+        "meaning": "變乾；乾了",
+        "meaningEn": "to get dry",
+        "pos": "Godan verb"
+      }
+    ]
   },
   "v908": {
     "example": "すぐに慣れますよ。",

@@ -310,6 +310,12 @@ export function subscribePlaylist(fn) {
   return () => listeners.delete(fn)
 }
 
+function clampRepeats(n, fallback = 1) {
+  const v = Number(n)
+  if (!Number.isFinite(v)) return fallback
+  return Math.min(5, Math.max(1, Math.round(v)))
+}
+
 /**
  * Build playlist tracks for cards.
  * Japanese + Chinese use prebuilt Neural MP3s (lock-screen friendly).
@@ -319,6 +325,10 @@ export function subscribePlaylist(fn) {
  *   playExample?: boolean,
  *   playMeaning?: boolean,
  *   playExampleMeaning?: boolean,
+ *   wordRepeats?: number,
+ *   exampleRepeats?: number,
+ *   meaningRepeats?: number,
+ *   exampleMeaningRepeats?: number,
  * }} [options]
  */
 export function buildCardTracks(cards, options = {}) {
@@ -327,56 +337,76 @@ export function buildCardTracks(cards, options = {}) {
     playExample = true,
     playMeaning = false,
     playExampleMeaning = false,
+    wordRepeats = 1,
+    exampleRepeats = 1,
+    meaningRepeats = 1,
+    exampleMeaningRepeats = 1,
   } = options
+  const wordN = clampRepeats(wordRepeats)
+  const exampleN = clampRepeats(exampleRepeats)
+  const meaningN = clampRepeats(meaningRepeats)
+  const exampleMeaningN = clampRepeats(exampleMeaningRepeats)
   const base = import.meta.env.BASE_URL || './'
   const bust = `?v=${AUDIO_CACHE_VERSION}`
   const tracks = []
+
+  function pushRepeated(count, makeTrack) {
+    for (let i = 0; i < count; i += 1) {
+      const track = makeTrack(i)
+      if (track) tracks.push(track)
+    }
+  }
 
   for (const card of cards || []) {
     if (!card?.id) continue
 
     if (playWord) {
-      tracks.push({
-        id: `${card.id}-word`,
+      pushRepeated(wordN, (i) => ({
+        id: `${card.id}-word-r${i + 1}`,
         cardId: card.id,
         kind: 'word',
         url: `${base}audio/${card.id}-word.mp3${bust}`,
         title: card.word,
-        subtitle: card.reading ? `${card.reading} · 單字` : '單字',
-      })
+        subtitle:
+          wordN > 1
+            ? `${card.reading ? `${card.reading} · ` : ''}單字 ${i + 1}/${wordN}`
+            : card.reading
+              ? `${card.reading} · 單字`
+              : '單字',
+      }))
     }
 
     if (playMeaning && card.meaning) {
-      tracks.push({
-        id: `${card.id}-meaning`,
+      pushRepeated(meaningN, (i) => ({
+        id: `${card.id}-meaning-r${i + 1}`,
         cardId: card.id,
         kind: 'meaning',
         url: `${base}audio/${card.id}-meaning.mp3${bust}`,
         title: card.word,
-        subtitle: '詞義解釋',
-      })
+        subtitle: meaningN > 1 ? `詞義解釋 ${i + 1}/${meaningN}` : '詞義解釋',
+      }))
     }
 
     if (playExample && card.example) {
-      tracks.push({
-        id: `${card.id}-example`,
+      pushRepeated(exampleN, (i) => ({
+        id: `${card.id}-example-r${i + 1}`,
         cardId: card.id,
         kind: 'example',
         url: `${base}audio/${card.id}-example.mp3${bust}`,
         title: card.word,
-        subtitle: '例句',
-      })
+        subtitle: exampleN > 1 ? `例句 ${i + 1}/${exampleN}` : '例句',
+      }))
     }
 
     if (playExampleMeaning && card.exampleMeaning) {
-      tracks.push({
-        id: `${card.id}-example-meaning`,
+      pushRepeated(exampleMeaningN, (i) => ({
+        id: `${card.id}-example-meaning-r${i + 1}`,
         cardId: card.id,
         kind: 'exampleMeaning',
         url: `${base}audio/${card.id}-example-meaning.mp3${bust}`,
         title: card.word,
-        subtitle: '例句解釋',
-      })
+        subtitle: exampleMeaningN > 1 ? `例句解釋 ${i + 1}/${exampleMeaningN}` : '例句解釋',
+      }))
     }
   }
 

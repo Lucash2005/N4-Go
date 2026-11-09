@@ -153,6 +153,14 @@ export default function Flashcards() {
     setLoopPlayExample,
     setLoopPlayMeaning,
     setLoopPlayExampleMeaning,
+    loopWordRepeats,
+    loopExampleRepeats,
+    loopMeaningRepeats,
+    loopExampleMeaningRepeats,
+    setLoopWordRepeats,
+    setLoopExampleRepeats,
+    setLoopMeaningRepeats,
+    setLoopExampleMeaningRepeats,
     newCardPasses,
   } = useSettings()
   const [searchParams, setSearchParams] = useSearchParams()
@@ -781,6 +789,10 @@ export default function Flashcards() {
     playExample: loopPlayExample,
     playMeaning: loopPlayMeaning,
     playExampleMeaning: loopPlayExampleMeaning,
+    wordRepeats: loopWordRepeats,
+    exampleRepeats: loopExampleRepeats,
+    meaningRepeats: loopMeaningRepeats,
+    exampleMeaningRepeats: loopExampleMeaningRepeats,
   }
 
   const loopSelectionValid =
@@ -821,6 +833,38 @@ export default function Flashcards() {
     startLoopPlay()
   }
 
+  function rebuildLoopTracks(overrides = {}) {
+    const flags = {
+      playWord: loopPlayWord,
+      playExample: loopPlayExample,
+      playMeaning: loopPlayMeaning,
+      playExampleMeaning: loopPlayExampleMeaning,
+      wordRepeats: loopWordRepeats,
+      exampleRepeats: loopExampleRepeats,
+      meaningRepeats: loopMeaningRepeats,
+      exampleMeaningRepeats: loopExampleMeaningRepeats,
+      ...overrides,
+    }
+    if (
+      !flags.playWord &&
+      !flags.playExample &&
+      !flags.playMeaning &&
+      !flags.playExampleMeaning
+    ) {
+      return
+    }
+    stopSpeaking()
+    const startCardIndex = Math.max(0, safeIndex)
+    const rotated = [...deck.slice(startCardIndex), ...deck.slice(0, startCardIndex)]
+    const tracks = buildCardTracks(rotated, flags)
+    if (!tracks.length) return
+    startPlaylist(tracks, {
+      loop: true,
+      rate: Math.min(1.25, Math.max(0.7, ttsRate / 0.88)),
+      startIndex: 0,
+    })
+  }
+
   function toggleLoopOption(key, value, setter) {
     // Keep at least one track type enabled
     const next = {
@@ -834,23 +878,36 @@ export default function Flashcards() {
     setter(value)
     // If already in a loop session, rebuild with new options
     if (playlist.total > 0) {
-      // defer until state commits
       queueMicrotask(() => {
-        // use the intended next flags directly
-        stopSpeaking()
-        const startCardIndex = Math.max(0, safeIndex)
-        const rotated = [...deck.slice(startCardIndex), ...deck.slice(0, startCardIndex)]
-        const tracks = buildCardTracks(rotated, {
+        rebuildLoopTracks({
           playWord: next.word,
           playExample: next.example,
           playMeaning: next.meaning,
           playExampleMeaning: next.exampleMeaning,
         })
-        if (!tracks.length) return
-        startPlaylist(tracks, {
-          loop: true,
-          rate: Math.min(1.25, Math.max(0.7, ttsRate / 0.88)),
-          startIndex: 0,
+      })
+    }
+  }
+
+  function setLoopRepeats(kind, value) {
+    const n = Math.min(5, Math.max(1, Number(value) || 1))
+    const map = {
+      word: setLoopWordRepeats,
+      example: setLoopExampleRepeats,
+      meaning: setLoopMeaningRepeats,
+      exampleMeaning: setLoopExampleMeaningRepeats,
+    }
+    const setter = map[kind]
+    if (!setter) return
+    setter(n)
+    if (playlist.total > 0) {
+      queueMicrotask(() => {
+        rebuildLoopTracks({
+          wordRepeats: kind === 'word' ? n : loopWordRepeats,
+          exampleRepeats: kind === 'example' ? n : loopExampleRepeats,
+          meaningRepeats: kind === 'meaning' ? n : loopMeaningRepeats,
+          exampleMeaningRepeats:
+            kind === 'exampleMeaning' ? n : loopExampleMeaningRepeats,
         })
       })
     }
@@ -1002,7 +1059,8 @@ export default function Flashcards() {
             <div>
               <p className="font-medium text-ink">循環播放</p>
               <p className="mt-1 text-xs text-ink-soft">
-                可開關要播的內容。日文／中文皆為 Neural 音檔，鎖屏後也可繼續。
+                可開關要播的內容，並設定單字／例句各連播幾次再跳下一則。日文／中文皆為 Neural
+                音檔，鎖屏後也可繼續。
               </p>
             </div>
             <button
@@ -1046,6 +1104,76 @@ export default function Flashcards() {
             >
               例句解釋
             </FilterChip>
+          </div>
+
+          <div className="mt-3 space-y-2 text-sm text-ink">
+            <p className="text-xs text-ink-soft">每則音檔連播幾次後再跳下一則（1–5）</p>
+            <div className="flex flex-wrap gap-3">
+              {loopPlayWord ? (
+                <label className="flex items-center gap-2">
+                  <span className="text-ink-soft">單字</span>
+                  <select
+                    className="rounded-xl border border-line bg-white px-2 py-1 text-sm"
+                    value={loopWordRepeats}
+                    onChange={(e) => setLoopRepeats('word', e.target.value)}
+                  >
+                    {[1, 2, 3, 4, 5].map((n) => (
+                      <option key={n} value={n}>
+                        {n} 次
+                      </option>
+                    ))}
+                  </select>
+                </label>
+              ) : null}
+              {loopPlayExample ? (
+                <label className="flex items-center gap-2">
+                  <span className="text-ink-soft">例句</span>
+                  <select
+                    className="rounded-xl border border-line bg-white px-2 py-1 text-sm"
+                    value={loopExampleRepeats}
+                    onChange={(e) => setLoopRepeats('example', e.target.value)}
+                  >
+                    {[1, 2, 3, 4, 5].map((n) => (
+                      <option key={n} value={n}>
+                        {n} 次
+                      </option>
+                    ))}
+                  </select>
+                </label>
+              ) : null}
+              {loopPlayMeaning ? (
+                <label className="flex items-center gap-2">
+                  <span className="text-ink-soft">詞義</span>
+                  <select
+                    className="rounded-xl border border-line bg-white px-2 py-1 text-sm"
+                    value={loopMeaningRepeats}
+                    onChange={(e) => setLoopRepeats('meaning', e.target.value)}
+                  >
+                    {[1, 2, 3, 4, 5].map((n) => (
+                      <option key={n} value={n}>
+                        {n} 次
+                      </option>
+                    ))}
+                  </select>
+                </label>
+              ) : null}
+              {loopPlayExampleMeaning ? (
+                <label className="flex items-center gap-2">
+                  <span className="text-ink-soft">例句解釋</span>
+                  <select
+                    className="rounded-xl border border-line bg-white px-2 py-1 text-sm"
+                    value={loopExampleMeaningRepeats}
+                    onChange={(e) => setLoopRepeats('exampleMeaning', e.target.value)}
+                  >
+                    {[1, 2, 3, 4, 5].map((n) => (
+                      <option key={n} value={n}>
+                        {n} 次
+                      </option>
+                    ))}
+                  </select>
+                </label>
+              ) : null}
+            </div>
           </div>
 
           {loopActive ? (
