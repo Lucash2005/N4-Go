@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 import { CONTENT_VERSION } from '../data/config'
 import Countdown from '../components/Countdown'
 import ProgressBar from '../components/ProgressBar'
+import SprintChecklist from '../components/SprintChecklist'
 import { DRILL_BANK_SIZE } from '../data/drill'
 import { useProgress } from '../hooks/useProgress'
 import { useSettings } from '../hooks/useSettings'
@@ -150,6 +151,38 @@ export default function Dashboard() {
     <div className="space-y-5">
       <Countdown />
 
+      {(studyPhase.id === 'sprint' || studyPhase.id === 'skills') && (
+        <section className="animate-fade-up space-y-3">
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <p className="text-sm font-medium text-ink">考前衝刺入口</p>
+            <Link to="/sprint" className="text-xs text-coral underline-offset-2 hover:underline">
+              打開衝刺中心 →
+            </Link>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            <Link
+              to="/flashcards?mode=sprint"
+              className="rounded-full bg-coral px-3 py-1.5 text-xs font-medium text-white hover:bg-coral/90"
+            >
+              衝刺字卡
+            </Link>
+            <Link
+              to="/quiz?mode=quick"
+              className="rounded-full bg-sea px-3 py-1.5 text-xs font-medium text-white hover:bg-sea-deep"
+            >
+              限時小考 10 分
+            </Link>
+            <Link
+              to="/sprint"
+              className="rounded-full bg-white px-3 py-1.5 text-xs text-ink ring-1 ring-line hover:bg-foam"
+            >
+              20 天打卡
+            </Link>
+          </div>
+          {studyPhase.id === 'sprint' ? <SprintChecklist compact /> : null}
+        </section>
+      )}
+
       <section className="surface soft-shadow animate-fade-up rounded-3xl p-5 sm:p-6">
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div>
@@ -219,6 +252,12 @@ export default function Dashboard() {
             className="rounded-full bg-sea/10 px-3 py-1.5 text-xs text-sea-deep ring-1 ring-line"
           >
             綜合測驗
+          </Link>
+          <Link
+            to="/sprint"
+            className="rounded-full bg-coral/15 px-3 py-1.5 text-xs text-coral ring-1 ring-coral/30"
+          >
+            考前衝刺
           </Link>
         </div>
         {studyPhase.id === 'foundation' ? (

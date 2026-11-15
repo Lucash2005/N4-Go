@@ -62,6 +62,16 @@ export default function SkillsHub() {
             {phase.id === 'sprint' ? ' · 衝刺期建議每日一節' : ''}
           </p>
         </Link>
+        <Link
+          to="/sprint"
+          className="surface soft-shadow rounded-3xl p-5 transition hover:bg-foam/80 sm:col-span-2"
+        >
+          <p className="text-xs text-coral">SPRINT</p>
+          <h3 className="font-display text-xl font-bold text-ink">考前衝刺中心</h3>
+          <p className="mt-1 text-sm text-ink-soft">
+            20 天打卡 · 衝刺字卡 · 限時小考 · 錯題清零
+          </p>
+        </Link>
       </div>
     </div>
   )

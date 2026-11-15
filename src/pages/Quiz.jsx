@@ -1,14 +1,28 @@
-import { useMemo, useRef, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { useEffect, useMemo, useRef, useState } from 'react'
+import { Link, useSearchParams } from 'react-router-dom'
 import { useProgress } from '../hooks/useProgress'
 import { todayKey } from '../utils/storage'
 import { describeQuizSource, pickAdaptiveQuiz } from '../utils/quizFromProgress'
+import { addSprintPins, filterPinnableIds } from '../utils/sprintQueue'
+import { setSprintTaskDone } from '../utils/sprintChecklist'
+
+const QUICK_COUNT = 18
+const QUICK_SECONDS = 10 * 60
+
+function formatRemain(sec) {
+  const m = Math.floor(Math.max(0, sec) / 60)
+  const s = Math.max(0, sec) % 60
+  return `${m}:${String(s).padStart(2, '0')}`
+}
 
 export default function Quiz() {
   const { recordQuiz, cardProgress, dailyPlan, todayVocab, todayGrammar, todayReview, grammarPath } =
     useProgress()
+  const [searchParams] = useSearchParams()
+  const isQuickRoute = searchParams.get('mode') === 'quick'
+
   const [mode, setMode] = useState('all')
-  const [view, setView] = useState('hub')
+  const [view, setView] = useState(isQuickRoute ? 'quick' : 'hub')
   const [started, setStarted] = useState(false)
   const [questions, setQuestions] = useState([])
   const [current, setCurrent] = useState(0)
@@ -17,8 +31,17 @@ export default function Quiz() {
   const [correctCount, setCorrectCount] = useState(0)
   const [finished, setFinished] = useState(false)
   const [sourceInfo, setSourceInfo] = useState(null)
+  const [remain, setRemain] = useState(QUICK_SECONDS)
+  const [timedOut, setTimedOut] = useState(false)
+  const [pinnedMsg, setPinnedMsg] = useState('')
+  const [reviewMisses, setReviewMisses] = useState([])
+
   const correctRef = useRef(0)
   const missedRef = useRef([])
+  const missedMetaRef = useRef([])
+  const missDetailsRef = useRef([])
+  const finishedRef = useRef(false)
+  const quickMode = view === 'quick'
 
   const question = questions[current]
   const progressLabel = useMemo(() => {
@@ -34,12 +57,28 @@ export default function Quiz() {
       : `文法只出已解鎖路線（${grammarPath?.title || '本月'}），不會跳到後面的使役受身`
   }, [todayVocab, todayGrammar, todayReview, grammarPath])
 
-  const missedMetaRef = useRef([])
+  useEffect(() => {
+    if (isQuickRoute) setView('quick')
+  }, [isQuickRoute])
 
-  function start() {
+  function finishQuiz({ timeout = false } = {}) {
+    if (finishedRef.current) return
+    finishedRef.current = true
+    recordQuiz(correctRef.current, questions.length, missedRef.current, missedMetaRef.current)
+    setReviewMisses(missDetailsRef.current)
+    setTimedOut(timeout)
+    setFinished(true)
+    if (quickMode) {
+      setSprintTaskDone(todayKey(), 'quick-mock', true)
+    }
+  }
+
+  function start(options = {}) {
+    const quick = options.quick ?? quickMode
+    const count = quick ? QUICK_COUNT : 10
     const qs = pickAdaptiveQuiz({
-      count: 10,
-      type: mode,
+      count,
+      type: quick ? 'all' : mode,
       cardProgress,
       dailyPlan,
       today: todayKey(),
@@ -53,12 +92,36 @@ export default function Quiz() {
     correctRef.current = 0
     missedRef.current = []
     missedMetaRef.current = []
+    missDetailsRef.current = []
+    finishedRef.current = false
     setFinished(false)
+    setTimedOut(false)
+    setPinnedMsg('')
+    setReviewMisses([])
+    setRemain(QUICK_SECONDS)
     setStarted(true)
+    if (quick) setView('quick')
   }
 
+  // Quick-mock countdown
+  useEffect(() => {
+    if (!started || !quickMode || finished) return undefined
+    const timer = window.setInterval(() => {
+      setRemain((prev) => {
+        if (prev <= 1) {
+          window.clearInterval(timer)
+          finishQuiz({ timeout: true })
+          return 0
+        }
+        return prev - 1
+      })
+    }, 1000)
+    return () => window.clearInterval(timer)
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- timer owns finish side-effect
+  }, [started, quickMode, finished, questions.length])
+
   function choose(idx) {
-    if (revealed || !question) return
+    if (revealed || !question || finished) return
     setSelected(idx)
     setRevealed(true)
     if (idx === question.answer) {
@@ -75,18 +138,34 @@ export default function Quiz() {
         source: question.type === 'reading' ? 'reading' : 'quiz',
         prompt: question.prompt || '',
       })
+      missDetailsRef.current.push({
+        id: question.vocabId || question.grammarId || question.formId || question.id,
+        prompt: question.prompt,
+        correct: correctText,
+        picked: question.options[idx],
+        explanation: question.explanation,
+      })
     }
   }
 
   function next() {
     if (current + 1 >= questions.length) {
-      recordQuiz(correctRef.current, questions.length, missedRef.current, missedMetaRef.current)
-      setFinished(true)
+      finishQuiz()
       return
     }
     setCurrent((c) => c + 1)
     setSelected(null)
     setRevealed(false)
+  }
+
+  function pinMissesToSprint() {
+    const ids = filterPinnableIds(missDetailsRef.current.map((m) => m.id))
+    if (!ids.length) {
+      setPinnedMsg('沒有可釘選的字卡 id（已進錯題本）')
+      return
+    }
+    addSprintPins(ids)
+    setPinnedMsg(`已將 ${ids.length} 題錯題加入衝刺清單`)
   }
 
   if (!started && view === 'hub') {
@@ -100,6 +179,24 @@ export default function Quiz() {
         </section>
 
         <div className="grid gap-4 sm:grid-cols-2">
+          <section className="surface soft-shadow animate-fade-up stagger-1 flex flex-col rounded-3xl p-5 sm:p-6">
+            <h3 className="font-display text-lg font-bold text-ink">限時模擬小考</h3>
+            <p className="mt-2 flex-1 text-sm leading-relaxed text-ink-soft">
+              {QUICK_COUNT} 題高頻單字／文法，限時 {QUICK_SECONDS / 60}{' '}
+              分鐘。結束可一鍵把錯題釘進衝刺複習。
+            </p>
+            <button
+              type="button"
+              onClick={() => {
+                setView('quick')
+                start({ quick: true })
+              }}
+              className="mt-5 w-full rounded-2xl bg-coral px-4 py-3.5 text-base font-medium text-white transition hover:bg-coral/90"
+            >
+              開始限時小考
+            </button>
+          </section>
+
           <section className="surface soft-shadow animate-fade-up stagger-1 flex flex-col rounded-3xl p-5 sm:p-6">
             <h3 className="font-display text-lg font-bold text-ink">N4 模擬測驗</h3>
             <p className="mt-2 flex-1 text-sm leading-relaxed text-ink-soft">
@@ -139,19 +236,56 @@ export default function Quiz() {
             </Link>
           </section>
 
-          <section className="surface soft-shadow animate-fade-up stagger-2 flex flex-col rounded-3xl p-5 sm:p-6 sm:col-span-2">
-            <h3 className="font-display text-lg font-bold text-ink">基礎加強</h3>
+          <section className="surface soft-shadow animate-fade-up stagger-2 flex flex-col rounded-3xl p-5 sm:p-6">
+            <h3 className="font-display text-lg font-bold text-ink">考前衝刺</h3>
             <p className="mt-2 flex-1 text-sm leading-relaxed text-ink-soft">
-              てから／から、に／へ、讀解型短文填空。錯題走獨立佇列，不扣掌握進度。
+              20 天打卡、衝刺字卡、錯題清零入口。
             </p>
             <Link
-              to="/drill"
+              to="/sprint"
               className="mt-5 block w-full rounded-2xl bg-white px-4 py-3.5 text-center text-base font-medium text-ink ring-1 ring-line transition hover:bg-foam"
             >
-              開始加強練習
+              打開衝刺中心
             </Link>
           </section>
         </div>
+      </div>
+    )
+  }
+
+  if (!started && view === 'quick') {
+    return (
+      <div className="space-y-5">
+        <section className="animate-fade-up">
+          <button
+            type="button"
+            onClick={() => setView('hub')}
+            className="text-sm text-sea-deep hover:underline"
+          >
+            ← 回測驗首頁
+          </button>
+          <h2 className="font-display mt-2 text-2xl font-bold text-ink">限時模擬小考</h2>
+          <p className="mt-1 text-sm text-ink-soft">
+            {QUICK_COUNT} 題選擇題 · 限時 {QUICK_SECONDS / 60} 分鐘 · 綜合單字與文法（依進度加權）
+          </p>
+        </section>
+        <section className="surface soft-shadow rounded-3xl p-5 sm:p-6">
+          <ul className="space-y-2 text-sm text-ink-soft">
+            <li>· 時間到會自動交卷並結算</li>
+            <li>· 錯題進錯題本，也可釘進衝刺清單</li>
+            <li>· 建議每天至少一輪，搭配衝刺字卡</li>
+          </ul>
+          <button
+            type="button"
+            onClick={() => start({ quick: true })}
+            className="mt-6 w-full rounded-2xl bg-coral px-4 py-3.5 text-base font-medium text-white hover:bg-coral/90"
+          >
+            開始計時
+          </button>
+          <Link to="/sprint" className="mt-3 block text-center text-xs text-sea-deep underline">
+            回衝刺中心
+          </Link>
+        </section>
       </div>
     )
   }
@@ -198,7 +332,7 @@ export default function Quiz() {
 
           <button
             type="button"
-            onClick={start}
+            onClick={() => start({ quick: false })}
             className="mt-6 w-full rounded-2xl bg-sea px-4 py-3.5 text-base font-medium text-white transition hover:bg-sea-deep"
           >
             開始 10 題測驗
@@ -211,28 +345,70 @@ export default function Quiz() {
   if (finished) {
     const score = correctCount
     const total = questions.length
-    const pct = Math.round((score / total) * 100)
+    const pct = total ? Math.round((score / total) * 100) : 0
+    const missCount = reviewMisses.length
 
     return (
-      <section className="surface soft-shadow animate-fade-up mx-auto max-w-lg rounded-3xl p-6 text-center sm:p-8">
-        <p className="text-sm text-sea-deep">本回結果</p>
-        <h2 className="font-display mt-2 text-3xl font-bold text-ink">
+      <section className="surface soft-shadow animate-fade-up mx-auto max-w-lg rounded-3xl p-6 sm:p-8">
+        <p className="text-center text-sm text-sea-deep">
+          {quickMode ? (timedOut ? '時間到 · 自動交卷' : '限時小考結果') : '本回結果'}
+        </p>
+        <h2 className="font-display mt-2 text-center text-3xl font-bold text-ink">
           {score} / {total}
         </h2>
-        <p className="mt-2 text-ink-soft">正確率 {pct}%</p>
+        <p className="mt-2 text-center text-ink-soft">正確率 {pct}%</p>
+        {quickMode ? (
+          <p className="mt-1 text-center text-xs text-ink-soft">剩餘時間 {formatRemain(remain)}</p>
+        ) : null}
         {sourceInfo ? (
-          <p className="mt-2 text-xs text-ink-soft">
+          <p className="mt-2 text-center text-xs text-ink-soft">
             本回：進度題 {sourceInfo.dynamic} · 補充題 {sourceInfo.curated}
           </p>
         ) : null}
         <div className="mx-auto mt-5 h-2.5 w-full max-w-xs overflow-hidden rounded-full bg-foam">
           <div className="h-full rounded-full bg-sea" style={{ width: `${pct}%` }} />
         </div>
-        <div className="mt-6 flex flex-col gap-2 sm:flex-row sm:justify-center">
+
+        {missCount > 0 ? (
+          <div className="mt-5 max-h-56 space-y-2 overflow-y-auto text-left">
+            <p className="text-sm font-medium text-ink">錯題解析（{missCount}）</p>
+            {reviewMisses.map((m, i) => (
+              <div key={`${m.id}-${i}`} className="rounded-xl bg-foam/80 px-3 py-2 text-xs text-ink">
+                <p className="font-medium">{m.prompt}</p>
+                <p className="mt-1 text-coral">你的答案：{m.picked}</p>
+                <p className="text-sea-deep">正解：{m.correct}</p>
+                {m.explanation ? <p className="mt-1 text-ink-soft">{m.explanation}</p> : null}
+              </div>
+            ))}
+          </div>
+        ) : (
+          <p className="mt-5 text-center text-sm text-sea-deep">本回全對，太棒了！</p>
+        )}
+
+        {pinnedMsg ? <p className="mt-3 text-center text-xs text-sea-deep">{pinnedMsg}</p> : null}
+
+        <div className="mt-6 flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:justify-center">
+          {quickMode && missCount > 0 ? (
+            <button
+              type="button"
+              onClick={pinMissesToSprint}
+              className="rounded-2xl bg-coral px-5 py-3 text-white hover:bg-coral/90"
+            >
+              將錯題加入衝刺清單
+            </button>
+          ) : null}
+          {quickMode ? (
+            <Link
+              to="/flashcards?mode=sprint"
+              className="rounded-2xl bg-sea px-5 py-3 text-center text-white hover:bg-sea-deep"
+            >
+              去衝刺字卡
+            </Link>
+          ) : null}
           <button
             type="button"
-            onClick={start}
-            className="rounded-2xl bg-sea px-5 py-3 text-white hover:bg-sea-deep"
+            onClick={() => start({ quick: quickMode })}
+            className="rounded-2xl bg-white px-5 py-3 text-ink ring-1 ring-line"
           >
             再考一回
           </button>
@@ -240,7 +416,7 @@ export default function Quiz() {
             type="button"
             onClick={() => {
               setStarted(false)
-              setView('hub')
+              setView(quickMode ? 'quick' : 'hub')
             }}
             className="rounded-2xl bg-white px-5 py-3 text-ink ring-1 ring-line"
           >
@@ -257,8 +433,21 @@ export default function Quiz() {
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between gap-3">
-        <h2 className="font-display text-xl font-bold text-ink">模擬測驗</h2>
-        <span className="rounded-full bg-foam px-3 py-1 text-xs text-sea-deep">{progressLabel}</span>
+        <h2 className="font-display text-xl font-bold text-ink">
+          {quickMode ? '限時小考' : '模擬測驗'}
+        </h2>
+        <div className="flex items-center gap-2">
+          {quickMode ? (
+            <span
+              className={`rounded-full px-3 py-1 text-xs font-medium ${
+                remain <= 60 ? 'bg-coral/15 text-coral' : 'bg-foam text-sea-deep'
+              }`}
+            >
+              {formatRemain(remain)}
+            </span>
+          ) : null}
+          <span className="rounded-full bg-foam px-3 py-1 text-xs text-sea-deep">{progressLabel}</span>
+        </div>
       </div>
       {sourceInfo ? (
         <p className="text-xs text-ink-soft">
@@ -294,7 +483,7 @@ export default function Quiz() {
 
             return (
               <button
-                key={opt}
+                key={`${opt}-${idx}`}
                 type="button"
                 disabled={revealed}
                 onClick={() => choose(idx)}

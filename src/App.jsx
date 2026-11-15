@@ -11,6 +11,7 @@ import ReadingPractice from './pages/ReadingPractice'
 import ListeningPractice from './pages/ListeningPractice'
 import WrongBankPage from './pages/WrongBankPage'
 import MockExam from './pages/MockExam'
+import Sprint from './pages/Sprint'
 
 export default function App() {
   return (
@@ -26,6 +27,7 @@ export default function App() {
             <Route path="listening" element={<ListeningPractice />} />
             <Route path="wrong-bank" element={<WrongBankPage />} />
             <Route path="mock" element={<MockExam />} />
+            <Route path="sprint" element={<Sprint />} />
             <Route path="drill" element={<Drill />} />
             <Route path="schedule" element={<Schedule />} />
             <Route path="*" element={<Navigate to="/" replace />} />

@@ -10,6 +10,9 @@ import { useSettings, CARD_FONT_SIZES } from '../hooks/useSettings'
 import { useLocalStorage } from '../hooks/useLocalStorage'
 import { seededShuffle } from '../utils/dailyPlan'
 import { compactGlossLines, compactSenseGlosses, isChineseGloss } from '../utils/gloss'
+import { buildSprintDeck } from '../utils/sprintQueue'
+import { setSprintTaskDone } from '../utils/sprintChecklist'
+import { todayKey } from '../utils/storage'
 
 const EXAMPLE_SOURCE_LABEL = {
   openjlpt: 'OpenJLPT',
@@ -91,9 +94,19 @@ const MODE_META = {
     title: '今日聽力',
     hint: '可循環播放單字＋例句；鎖屏後也會繼續（需用 Neural 音檔）',
   },
+  sprint: {
+    title: '考前衝刺',
+    hint: '錯題＋弱點＋高頻易混文法；陌生／模糊會留在本輪重複，直到標記記得或熟練',
+  },
 }
 
 const GRADES = ['again', 'hard', 'good', 'easy']
+const SPRINT_GRADE_LABELS = {
+  again: '陌生',
+  hard: '模糊',
+  good: '記得',
+  easy: '熟練',
+}
 
 function hasKanji(text = '') {
   return /[\u4e00-\u9fff]/.test(text)
@@ -225,7 +238,12 @@ export default function Flashcards() {
   }, [])
 
   const todayMode = mode in MODE_META
-  const srsMode = mode === 'today-vocab' || mode === 'today-grammar' || mode === 'today-review'
+  const srsMode =
+    mode === 'today-vocab' ||
+    mode === 'today-grammar' ||
+    mode === 'today-review' ||
+    mode === 'sprint'
+  const sprintMode = mode === 'sprint'
   const hideReadingOnFront = srsMode
   const meaningFirst = quizDirection === 'zh-ja'
   const showZhMeaning = showExampleMeaning || mode === 'today-grammar' || meaningFirst
@@ -235,6 +253,9 @@ export default function Flashcards() {
     if (mode === 'today-grammar') return todayGrammar
     if (mode === 'today-review') return todayReview
     if (mode === 'today-listening') return todayVocab
+    if (mode === 'sprint') {
+      return buildSprintDeck({ cardProgress, limit: 24 }).cards
+    }
 
     const q = query.trim().toLowerCase()
     const allowed =
@@ -293,6 +314,7 @@ export default function Flashcards() {
     isCardManuallyChecked,
     localFixTick,
     geminiApproved,
+    geminiRestrictToApproved,
   ])
 
   const deck = sessionLeft ?? filtered
@@ -707,11 +729,15 @@ export default function Flashcards() {
     gradeCard(card.id, grade)
 
     if (srsMode && sessionLeft) {
-      // "Again" cards stay in session; reset multi-pass progress
-      if (grade === 'again') {
+      // Sprint: 陌生／模糊 stay in session (high-frequency requeue)
+      const requeueWeak = grade === 'again' || (sprintMode && grade === 'hard')
+      if (requeueWeak) {
         setSessionPasses((prev) => ({ ...prev, [card.id]: 0 }))
         const rest = sessionLeft.filter((c) => c.id !== card.id)
-        const requeue = [...rest, card]
+        const insertAt = sprintMode && grade === 'hard'
+          ? Math.min(2, rest.length)
+          : rest.length
+        const requeue = [...rest.slice(0, insertAt), card, ...rest.slice(insertAt)]
         advanceTo(safeIndex >= rest.length ? 0 : safeIndex, requeue)
         return
       }
@@ -1377,16 +1403,7 @@ export default function Flashcards() {
       </p>
 
       {doneSession ? (
-        <div className="surface soft-shadow animate-fade-up rounded-3xl p-8 text-center">
-          <p className="font-display text-2xl font-bold text-ink">本輪複習完成</p>
-          <p className="mt-2 text-sm text-ink-soft">忘記的卡片已排到今天稍後／明天再出現</p>
-          <Link
-            to="/"
-            className="mt-5 inline-block rounded-2xl bg-sea px-5 py-3 text-white hover:bg-sea-deep"
-          >
-            回首頁看進度
-          </Link>
-        </div>
+        <SprintDonePanel sprintMode={sprintMode} />
       ) : !card ? (
         <div className="surface rounded-3xl p-8 text-center text-ink-soft">
           {todayMode ? (
@@ -1394,11 +1411,26 @@ export default function Flashcards() {
               <p>
                 {mode === 'today-review'
                   ? '目前沒有到期卡片，去練今日單字或測驗吧'
-                  : '今日這個項目沒有卡片可練'}
+                  : mode === 'sprint'
+                    ? '目前衝刺佇列沒有卡片，先去做限時小考或錯題本吧'
+                    : '今日這個項目沒有卡片可練'}
               </p>
-              <Link to="/" className="inline-block text-sea-deep underline">
-                回首頁看排程
-              </Link>
+              <div className="flex flex-wrap justify-center gap-3">
+                {mode === 'sprint' ? (
+                  <>
+                    <Link to="/quiz?mode=quick" className="text-sea-deep underline">
+                      限時小考
+                    </Link>
+                    <Link to="/sprint" className="text-sea-deep underline">
+                      衝刺中心
+                    </Link>
+                  </>
+                ) : (
+                  <Link to="/" className="inline-block text-sea-deep underline">
+                    回首頁看排程
+                  </Link>
+                )}
+              </div>
             </div>
           ) : (
             '沒有符合條件的卡片'
@@ -1531,6 +1563,7 @@ export default function Flashcards() {
             <div className="relative z-10 flex flex-wrap items-stretch justify-center gap-2 pt-2">
               {GRADES.map((grade) => {
                 const metaG = GRADE_LABELS[grade]
+                const label = sprintMode ? SPRINT_GRADE_LABELS[grade] || metaG.label : metaG.label
                 return (
                   <button
                     key={grade}
@@ -1538,7 +1571,7 @@ export default function Flashcards() {
                     onClick={() => onGrade(grade)}
                     className={`touch-target min-w-[4.5rem] flex-1 rounded-2xl px-2 py-3 text-sm font-medium transition sm:flex-none sm:px-3 ${gradeButtonClass(grade)}`}
                   >
-                    <span className="block">{metaG.label}</span>
+                    <span className="block">{label}</span>
                   </button>
                 )
               })}
@@ -2350,6 +2383,49 @@ function ExampleGrammarNote({ example, card }) {
           </div>
         </div>
       ) : null}
+    </div>
+  )
+}
+
+function SprintDonePanel({ sprintMode }) {
+  useEffect(() => {
+    if (sprintMode) setSprintTaskDone(todayKey(), 'sprint-cards', true)
+  }, [sprintMode])
+
+  return (
+    <div className="surface soft-shadow animate-fade-up rounded-3xl p-8 text-center">
+      <p className="font-display text-2xl font-bold text-ink">
+        {sprintMode ? '本輪衝刺完成' : '本輪複習完成'}
+      </p>
+      <p className="mt-2 text-sm text-ink-soft">
+        {sprintMode
+          ? '陌生／模糊的卡片已留在 SRS；可接著做限時小考或打卡。'
+          : '忘記的卡片已排到今天稍後／明天再出現'}
+      </p>
+      <div className="mt-5 flex flex-wrap justify-center gap-2">
+        {sprintMode ? (
+          <>
+            <Link
+              to="/quiz?mode=quick"
+              className="inline-block rounded-2xl bg-coral px-5 py-3 text-white hover:bg-coral/90"
+            >
+              限時小考
+            </Link>
+            <Link
+              to="/sprint"
+              className="inline-block rounded-2xl bg-sea px-5 py-3 text-white hover:bg-sea-deep"
+            >
+              衝刺打卡
+            </Link>
+          </>
+        ) : null}
+        <Link
+          to="/"
+          className="inline-block rounded-2xl bg-white px-5 py-3 text-ink ring-1 ring-line hover:bg-foam"
+        >
+          回首頁看進度
+        </Link>
+      </div>
     </div>
   )
 }
